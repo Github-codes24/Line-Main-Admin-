@@ -2,7 +2,7 @@ import {ArrowDropDown} from "@mui/icons-material";
 import {Avatar, Box, IconButton, Typography} from "@mui/material";
 import React from "react";
 
-function navbar() {
+function Navbar() {
     return (
         <Box
             sx={{
@@ -17,8 +17,7 @@ function navbar() {
                 boxShadow: "0px 2px 2px rgba(0,0,0,0.25)",
             }}
         >
-            {/* logo */}
-            <Typography variant="h6" color="#007E74" fontWeight={700} fontSize={"28px"}>
+            <Typography color="#007E74" fontWeight={700} fontSize={"28px"}>
                 LineMan Logo
             </Typography>
 
@@ -26,14 +25,12 @@ function navbar() {
                 sx={{
                     display: "flex",
                     flexDirection: "row",
-                    justifyContent: "space-between",
                     alignItems: "center",
                     gap: "5px",
                 }}
             >
-                {/* profile */}
                 <Avatar alt="profile">GS</Avatar>
-                {/* dropdown */}
+
                 <IconButton size="small" sx={{p: 0}}>
                     <ArrowDropDown />
                 </IconButton>
@@ -42,4 +39,4 @@ function navbar() {
     );
 }
 
-export default navbar;
+export default Navbar;

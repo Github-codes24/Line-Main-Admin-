@@ -1,4 +1,4 @@
-import {Box, Typography, useTheme} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import React from "react";
 import {
     DashboardIcon,
@@ -12,8 +12,8 @@ import {
     PaymentIcon,
 } from "../../assets/CommonAssets";
 
-function Sidebar() {
-    const theme = useTheme();
+function Sidebar() {fontWeight: "510",
+
     const [isSelectMenu, setIsSelectMenu] = React.useState(0);
 
     const sideBarContent = [
@@ -98,7 +98,6 @@ function Sidebar() {
                             sx={{
                                 width: "24px",
                                 height: "24px",
-                                color: "#007E74",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
@@ -111,7 +110,7 @@ function Sidebar() {
                         <Typography
                             sx={{
                                 fontFamily: "Poppins",
-                                fontWeight: "510",
+                                fontWeight: 500,
                                 fontSize: "14px",
                                 color,
                                 whiteSpace: "nowrap",
