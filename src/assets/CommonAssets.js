@@ -171,3 +171,106 @@ export const PaymentIcon = ({color = "#007E74"}) => {
     );
 };
 //*******************************************************
+
+export const BackArrowIcon = () => {
+    return (
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
+                stroke="#0D2E28"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
+                stroke="#0D2E28"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M26.6663 20H13.333"
+                stroke="#0D2E28"
+                stroke-width="3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    );
+};
+
+export const FilterIcon = () => {
+    return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M8.85709 12.506C6.37009 10.646 4.59609 8.6 3.62709 7.45C3.32709 7.094 3.22909 6.833 3.17009 6.374C2.96809 4.802 2.86709 4.016 3.32809 3.508C3.78909 3 4.60409 3 6.23409 3H17.7661C19.3961 3 20.2111 3 20.6721 3.507C21.1331 4.015 21.0321 4.801 20.8301 6.373C20.7701 6.832 20.6721 7.093 20.3731 7.449C19.4031 8.601 17.6261 10.651 15.1331 12.514C15.0178 12.6037 14.9225 12.7165 14.8533 12.8451C14.7841 12.9737 14.7425 13.1154 14.7311 13.261C14.4841 15.992 14.2561 17.488 14.1141 18.244C13.8851 19.466 12.1541 20.201 11.2261 20.856C10.6741 21.246 10.0041 20.782 9.93309 20.178C9.66756 17.8765 9.44286 15.5705 9.25909 13.261C9.24882 13.114 9.20771 12.9708 9.13845 12.8407C9.06919 12.7106 8.97333 12.5966 8.85709 12.506Z"
+                stroke="#0D2E28"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    );
+};
+
+//********** Action Icons ************************************
+export const ViewIcon = () => {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+                stroke="#EC2D01"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z"
+                stroke="#EC2D01"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    );
+};
+
+export const EditIcon = () => {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                stroke="#EC2D01"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path
+                d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                stroke="#EC2D01"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+        </svg>
+    );
+};
+
+export const DeleteIcon = () => {
+    return (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 6H5H21" stroke="#EC2D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path
+                d="M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6"
+                stroke="#EC2D01"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <path d="M10 11V17" stroke="#EC2D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M14 11V17" stroke="#EC2D01" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    );
+};
+//************************************************************

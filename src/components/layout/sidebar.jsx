@@ -1,5 +1,5 @@
-import {Box, Typography} from "@mui/material";
 import React from "react";
+import {Box, Typography} from "@mui/material";
 import {
     DashboardIcon,
     UserIcon,
@@ -11,53 +11,64 @@ import {
     OrderIcon,
     PaymentIcon,
 } from "../../assets/CommonAssets";
+import {useNavigate} from "react-router-dom";
 
-function Sidebar() {fontWeight: "510",
-
-    const [isSelectMenu, setIsSelectMenu] = React.useState(0);
+function Sidebar({activeTab, setActiveTab}) {
+    const navigate = useNavigate();
 
     const sideBarContent = [
         {
             icon: (color) => <DashboardIcon color={color} />,
             title: "Dashboard",
+            path: "/admin/dashboard",
         },
         {
             icon: (color) => <UserIcon color={color} />,
             title: "Customer Management",
+            path: "/admin/customermanagement",
         },
         {
             icon: (color) => <WorkerIcon color={color} />,
             title: "Worker Management",
+            path: "/admin/workermanagement",
         },
         {
             icon: (color) => <ShopIcon color={color} />,
             title: "Shop Management",
+            path: "/admin/shopmanagement",
         },
         {
             icon: (color) => <TabIcon color={color} />,
             title: "Tab Management",
+            path: "/admin/tabmanagement",
         },
         {
             icon: (color) => <SmallProductIcon color={color} />,
             title: "Small Product",
+            path: "/admin/smallproduct",
         },
         {
             icon: (color) => <BigProductIcon color={color} />,
             title: "Big Product",
+            path: "/admin/bigproduct",
         },
         {
             icon: (color) => <OrderIcon color={color} />,
             title: "Order Management",
+            path: "/admin/ordermanagement",
         },
         {
             icon: (color) => <PaymentIcon color={color} />,
             title: "Payment Management",
+            path: "/admin/paymentmanagement",
         },
     ];
     return (
         <Box
             sx={{
                 width: "270px",
+                minWidth: "270px",
+                maxWidth: "270px",
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
@@ -70,7 +81,7 @@ function Sidebar() {fontWeight: "510",
             }}
         >
             {sideBarContent.map((content, index) => {
-                const selectedMenu = isSelectMenu === index;
+                const selectedMenu = activeTab === content.path;
                 const background = selectedMenu ? "#007E74" : "#ffffff";
                 const color = selectedMenu ? "white" : "#007E74";
 
@@ -91,7 +102,8 @@ function Sidebar() {fontWeight: "510",
                             cursor: "pointer",
                         }}
                         onClick={() => {
-                            setIsSelectMenu(index);
+                            setActiveTab(content.path);
+                            navigate(content.path);
                         }}
                     >
                         <Box
