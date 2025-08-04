@@ -1,11 +1,45 @@
 import React from "react";
-import { IoArrowBack } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 const PendingOrder = () => {
+  const navigate = useNavigate();
   return (
     <div className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <IoArrowBack className="text-2xl" />
+        <button
+          onClick={() => navigate(-1)}
+          className="text-xl text-black hover:text-gray-600"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M26.6663 20H13.333"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
+        </button>
         <h1 className="text-xl font-semibold">View Order</h1>
       </div>
 

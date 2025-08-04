@@ -115,7 +115,7 @@ export default function ListOrder() {
                 </td>
                 <td className="p-3">
                   <button>
-                    <Eye className="text-orange-500" size={18} />
+                    <Eye className="text-red-600" size={18} />
                   </button>
                 </td>
               </tr>

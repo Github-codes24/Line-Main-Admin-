@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import editBig from "../../../assets/images/editBigImage.png";
 
 const BigProductEdit = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  const [productImage, setProductImage] = useState(
+  const [setProductImage] = useState(
     "/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png"
   );
   const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
@@ -30,7 +31,35 @@ const BigProductEdit = () => {
           onClick={() => navigate(-1)}
           className="text-xl text-black hover:text-gray-600"
         >
-          ←
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M26.6663 20H13.333"
+              stroke="#0D2E28"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+          </svg>
         </button>
         <h1 className="ml-4 text-xl font-semibold">View Big Product</h1>
       </div>
@@ -40,9 +69,9 @@ const BigProductEdit = () => {
         {/* Product Image */}
         <div className="flex items-center gap-6 mb-6">
           <label className="w-[160px] font-semibold">Product Image:</label>
-          <div className="border rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
+          <div className=" rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
             <img
-              src={productImage}
+              src={editBig}
               alt="Product"
               className="max-h-[140px] max-w-[140px] object-contain mb-2"
             />
@@ -53,12 +82,12 @@ const BigProductEdit = () => {
               onChange={handleImageChange}
               className="hidden"
             />
-            <button
+            {/* <button
               onClick={() => fileInputRef.current.click()}
               className="bg-gray-500 text-white text-sm px-3 py-1 rounded-md hover:bg-gray-500"
             >
               Upload Photo
-            </button>
+            </button> */}
           </div>
         </div>
 

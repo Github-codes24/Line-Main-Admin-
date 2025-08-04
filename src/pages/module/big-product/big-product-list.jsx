@@ -1,6 +1,8 @@
 import React from "react";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
+import { useNavigate } from "react-router-dom";
+import pvc from "../../../assets/images/pvc.png";
 
 const productData = [
   {
@@ -46,13 +48,11 @@ const statusColor = {
   Pending: "text-yellow-500",
 };
 
-export default function BigProductList() {
+export default function BigProductList({ productId }) {
+  const navigate = useNavigate();
+
   return (
     <div className="p-4">
-      {/* <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Big Product List</h2>
-        <Button className="bg-teal-600 text-white">+ Add New Product</Button>
-      </div> */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <h2 className="text-2xl font-bold">Big Product List</h2>
 
@@ -77,8 +77,12 @@ export default function BigProductList() {
             />
           </svg>
         </div>
-
-        <Button className="bg-teal-600 text-white">+ Add New Product</Button>
+        <Button
+          onClick={() => navigate("/admin/shopmanagement/big-product-add")}
+          className="bg-teal-600 text-white"
+        >
+          + Add New Product
+        </Button>
       </div>
 
       <div className="flex flex-wrap gap-2 mb-4">
@@ -110,11 +114,7 @@ export default function BigProductList() {
               <tr key={product.id} className="border-t">
                 <td className="p-3">{idx + 1}</td>
                 <td className="p-3">
-                  <img
-                    src="C:\line_main\Line-Main-Admin-\public\PVC.png"
-                    alt="Product"
-                    className="w-12 h-12 rounded"
-                  />
+                  <img src={pvc} alt="Product" className="w-12 h-12 rounded" />
                 </td>
                 <td className="p-3">{product.name}</td>
                 <td className="p-3">{product.category}</td>
@@ -122,15 +122,46 @@ export default function BigProductList() {
                 <td className={`p-3 ${statusColor[product.status]}`}>
                   {product.status}
                 </td>
-                <td className="p-3 space-x-2">
-                  <button>
-                    <Eye className="text-orange-500" size={18} />
+                <td className="p-3 flex space-x-2">
+                  <button
+                    onClick={() =>
+                      navigate("/admin/shopmanagement/big-product-view")
+                    }
+                  >
+                    <Eye className="text-red-600" size={18} />
+                  </button>
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/admin/shopmanagement/big-product-edit/${productId}`
+                      )
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                    >
+                      <path
+                        d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                        stroke="#EC2D01"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                        stroke="#EC2D01"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                   <button>
-                    <Pencil className="text-orange-500" size={18} />
-                  </button>
-                  <button>
-                    <Trash2 className="text-orange-500" size={18} />
+                    <Trash2 className="text-red-600" size={18} />
                   </button>
                 </td>
               </tr>
