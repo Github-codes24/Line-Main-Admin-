@@ -1,12 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import rectangle from "../../../assets/images/Rectangle.png";
 
-const PendingOrder = () => {
+// import { IoArrowBack } from "react-icons/io5";
+
+const ProgressOrder = () => {
   const navigate = useNavigate();
   return (
     <div className="p-4">
       <div className="flex items-center gap-2 mb-4">
+        {/* <IoArrowBack className="text-2xl" /> */}
         <button
           onClick={() => navigate(-1)}
           className="text-xl text-black hover:text-gray-600"
@@ -94,95 +96,54 @@ const PendingOrder = () => {
 
         {/* Service Details */}
         <div className="mb-6">
-          <h2 className="font-semibold text-lg mb-2">Service Details</h2>
+          <h2 className="font-semibold text-lg mb-2">Worker Details</h2>
 
           <div className="grid grid-cols-8 gap-4 mb-2">
-            <label className="col-span-1 font-medium">Service Required :</label>
+            <label className="col-span-1 font-medium">Worker Name :</label>
             <input
               disabled
-              value="Electrician"
+              value="Apoorv singh"
               className="col-span-2 px-4 py-2 rounded-md bg-blue-100 border border-blue-300"
             />
           </div>
 
           <div className="grid grid-cols-8 gap-4 mb-2">
-            <label className="col-span-1 font-medium">Date :</label>
+            <label className="col-span-1 font-medium">
+              Email/phone <br /> number :
+            </label>
             <input
               disabled
-              value="16/07/2024"
+              value="+91-9876543210"
+              className="col-span-2 px-4 py-2 rounded-md bg-blue-100 border border-blue-300"
+            />
+          </div>
+          <div className="grid grid-cols-8 gap-4">
+            <label className="col-span-1 font-medium">Address :</label>
+            <textarea
+              disabled
+              value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
               className="col-span-2 px-4 py-2 rounded-md bg-blue-100 border border-blue-300"
             />
           </div>
 
-          <div className="grid grid-cols-8 gap-4 mb-4">
-            <label className="col-span-1 font-medium">Photos :</label>
-            <div className="col-span-2">
-              <img
-                src={rectangle}
-                alt="uploaded"
-                className="w-20 h-20 rounded-md object-cover"
-              />
-            </div>
+          <h2 className="font-semibold text-lg mb-2">Shopkeeper Details</h2>
+
+          <div className="grid grid-cols-8 gap-4 mb-2">
+            <label className="col-span-1 font-medium">Shop Name :</label>
+            <input
+              disabled
+              value="xgt"
+              className="col-span-2 px-4 py-2 rounded-md bg-blue-100 border border-blue-300"
+            />
           </div>
 
-          <div className="grid  grid-cols-3 gap-4">
-            <label className="col-span-1 font-medium">Product List :</label>
-            <br />
-
-            <div className="col-span-2 overflow-x-auto">
-              <table className=" border border-gray-300">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="border p-2">#</th>
-                    <th className="border p-2">Products</th>
-                    <th className="border p-2">Price</th>
-                    <th className="border p-2">Qty</th>
-                    <th className="border p-2">Amount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border p-2">1</td>
-                    <td className="border p-2">PVC Wire</td>
-                    <td className="border p-2">400</td>
-                    <td className="border p-2">1</td>
-                    <td className="border p-2">400</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">2</td>
-                    <td className="border p-2">LED Light</td>
-                    <td className="border p-2">80</td>
-                    <td className="border p-2">5</td>
-                    <td className="border p-2">400</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">3</td>
-                    <td className="border p-2">Switches</td>
-                    <td className="border p-2">10</td>
-                    <td className="border p-2">7</td>
-                    <td className="border p-2">400</td>
-                  </tr>
-                  <tr>
-                    <td className="border p-2">4</td>
-                    <td className="border p-2">LED light</td>
-                    <td className="border p-2">120</td>
-                    <td className="border p-2">3</td>
-                    <td className="border p-2">400</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td
-                      colSpan="4"
-                      className="border p-2 text-right font-semibold"
-                    >
-                      Final Amount
-                    </td>
-                    <td className="border p-2 font-semibold">6,000</td>
-                  </tr>
-                </tfoot>
-              </table>
-            </div>
+          <div className="grid grid-cols-8 gap-4 mb-2">
+            <label className="col-span-1 font-medium">Shopkeeper Name :</label>
+            <input
+              disabled
+              value="xgt"
+              className="col-span-2 px-4 py-2 rounded-md bg-blue-100 border border-blue-300"
+            />
           </div>
         </div>
       </div>
@@ -190,4 +151,4 @@ const PendingOrder = () => {
   );
 };
 
-export default PendingOrder;
+export default ProgressOrder;
