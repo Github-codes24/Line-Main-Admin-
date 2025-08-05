@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Eye, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -50,6 +50,55 @@ const statusColor = {
 
 export default function BigProductList({ productId }) {
   const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeFilters, setActiveFilters] = useState([]);
+
+  // Add filter on search
+  // const handleSearch = (e) => {
+  //   const term = e.target.value;
+  //   setSearchTerm(term);
+
+  //   // Auto-add category filter if match found
+  //   const matchedCategory = productData.find((p) =>
+  //     p.category.toLowerCase().includes(term.toLowerCase())
+  //   )?.category;
+
+  //   if (matchedCategory && !activeFilters.includes(matchedCategory)) {
+  //     setActiveFilters([...activeFilters, matchedCategory]);
+  //   }
+  // };
+  const handleSearch = (e) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    // Only add if exact match and not already in filters
+    const categories = ["Electrician", "Plumber", "Painter"];
+    const matchedCategory = categories.find(
+      (cat) => cat.toLowerCase() === term.toLowerCase()
+    );
+
+    if (matchedCategory && !activeFilters.includes(matchedCategory)) {
+      setActiveFilters([...activeFilters, matchedCategory]);
+      setSearchTerm(""); // clear search input after add
+    }
+  };
+
+  // Remove filter
+  const removeFilter = (filter) => {
+    setActiveFilters(activeFilters.filter((item) => item !== filter));
+  };
+
+  // Reset all filters
+  const resetFilters = () => {
+    setActiveFilters([]);
+    setSearchTerm("");
+  };
+
+  // Apply filters
+  const filteredData =
+    activeFilters.length === 0
+      ? productData
+      : productData.filter((p) => activeFilters.includes(p.category));
 
   return (
     <div className="p-4">
@@ -59,7 +108,9 @@ export default function BigProductList({ productId }) {
         <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
           <input
             type="text"
-            placeholder="Search by product name"
+            placeholder="Search by product name or category"
+            value={searchTerm}
+            onChange={handleSearch}
             className="w-full pl-10 pr-4 text-black placeholder-black py-1 border rounded-full focus:outline-none focus:ring-2 focus:ring-teal-500"
           />
           <svg
@@ -77,6 +128,7 @@ export default function BigProductList({ productId }) {
             />
           </svg>
         </div>
+
         <Button
           onClick={() => navigate("/admin/shopmanagement/big-product-add")}
           className="bg-teal-600 text-white"
@@ -85,17 +137,52 @@ export default function BigProductList({ productId }) {
         </Button>
       </div>
 
+      {/* Filters UI */}
       <div className="flex flex-wrap gap-2 mb-4">
-        {["Electrician", "Plumber", "Painter"].map((filter) => (
-          <span key={filter} className="px-3 py-1 bg-gray-200 rounded-full">
-            {filter} ✕
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+          fill="none"
+        >
+          <path
+            d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z"
+            fill="#E0E9E9"
+          />
+          <path
+            d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z"
+            stroke="#0D2E28"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        {activeFilters.map((filter) => (
+          <span
+            key={filter}
+            className="px-3 py-1 bg-gray-200 rounded-full flex items-center gap-1"
+          >
+            {filter}
+            <button
+              onClick={() => removeFilter(filter)}
+              className="text-gray-600 ml-1"
+            >
+              ✕
+            </button>
           </span>
         ))}
-        <Button className="ml-auto border bg-teal-100 border-teal-600 text-teal-700">
-          Reset Filter
-        </Button>
+        {activeFilters.length > 0 && (
+          <Button
+            onClick={resetFilters}
+            className="ml-auto border bg-teal-100 border-teal-600 text-teal-700"
+          >
+            Reset Filter
+          </Button>
+        )}
       </div>
 
+      {/* Product Table */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow rounded-lg">
           <thead>
@@ -110,7 +197,7 @@ export default function BigProductList({ productId }) {
             </tr>
           </thead>
           <tbody>
-            {productData.map((product, idx) => (
+            {filteredData.map((product, idx) => (
               <tr key={product.id} className="border-t">
                 <td className="p-3">{idx + 1}</td>
                 <td className="p-3">
@@ -171,7 +258,9 @@ export default function BigProductList({ productId }) {
       </div>
 
       <div className="flex justify-between items-center mt-4">
-        <span className="text-sm">Showing 1 to 5 of 5 Entries</span>
+        <span className="text-sm">
+          Showing {filteredData.length} of {productData.length} Entries
+        </span>
         <div className="space-x-1">
           {[1, 2, 3].map((page) => (
             <button
