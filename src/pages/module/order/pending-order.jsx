@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import rectangle from "../../../assets/images/Rectangle.png";
 
 const PendingOrder = () => {
   const navigate = useNavigate();
@@ -117,7 +118,7 @@ const PendingOrder = () => {
             <label className="col-span-1 font-medium">Photos :</label>
             <div className="col-span-2">
               <img
-                src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c"
+                src={rectangle}
                 alt="uploaded"
                 className="w-20 h-20 rounded-md object-cover"
               />
