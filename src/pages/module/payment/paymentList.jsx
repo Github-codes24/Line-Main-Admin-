@@ -47,7 +47,7 @@ const PaymentList = () => {
   ];
 
   return (
-    <div className="p-4 md:p-8 space-y-8">
+    <div className="">
       {/* Section 1: Title + Search */}
 <div className="bg-gray-100 p-3 rounded-lg shadow">
   <div className="flex items-center justify-between flex-wrap gap-4 w-full">
@@ -93,18 +93,18 @@ const PaymentList = () => {
             <tbody>
               {data.map((item, index) => (
                 <tr key={item.id}>
-                  <td className=" text-center px-4 py-5">{index + 1}</td>
-                  <td className=" text-center px-4 py-5">{item.transactionId}</td>
-                  <td className=" text-center px-4 py-5">{item.orderId}</td>
+                  <td className=" text-center px-2 py-5">{index + 1}</td>
+                  <td className=" text-center px-2 py-5">{item.transactionId}</td>
+                  <td className=" text-center px-2 py-5">{item.orderId}</td>
                   <td
-                    className={` text-center px-4 py-5 font-semibold ${
+                    className={` text-center px-2 py-5 font-semibold ${
                       item.amount < 0 ? "text-red-500" : "text-green-600"
                     }`}
                   >
                     {item.amount < 0 ? `-₹${Math.abs(item.amount)}` : `+₹${item.amount}`}
                   </td>
-                  <td className=" text-center px-4 py-5">{item.mode}</td>
-                  <td className=" text-center px-4 py-5">{item.remarks}</td>
+                  <td className=" text-center px-2 py-5">{item.mode}</td>
+                  <td className=" text-center px-2 py-5">{item.remarks}</td>
                   <td className=" text-center px-10 py-5 text-red-500 cursor-pointer">
                     <Eye size={18} />
                   </td>
