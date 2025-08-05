@@ -12,7 +12,7 @@ import {
     PaymentIcon,
 } from "../../assets/CommonAssets";
 
-function Sidebar() {fontWeight: "510",
+function Sidebar() {
 
     const [isSelectMenu, setIsSelectMenu] = React.useState(0);
 
