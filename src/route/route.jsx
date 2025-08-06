@@ -64,7 +64,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-        path="/customer/view/:i"
+        path="/customer/view/:id"
         element={
           <ProtectedRoute>
             <ViewCustomer />

@@ -7,6 +7,9 @@ import * as Yup from "yup";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
+import manimage from "../../assets/images/man-image.png"
+
+
 const AdminEditProfile = () => {
   const [photo, setPhoto] = useState(null);
   const navigate = useNavigate();
@@ -150,7 +153,7 @@ const AdminEditProfile = () => {
                     <div className="flex flex-col items-center">
                       <div className="w-32 h-32 rounded-full border border-[#0f9e9e] overflow-hidden">
                         <img
-                          src={photo || "../images/man-image.png"}
+                          src={photo || manimage}
                           alt="Profile"
                           className="w-full h-full object-cover"
                         />

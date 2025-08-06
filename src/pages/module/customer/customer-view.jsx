@@ -24,7 +24,7 @@ const ViewCustomer = () => {
     toast.info("Edit button clicked");
 
     setTimeout(() => {
-      navigate("/customer-edit");
+      navigate("/customer/edit/:id");
     }, 1000);
   };
 

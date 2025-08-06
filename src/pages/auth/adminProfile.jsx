@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import manimage from "../../assets/images/man-image.png"
 
 const AdminProfile = () => {
   const navigate = useNavigate();
@@ -93,7 +94,7 @@ const AdminProfile = () => {
                 {/* Right - Image */}
                 <div className="flex justify-center items-start w-full md:w-1/3">
                   <img
-                    src="../images/man-image.png"
+                    src={manimage}
                     alt="Admin"
                     className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border border-teal-500"
                   />
