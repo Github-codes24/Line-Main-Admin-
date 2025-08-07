@@ -1,10 +1,11 @@
-
-import './App.css';
+import React from 'react'
 
 function App() {
   return (
-    <div className='bg-red-100 text-white'>raj</div>
-  );
+    <div>
+      < ></>
+    </div>
+  )
 }
 
-export default App;
+export default App
