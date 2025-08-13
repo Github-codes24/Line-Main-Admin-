@@ -12,6 +12,17 @@ import ShopAdd from "./pages/module/shop/ShopAdd";
 import ShopView from "./pages/module/shop/ShopView";
 import ShopEdit from "./pages/module/shop/ShopEdit";
 
+import BigProductList from "./pages/module/big-product/big-product-list";
+import BigProductAdd from "./pages/module/big-product/big-product-add";
+import BigProductView from "./pages/module/big-product/big-product-view";
+import BigProductEdit from "./pages/module/big-product/big-product-edit";
+import BigProductApprove from "./pages/module/big-product/big-product-approve";
+import ListOrder from "./pages/module/order/list-order";
+import PendingOrder from "./pages/module/order/pending-order";
+import ProgressOrder from "./pages/module/order/progress-order";
+import CompleteOrder from "./pages/module/order/completed-order";
+import RejectOrder from "./pages/module/order/reject-order";
+
 function App() {
     const [activeTab, setActiveTab] = React.useState("/admin/workermanagement");
     return (
@@ -85,9 +96,92 @@ function App() {
                         </AdminLayout>
                     }
                 />
+                      <Route
+                    path="/admin/shopmanagement/big-product-list"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductList />
+                        </AdminLayout>
+                    }
+                />
+                  <Route
+                    path="/admin/shopmanagement/big-product-add"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductAdd />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/big-product-view"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductView />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/big-product-edit/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductEdit />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/big-product-approve/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductApprove />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/order/list"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ListOrder />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/pending-order/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <PendingOrder />
+                        </AdminLayout>
+                    }
+                />
+                <Route
+                    path="/admin/shopmanagement/progress-order/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ProgressOrder />
+                        </AdminLayout>
+                    }
+                />
+                <Route
+                    path="/admin/shopmanagement/complete-order/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CompleteOrder />
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/shopmanagement/reject-order/:id"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <RejectOrder />
+                        </AdminLayout>
+               }
+                />
+
             </Routes>
         </BrowserRouter>
     );
 }
 
-export default App
+
+export default App;
+
