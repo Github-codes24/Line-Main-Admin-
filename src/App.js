@@ -1,11 +1,27 @@
 
 
+// src/App.js
+import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './route/route';
+import { Toaster } from 'react-hot-toast';
+
+
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import PublicRoute from './route/public'; // adjust path if needed
 
-function App() {
+
+const App = () => {
   return (
+
+    <BrowserRouter>
+      <AppRoutes />
+      <Toaster position="top-right" reverseOrder={false} />
+    </BrowserRouter>
+  );
+};
+
     <Router>
       <div className="flex flex-col min-h-screen">
         <PublicRoute />
@@ -196,6 +212,7 @@ function App() {
 
 
 }
+
 
 export default App;
 
