@@ -14,7 +14,8 @@ import {
     TableHead,
     TableRow,
 } from "@mui/material";
-import Worker from "../../../components/cards/Worker";
+import Worker from "../../../components/cards/worker.jsx";
+
 import {DeleteIcon, EditIcon, FilterIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
 
@@ -89,12 +90,12 @@ function ShopList() {
                         elevation={0}
                         sx={{
                             border: "1px solid black",
-                            maxHeight: 400,
+                            maxHeight: 300,
                             overflowY: "scroll",
-                            "&::-webkit-scrollbar": {display: "none"},
+                            // "&::-webkit-scrollbar": {display: "none"},
                         }}
                     >
-                        <Table stickyHeader size="small" sx={{borderRadius: 2}}>
+                        <Table stickyHeader sx={{borderRadius: 2}}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>

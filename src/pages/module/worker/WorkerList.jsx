@@ -19,7 +19,8 @@ import {
     FormControlLabel,
     Checkbox,
 } from "@mui/material";
-import Worker from "../../../components/cards/Worker";
+import Worker from "../../../components/cards/worker.jsx";
+
 import {DeleteIcon, EditIcon, FilterIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
 
@@ -199,12 +200,12 @@ function WorkerList() {
                         elevation={0}
                         sx={{
                             border: "1px solid black",
-                            maxHeight: 350,
+                            maxHeight: 300,
                             overflowY: "scroll",
                             "&::-webkit-scrollbar": {display: "none"},
                         }}
                     >
-                        <Table stickyHeader size="small">
+                        <Table stickyHeader sx={{borderRadius: 2}}>
                             <TableHead>
                                 <TableRow>
                                     {[

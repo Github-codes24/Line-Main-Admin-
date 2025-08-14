@@ -1,12 +1,21 @@
 import React from "react";
+
 import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
-import Worker from "../../../components/cards/Worker";
+import Worker from "../../../components/cards/worker.jsx";
 import {useNavigate} from "react-router-dom";
 
 function ShopAdd() {
     const navigate = useNavigate();
     return (
-        <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
+        <Box
+            sx={{
+                width: "100%",
+                minHeight: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+            }}
+        >
             <Worker back title="Add New Shop" />
             <Card>
                 <CardContent>
@@ -24,7 +33,13 @@ function ShopAdd() {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3,1fr)",
+                                    gap: 2,
+                                }}
+                            >
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
                                 </Box>
@@ -46,7 +61,13 @@ function ShopAdd() {
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3,1fr)",
+                                    gap: 2,
+                                }}
+                            >
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
                                 </Box>
@@ -69,7 +90,13 @@ function ShopAdd() {
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3,1fr)",
+                                    gap: 2,
+                                }}
+                            >
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
                                 </Box>
@@ -91,7 +118,13 @@ function ShopAdd() {
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "repeat(3,1fr)",
+                                    gap: 2,
+                                }}
+                            >
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
                                 </Box>

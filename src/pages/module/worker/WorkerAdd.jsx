@@ -1,6 +1,6 @@
 import React from "react";
 import {Box, Button, Card, CardContent, MenuItem, Select, TextField, Typography} from "@mui/material";
-import Worker from "../../../components/cards/Worker";
+import Worker from "../../../components/cards/worker.jsx";
 import {useNavigate} from "react-router-dom";
 
 function WorkerAdd() {
