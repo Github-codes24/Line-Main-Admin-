@@ -27,32 +27,50 @@ function ShopList() {
             shopName: "Electrical shop",
             contact: "ravi.kumar@gmail.com / +91-9876543210",
             address: "Banjara Hills,Telangana",
+            status: "Active",
         },
         {
             name: "Anjali Mehta",
             shopName: "Plumber  shop",
             contact: "anjali.mehta@yahoo.com / +91-9123456789",
             address: "Sector 22, Noida, Uttar Pradesh",
+            status: "Active",
         },
         {
             name: "Sunil Sharma",
             shopName: "Carpenter shop",
             contact: "sunil.sharma@outlook.com / +91-9988776655",
             address: "MG Road, Pune, Maharashtra",
+            status: "Active",
         },
         {
             name: "Preeti Verma",
             shopName: "Gardener shop",
             contact: "preeti.verma@gmail.com / +91-8765432109",
             address: "Indiranagar, Bengaluru, Karnataka",
+            status: "Active",
         },
         {
             name: "Amit Das",
             shopName: "Painter shop",
             contact: "amit.das@hotmail.com / +91-8899776655",
             address: "Salt Lake, Kolkata, West Bengal",
+            status: "Inactive",
         },
     ];
+
+    // ✅ Filtered data based on search
+    const filteredData = shopData.filter((item) => {
+        const searchLower = searchText.toLowerCase();
+        return (
+            item.name.toLowerCase().includes(searchLower) ||
+            item.shopName.toLowerCase().includes(searchLower) ||
+            item.contact.toLowerCase().includes(searchLower) ||
+            item.address.toLowerCase().includes(searchLower) ||
+            item.status.toLowerCase().includes(searchLower)
+        );
+    });
+
     return (
         <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
             <Worker
@@ -63,42 +81,7 @@ function ShopList() {
                 btnpath="/admin/shopmanagement/shopadd"
             />
             <Card>
-                <CardHeader
-                    sx={{paddingX: 3}}
-                    title={
-                        <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", gap: 2}}>
-                            <Box
-                                sx={{
-                                    background: "#E0E9E9",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    padding: "5px",
-                                    borderRadius: 1,
-                                    cursor: "pointer",
-                                }}
-                            >
-                                <FilterIcon />
-                            </Box>
-                        </Box>
-                    }
-                    action={
-                        <Button
-                            variant="outlined"
-                            sx={{
-                                marginTop: 1,
-                                borderColor: "#007E74",
-                                color: "#007E74",
-                                background: "#D9F1EB",
-                                paddingX: 4,
-                                paddingY: "2px",
-                                textTransform: "none",
-                            }}
-                        >
-                            Reset Filter
-                        </Button>
-                    }
-                />
+                <CardHeader sx={{paddingX: 3}} />
 
                 <CardContent sx={{paddingTop: 0}}>
                     <TableContainer
@@ -106,18 +89,12 @@ function ShopList() {
                         elevation={0}
                         sx={{
                             border: "1px solid black",
-                            maxHeight: 300,
+                            maxHeight: 400,
                             overflowY: "scroll",
                             "&::-webkit-scrollbar": {display: "none"},
                         }}
                     >
-                        <Table
-                            stickyHeader
-                            size="small"
-                            sx={{
-                                borderRadius: 2,
-                            }}
-                        >
+                        <Table stickyHeader size="small" sx={{borderRadius: 2}}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
@@ -143,56 +120,68 @@ function ShopList() {
                                         Shop Address
                                     </TableCell>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                        Status
+                                    </TableCell>
+                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
                                         Action
                                     </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {shopData.map((item, index) => {
-                                    return (
-                                        <TableRow hover>
-                                            <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
-                                            <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                                {item.shopName}
-                                            </TableCell>
-                                            <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                                {item.name}
-                                            </TableCell>
-                                            <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                                {item.contact}
-                                            </TableCell>
-                                            <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                                {item.address}
-                                            </TableCell>
-                                            <TableCell
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "row",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    gap: 1,
-                                                    borderBottom: "none",
-                                                }}
+                                {filteredData.map((item, index) => (
+                                    <TableRow hover key={index}>
+                                        <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
+                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
+                                            {item.shopName}
+                                        </TableCell>
+                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
+                                            {item.name}
+                                        </TableCell>
+                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
+                                            {item.contact}
+                                        </TableCell>
+                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
+                                            {item.address}
+                                        </TableCell>
+                                        <TableCell
+                                            sx={{
+                                                borderBottom: "none",
+                                                color: item.status === "Active" ? "green" : "red",
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            {item.status}
+                                        </TableCell>
+                                        <TableCell
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "row",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: 1,
+                                                borderBottom: "none",
+                                            }}
+                                        >
+                                            <IconButton
+                                                size="small"
+                                                onClick={() =>
+                                                    navigate("/admin/shopmanagement/shopview", {state: item})
+                                                }
                                             >
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => navigate("/admin/shopmanagement/shopview")}
-                                                >
-                                                    <ViewIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    size="small"
-                                                    onClick={() => navigate("/admin/shopmanagement/shopedit")}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton size="small">
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    );
-                                })}
+                                                <ViewIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => navigate("/admin/shopmanagement/shopedit")}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton size="small">
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>

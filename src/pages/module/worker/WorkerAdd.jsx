@@ -64,8 +64,13 @@ function WorkerAdd() {
                                         <MenuItem value="" disabled hidden>
                                             Select Expertise
                                         </MenuItem>
-                                        <MenuItem value="vendor1">Vendor 1</MenuItem>
-                                        <MenuItem value="vendor2">Vendor 2</MenuItem>
+                                        <MenuItem value="Electrician">Electrician</MenuItem>
+                                        <MenuItem value="Plumber">Plumber</MenuItem>
+                                        <MenuItem value="Tiler">Tiler</MenuItem>
+                                        <MenuItem value="Painter">Painter</MenuItem>
+                                        <MenuItem value="AC & Refrigerator Mechanic">
+                                            AC & Refrigerator Mechanic
+                                        </MenuItem>
                                     </Select>
                                 </Box>
                             </Box>

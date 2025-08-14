@@ -1,10 +1,26 @@
 import React from "react";
 import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import Worker from "../../../components/cards/Worker";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 
 function WorkerView() {
     const navigate = useNavigate();
+    const {state} = useLocation(); // Get worker data passed from WorkerList
+
+    // If no state (user opened page directly), handle gracefully
+    if (!state) {
+        return (
+            <Box sx={{p: 3}}>
+                <Typography variant="h6" color="error">
+                    No worker data found.
+                </Typography>
+                <Button variant="contained" sx={{mt: 2}} onClick={() => navigate("/admin/workermanagement")}>
+                    Back to List
+                </Button>
+            </Box>
+        );
+    }
+
     return (
         <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
             <Worker back title="View Worker" />
@@ -24,6 +40,7 @@ function WorkerView() {
                                 paddingBottom: 10,
                             }}
                         >
+                            {/* Worker Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Worker Name:</Typography>
@@ -32,13 +49,15 @@ function WorkerView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={"Ravi Kumar"}
+                                        value={state.name || ""}
                                         variant="outlined"
                                         sx={{background: "#F5FFFF"}}
-                                        aria-readonly
+                                        InputProps={{readOnly: true}}
                                     />
                                 </Box>
                             </Box>
+
+                            {/* Expertise */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Expertise:</Typography>
@@ -47,13 +66,15 @@ function WorkerView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={"Vendor"}
+                                        value={state.expertise || ""}
                                         variant="outlined"
                                         sx={{background: "#F5FFFF"}}
-                                        aria-readonly
+                                        InputProps={{readOnly: true}}
                                     />
                                 </Box>
                             </Box>
+
+                            {/* Contact */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
@@ -62,13 +83,15 @@ function WorkerView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={"ravikumar@gmail.com"}
+                                        value={state.contact || ""}
                                         variant="outlined"
                                         sx={{background: "#F5FFFF"}}
-                                        aria-readonly
+                                        InputProps={{readOnly: true}}
                                     />
                                 </Box>
                             </Box>
+
+                            {/* Address */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
@@ -77,14 +100,16 @@ function WorkerView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={"Banjara Hills, Hyderabad, Telangana"}
+                                        value={state.address || ""}
                                         variant="outlined"
                                         sx={{background: "#F5FFFF"}}
-                                        aria-readonly
+                                        InputProps={{readOnly: true}}
                                     />
                                 </Box>
                             </Box>
                         </Box>
+
+                        {/* Edit Button */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -103,7 +128,7 @@ function WorkerView() {
                                     paddingY: "2px",
                                     textTransform: "none",
                                 }}
-                                onClick={() => navigate("/admin/workermanagement/workeredit")}
+                                onClick={() => navigate("/admin/workermanagement/workeredit", {state})}
                             >
                                 Edit
                             </Button>
