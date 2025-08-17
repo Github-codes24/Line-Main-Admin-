@@ -1,0 +1,110 @@
+import React, { useState } from "react";
+import { X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
+const TabEdit = () => {
+  const [tabName, setTabName] = useState("Plumbing");
+  const [subTabs, setSubTabs] = useState(["Plumber", "Tank Cleaner"]);
+
+   const navigate = useNavigate();
+
+   const handleBack = () => {
+    navigate("/admin/tabmanagement"); // adjust route as per your setup
+  };
+
+
+
+  // Add new sub tab
+  const handleAddSubTab = () => {
+    setSubTabs([...subTabs, ""]);
+  };
+
+  // Remove sub tab
+  const handleRemoveSubTab = (index) => {
+    const updated = subTabs.filter((_, i) => i !== index);
+    setSubTabs(updated);
+  };
+
+  // Update sub tab value
+  const handleChangeSubTab = (index, value) => {
+    const updated = [...subTabs];
+    updated[index] = value;
+    setSubTabs(updated);
+  };
+
+  return (
+    <div className="w-full mx-auto mt-6 bg-white shadow-xl rounded-lg border h-full">
+      {/* Header */}
+      <div className="flex items-center gap-2 border-b px-4 py-3 bg-gray-50 rounded-lg shadow-xl border-2 ">
+      <img
+      src="/Back Button (1).png"
+      onClick={handleBack}
+      className="mr-3 cursor-pointer w-8"
+      alt="Back"
+    />
+        <h2 className="text-lg font-semibold text-gray-800">Edit Tab</h2>
+      </div>
+
+      {/* Form */}
+      <div className="p-6 space-y-5 shadow-lg border-2 rounded h-[78%]">
+        {/* Tab Name */}
+        <div className="flex items-center gap-4">
+          <label className="w-28 text-gray-700 font-medium">Tab Name:</label>
+          <input
+            type="text"
+            value={tabName}
+            onChange={(e) => setTabName(e.target.value)}
+            className="flex-1  rounded-md px-3 py-2 border-2 border-teal-600 focus: outline-none"
+          />
+        </div>
+
+        {/* Sub Tabs */}
+        <div className="flex items-start gap-4">
+          <label className="w-28 text-gray-700 font-medium mt-2 ">
+            Sub Tab Name:
+          </label>
+          <div className="flex-1 space-y-3 ">
+            {subTabs.map((subTab, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-2 border-2 rounded-md px-3 py-2 border-teal-600"
+              >
+                <input
+                  type="text"
+                  value={subTab}
+                  onChange={(e) => handleChangeSubTab(index, e.target.value)}
+                  className="flex-1 outline-none"
+                />
+                <X
+                  className="w-5 h-5 text-black cursor-pointer"
+                  onClick={() => handleRemoveSubTab(index)}
+                />
+              </div>
+            ))}
+
+            {/* Add more */}
+            <button
+              type="button"
+              onClick={handleAddSubTab}
+              className="text-m font-medium text-teal-700 hover:underline ml-[85%]"
+            >
+              + Add More Sub Tab
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex justify-center gap-3 px-6 py-4 border-t bg-gray-50 rounded-b-lg">
+        <button className="px-5 py-2 rounded-md border-2 bg-teal-100 text-teal-700 hover:bg-teal-100 border-teal-600 " onClick={handleBack}>
+          Cancel
+        </button>
+        <button className="px-5 py-2 rounded-md bg-teal-700 text-white hover:bg-teal-800">
+          Update
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default TabEdit;

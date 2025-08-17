@@ -12,6 +12,7 @@ import ShopAdd from "./pages/module/shop/ShopAdd";
 import ShopView from "./pages/module/shop/ShopView";
 import ShopEdit from "./pages/module/shop/ShopEdit";
 
+
 import BigProductList from "./pages/module/big-product/big-product-list";
 import BigProductAdd from "./pages/module/big-product/big-product-add";
 import BigProductView from "./pages/module/big-product/big-product-view";
@@ -22,6 +23,11 @@ import PendingOrder from "./pages/module/order/pending-order";
 import ProgressOrder from "./pages/module/order/progress-order";
 import CompleteOrder from "./pages/module/order/completed-order";
 import RejectOrder from "./pages/module/order/reject-order";
+import TabList from "./pages/module/tab/TabList";
+import TabAdd from "./pages/module/tab/TabAdd";
+import TabEdit from "./pages/module/tab/TabEdit";
+import TabView from "./pages/module/tab/TabView";
+
 
 function App() {
     const [activeTab, setActiveTab] = React.useState("/admin/workermanagement");
@@ -93,6 +99,39 @@ function App() {
                     element={
                         <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                             <ShopEdit />
+                        </AdminLayout>
+                    }
+                />
+                {/* tab routes  */}
+                <Route
+                    path="/admin/tabmanagement"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabList/>
+                        </AdminLayout>
+                    }
+                />
+                 <Route
+                    path="/admin/tabmanagement/tabadd"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabAdd/>
+                        </AdminLayout>
+                    }
+                />
+                <Route
+                    path="/admin/tabmanagement/tabedit"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabEdit/>
+                        </AdminLayout>
+                    }
+                />
+                <Route
+                    path="/admin/tabmanagement/tabview"
+                    element={
+                        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabView/>
                         </AdminLayout>
                     }
                 />
