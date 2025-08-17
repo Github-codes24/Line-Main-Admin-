@@ -125,7 +125,9 @@ const SmallProductView = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
-                    <button className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
+                    <button 
+                    onClick={() => navigate("/admin/shopmanagement/small-product-edit/:id")}
+                    className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
                         Edit
                     </button>
                 </div>

@@ -189,10 +189,14 @@ const SmallProductEdit = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
-                    <button className="w-[200px] bg-[#D9F1EB] text-[#007E74] font-medium border border-[#007E74] px-10 py-2 rounded-lg">
+                    <button 
+                    onClick={() => navigate(-1)}
+                    className="w-[200px] bg-[#D9F1EB] text-[#007E74] font-medium border border-[#007E74] px-10 py-2 rounded-lg">
                         Cancel
                     </button>
-                    <button className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
+                    <button 
+                    onClick={() => navigate(-1)}
+                    className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
                         Update
                     </button>
                 </div>
