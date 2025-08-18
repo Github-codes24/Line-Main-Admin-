@@ -92,7 +92,7 @@ function ShopList() {
                             border: "1px solid black",
                             maxHeight: 300,
                             overflowY: "scroll",
-                            // "&::-webkit-scrollbar": {display: "none"},
+                            scrollbarWidth: "thin",
                         }}
                     >
                         <Table stickyHeader sx={{borderRadius: 2}}>
@@ -163,10 +163,11 @@ function ShopList() {
                                                 borderBottom: "none",
                                             }}
                                         >
+                                            {/* ✅ Updated ViewIcon with proper state */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate("/admin/shopmanagement/shopview", {state: item})
+                                                    navigate("/admin/shopmanagement/shopview", {state: {shop: item}})
                                                 }
                                             >
                                                 <ViewIcon />
