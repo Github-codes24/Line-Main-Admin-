@@ -175,7 +175,7 @@ function Sidebar({ activeTab, setActiveTab }) {
     {
       icon: (color) => <SmallProductIcon color={color} />,
       title: "Small Product",
-      path: "/admin/smallproduct",
+      path: "/admin/smallproduct/small-product-list",
     },
     {
       icon: (color) => <BigProductIcon color={color} />,

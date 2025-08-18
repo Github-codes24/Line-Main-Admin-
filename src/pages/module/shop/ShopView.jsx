@@ -6,8 +6,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 function ShopView() {
     const navigate = useNavigate();
     const {state} = useLocation();
-    const shop = state?.shop; // ✅ get shop data passed from ShopList
-
+    const shop = state?.shop; 
     if (!shop) {
         return <Typography>No shop data available</Typography>;
     }
