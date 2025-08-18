@@ -105,7 +105,7 @@ export default function SmallProductList({ productId }) {
                 </div>
 
                 <button
-                    onClick={() => navigate("/admin/shopmanagement/small-product-add")}
+                    onClick={() => navigate("/admin/smallproduct/small-product-add")}
                     className="w-[200px] bg-[#007E74] text-white font-medium px-6 py-2 rounded-lg"
                 >
                     + Add New Product
@@ -192,10 +192,10 @@ export default function SmallProductList({ productId }) {
                                     <td className="p-3">{product.category}</td>
                                     <td className="p-3">{product.price}</td>
                                     <td className="p-3 space-x-2">
-                                        <button onClick={() => navigate("/admin/shopmanagement/small-product-view")}>
+                                        <button onClick={() => navigate("/admin/smallproduct/small-product-view")}>
                                             <Eye className="text-red-600" size={20} />
                                         </button>
-                                        <button onClick={() => navigate(`/admin/shopmanagement/small-product-edit/${productId}`)}>
+                                        <button onClick={() => navigate(`/admin/smallproduct/small-product-edit/${productId}`)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                                 <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="#EC2D01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                                 <path d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="#EC2D01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

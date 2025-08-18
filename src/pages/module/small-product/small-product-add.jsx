@@ -152,7 +152,7 @@ const SmallProductAdd = () => {
             Cancel
           </button>
           <button
-            onClick={() => navigate("/admin/shopmanagement/small-product-list")}
+            onClick={() => navigate("/admin/smallproduct/small-product-list")}
             className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg"
           >
             Add Product
