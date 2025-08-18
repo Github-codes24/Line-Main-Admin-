@@ -60,7 +60,6 @@ function ShopList() {
         },
     ];
 
-    // ✅ Filtered data based on search
     const filteredData = shopData.filter((item) => {
         const searchLower = searchText.toLowerCase();
         return (
@@ -163,7 +162,6 @@ function ShopList() {
                                                 borderBottom: "none",
                                             }}
                                         >
-                                            {/* ✅ Updated ViewIcon with proper state */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
