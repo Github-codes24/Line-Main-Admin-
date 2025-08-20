@@ -91,11 +91,11 @@ export default function SmallProductList({ productId }) {
                         placeholder="Search by Product Name..."
                         value={searchTerm}
                         onChange={handleSearch}
-                        className="w-full pl-10 pr-4 bg-[#F5FFFF] text-[#0D2E28] font-medium placeholder-[#0D2E28] py-1 border-2 border-[#007E74] rounded-full focus:outline-none"
+                        className="w-full pl-10 pr-4 bg-[#E4E5EB] text-[#001580] font-medium placeholder-[#001580] py-1 border-2 border-[#001580] rounded-full focus:outline-none"
                     />
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]"
+                        className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#001580]"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -106,7 +106,7 @@ export default function SmallProductList({ productId }) {
 
                 <button
                     onClick={() => navigate("/admin/smallproduct/small-product-add")}
-                    className="w-[200px] bg-[#007E74] text-white font-medium px-6 py-2 rounded-lg"
+                    className="w-[200px] bg-[#001580] text-white font-medium px-6 py-2 rounded-lg"
                 >
                     + Add New Product
                 </button>
@@ -125,8 +125,8 @@ export default function SmallProductList({ productId }) {
                         fill="none"
                         className="cursor-pointer"
                     >
-                        <path d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z" fill="#E0E9E9" />
-                        <path d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z" stroke="#0D2E28" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        <path d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z" fill="#E4E5EB" />
+                        <path d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z" stroke="#001580" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
 
                     {showFilterPanel && (
@@ -142,7 +142,7 @@ export default function SmallProductList({ productId }) {
                                     <label key={item} className="flex items-center space-x-2 cursor-pointer text-gray-700">
                                         <input
                                             type="checkbox"
-                                            className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500"
+                                            className="w-4 h-4 text-[#001580] border-gray-300 rounded"
                                             checked={activeFilters.includes(item)}
                                             onChange={() => toggleFilter(item)}
                                         />
@@ -154,15 +154,15 @@ export default function SmallProductList({ productId }) {
                     )}
 
                     {activeFilters.map((filter) => (
-                        <span key={filter} className="px-3 py-1 bg-[#E0E9E9] text-[#0D2E28] font-medium rounded-full flex items-center gap-1">
+                        <span key={filter} className="px-3 py-1 bg-[#E4E5EB] text-[#001580] font-medium rounded-full flex items-center gap-1">
                             {filter}
-                            <button onClick={() => removeFilter(filter)} className="text-[#0D2E28] font-medium ml-1">
-                                ✕
+                            <button onClick={() => removeFilter(filter)} className="text-[#001580] font-semibold ml-1">
+                                <IoClose />
                             </button>
                         </span>
                     ))}
                     {activeFilters.length > 0 && (
-                        <button onClick={resetFilters} className="w-[200px] ml-auto border border-[#007E74] bg-[#D9F1EB] text-[#007E74] font-medium px-6 py-2 rounded-lg">
+                        <button onClick={resetFilters} className="w-[200px] ml-auto border border-[#001580] bg-[#CECEF2] text-[#001580] font-medium px-6 py-2 rounded-lg">
                             Reset Filter
                         </button>
                     )}
@@ -172,7 +172,7 @@ export default function SmallProductList({ productId }) {
                 <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
                     <table className="min-w-full bg-white shadow rounded-lg">
                         <thead>
-                            <tr className="bg-[#E0E9E9] text-center text-[#0D2E28] text-medium">
+                            <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] text-medium">
                                 <th className="px-2 py-3">Sr.No.</th>
                                 <th className="px-2 py-3">Product Image</th>
                                 <th className="px-2 py-3">Product Name</th>
@@ -213,10 +213,10 @@ export default function SmallProductList({ productId }) {
 
                 {/* Pagination */}
                 <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
-                    <span className="text-sm">Showing {paginatedData.length} of {filteredData.length} Entries</span>
+                    <span className="text-sm font-semibold">Showing {paginatedData.length} of {filteredData.length} Entries</span>
                     <div className="flex items-center space-x-2">
-                        <button onClick={handlePrev} disabled={currentPage === 1} className={`w-8 h-8 flex items-center justify-center rounded-xl ${currentPage === 1 ? "bg-gray-200 text-[#007E74]" : "bg-white hover:bg-gray-100"}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 text-[#007E74]">
+                        <button onClick={handlePrev} disabled={currentPage === 1} className={`w-8 h-8 flex items-center justify-center rounded-xl ${currentPage === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 text-[#001580]">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                             </svg>
                         </button>
@@ -224,14 +224,14 @@ export default function SmallProductList({ productId }) {
                         {[...Array(totalPages)].map((_, i) => {
                             const page = i + 1;
                             return (
-                                <button key={page} onClick={() => setCurrentPage(page)} className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${page === currentPage ? "bg-[#007E74] text-white" : "bg-[#D9F1EB] text-[#007E74] hover:bg-[#C2EAE2]"}`}>
+                                <button key={page} onClick={() => setCurrentPage(page)} className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${page === currentPage ? "bg-[#001580] text-white" : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"}`}>
                                     {page}
                                 </button>
                             );
                         })}
 
-                        <button onClick={handleNext} disabled={currentPage === totalPages} className={`w-8 h-8 flex items-center justify-center rounded-xl ${currentPage === totalPages ? "bg-gray-200 text-[#007E74]" : "bg-white hover:bg-gray-100"}`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 text-[#007E74]">
+                        <button onClick={handleNext} disabled={currentPage === totalPages} className={`w-8 h-8 flex items-center justify-center rounded-xl ${currentPage === totalPages ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"}`}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-5 h-5 text-[#001580]">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                             </svg>
                         </button>
