@@ -16,7 +16,7 @@ import PaymentList from '../pages/module/payment/paymentList';
 function PublicRoute() {
   return (
     <Routes>
-      <Route path="/" element={<PaymentList />} />
+      <Route path="/admin/paymentmanagement" element={<PaymentList />} />
         </Routes>
   );
 }

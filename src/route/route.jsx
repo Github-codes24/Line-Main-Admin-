@@ -11,6 +11,7 @@ import CustomerList from '../pages/module/customer/customer-list';
 import AddCustomer from '../pages/module/customer/customer-add';
 import ViewCustomer from '../pages/module/customer/customer-view';
 import EditCustomer from '../pages/module/customer/customer-edit';
+import PaymentList from '../pages/module/payment/paymentList';
 
 const AppRoutes = () => {
   return (
@@ -20,6 +21,14 @@ const AppRoutes = () => {
         element={
           <PublicRoute>
             <AdminLogin />
+          </PublicRoute>
+        }
+      />
+        <Route
+        path="/admin/paymentmanagement"
+        element={
+          <PublicRoute>
+         <PaymentList/>
           </PublicRoute>
         }
       />

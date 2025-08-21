@@ -149,10 +149,6 @@ const PaymentList = () => {
 </div>
 
       </div>
-
-   
-
-
     </div>
   );
 };

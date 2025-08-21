@@ -26,6 +26,7 @@ import SmallProductList from "./pages/module/small-product/small-product-list";
 import SmallProductAdd from "./pages/module/small-product/small-product-add";
 import SmallProductEdit from "./pages/module/small-product/small-product-edit";
 import SmallProductView from "./pages/module/small-product/small-product-view";
+import PaymentList from "./pages/module/payment/paymentList";
 
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/workermanagement");
@@ -208,6 +209,14 @@ function App() {
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <RejectOrder />
+            </AdminLayout>
+          }
+        />
+          <Route
+          path="/admin/paymentmanagement"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+             <PaymentList/>
             </AdminLayout>
           }
         />
