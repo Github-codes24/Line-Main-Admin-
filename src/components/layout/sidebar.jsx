@@ -116,6 +116,7 @@ function Sidebar({ activeTab, setActiveTab }) {
               boxSizing: "border-box",
               background,
               cursor: "pointer",
+              font:"Poppins",
             }}
             onClick={() => {
               setActiveTab(content.path);

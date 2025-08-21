@@ -9,6 +9,9 @@ module.exports = {
       spacing: {
         36: '9rem',
       },
+      fontFamily: {
+      myfont: ["Poppins"],
+    },
     },
   },
   plugins: [],
