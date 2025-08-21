@@ -50,32 +50,32 @@ function Sidebar({ activeTab, setActiveTab }) {
     {
       icon: (color) => <BigProductIcon color={color} />,
       title: "Big Product",
-      path: "/admin/shopmanagement/big-product-list",
+      path: "/admin/bigproduct",
     },
     {
       icon: (color) => <OrderIcon color={color} />,
       title: "Order Management",
-      path: "/admin/shopmanagement/order/list",
+      path: "/admin/order/list",
     },
     {
       icon: (color) => <PaymentIcon color={color} />,
       title: "Payment Management",
-      path: "/admin/paymentmanagement",
+      path: "/admin/payment",
     },
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <BigProductIcon color={color} />,
       title: "Big Product Approve",
-      path: "/admin/shopmanagement/big-product-approve/:id",
+      path: "/admin/bigproduct/approve/1", // demo id (so sidebar link works)
     },
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <OrderIcon color={color} />,
       title: "List Order",
-      path: "/admin/shopmanagement/pending-order/:id",
+      path: "/admin/order/list",
     },
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <OrderIcon color={color} />,
       title: "Progress Order",
-      path: "/admin/shopmanagement/progress-order/:id",
+      path: "/admin/order/progress/1", // demo id
     },
   ];
 

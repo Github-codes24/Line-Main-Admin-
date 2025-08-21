@@ -2,41 +2,111 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
 import React from "react";
+
+// Pages
+import Dashboard from "./pages/dashbaord";
+
+// Customer
+import CustomerList from "./pages/module/customer/customer-list";
+import CustomerAdd from "./pages/module/customer/customer-add";
+import CustomerView from "./pages/module/customer/customer-view";
+import CustomerEdit from "./pages/module/customer/customer-edit";
+
+// Worker
 import WorkerList from "./pages/module/worker/WorkerList";
 import WorkerAdd from "./pages/module/worker/WorkerAdd";
 import WorkerView from "./pages/module/worker/WorkerView";
 import WorkerEdit from "./pages/module/worker/WorkerEdit";
+
+// Shop
 import ShopList from "./pages/module/shop/ShopList";
 import ShopAdd from "./pages/module/shop/ShopAdd";
 import ShopView from "./pages/module/shop/ShopView";
 import ShopEdit from "./pages/module/shop/ShopEdit";
 
-import BigProductList from "./pages/module/big-product/big-product-list";
-import BigProductAdd from "./pages/module/big-product/big-product-add";
-import BigProductView from "./pages/module/big-product/big-product-view";
-import BigProductEdit from "./pages/module/big-product/big-product-edit";
-import BigProductApprove from "./pages/module/big-product/big-product-approve";
-import ListOrder from "./pages/module/order/list-order";
-import PendingOrder from "./pages/module/order/pending-order";
-import ProgressOrder from "./pages/module/order/progress-order";
-import CompleteOrder from "./pages/module/order/completed-order";
-import RejectOrder from "./pages/module/order/reject-order";
+// Tab
 import TabList from "./pages/module/tab/TabList";
 import TabAdd from "./pages/module/tab/TabAdd";
 import TabEdit from "./pages/module/tab/TabEdit";
 import TabView from "./pages/module/tab/TabView";
 
+// Small Product
 import SmallProductList from "./pages/module/small-product/small-product-list";
 import SmallProductAdd from "./pages/module/small-product/small-product-add";
 import SmallProductEdit from "./pages/module/small-product/small-product-edit";
 import SmallProductView from "./pages/module/small-product/small-product-view";
 
+// Big Product
+import BigProductList from "./pages/module/big-product/big-product-list";
+import BigProductAdd from "./pages/module/big-product/big-product-add";
+import BigProductView from "./pages/module/big-product/big-product-view";
+import BigProductEdit from "./pages/module/big-product/big-product-edit";
+import BigProductApprove from "./pages/module/big-product/big-product-approve";
+
+// Orders
+import ListOrder from "./pages/module/order/list-order";
+import PendingOrder from "./pages/module/order/pending-order";
+import ProgressOrder from "./pages/module/order/progress-order";
+import CompleteOrder from "./pages/module/order/completed-order";
+import RejectOrder from "./pages/module/order/reject-order";
+
+// Payments
+import PaymentList from "./pages/module/payment/paymentList";
+import Payment from "./pages/module/payment/payment";
+
 function App() {
-  const [activeTab, setActiveTab] = React.useState("/admin/workermanagement");
+  const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/admin/workermanagement" />} />
+        {/* Default Redirect */}
+        <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+
+        {/* Dashboard */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Dashboard />
+            </AdminLayout>
+          }
+        />
+
+        {/* Customer Routes */}
+        <Route
+          path="/admin/customermanagement"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <CustomerList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/customermanagement/add"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <CustomerAdd />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/customermanagement/view/:id"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <CustomerView />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/customermanagement/edit/:id"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <CustomerEdit />
+            </AdminLayout>
+          }
+        />
+
         {/* Worker Routes */}
         <Route
           path="/admin/workermanagement"
@@ -47,7 +117,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/workermanagement/workeradd"
+          path="/admin/workermanagement/add"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <WorkerAdd />
@@ -55,7 +125,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/workermanagement/workerview"
+          path="/admin/workermanagement/view/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <WorkerView />
@@ -63,7 +133,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/workermanagement/workeredit"
+          path="/admin/workermanagement/edit/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <WorkerEdit />
@@ -81,7 +151,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/shopadd"
+          path="/admin/shopmanagement/add"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <ShopAdd />
@@ -89,7 +159,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/shopview"
+          path="/admin/shopmanagement/view/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <ShopView />
@@ -97,14 +167,15 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/shopedit"
+          path="/admin/shopmanagement/edit/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <ShopEdit />
             </AdminLayout>
           }
         />
-        {/* tab routes  */}
+
+        {/* Tab Routes */}
         <Route
           path="/admin/tabmanagement"
           element={
@@ -114,7 +185,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/tabmanagement/tabadd"
+          path="/admin/tabmanagement/add"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <TabAdd />
@@ -122,7 +193,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/tabmanagement/tabedit"
+          path="/admin/tabmanagement/edit/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <TabEdit />
@@ -130,15 +201,17 @@ function App() {
           }
         />
         <Route
-          path="/admin/tabmanagement/tabview"
+          path="/admin/tabmanagement/view/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <TabView />
             </AdminLayout>
           }
         />
+
+        {/* Small Product Routes */}
         <Route
-          path="/admin/smallproduct/small-product-list"
+          path="/admin/smallproduct"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <SmallProductList />
@@ -146,23 +219,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/smallproduct/small-product-view"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductView />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/smallproduct/small-product-edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductEdit />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/smallproduct/small-product-add"
+          path="/admin/smallproduct/add"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <SmallProductAdd />
@@ -170,7 +227,25 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/big-product-list"
+          path="/admin/smallproduct/edit/:id"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <SmallProductEdit />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/smallproduct/view/:id"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <SmallProductView />
+            </AdminLayout>
+          }
+        />
+
+        {/* Big Product Routes */}
+        <Route
+          path="/admin/bigproduct"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <BigProductList />
@@ -178,7 +253,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/big-product-add"
+          path="/admin/bigproduct/add"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <BigProductAdd />
@@ -186,7 +261,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/big-product-view"
+          path="/admin/bigproduct/view/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <BigProductView />
@@ -194,7 +269,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/big-product-edit/:id"
+          path="/admin/bigproduct/edit/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <BigProductEdit />
@@ -202,15 +277,17 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/big-product-approve/:id"
+          path="/admin/bigproduct/approve/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <BigProductApprove />
             </AdminLayout>
           }
         />
+
+        {/* Order Routes */}
         <Route
-          path="/admin/shopmanagement/order/list"
+          path="/admin/order/list"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <ListOrder />
@@ -218,7 +295,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/pending-order/:id"
+          path="/admin/order/pending/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <PendingOrder />
@@ -226,7 +303,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/progress-order/:id"
+          path="/admin/order/progress/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <ProgressOrder />
@@ -234,7 +311,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/complete-order/:id"
+          path="/admin/order/complete/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <CompleteOrder />
@@ -242,10 +319,28 @@ function App() {
           }
         />
         <Route
-          path="/admin/shopmanagement/reject-order/:id"
+          path="/admin/order/reject/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <RejectOrder />
+            </AdminLayout>
+          }
+        />
+
+        {/* Payment Routes */}
+        <Route
+          path="/admin/payment"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <PaymentList />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/payment/details/:id"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <Payment />
             </AdminLayout>
           }
         />
