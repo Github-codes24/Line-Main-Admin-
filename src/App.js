@@ -1,5 +1,4 @@
-
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
 import React from "react";
@@ -214,14 +213,13 @@ function App() {
                             <RejectOrder />
                         </AdminLayout>
                }
-                />
 
-            </Routes>
-        </BrowserRouter>
-    );
+
+
+          />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-
 export default App;
-
-

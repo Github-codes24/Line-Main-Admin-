@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Box,
-    Button,
     Card,
     CardContent,
     CardHeader,
@@ -22,45 +21,56 @@ import {useNavigate} from "react-router-dom";
 function ShopList() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = React.useState("");
+
+    // ✅ Dummy data with Aadhaar/GSTIN
     const shopData = [
         {
             name: "Ravi Kumar",
-            shopName: "Electrical shop",
+            shopName: "Kumar Electricals",
             contact: "ravi.kumar@gmail.com / +91-9876543210",
-            address: "Banjara Hills,Telangana",
+            address: "Banjara Hills, Hyderabad, Telangana",
             status: "Active",
+            aadhaar: "XXXX-XXXX-1234",
+            gstin: "36ABCDE1234F1Z5",
         },
         {
             name: "Anjali Mehta",
-            shopName: "Plumber  shop",
+            shopName: "Mehta Plumbing Works",
             contact: "anjali.mehta@yahoo.com / +91-9123456789",
             address: "Sector 22, Noida, Uttar Pradesh",
             status: "Active",
+            aadhaar: "XXXX-XXXX-5678",
+            gstin: "09ABCDE5678G1Z6",
         },
         {
             name: "Sunil Sharma",
-            shopName: "Carpenter shop",
+            shopName: "Sharma Carpentry",
             contact: "sunil.sharma@outlook.com / +91-9988776655",
             address: "MG Road, Pune, Maharashtra",
             status: "Active",
+            aadhaar: "XXXX-XXXX-8765",
+            gstin: "27ABCDE8765H1Z2",
         },
         {
             name: "Preeti Verma",
-            shopName: "Gardener shop",
+            shopName: "Green Thumb Gardening",
             contact: "preeti.verma@gmail.com / +91-8765432109",
             address: "Indiranagar, Bengaluru, Karnataka",
             status: "Active",
+            aadhaar: "XXXX-XXXX-4321",
+            gstin: "29ABCDE4321J1Z8",
         },
         {
             name: "Amit Das",
-            shopName: "Painter shop",
+            shopName: "Das Paints & Decor",
             contact: "amit.das@hotmail.com / +91-8899776655",
             address: "Salt Lake, Kolkata, West Bengal",
             status: "Inactive",
+            aadhaar: "XXXX-XXXX-2468",
+            gstin: "19ABCDE2468K1Z4",
         },
     ];
 
-    // ✅ Filtered data based on search
     const filteredData = shopData.filter((item) => {
         const searchLower = searchText.toLowerCase();
         return (
@@ -68,7 +78,9 @@ function ShopList() {
             item.shopName.toLowerCase().includes(searchLower) ||
             item.contact.toLowerCase().includes(searchLower) ||
             item.address.toLowerCase().includes(searchLower) ||
-            item.status.toLowerCase().includes(searchLower)
+            item.status.toLowerCase().includes(searchLower) ||
+            (item.aadhaar && item.aadhaar.toLowerCase().includes(searchLower)) ||
+            (item.gstin && item.gstin.toLowerCase().includes(searchLower))
         );
     });
 
@@ -90,9 +102,9 @@ function ShopList() {
                         elevation={0}
                         sx={{
                             border: "1px solid black",
-                            maxHeight: 300,
+                            maxHeight: 500,
                             overflowY: "scroll",
-                            // "&::-webkit-scrollbar": {display: "none"},
+                            scrollbarWidth: "thin",
                         }}
                     >
                         <Table stickyHeader sx={{borderRadius: 2}}>
@@ -104,14 +116,7 @@ function ShopList() {
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
                                         Shop Name
                                     </TableCell>
-                                    <TableCell
-                                        sx={{
-                                            fontWeight: 600,
-                                            textAlign: "center",
-                                            background: "#E0E9E9",
-                                            whiteSpace: "nowrap",
-                                        }}
-                                    >
+                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
                                         Owner Name
                                     </TableCell>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
@@ -119,6 +124,12 @@ function ShopList() {
                                     </TableCell>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
                                         Shop Address
+                                    </TableCell>
+                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                        Aadhaar
+                                    </TableCell>
+                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                        GSTIN
                                     </TableCell>
                                     <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
                                         Status
@@ -132,23 +143,16 @@ function ShopList() {
                                 {filteredData.map((item, index) => (
                                     <TableRow hover key={index}>
                                         <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
-                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                            {item.shopName}
-                                        </TableCell>
-                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                            {item.name}
-                                        </TableCell>
-                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                            {item.contact}
-                                        </TableCell>
-                                        <TableCell sx={{borderBottom: "none", whiteSpace: "nowrap"}}>
-                                            {item.address}
-                                        </TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.shopName}</TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.name}</TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.address}</TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.aadhaar}</TableCell>
+                                        <TableCell sx={{borderBottom: "none"}}>{item.gstin}</TableCell>
                                         <TableCell
                                             sx={{
                                                 borderBottom: "none",
                                                 color: item.status === "Active" ? "green" : "red",
-                                                fontWeight: 600,
                                             }}
                                         >
                                             {item.status}
@@ -156,7 +160,6 @@ function ShopList() {
                                         <TableCell
                                             sx={{
                                                 display: "flex",
-                                                flexDirection: "row",
                                                 justifyContent: "center",
                                                 alignItems: "center",
                                                 gap: 1,
@@ -166,14 +169,24 @@ function ShopList() {
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate("/admin/shopmanagement/shopview", {state: item})
+                                                    navigate("/admin/shopmanagement/shopview", {state: {shop: item}})
                                                 }
                                             >
                                                 <ViewIcon />
                                             </IconButton>
                                             <IconButton
                                                 size="small"
-                                                onClick={() => navigate("/admin/shopmanagement/shopedit")}
+                                                onClick={() =>
+                                                    navigate("/admin/shopmanagement/shopedit", {
+                                                        state: {
+                                                            shop: {
+                                                                ...item,
+                                                                aadhaarNumber: item.aadhaar,
+                                                                gstinNumber: item.gstin,
+                                                            },
+                                                        },
+                                                    })
+                                                }
                                             >
                                                 <EditIcon />
                                             </IconButton>
