@@ -82,6 +82,8 @@ const SmallProductView = () => {
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productName}
                                 onChange={(e) => setProductName(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
@@ -94,6 +96,8 @@ const SmallProductView = () => {
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productCategory}
                                 onChange={(e) => setProductCategory(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
@@ -106,6 +110,8 @@ const SmallProductView = () => {
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productPrice}
                                 onChange={(e) => setProductPrice(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
@@ -118,6 +124,8 @@ const SmallProductView = () => {
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg  font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
                                 value={productDescription}
                                 onChange={(e) => setProductDescription(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
                     </div>

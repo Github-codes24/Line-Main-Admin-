@@ -172,7 +172,7 @@ export default function SmallProductList({ productId }) {
                 <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
                     <table className="min-w-full bg-white shadow rounded-lg">
                         <thead>
-                            <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] text-medium">
+                            <tr className="bg-[#E4E5EB] text-center text-[#001580] font-medium">
                                 <th className="px-2 py-3">Sr.No.</th>
                                 <th className="px-2 py-3">Product Image</th>
                                 <th className="px-2 py-3">Product Name</th>
