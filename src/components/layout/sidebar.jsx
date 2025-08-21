@@ -1,24 +1,20 @@
 import React from "react";
-import {Box, Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import {
-    DashboardIcon,
-    UserIcon,
-    WorkerIcon,
-    ShopIcon,
-    TabIcon,
-    SmallProductIcon,
-    BigProductIcon,
-    OrderIcon,
-    PaymentIcon,
-    SetCommision,
-    SetCharges,
-    SetLimit,
+  DashboardIcon,
+  UserIcon,
+  WorkerIcon,
+  ShopIcon,
+  TabIcon,
+  SmallProductIcon,
+  BigProductIcon,
+  OrderIcon,
+  PaymentIcon,
 } from "../../assets/CommonAssets";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-function Sidebar({activeTab, setActiveTab}) {
-    const navigate = useNavigate();
-
+function Sidebar({ activeTab, setActiveTab }) {
+  const navigate = useNavigate();
 
   const sideBarContent = [
     {
@@ -54,35 +50,35 @@ function Sidebar({activeTab, setActiveTab}) {
     {
       icon: (color) => <BigProductIcon color={color} />,
       title: "Big Product",
-      path: "/admin/shopmanagement/big-product-list",
+      path: "/admin/bigproduct",
     },
     {
       icon: (color) => <OrderIcon color={color} />,
       title: "Order Management",
-      path: "/admin/shopmanagement/order/list",
+      path: "/admin/order/list",
     },
     {
       icon: (color) => <PaymentIcon color={color} />,
       title: "Payment Management",
-      path: "/admin/paymentmanagement",
+      path: "/admin/payment",
     },
-
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <BigProductIcon color={color} />,
       title: "Big Product Approve",
-      path: "/admin/shopmanagement/big-product-approve/:id",
+      path: "/admin/bigproduct/approve/1", // demo id (so sidebar link works)
     },
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <OrderIcon color={color} />,
       title: "List Order",
-      path: "/admin/shopmanagement/pending-order/:id",
+      path: "/admin/order/list",
     },
     {
-      icon: (color) => <PaymentIcon color={color} />,
+      icon: (color) => <OrderIcon color={color} />,
       title: "Progress Order",
-      path: "/admin/shopmanagement/progress-order/:id",
+      path: "/admin/order/progress/1", // demo id
     },
   ];
+
   return (
     <Box
       sx={{
@@ -108,77 +104,53 @@ function Sidebar({activeTab, setActiveTab}) {
         return (
           <Box
             key={index}
-
             sx={{
-                width: "270px",
-                minWidth: "270px",
-                maxWidth: "270px",
-                minHeight: "100vh",
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                overflowY: "auto",
-                scrollbarWidth: "none",
-                background: "#3D55CC",
-                padding: "16px",
-                boxSizing: "border-box",
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "14px",
+              borderRadius: "8px",
+              paddingY: "6px",
+              paddingX: 2,
+              boxSizing: "border-box",
+              background,
+              cursor: "pointer",
             }}
-        >
-            {sideBarContent.map((content, index) => {
-                const selectedMenu = activeTab === content.path;
-                const background = selectedMenu ? "#001580" : "#ffffff";
-                const color = selectedMenu ? "white" : "#001580";
-
-                return (
-                    <Box
-                        key={index}
-                        sx={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: "14px",
-                            borderRadius: "8px",
-                            paddingY: "6px",
-                            paddingX: 2,
-                            boxSizing: "border-box",
-                            background,
-                            cursor: "pointer",
-                        }}
-                        onClick={() => {
-                            setActiveTab(content.path);
-                            navigate(content.path);
-                        }}
-                    >
-                        <Box
-                            sx={{
-                                width: "24px",
-                                height: "24px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                transition: "color 0.3s ease",
-                                color,
-                            }}
-                        >
-                            {content.icon(color)}
-                        </Box>
-                        <Typography
-                            sx={{
-                                fontFamily: "Poppins",
-                                fontWeight: 500,
-                                fontSize: "14px",
-                                color,
-                                whiteSpace: "nowrap",
-                            }}
-                        >
-                            {content.title}
-                        </Typography>
-                    </Box>
-                );
-            })}
-        </Box>
-    );
+            onClick={() => {
+              setActiveTab(content.path);
+              navigate(content.path);
+            }}
+          >
+            <Box
+              sx={{
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "color 0.3s ease",
+                color,
+              }}
+            >
+              {content.icon(color)}
+            </Box>
+            <Typography
+              sx={{
+                fontFamily: "Poppins",
+                fontWeight: 500,
+                fontSize: "14px",
+                color,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {content.title}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 }
 
 export default Sidebar;
