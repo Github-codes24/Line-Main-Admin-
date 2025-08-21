@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import editBig from "../../../assets/images/editBigImage.png";
+import ViewBigImage from "../../../assets/images/viewBigImage.png";
+import { MdOutlineFileUpload } from "react-icons/md";
 
 const SmallProductEdit = () => {
     const navigate = useNavigate();
@@ -68,14 +69,24 @@ const SmallProductEdit = () => {
             <div className="border rounded-lg p-4 shadow-md bg-white">
                 <div className="border border-black p-6 rounded-lg">
                     {/* Product Image */}
-                    <div className="flex items-center gap-2 mb-6">
-                        <label className="w-[240px] font-medium text-lg text-[#0D2E28]">Product Image:</label>
-                        <div className=" rounded-lg p-2 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
+                    <div className="flex items-center gap-4 mb-6">
+                        <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                        <div className="border border-[#001580] rounded-3xl p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
                             <img
-                                src={editBig}
+                                src={ViewBigImage}
                                 alt="Product"
-                                className="max-h-full max-w-full object-contain mb-2"
+                                className="max-h-full max-w-full object-contain"
                             />
+                            <button
+                                className="w-[200px] h-[40px] top-50 right-50 absolute bg-[#00158099] text-white text-base font-medium px-3 py-1 rounded-lg"
+                                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                                type="button"
+                            >
+                                <div className="relative left-4">
+                                    <MdOutlineFileUpload className="absolute h-6 w-6 left-2 top-1/2 transform -translate-y-1/2" />
+                                    Upload Photo
+                                </div>
+                            </button>
                             <input
                                 type="file"
                                 accept="image/*"
@@ -83,103 +94,52 @@ const SmallProductEdit = () => {
                                 onChange={handleImageChange}
                                 className="hidden"
                             />
-                            {/* <button
-              onClick={() => fileInputRef.current.click()}
-              className="bg-gray-500 text-white text-sm px-3 py-1 rounded-md hover:bg-gray-500"
-            >
-              Upload Photo
-            </button> */}
                         </div>
                     </div>
-
-                    {/* Editable Fields */}
-                    {/* <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Name:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Category:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productCategory}
-              onChange={(e) => setProductCategory(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Price:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productPrice}
-              onChange={(e) => setProductPrice(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-start gap-4">
-            <label className="w-[160px] font-semibold">
-              Product Description:
-            </label>
-            <textarea
-              rows="5"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
-              value={productDescription}
-              onChange={(e) => setProductDescription(e.target.value)}
-            />
-          </div>
-        </div> */}
                     <div className="space-y-4">
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Name:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#F5FFFF] border border-[#007E74] text-[#0D2E28] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
                                 value={productName}
                                 onChange={(e) => setProductName(e.target.value)}
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product For:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#F5FFFF] border border-[#007E74] text-[#0D2E28] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
                                 value={productCategory}
                                 onChange={(e) => setProductCategory(e.target.value)}
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Price:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#F5FFFF] border border-[#007E74] text-[#0D2E28] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
                                 value={productPrice}
                                 onChange={(e) => setProductPrice(e.target.value)}
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Description:
                             </label>
                             <textarea
                                 rows="5"
-                                className="bg-[#F5FFFF] border border-[#007E74] text-[#0D2E28] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
+                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
                                 value={productDescription}
                                 onChange={(e) => setProductDescription(e.target.value)}
                             />
@@ -189,14 +149,14 @@ const SmallProductEdit = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
-                    <button 
-                    onClick={() => navigate(-1)}
-                    className="w-[200px] bg-[#D9F1EB] text-[#007E74] font-medium border border-[#007E74] px-10 py-2 rounded-lg">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="w-[200px] bg-[#CED4F2] text-[#001580] font-medium border border-[#001580] px-10 py-2 rounded-lg">
                         Cancel
                     </button>
-                    <button 
-                    onClick={() => navigate(-1)}
-                    className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg">
                         Update
                     </button>
                 </div>
