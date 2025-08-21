@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";  // Import this hook
 
 
 
-export default function AddCommission() {
+export default function ViewCommission() {
     const navigate = useNavigate(); 
   
   return (
@@ -17,7 +17,7 @@ export default function AddCommission() {
             <button className="text-gray-600 hover:text-gray-800 mr-3">
               <IoArrowBackCircleOutline size={30} onClick={()=> navigate (-1) }  /> 
             </button>
-            <h2 className="text-lg font-medium text-gray-800">Add Commission</h2>
+            <h2 className="text-lg font-medium text-gray-800">Add Commission Details </h2>
           </div>
         </div>
 
