@@ -3,7 +3,7 @@ import { FiEye } from 'react-icons/fi';
 
 const DashboardTable = ({ title, headers, data, actionLink }) => {
   return (
-    <div className="bg-white shadow-md rounded-md p-4 w-full border border-[#616666]">
+    <div className="bg-white shadow-md rounded-md p-4 w-full border border-[#616666] font-myfont">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-md font-bold">{title}</h3>
         <a href="/" className="text-teal-600 text-sm hover:underline">

@@ -350,7 +350,7 @@ function ShopAdd() {
                                     textTransform: "none",
                                 }}
                             >
-                                Add Worker
+                                Add Shop
                             </Button>
                         </Box>
                     </form>

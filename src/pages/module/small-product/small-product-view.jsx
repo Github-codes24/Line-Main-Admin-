@@ -61,9 +61,9 @@ const SmallProductView = () => {
             <div className="border rounded-xl p-4 shadow-md bg-white">
                 <div className="border border-black p-6 rounded-lg">
                     {/* Product Image */}
-                    <div className="flex gap-6 mb-6">
-                        <label className="w-[240px] font-medium text-lg text-[#0D2E28]">Product Image:</label>
-                        <div className="border border-[#007E74] rounded-3xl p-3 w-[240px] h-[240px] flex items-center justify-center">
+                    <div className="flex gap-4 mb-6">
+                        <label className="min-w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                        <div className="border border-[#001580] rounded-3xl p-3 w-[240px] h-[240px] flex items-center justify-center">
                             <img
                                 src={viewBig}
                                 alt="Product"
@@ -74,50 +74,58 @@ const SmallProductView = () => {
 
                     <div className="space-y-4">
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Name:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E0E9E9] border border-[#007E74] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productName}
                                 onChange={(e) => setProductName(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product For:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E0E9E9] border border-[#007E74] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productCategory}
                                 onChange={(e) => setProductCategory(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Price:
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E0E9E9] border border-[#007E74] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={productPrice}
                                 onChange={(e) => setProductPrice(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                 Product Description:
                             </label>
                             <textarea
                                 rows="5"
-                                className="bg-[#E0E9E9] border border-[#007E74] text-[#0D2E28] text-lg  font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg  font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
                                 value={productDescription}
                                 onChange={(e) => setProductDescription(e.target.value)}
+                                readOnly
+                                disabled
                             />
                         </div>
                     </div>
@@ -127,7 +135,7 @@ const SmallProductView = () => {
                 <div className="flex justify-center mt-6 gap-4">
                     <button 
                     onClick={() => navigate("/admin/smallproduct/small-product-edit/:id")}
-                    className="w-[200px] bg-[#007E74] text-white font-medium px-10 py-2 rounded-lg">
+                    className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg">
                         Edit
                     </button>
                 </div>

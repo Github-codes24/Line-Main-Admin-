@@ -10,6 +10,9 @@ import {
   BigProductIcon,
   OrderIcon,
   PaymentIcon,
+  SetCommision,
+  SetCharges,
+  SetLimit,
 } from "../../assets/CommonAssets";
 import { useNavigate } from "react-router-dom";
 
@@ -63,18 +66,18 @@ function Sidebar({ activeTab, setActiveTab }) {
       path: "/admin/payment",
     },
     {
-      icon: (color) => <BigProductIcon color={color} />,
-      title: "Big Product Approve",
-      path: "/admin/bigproduct/approve/1", // demo id (so sidebar link works)
+      icon: (color) => <SetCommision color={color} />,
+      title: "Set Commission",
+      path: "/admin/bigproduct/approve/1", // demo id
     },
     {
-      icon: (color) => <OrderIcon color={color} />,
-      title: "List Order",
+      icon: (color) => <SetCharges color={color} />,
+      title: "Set Charges Of Worker",
       path: "/admin/order/list",
     },
     {
-      icon: (color) => <OrderIcon color={color} />,
-      title: "Progress Order",
+      icon: (color) => <SetLimit color={color} />,
+      title: "Set Limit Amount",
       path: "/admin/order/progress/1", // demo id
     },
   ];
@@ -85,6 +88,7 @@ function Sidebar({ activeTab, setActiveTab }) {
         width: "270px",
         minWidth: "270px",
         maxWidth: "270px",
+        font:"myfont",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
@@ -116,7 +120,6 @@ function Sidebar({ activeTab, setActiveTab }) {
               boxSizing: "border-box",
               background,
               cursor: "pointer",
-              font:"Poppins",
             }}
             onClick={() => {
               setActiveTab(content.path);
