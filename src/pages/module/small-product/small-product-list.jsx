@@ -27,6 +27,7 @@ export default function SmallProductList({ productId }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [activeFilters, setActiveFilters] = useState([]);
     const [showFilterPanel, setShowFilterPanel] = useState(false);
+    const [showDeletePanel, setShowDeletePanel] = useState(false);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -48,6 +49,11 @@ export default function SmallProductList({ productId }) {
         setActiveFilters((prev) =>
             prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]
         );
+    };
+
+    const handleDelete = () => {
+        console.log("Item deleted!");
+        setShowDeletePanel(false);
     };
 
     // Apply filters and search
@@ -202,7 +208,34 @@ export default function SmallProductList({ productId }) {
                                             </svg>
                                         </button>
                                         <button>
-                                            <Trash2 className="text-red-600" size={20} />
+                                            <Trash2 className="text-red-600" size={20} onClick={() => setShowDeletePanel(true)} />
+
+                                            {/* Delete Confirmation Panel */}
+                                            {showDeletePanel && (
+                                                <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-0 z-50">
+                                                    <div className="bg-white rounded-2xl shadow-md p-10 w-[496px] h-[264px] text-center">
+                                                        <h2 className="text-[#001580] text-2xl font-bold mb-6">Delete Item</h2>
+                                                        <p className="text-[#616666] text-xl mb-8 px-8">
+                                                            Are you sure you want to delete this item? This action cannot be undone.
+                                                        </p>
+
+                                                        <div className="flex justify-center gap-4">
+                                                            <button
+                                                                onClick={() => setShowDeletePanel(false)}
+                                                                className="w-[200px] border border-[#001580] text-[#001580] font-medium px-4 py-2 rounded-lg bg-[#CECEF2]"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                            <button
+                                                                onClick={handleDelete}
+                                                                className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg hover:bg-[#001580]"
+                                                            >
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </button>
                                     </td>
                                 </tr>
