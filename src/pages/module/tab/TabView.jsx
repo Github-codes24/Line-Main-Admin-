@@ -25,7 +25,7 @@ const TabView = () => {
       </div>
 
       {/* Form Card */}
-      <div className="bg-white shadow-xl rounded-lg p-6 mt-4 border-2 h-[78%] ">
+      <div className="bg-white shadow-xl rounded-lg p-6 mt-4 border-2 h-[78%] border-[#001580]">
         {/* Tab Name */}
         <div className="mb-4 flex items-center ">
           <label className="w-32 font-medium text-black ">Tab Name:</label>
@@ -33,7 +33,7 @@ const TabView = () => {
             type="text"
             value="Plumbing"
             disabled
-            className="flex-1 p-2 rounded  text-black border-2 border-teal-600 bg-[#E0E9E9] "
+            className="flex-1 p-2 rounded  text-black border-2 border-[#001580] bg-[#E4E5EB] "
           />
         </div>
 
@@ -45,13 +45,13 @@ const TabView = () => {
               type="text"
               value="Plumber"
               disabled
-              className="w-full p-2  rounded  text-black border-2 bg-[#E0E9E9] border-teal-600"
+              className="w-full p-2  rounded  text-black border-2 bg-[#E4E5EB] border-[#001580]"
             />
             <input
               type="text"
               value="Tank Cleaner"
               disabled
-              className="w-full p-2  rounded   text-black border-2 bg-[#E0E9E9] border-teal-600"
+              className="w-full p-2  rounded   text-black border-2 bg-[#E4E5EB] border-[#001580]"
             />
           </div>
         </div>
@@ -60,7 +60,7 @@ const TabView = () => {
         
       </div>
       <div className="flex justify-center p-4 ">
-          <button className="bg-teal-700 hover:bg-teal-800 text-white px-6 py-1 rounded">
+          <button className="bg-[#001580] hover:bg-[#001580] text-white px-6 py-1 rounded">
             Edit
           </button>
         </div>

@@ -221,15 +221,15 @@ function Sidebar({ activeTab, setActiveTab }) {
         gap: "10px",
         overflowY: "auto",
         scrollbarWidth: "none",
-        backgroundColor: "#19A699",
+        backgroundColor: "#3D55CC",
         padding: "16px",
         boxSizing: "border-box",
       }}
     >
       {sideBarContent.map((content, index) => {
         const selectedMenu = activeTab === content.path;
-        const background = selectedMenu ? "#007E74" : "#ffffff";
-        const color = selectedMenu ? "white" : "#007E74";
+        const background = selectedMenu ? "#001580" : "#ffffff";
+        const color = selectedMenu ? "white" : "#001580";
 
         return (
           <Box

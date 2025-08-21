@@ -52,7 +52,7 @@ const TabAdd = () => {
       {/* Form */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white border-2 rounded-lg shadow-xl p-6 space-y-6 h-[78%]"
+        className="bg-white border-2 rounded-lg shadow-xl p-6 space-y-6 h-[78%] border-[#3D55CC]"
       >
         {/* Tab Name */}
         <div className="flex items-center gap-3">
@@ -62,7 +62,7 @@ const TabAdd = () => {
             value={tabName}
             onChange={(e) => setTabName(e.target.value)}
             placeholder="Enter Tab Name"
-            className="flex-1 border-2  rounded-md px-3 py-2  border-teal-600  placeholder:text-black "
+            className="flex-1 border-2  rounded-md px-3 py-2  border-[#001580]  bg-[#CED4F2] placeholder:text-black "
           />
         </div>
 
@@ -72,19 +72,22 @@ const TabAdd = () => {
             <label className="w-1/4 font-medium">
               {index === 0 ? "Sub Tab Name:" : ""}
             </label>
-            <input
-              type="text"
-              value={sub.name}
-              onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
-              placeholder="Enter Sub Tab Name"
-              className="flex-1  rounded-md px-3 py-2 outline-none border-2 border-teal-600 placeholder:text-black "
-            />
-            {subTabs.length > 1 && (
-              <X
-                onClick={() => handleRemoveSubTab(sub.id)}
-                className="w-5 h-5 text-black cursor-pointer"
-              />
-            )}
+            <div className="relative flex-1">
+  <input
+    type="text"
+    value={sub.name}
+    onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
+    placeholder="Enter Sub Tab Name"
+    className="w-full rounded-md px-3 py-2 pr-8 outline-none border-2 bg-[#CED4F2] border-[#001580] placeholder:text-black"
+  />
+  {subTabs.length > 1 && (
+    <X
+      onClick={() => handleRemoveSubTab(sub.id)}
+      className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-black cursor-pointer"
+    />
+  )}
+</div>
+
           </div>
         ))}
 
@@ -92,7 +95,7 @@ const TabAdd = () => {
         <button
           type="button"
           onClick={handleAddSubTab}
-          className="text-m text-teal-700 hover:underline ml-[85%]"
+          className="text-m text-[#001580] hover:underline ml-[85%]"
         >
           + Add More Sub Tab
         </button>
@@ -104,13 +107,13 @@ const TabAdd = () => {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-[#E6F4F1] text-[#007E74] px-6 py-2 rounded border border-[#007E74] hover:bg-[#d0ebe7]"
+            className="bg-[#CED4F2] text-[#001580] px-6 py-2 rounded border border-[#001580] hover:bg-[#d0ebe7]"
           >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-[#007E74] text-white px-6 py-2 rounded hover:bg-[#005e56]"
+            className="bg-[#001580] text-white px-6 py-2 rounded hover:bg-[#001580]"
           >
             Add Tab
           </button>

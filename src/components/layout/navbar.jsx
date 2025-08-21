@@ -59,14 +59,14 @@ function Navbar() {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                background: "#F5FFFF",
+                background: "#CED4F2",
                 boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",
                 position: "sticky",
                 top: 0,
                 zIndex: 10,
             }}
         >
-            <Typography color="#007E74" fontWeight={700} fontSize={"28px"}>
+            <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
                 LineMan Logo
             </Typography>
 
