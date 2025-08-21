@@ -6,6 +6,7 @@ import {useNavigate, useLocation} from "react-router-dom";
 function WorkerView() {
     const navigate = useNavigate();
     const {state} = useLocation(); // Get worker data passed from WorkerList
+    const worker = state?.worker;
 
     // If no state (user opened page directly), handle gracefully
     if (!state) {
@@ -51,7 +52,7 @@ function WorkerView() {
                                         type="text"
                                         value={state.name || ""}
                                         variant="outlined"
-                                        sx={{background: "#F5FFFF"}}
+                                        sx={{background: "#CED4F2"}}
                                         InputProps={{readOnly: true}}
                                     />
                                 </Box>
@@ -68,7 +69,7 @@ function WorkerView() {
                                         type="text"
                                         value={state.expertise || ""}
                                         variant="outlined"
-                                        sx={{background: "#F5FFFF"}}
+                                        sx={{background: "#CED4F2"}}
                                         InputProps={{readOnly: true}}
                                     />
                                 </Box>
@@ -85,7 +86,7 @@ function WorkerView() {
                                         type="text"
                                         value={state.contact || ""}
                                         variant="outlined"
-                                        sx={{background: "#F5FFFF"}}
+                                        sx={{background: "#CED4F2"}}
                                         InputProps={{readOnly: true}}
                                     />
                                 </Box>
@@ -102,14 +103,54 @@ function WorkerView() {
                                         type="text"
                                         value={state.address || ""}
                                         variant="outlined"
-                                        sx={{background: "#F5FFFF"}}
+                                        sx={{background: "#CED4F2"}}
                                         InputProps={{readOnly: true}}
                                     />
                                 </Box>
                             </Box>
+
+                            {/* Aadhaar Number */}
+                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                                <Box sx={{display: "flex", alignItems: "center"}}>
+                                    <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
+                                </Box>
+                                <Box sx={{gridColumn: "span 2"}}>
+                                    <TextField
+                                        fullWidth
+                                        type="text"
+                                        value={state.aadhaarNumber || ""}
+                                        variant="outlined"
+                                        sx={{background: "#CED4F2"}}
+                                        InputProps={{readOnly: true}}
+                                    />
+                                </Box>
+                            </Box>
+
+                            {/* Aadhaar Card Image */}
+                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
+                                <Box sx={{display: "flex", alignItems: "center"}}>
+                                    <Typography sx={{fontWeight: 500}}>Aadhaar Card Image:</Typography>
+                                </Box>
+                                <Box sx={{gridColumn: "span 2"}}>
+                                    {state.aadhaarImage ? (
+                                        <img
+                                            src={state.aadhaarImage}
+                                            alt="Aadhaar Card"
+                                            style={{
+                                                width: "200px",
+                                                height: "120px",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ccc",
+                                            }}
+                                        />
+                                    ) : (
+                                        <Typography>No Aadhaar image available</Typography>
+                                    )}
+                                </Box>
+                            </Box>
                         </Box>
 
-                        {/* Edit Button */}
+                        {/* Action Buttons (Active/Inactive + Edit) */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -119,16 +160,30 @@ function WorkerView() {
                                 gap: "10px",
                             }}
                         >
+                            {/* Toggle Status Button */}
                             <Button
-                                variant="outlined"
+                                variant="contained"
                                 sx={{
-                                    background: "#007E74",
-                                    color: "#ffffff",
+                                    background: state.status === "Active" ? "#CECEF2" : "#D1F2CE",
+                                    color: state.status === "Active" ? "#001580" : "#006400",
                                     paddingX: 4,
                                     paddingY: "2px",
                                     textTransform: "none",
                                 }}
-                                onClick={() => navigate("/admin/workermanagement/workeredit", {state})}
+                                onClick={() => {
+                                    const newStatus = state.status === "Active" ? "Inactive" : "Active";
+                                    alert(`Worker marked as ${newStatus}`);
+                                    // TODO: Update worker status via API or state management
+                                }}
+                            >
+                                {state.status === "Active" ? "Inactive" : "Active"}
+                            </Button>
+
+                            {/* Edit Button */}
+                            <Button
+                                variant="outlined"
+                                sx={{background: "#001580", color: "#FFFFFF", px: 4}}
+                                onClick={() => navigate("/admin/workermanagement/workeredit", {state: {worker}})} // ✅ pass worker data
                             >
                                 Edit
                             </Button>

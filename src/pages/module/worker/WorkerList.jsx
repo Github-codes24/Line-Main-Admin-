@@ -39,6 +39,8 @@ function WorkerList() {
             contact: "ravi.kumar@gmail.com / +91-9876543210",
             address: "Banjara Hills, Hyderabad, Telangana",
             status: "Active",
+            aadhaarNumber: "123456789101",
+            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Ravi",
         },
         {
             name: "Anjali Mehta",
@@ -46,6 +48,8 @@ function WorkerList() {
             contact: "anjali.mehta@yahoo.com / +91-9123456789",
             address: "Sector 22, Noida, Uttar Pradesh",
             status: "Active",
+            aadhaarNumber: "234567891012",
+            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Anjali",
         },
         {
             name: "Sunil Sharma",
@@ -53,6 +57,8 @@ function WorkerList() {
             contact: "sunil.sharma@outlook.com / +91-9988776655",
             address: "MG Road, Pune, Maharashtra",
             status: "Active",
+            aadhaarNumber: "345678910123",
+            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Sunil",
         },
         {
             name: "Preeti Verma",
@@ -60,6 +66,8 @@ function WorkerList() {
             contact: "preeti.verma@gmail.com / +91-8765432109",
             address: "Indiranagar, Bengaluru, Karnataka",
             status: "Active",
+            aadhaarNumber: "456789101234",
+            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Preeti",
         },
         {
             name: "Amit Das",
@@ -67,6 +75,8 @@ function WorkerList() {
             contact: "amit.das@hotmail.com / +91-8899776655",
             address: "Salt Lake, Kolkata, West Bengal",
             status: "Inactive",
+            aadhaarNumber: "567891012345",
+            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Amit",
         },
     ];
 
@@ -88,7 +98,6 @@ function WorkerList() {
 
     const open = Boolean(anchorEl);
 
-    // ✅ Combined search + filter logic
     const filteredWorkers = workerData.filter((worker) => {
         const matchesSearch =
             searchText.trim() === "" ||
@@ -132,7 +141,6 @@ function WorkerList() {
                                 <FilterIcon />
                             </Box>
 
-                            {/* Applied Filters Display */}
                             <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
                                 {appliedFilters.map((filter, index) => (
                                     <Chip
@@ -145,7 +153,6 @@ function WorkerList() {
                                 ))}
                             </Box>
 
-                            {/* Filter Options Popover */}
                             <Popover
                                 open={open}
                                 anchorEl={anchorEl}
@@ -181,9 +188,9 @@ function WorkerList() {
                             onClick={handleResetFilters}
                             sx={{
                                 marginTop: 1,
-                                borderColor: "#007E74",
-                                color: "#007E74",
-                                background: "#D9F1EB",
+                                borderColor: "#001580",
+                                color: "#001580",
+                                background: "#CECEF2",
                                 paddingX: 4,
                                 paddingY: "2px",
                                 textTransform: "none",
@@ -237,8 +244,9 @@ function WorkerList() {
                                         <TableCell
                                             sx={{
                                                 borderBottom: "none",
-                                                color: item.status === "Active" ? "green" : "red",
-                                                fontWeight: 600,
+                                                color: item.status === "Active" ? "#34C759" : "#FF383C",
+                                                fontWeight: 400,
+                                                fontSize: "16px",
                                             }}
                                         >
                                             {item.status}
