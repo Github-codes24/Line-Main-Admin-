@@ -1,23 +1,22 @@
 import React from "react";
-import "./index.css";
-import EditTab from "./pages/module/tab/tab-edit";
-import TabOfList from "./pages/module/tab/tab-list";
-import AddTab from "./pages/module/tab/tab-add";
-import ViewTab from "./pages/module/tab/tab-view";
-import ProductList from "./pages/module/small-product/small-product-list";
+import { Routes, Route } from 'react-router-dom';import "./index.css";
+import CommissionList from "./pages/module/set-commission/commmission-list";
+import AddCommission from './pages/module/set-commission/add-commission';
+import ViewCommission from "./pages/module/set-commission/view-commission";
+import EditCommission from "./pages/module/set-commission/edit-commission";
+
 
 
 function App() {
   return (
-    <>
-      <div>
-        <TabOfList />
-        <AddTab />
-        <EditTab />
-        <ViewTab />
-        {/* <ProductList/> */}
-      </div>
-    </>
+    <Routes>
+      <Route path="" element={<CommissionList />} />
+      <Route path="/add-commission" element={<AddCommission />} />
+      <Route path="/view-commission" element={<ViewCommission />} />
+      <Route path="/edit-commission" element={<EditCommission />} />
+
+
+    </Routes>
   );
 }
 
