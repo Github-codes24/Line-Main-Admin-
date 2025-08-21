@@ -71,50 +71,7 @@ const BigProductApprove = () => {
           </div>
         </div>
 
-        {/* Editable Fields */}
-        {/* <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Name:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Category:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productCategory}
-              onChange={(e) => setProductCategory(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-center gap-4">
-            <label className="w-[160px] font-semibold">Product Price:</label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
-              value={productPrice}
-              onChange={(e) => setProductPrice(e.target.value)}
-            />
-          </div>
-
-          <div className="flex items-start gap-4">
-            <label className="w-[160px] font-semibold">
-              Product Description:
-            </label>
-            <textarea
-              rows="5"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
-              value={productDescription}
-              onChange={(e) => setProductDescription(e.target.value)}
-            />
-          </div>
-        </div> */}
+      
         <div className="space-y-4">
           <div className="flex items-start gap-4">
             <label className="min-w-[160px] font-semibold pt-2">
