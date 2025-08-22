@@ -32,11 +32,12 @@ const TabAdd = () => {
     e.preventDefault();
     console.log("Tab Name:", tabName);
     console.log("Sub Tabs:", subTabs);
+    navigate("/admin/tabmanagement");
     // TODO: API call or form handling
   };
 
   return (
-    <div className="flex flex-col bg-[#F9FAFA] font-medium text-[#0D2E28] p-4 h-full">
+    <div className="flex flex-col bg-[#F9FAFA] font-medium text-[#0D2E28] p-4 h-full font-[Poppins]">
       {/* Header */}
       <div className="flex items-center bg-white border rounded-lg shadow-xl p-3 mb-4">
         <img
@@ -114,6 +115,7 @@ const TabAdd = () => {
           <button
             type="submit"
             className="bg-[#001580] text-white px-6 py-2 rounded hover:bg-[#001580]"
+            onClick={handleSubmit}
           >
             Add Tab
           </button>

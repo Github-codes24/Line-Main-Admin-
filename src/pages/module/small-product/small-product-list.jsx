@@ -86,7 +86,7 @@ export default function SmallProductList({ productId }) {
     };
 
     return (
-        <div className="p-2">
+        <div className="p-2 font-[Poppins]">
             {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white p-4 rounded-lg shadow">
                 <h2 className="text-2xl font-medium">Small Product List</h2>
@@ -111,8 +111,8 @@ export default function SmallProductList({ productId }) {
                 </div>
 
                 <button
-                    onClick={() => navigate("/admin/smallproduct/small-product-add")}
-                    className="w-[200px] bg-[#001580] text-white font-medium px-6 py-2 rounded-lg"
+                    onClick={() => navigate("/admin/smallproduct/add")}
+                    className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg"
                 >
                     + Add New Product
                 </button>
@@ -136,7 +136,7 @@ export default function SmallProductList({ productId }) {
                     </svg>
 
                     {showFilterPanel && (
-                        <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-64 border border-gray-300 z-50">
+                        <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-70 border border-gray-300 z-50">
                             <div className="flex justify-between items-center mb-4">
                                 <h3 className="text-lg font-semibold text-gray-800">Expertise</h3>
                                 <button onClick={() => setShowFilterPanel(false)} className="text-gray-600 hover:text-gray-800 text-2xl">
@@ -198,10 +198,10 @@ export default function SmallProductList({ productId }) {
                                     <td className="p-3">{product.category}</td>
                                     <td className="p-3">{product.price}</td>
                                     <td className="p-3 space-x-2">
-                                        <button onClick={() => navigate("/admin/smallproduct/small-product-view")}>
+                                        <button onClick={() => navigate(`/admin/smallproduct/view/${product.id}`)}>
                                             <Eye className="text-red-600" size={20} />
                                         </button>
-                                        <button onClick={() => navigate(`/admin/smallproduct/small-product-edit/${productId}`)}>
+                                        <button onClick={() => navigate(`/admin/smallproduct/edit/${product.id}`)}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none">
                                                 <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="#EC2D01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                                                 <path d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z" stroke="#EC2D01" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -215,7 +215,7 @@ export default function SmallProductList({ productId }) {
                                                 <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-0 z-50">
                                                     <div className="bg-white rounded-2xl shadow-md p-10 w-[496px] h-[264px] text-center">
                                                         <h2 className="text-[#001580] text-2xl font-bold mb-6">Delete Item</h2>
-                                                        <p className="text-[#616666] text-xl mb-8 px-8">
+                                                        <p className="text-[#616666] text-xl mb-8 px-6">
                                                             Are you sure you want to delete this item? This action cannot be undone.
                                                         </p>
 
