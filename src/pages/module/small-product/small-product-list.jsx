@@ -88,8 +88,8 @@ export default function SmallProductList({ productId }) {
     return (
         <div className="p-2 font-[Poppins]">
             {/* Header */}
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white p-4 rounded-lg shadow">
-                <h2 className="text-2xl font-medium">Small Product List</h2>
+            <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
+                <h2 className="text-xl font-medium">Small Product List</h2>
 
                 <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
                     <input
