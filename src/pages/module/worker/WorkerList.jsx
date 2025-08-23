@@ -119,8 +119,9 @@ function WorkerList() {
                 searchValue={searchText}
                 setSearchValue={setSearchText}
                 buttonText="Add New Worker"
-                btnpath="/admin/workermanagement/workeradd"
+                btnpath="/admin/workermanagement/add"
             />
+
             <Card>
                 <CardHeader
                     sx={{paddingX: 3}}
@@ -259,20 +260,27 @@ function WorkerList() {
                                                 borderBottom: "none",
                                             }}
                                         >
+                                            {/* View Button */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate("/admin/workermanagement/workerview", {state: item})
+                                                    navigate(`/admin/workermanagement/view/${index + 1}`, {state: item})
                                                 }
                                             >
                                                 <ViewIcon />
                                             </IconButton>
+
+                                            {/* Edit Button */}
                                             <IconButton
                                                 size="small"
-                                                onClick={() => navigate("/admin/workermanagement/workeredit")}
+                                                onClick={() =>
+                                                    navigate(`/admin/workermanagement/edit/${index + 1}`, {state: item})
+                                                }
                                             >
                                                 <EditIcon />
                                             </IconButton>
+
+                                            {/* Delete Button */}
                                             <IconButton size="small">
                                                 <DeleteIcon />
                                             </IconButton>

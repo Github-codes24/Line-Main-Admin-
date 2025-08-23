@@ -1,7 +1,7 @@
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {BrowserRouter, Navigate, Route, Routes, useLocation} from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
-import React from "react";
+import React, {useEffect} from "react";
 
 // Pages
 import Dashboard from "./pages/dashbaord";
@@ -54,299 +54,314 @@ import RejectOrder from "./pages/module/order/reject-order";
 import PaymentList from "./pages/module/payment/paymentList";
 import Payment from "./pages/module/payment/payment";
 
+// Layout wrapper so you don’t repeat AdminLayout for every route
+function AdminRoute({children, activeTab, setActiveTab}) {
+    const location = useLocation();
+
+    useEffect(() => {
+        setActiveTab(location.pathname); // update active tab automatically
+    }, [location.pathname, setActiveTab]);
+
+    return (
+        <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+            {children}
+        </AdminLayout>
+    );
+}
+
 function App() {
-  const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
+    const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
 
-  return (
-    <BrowserRouter>
-      <Routes>
-        {/* Default Redirect */}
-        <Route path="/" element={<Navigate to="/admin/dashboard" />} />
+    return (
+        <BrowserRouter>
+            <Routes>
+                {/* Default Redirect */}
+                <Route path="/" element={<Navigate to="/admin/dashboard" />} />
 
-        {/* Dashboard */}
-        <Route
-          path="/admin/dashboard"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <Dashboard />
-            </AdminLayout>
-          }
-        />
+                {/* Dashboard */}
+                <Route
+                    path="/admin/dashboard"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <Dashboard />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Customer Routes */}
-        <Route
-          path="/admin/customermanagement"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <CustomerList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/customermanagement/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <CustomerAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/customermanagement/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <CustomerView />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/customermanagement/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <CustomerEdit />
-            </AdminLayout>
-          }
-        />
+                {/* Customer Routes */}
+                <Route
+                    path="/admin/customermanagement"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CustomerList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/customermanagement/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CustomerAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/customermanagement/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CustomerView />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/customermanagement/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CustomerEdit />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Worker Routes */}
-        <Route
-          path="/admin/workermanagement"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <WorkerList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/workermanagement/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <WorkerAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/workermanagement/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <WorkerView />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/workermanagement/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <WorkerEdit />
-            </AdminLayout>
-          }
-        />
+                {/* Worker Routes */}
+                <Route
+                    path="/admin/workermanagement"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <WorkerList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/workermanagement/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <WorkerAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/workermanagement/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <WorkerView />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/workermanagement/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <WorkerEdit />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Shop Routes */}
-        <Route
-          path="/admin/shopmanagement"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ShopList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/shopmanagement/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ShopAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/shopmanagement/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ShopView />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/shopmanagement/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ShopEdit />
-            </AdminLayout>
-          }
-        />
+                {/* Shop Routes */}
+                <Route
+                    path="/admin/shopmanagement"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ShopList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/shopmanagement/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ShopAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/shopmanagement/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ShopView />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/shopmanagement/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ShopEdit />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Tab Routes */}
-        <Route
-          path="/admin/tabmanagement"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <TabList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/tabmanagement/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <TabAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/tabmanagement/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <TabEdit />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/tabmanagement/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <TabView />
-            </AdminLayout>
-          }
-        />
+                {/* Tab Routes */}
+                <Route
+                    path="/admin/tabmanagement"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/tabmanagement/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/tabmanagement/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabEdit />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/tabmanagement/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <TabView />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Small Product Routes */}
-        <Route
-          path="/admin/smallproduct"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/smallproduct/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/smallproduct/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductEdit />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/smallproduct/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <SmallProductView />
-            </AdminLayout>
-          }
-        />
+                {/* Small Product Routes */}
+                <Route
+                    path="/admin/smallproduct"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <SmallProductList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/smallproduct/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <SmallProductAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/smallproduct/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <SmallProductEdit />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/smallproduct/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <SmallProductView />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Big Product Routes */}
-        <Route
-          path="/admin/bigproduct"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <BigProductList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/bigproduct/add"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <BigProductAdd />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/bigproduct/view/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <BigProductView />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/bigproduct/edit/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <BigProductEdit />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/bigproduct/approve/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <BigProductApprove />
-            </AdminLayout>
-          }
-        />
+                {/* Big Product Routes */}
+                <Route
+                    path="/admin/bigproduct"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/bigproduct/add"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductAdd />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/bigproduct/view/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductView />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/bigproduct/edit/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductEdit />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/bigproduct/approve/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <BigProductApprove />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Order Routes */}
-        <Route
-          path="/admin/order/list"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ListOrder />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/order/pending/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <PendingOrder />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/order/progress/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <ProgressOrder />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/order/complete/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <CompleteOrder />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/order/reject/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <RejectOrder />
-            </AdminLayout>
-          }
-        />
+                {/* Order Routes */}
+                <Route
+                    path="/admin/order/list"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ListOrder />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/order/pending/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <PendingOrder />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/order/progress/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <ProgressOrder />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/order/complete/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <CompleteOrder />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/order/reject/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <RejectOrder />
+                        </AdminRoute>
+                    }
+                />
 
-        {/* Payment Routes */}
-        <Route
-          path="/admin/payment"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <PaymentList />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/payment/details/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <Payment />
-            </AdminLayout>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
-  );
+                {/* Payment Routes */}
+                <Route
+                    path="/admin/payment"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <PaymentList />
+                        </AdminRoute>
+                    }
+                />
+                <Route
+                    path="/admin/payment/details/:id"
+                    element={
+                        <AdminRoute activeTab={activeTab} setActiveTab={setActiveTab}>
+                            <Payment />
+                        </AdminRoute>
+                    }
+                />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default App;
