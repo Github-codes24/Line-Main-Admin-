@@ -1,18 +1,19 @@
 // TabView.jsx
 import React from "react";
 
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 
 const TabView = () => {
  const navigate = useNavigate();
+ const { id } = useParams();
 
    const handleBack = () => {
     navigate("/admin/tabmanagement"); // adjust route as per your setup
   };
 
   return (
-    <div className=" bg-gray-50 p-4 h-full">
+    <div className=" bg-gray-50 p-4 h-full font-[Poppins]">
       {/* Header */}
       <div className="bg-white shadow-xl rounded-xl p-3 flex items-center gap-2 border-2">
              <img
@@ -60,7 +61,9 @@ const TabView = () => {
         
       </div>
       <div className="flex justify-center p-4 ">
-          <button className="bg-[#001580] hover:bg-[#001580] text-white px-6 py-1 rounded">
+          <button 
+          onClick={() => navigate(`/admin/tabmanagement/edit/${id}`)} 
+          className="bg-[#001580] hover:bg-[#001580] text-white px-6 py-1 rounded">
             Edit
           </button>
         </div>

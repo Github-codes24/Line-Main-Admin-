@@ -13,12 +13,12 @@ const tabs = [
 const TabList = () => {
   const navigate = useNavigate();
 
-  const handleEdit = () => navigate("/admin/tabmanagement/tabedit");
-  const handleView = () => navigate("/admin/tabmanagement/tabview");
-  const handleAdd = () => navigate("/admin/tabmanagement/tabadd");
+  const handleEdit = (id) => navigate(`/admin/tabmanagement/edit/${id}`);
+  const handleView = (id) => navigate(`/admin/tabmanagement/view/${id}`);
+  const handleAdd = () => navigate("/admin/tabmanagement/add");
 
   return (
-    <div className="flex bg-[#E0E9E9] font-medium min-h-screen h-full">
+    <div className="flex bg-[#E0E9E9] font-medium min-h-screen h-full font-[Poppins]">
       <main className="flex-1 p-3 gap-2">
         {/* Header */}
         <div className="flex justify-between items-center mb-4 shadow-xl bg-white h-70 border rounded-xl p-2  ">
@@ -61,11 +61,11 @@ const TabList = () => {
                   <td className="p-2">{tab.subTabs}</td>
                   <td className="p-2 flex gap-2 text-gray-700">
                     <Eye
-                      onClick={handleView}
+                      onClick={() => handleView(tab.id)}
                       className="w-4 h-4 cursor-pointer text-red-600"
                     />
                     <Pencil
-                      onClick={handleEdit}
+                      onClick={() => handleEdit(tab.id)}
                       className="w-4 h-4 cursor-pointer text-red-600"
                     />
                     <Trash2 className="w-4 h-4 cursor-pointer text-red-600" />
