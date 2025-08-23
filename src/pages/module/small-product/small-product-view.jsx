@@ -1,9 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import viewBig from "../../../assets/images/viewBigImage.png";
 
 const SmallProductView = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
+    console.log("Product ID:", id); 
 
     // Initial values (can be fetched from API later)
     // const [productImage] = useState(
@@ -17,7 +19,7 @@ const SmallProductView = () => {
     );
 
     return (
-        <div className="p-2">
+        <div className="p-2 font-[Poppins]">
             {/* Back Button and Heading */}
             <div className="flex items-center mb-4 bg-white rounded-lg shadow-md p-4">
                 <button
@@ -54,7 +56,7 @@ const SmallProductView = () => {
                         ></path>
                     </svg>
                 </button>
-                <h1 className="ml-4 text-xl font-semibold">View Small Product</h1>
+                <h1 className="ml-4 text-xl font-medium">View Small Product</h1>
             </div>
 
             {/* Left-aligned product view box */}
@@ -134,7 +136,7 @@ const SmallProductView = () => {
                 {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
                     <button 
-                    onClick={() => navigate("/admin/smallproduct/small-product-edit/:id")}
+                    onClick={() => navigate(`/admin/smallproduct/edit/${id}`)}
                     className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg">
                         Edit
                     </button>
