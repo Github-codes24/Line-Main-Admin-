@@ -58,7 +58,7 @@ function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
 
   return (
-    <BrowserRouter>
+    
       <Routes>
         {/* Default Redirect */}
         <Route path="/" element={<Navigate to="/admin/dashboard" />} />
@@ -345,7 +345,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+  
   );
 }
 
