@@ -1,7 +1,7 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
-import React, {useEffect} from "react";
+import React, {useEffect, useLocation} from "react";
 
 // Pages
 import Dashboard from "./pages/dashbaord";
