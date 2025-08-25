@@ -1,19 +1,19 @@
 import React, {useState, useRef} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import editBig from "../../../assets/images/editBigImage.png";
 
 const BigProductEdit = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const fileInputRef = useRef(null);
+    const {state} = useLocation();
 
-    const [productImage, setProductImage] = useState("/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png");
-    const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
-    const [productCategory, setProductCategory] = useState("Electrician");
-    const [productPrice, setProductPrice] = useState("₹499");
-    const [productDescription, setProductDescription] = useState(
-        "Lorem ipsum dolor sit amet consectetur. Dolor pulvinar aliquet donec in auctor ultrices nunc. In ut ipsum varius egestas dolor senectus. Posuere ut urna ac aliquam. Et tellus consequat consectetur ornare massa augue. Odio mauris."
-    );
+    // ✅ Use data from state if available
+    const [productImage, setProductImage] = useState(state?.image || editBig);
+    const [productName, setProductName] = useState(state?.name || "");
+    const [productCategory, setProductCategory] = useState(state?.category || "");
+    const [productPrice, setProductPrice] = useState(state?.price || "");
+    const [productDescription, setProductDescription] = useState(state?.description || "");
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -21,13 +21,20 @@ const BigProductEdit = () => {
     };
 
     const handleCancel = () => {
-        // ✅ Go to Big Product list (index route in app.js)
         navigate("/admin/bigproduct");
     };
 
     const handleUpdate = () => {
         // do your update logic here...
-        navigate(`/admin/bigproduct/view/${id}`);
+        navigate(`/admin/bigproduct/view/${id}`, {
+            state: {
+                image: productImage,
+                name: productName,
+                category: productCategory,
+                price: productPrice,
+                description: productDescription,
+            },
+        });
     };
 
     return (
@@ -35,6 +42,7 @@ const BigProductEdit = () => {
             {/* Back Button and Heading */}
             <div className="flex items-center mb-6">
                 <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
+                    {/* ✅ Keeping your original back arrow SVG */}
                     <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
@@ -69,7 +77,7 @@ const BigProductEdit = () => {
                     <label className="w-[160px] font-semibold">Product Image:</label>
                     <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
                         <img
-                            src={productImage || editBig}
+                            src={productImage}
                             alt="Product"
                             className="max-h-[140px] max-w-[140px] object-contain mb-2"
                         />
