@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { Button } from "../../../components/ui/button";
 
 import { useNavigate } from "react-router-dom";  // Import this hook
 
@@ -74,9 +75,9 @@ export default function CommissionList() {
         {/* Top Section */}
         <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Commission List</h2>
-          <button className="px-4 py-2 bg-blue-700 text-white rounded hover:bg-blue-800"   onClick={() => navigate('/add-commission')} >
+          <Button className="px-4 py-2  text-white rounded hover:bg-blue-800"   onClick={() => navigate('/admin/set-commission/add')} >
             Add Commission
-          </button>
+          </Button>
         </div>
         {/* Table Section */}
         <div className="bg-white rounded-lg shadow-md pt-4 pl-4 pr-4 pb-4   ">
@@ -105,10 +106,10 @@ export default function CommissionList() {
                     <td className="px-3 py-2">{c.worker}</td>
                     <td className="px-3 py-2">{c.shopkeeper}</td>
                     <td className="px-3 py-2 text-center space-x-3 text-blue-600" >
-                      <button className="text-red-600"  onClick={() => navigate(`/view-commission`)}>
+                      <button className="text-red-600"  onClick={() => navigate(`/admin/set-commission/view/:id`)}>
                         <FaEye  />
                       </button>
-                      <button className="text-red-600"  onClick={() => navigate(`/Edit-commission`)}>
+                      <button className="text-red-600"  onClick={() => navigate(`/admin/set-commission/edit/:id`)}>
                         <FaEdit />
                       </button>
                       <button className="text-red-600">

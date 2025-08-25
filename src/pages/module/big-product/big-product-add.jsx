@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import addImage from "../../../assets/images/addImage.png";
+import { Button } from "../../../components/ui/button";
 
 const BigProductAdd = () => {
   const navigate = useNavigate();
@@ -40,35 +41,35 @@ const BigProductAdd = () => {
             <path
               d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
               stroke="#0D2E28"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
               stroke="#0D2E28"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
             <path
               d="M26.6663 20H13.333"
               stroke="#0D2E28"
-              stroke-width="3"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             ></path>
           </svg>
         </button>
         <h1 className="ml-4 text-xl font-semibold">Add New Big Product</h1>
       </div>
 
-      {/* Left-aligned product view box */}
+      {/* Main Card */}
       <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
         {/* Product Image */}
         <div className="flex items-center gap-6 mb-6">
           <label className="w-[160px] font-semibold">Product Image:</label>
-          <div className=" rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
+          <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center border border-gray-300 relative">
             <img
               src={addImage}
               alt="Product"
@@ -81,12 +82,12 @@ const BigProductAdd = () => {
               onChange={handleImageChange}
               className="hidden"
             />
-            {/* <button
+            <button
               onClick={() => fileInputRef.current.click()}
-              className="bg-teal-400 text-white text-sm px-3 py-1 rounded-md hover:bg-gray-500"
+              className="bg-[#001580] text-white text-sm px-4 py-2 rounded-md hover:bg-blue-900"
             >
               Upload Photo
-            </button> */}
+            </button>
           </div>
         </div>
 
@@ -98,9 +99,10 @@ const BigProductAdd = () => {
             </label>
             <input
               type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+              className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
+              placeholder="Enter Product Name"
             />
           </div>
 
@@ -108,12 +110,16 @@ const BigProductAdd = () => {
             <label className="min-w-[160px] font-semibold pt-2">
               Product Category:
             </label>
-            <input
-              type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+            <select
+              className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
               value={productCategory}
               onChange={(e) => setProductCategory(e.target.value)}
-            />
+            >
+              <option value="">Select Product Category</option>
+              <option value="Electrician">Electrician</option>
+              <option value="Plumber">Plumber</option>
+              <option value="Painter">Painter</option>
+            </select>
           </div>
 
           <div className="flex items-start gap-4">
@@ -122,9 +128,10 @@ const BigProductAdd = () => {
             </label>
             <input
               type="text"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+              className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
               value={productPrice}
               onChange={(e) => setProductPrice(e.target.value)}
+              placeholder="Enter Price"
             />
           </div>
 
@@ -134,21 +141,22 @@ const BigProductAdd = () => {
             </label>
             <textarea
               rows="5"
-              className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
+              className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none resize-none"
               value={productDescription}
               onChange={(e) => setProductDescription(e.target.value)}
+              placeholder="Enter Product Description"
             />
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex justify-center mt-6 gap-4">
-          <button className="bg-teal-100 hover:bg-teal-800 text-teal-700 px-10 py-2 rounded-lg">
+          <button className="bg-[#E9ECF6] hover:bg-gray-300 text-gray-800 px-10 py-2 rounded-lg">
             Cancel
           </button>
-          <button className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg">
+          <Button className="bg-[#001580] hover:bg-blue-900 text-white px-10 py-2 rounded-lg">
             Add Product
-          </button>
+          </Button>
         </div>
       </div>
     </div>

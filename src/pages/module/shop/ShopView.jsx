@@ -231,7 +231,7 @@ function ShopView() {
                                 {shop.status === "Active" ? "Inactive" : "Active"}
                             </Button>
 
-                            {/* Edit Button */}
+                            {/* Edit Button -> matches App.js: /admin/shopmanagement/edit/:id */}
                             <Button
                                 variant="outlined"
                                 sx={{
@@ -242,7 +242,7 @@ function ShopView() {
                                     textTransform: "none",
                                 }}
                                 onClick={() =>
-                                    navigate("/admin/shopmanagement/shopedit", {
+                                    navigate(`/admin/shopmanagement/edit/${shop.id}`, {
                                         state: {
                                             shop: {
                                                 ...shop,

@@ -4,7 +4,7 @@ import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";  // Import this hook
 
 
-export default function EditCommission() {
+export default function ViewCommission() {
       const navigate = useNavigate(); 
   
   return (
