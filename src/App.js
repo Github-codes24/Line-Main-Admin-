@@ -1,7 +1,7 @@
-import {Navigate, Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes, useLocation} from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
-import React, {useEffect, useLocation} from "react";
+import React, {useEffect} from "react";
 
 // Pages
 import Dashboard from "./pages/dashbaord";
@@ -54,12 +54,28 @@ import RejectOrder from "./pages/module/order/reject-order";
 import PaymentList from "./pages/module/payment/paymentList";
 import Payment from "./pages/module/payment/payment";
 
+// Commission
+import CommissionList from "./pages/module/set-commission/commmission-list";
+import AddCommission from "./pages/module/set-commission/add-commission";
+import EditCommission from "./pages/module/set-commission/edit-commission";
+import ViewCommission from "./pages/module/set-commission/view-commission";
+
+// Charges of Worker
+import ChargesList from "./pages/module/set-charges-of-worker/charges-list";
+import AddCharges from "./pages/module/set-charges-of-worker/add-commission";
+import EditCharges from "./pages/module/set-charges-of-worker/edit-commission";
+import ViewCharges from "./pages/module/set-charges-of-worker/view-commission";
+
+// Limit Amount
+import SetLimitAmount from "./pages/module/set-limit-amount/set-limit-amount";
+import SetLimitAmount2 from "./pages/module/set-limit-amount/set-limit-amount2";
+
 // Layout wrapper so you don’t repeat AdminLayout for every route
 function AdminRoute({children, activeTab, setActiveTab}) {
     const location = useLocation();
 
     useEffect(() => {
-        setActiveTab(location.pathname); 
+        setActiveTab(location.pathname); // update active tab automatically
     }, [location.pathname, setActiveTab]);
 
     return (
@@ -74,9 +90,7 @@ function App() {
 
     return (
         <Routes>
-            {/* Default Redirect */}
             <Route path="/" element={<Navigate to="/admin/dashboard" />} />
-
             {/* Dashboard */}
             <Route
                 path="/admin/dashboard"
@@ -355,6 +369,90 @@ function App() {
                 element={
                     <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                         <Payment />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-commission"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <CommissionList />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-commission/add"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <AddCommission />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-commission/view/:id"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <ViewCommission />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-commission/edit/:id"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <EditCommission />
+                    </AdminLayout>
+                }
+            />
+
+            {/* Set Charges of Worker Routes */}
+            <Route
+                path="/admin/set-charges-of-worker"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <ChargesList />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-charges-of-worker/add"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <AddCharges />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-charges-of-worker/view/:id"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <ViewCharges />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-charges-of-worker/edit/:id"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <EditCharges />
+                    </AdminLayout>
+                }
+            />
+
+            {/* Set Limit Amount Routes */}
+            <Route
+                path="/admin/set-limit-amount"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <SetLimitAmount />
+                    </AdminLayout>
+                }
+            />
+            <Route
+                path="/admin/set-limit-amount/alt"
+                element={
+                    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                        <SetLimitAmount2 />
                     </AdminLayout>
                 }
             />

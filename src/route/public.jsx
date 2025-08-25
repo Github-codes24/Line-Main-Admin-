@@ -16,7 +16,7 @@ function PublicRoute() {
   return (
     <Routes>
       <Route path="/" element={<PaymentList />} />
-        </Routes>
+      </Routes>
   );
 }
 

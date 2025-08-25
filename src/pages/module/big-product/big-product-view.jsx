@@ -16,9 +16,9 @@ const BigProductView = () => {
     const productId = state?.id;
 
     return (
-        <div className="p-2 flex flex-col items-start ">
-            {/* Title Section with White Background */}
-            <div className="border rounded-t-md p-4 mb-3 shadow bg-white w-[100%] flex items-center">
+        <div className="p-6">
+            {/* Back Button and Heading */}
+            <div className="flex items-center mb-6">
                 <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
                     <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -47,20 +47,23 @@ const BigProductView = () => {
                 <h1 className="ml-4 text-xl font-semibold">View Big Product</h1>
             </div>
 
-            <div className="border border-t-0 rounded-b-md p-6 shadow bg-white w-[100%]">
+            {/* Main Card */}
+            <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
+                {/* Product Image */}
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
-                    <div className="rounded-lg p-2 w-[200px] h-[200px] flex items-center justify-center">
+                    <div className="rounded-lg p-2 w-[200px] h-[200px] flex items-center justify-center border border-gray-300">
                         <img src={viewBig} alt="Product" className="max-h-full max-w-full object-contain" />
                     </div>
                 </div>
 
+                {/* Product Details */}
                 <div className="space-y-4">
                     <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Name:</label>
                         <input
                             type="text"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
                             value={productName}
                             onChange={(e) => setProductName(e.target.value)}
                         />
@@ -70,7 +73,7 @@ const BigProductView = () => {
                         <label className="min-w-[160px] font-semibold pt-2">Product Category:</label>
                         <input
                             type="text"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
                             value={productCategory}
                             onChange={(e) => setProductCategory(e.target.value)}
                         />
@@ -80,7 +83,7 @@ const BigProductView = () => {
                         <label className="min-w-[160px] font-semibold pt-2">Product Price:</label>
                         <input
                             type="text"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
                             value={productPrice}
                             onChange={(e) => setProductPrice(e.target.value)}
                         />
@@ -90,17 +93,18 @@ const BigProductView = () => {
                         <label className="min-w-[160px] font-semibold pt-2">Product Description:</label>
                         <textarea
                             rows="5"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
+                            className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none resize-none"
                             value={productDescription}
                             onChange={(e) => setProductDescription(e.target.value)}
                         />
                     </div>
                 </div>
 
-                <div className="flex justify-center mt-6 gap-4">
+                {/* Action Button */}
+                <div className="flex justify-center mt-6">
                     <button
                         onClick={() => navigate(`/admin/bigproduct/edit/${productId}`, {state})}
-                        className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg"
+                        className="bg-[#001580] hover:bg-blue-900 text-white px-10 py-2 rounded-lg"
                     >
                         Edit
                     </button>

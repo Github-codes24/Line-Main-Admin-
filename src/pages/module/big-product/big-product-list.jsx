@@ -1,46 +1,12 @@
-import React, {useMemo, useState} from "react";
+import React, {useState} from "react";
 import {Eye, Trash2} from "lucide-react";
 import {Button} from "../../../components/ui/button";
 import {useNavigate} from "react-router-dom";
 import pvc from "../../../assets/images/pvc.png";
 import {Box, Chip, Checkbox, FormGroup, FormControlLabel, Popover} from "@mui/material";
 import {FilterIcon} from "../../../assets/CommonAssets";
-import Worker from "../../../components/cards/worker";
 
 const productData = [
-    {
-        id: 1,
-        name: "PVC Wire Cable (Red Colour)",
-        category: "Electrician",
-        price: "₹499",
-        status: "Approved",
-        image: pvc,
-    },
-    {id: 2, name: "Havells 9W LED Bulb", category: "Electrician", price: "₹499", status: "Pending", image: pvc},
-    {
-        id: 3,
-        name: "UPVC Plumbing Pipe (Schedule - 40) - 40m…",
-        category: "Plumber",
-        price: "₹499",
-        status: "Approved",
-        image: pvc,
-    },
-    {
-        id: 4,
-        name: "Asian Paints Ultima Weather Proof Exterior…",
-        category: "Painter",
-        price: "₹499",
-        status: "Approved",
-        image: pvc,
-    },
-    {
-        id: 5,
-        name: "UXCELL Plush Sleeve Cover Wall Paint Paintin…",
-        category: "Painter",
-        price: "₹499",
-        status: "Add By Admin",
-        image: pvc,
-    },
     {
         id: 1,
         name: "PVC Wire Cable (Red Colour)",
@@ -110,74 +76,83 @@ export default function BigProductList() {
         const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(product.category);
         return matchesSearch && matchesFilter;
     });
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
-
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-    const paginatedData = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return filteredData.slice(startIndex, startIndex + itemsPerPage);
-    }, [filteredData, currentPage]);
-
-    const handlePrev = () => {
-        if (currentPage > 1) setCurrentPage((prev) => prev - 1);
-    };
-
-    const handleNext = () => {
-        if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
-    };
-
-    const categories = [...new Set(productData.map((item) => item.category))];
-    const [searchText, setSearchText] = useState("");
 
     return (
-        <div className="mt-2">
-            <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
-                <Worker
-                    title="Big Product List"
-                    searchValue={searchText}
-                    setSearchValue={setSearchText}
-                    buttonText="Add New Product"
-                    btnpath="/admin/bigproduct/add"
-                />
-            </Box>
-            <Box className="mb-4 mt-4 flex items-center gap-2 flex-wrap justify-between">
-                <Box className="flex items-center gap-2 flex-wrap">
-                    <Box
-                        sx={{
-                            background: "#E0E9E9",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            padding: "6px",
-                            borderRadius: 6,
-                            cursor: "pointer",
-                        }}
-                        onClick={handleFilterClick}
-                    >
-                        <FilterIcon />
-                    </Box>
+        <div className="p-4">
+            {/* Header Section */}
+            <div className="flex items-center justify-between bg-[#E9ECF6] rounded-lg p-4 mb-4">
+                <h2 className="text-xl font-bold">Big Product List</h2>
 
-                    <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
-                        {appliedFilters.map((filter, index) => (
-                            <Chip
-                                key={index}
-                                label={filter}
-                                size="small"
-                                onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
-                                sx={{backgroundColor: "#CECEF2"}}
-                            />
-                        ))}
-                    </Box>
+                {/* Search */}
+                <div className="relative w-1/3">
+                    <input
+                        type="text"
+                        placeholder="Search by Product Name..."
+                        value={searchTerm}
+                        onChange={handleSearch}
+                        className="w-full pl-10 pr-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    />
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
+                        />
+                    </svg>
+                </div>
+
+                {/* Add Button */}
+                <Button
+                    onClick={() => navigate("/admin/bigproduct/add")}
+                    className="bg-[#2D65BC] text-white rounded-lg px-4 py-2"
+                >
+                    + Add New Product
+                </Button>
+            </div>
+
+            {/* Filters */}
+            <Box className="mb-4 flex items-center gap-2 flex-wrap">
+                <Box
+                    sx={{
+                        background: "#E0E9E9",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        padding: "6px",
+                        borderRadius: 6,
+                        cursor: "pointer",
+                    }}
+                    onClick={handleFilterClick}
+                >
+                    <FilterIcon />
                 </Box>
 
-                <button
+                <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
+                    {appliedFilters.map((filter, index) => (
+                        <Chip
+                            key={index}
+                            label={filter}
+                            size="small"
+                            onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
+                            sx={{backgroundColor: "#F0F0F0"}}
+                        />
+                    ))}
+                </Box>
+
+                <Button
+                    variant="outlined"
                     onClick={handleResetFilters}
-                    className="px-6 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
+                    className="ml-auto border border-blue-500 text-blue-600 bg-white hover:bg-blue-50"
                 >
                     Reset Filter
-                </button>
+                </Button>
 
                 <Popover
                     open={open}
@@ -204,6 +179,8 @@ export default function BigProductList() {
                     </Box>
                 </Popover>
             </Box>
+
+            {/* Table */}
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white shadow rounded-lg">
                     <thead>
@@ -218,12 +195,9 @@ export default function BigProductList() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData
-                        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
-                        .map((product, idx) => (
+                        {filteredData.map((product, idx) => (
                             <tr key={product.id} className="border-t hover:bg-gray-50">
-                                <td className="p-3">{(currentPage - 1) * itemsPerPage + idx + 1}</td>
-
+                                <td className="p-3">{idx + 1}</td>
                                 <td className="p-3">
                                     <img src={product.image} alt="Product" className="w-12 h-12 rounded-full border" />
                                 </td>
@@ -231,7 +205,6 @@ export default function BigProductList() {
                                 <td className="p-3">{product.category}</td>
                                 <td className="p-3">{product.price}</td>
                                 <td className={`p-3 font-medium ${statusColor[product.status]}`}>{product.status}</td>
-
                                 <td className="p-3 flex space-x-2">
                                     <button
                                         onClick={() =>
@@ -240,10 +213,11 @@ export default function BigProductList() {
                                     >
                                         <Eye className="text-red-600" size={18} />
                                     </button>
-
                                     <button
                                         onClick={() =>
-                                            navigate(`/admin/bigproduct/edit/${product.id}`, {state: product})
+                                            navigate(`/admin/bigproduct/edit/${product.id}`, {
+                                                state: product,
+                                            })
                                         }
                                     >
                                         <svg
@@ -269,7 +243,6 @@ export default function BigProductList() {
                                             />
                                         </svg>
                                     </button>
-
                                     <button>
                                         <Trash2 className="text-red-600" size={18} />
                                     </button>
@@ -279,51 +252,25 @@ export default function BigProductList() {
                     </tbody>
                 </table>
             </div>
-            {filteredData.length > itemsPerPage && (
-                <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
-                    <span className="text-sm font-semibold">
-                        Showing {paginatedData.length} of {filteredData.length} Products
-                    </span>
-                    <div className="flex items-center space-x-2">
+
+            {/* Pagination */}
+            <div className="flex justify-between items-center mt-4 bg-gray-100 px-3 py-2 rounded-lg text-sm">
+                <span>
+                    Showing 1 to {filteredData.length} of {productData.length} Entries
+                </span>
+                <div className="space-x-1">
+                    {[1, 2, 3].map((page) => (
                         <button
-                            onClick={handlePrev}
-                            disabled={currentPage === 1}
-                            className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                currentPage === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
+                            key={page}
+                            className={`px-2 py-1 rounded-full ${
+                                page === 1 ? "bg-blue-600 text-white" : "bg-gray-200"
                             }`}
                         >
-                            &lt;
+                            {page}
                         </button>
-
-                        {[...Array(totalPages)].map((_, i) => {
-                            const page = i + 1;
-                            return (
-                                <button
-                                    key={page}
-                                    onClick={() => setCurrentPage(page)}
-                                    className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
-                                        page === currentPage
-                                            ? "bg-[#001580] text-white"
-                                            : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                                    }`}
-                                >
-                                    {page}
-                                </button>
-                            );
-                        })}
-
-                        <button
-                            onClick={handleNext}
-                            disabled={currentPage === totalPages}
-                            className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                currentPage === totalPages ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
-                            }`}
-                        >
-                            &gt;
-                        </button>
-                    </div>
+                    ))}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
