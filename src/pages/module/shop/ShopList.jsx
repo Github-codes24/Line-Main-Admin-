@@ -15,16 +15,17 @@ import {
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
 
-import {DeleteIcon, EditIcon, FilterIcon, ViewIcon} from "../../../assets/CommonAssets";
+import {DeleteIcon, EditIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
 
 function ShopList() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = React.useState("");
 
-    // ✅ Dummy data with Aadhaar/GSTIN
+    // ✅ Dummy data with IDs + Aadhaar/GSTIN
     const shopData = [
         {
+            id: 1,
             name: "Ravi Kumar",
             shopName: "Kumar Electricals",
             contact: "ravi.kumar@gmail.com / +91-9876543210",
@@ -34,6 +35,7 @@ function ShopList() {
             gstin: "36ABCDE1234F1Z5",
         },
         {
+            id: 2,
             name: "Anjali Mehta",
             shopName: "Mehta Plumbing Works",
             contact: "anjali.mehta@yahoo.com / +91-9123456789",
@@ -43,6 +45,7 @@ function ShopList() {
             gstin: "09ABCDE5678G1Z6",
         },
         {
+            id: 3,
             name: "Sunil Sharma",
             shopName: "Sharma Carpentry",
             contact: "sunil.sharma@outlook.com / +91-9988776655",
@@ -52,6 +55,7 @@ function ShopList() {
             gstin: "27ABCDE8765H1Z2",
         },
         {
+            id: 4,
             name: "Preeti Verma",
             shopName: "Green Thumb Gardening",
             contact: "preeti.verma@gmail.com / +91-8765432109",
@@ -61,6 +65,7 @@ function ShopList() {
             gstin: "29ABCDE4321J1Z8",
         },
         {
+            id: 5,
             name: "Amit Das",
             shopName: "Das Paints & Decor",
             contact: "amit.das@hotmail.com / +91-8899776655",
@@ -85,14 +90,24 @@ function ShopList() {
     });
 
     return (
-        <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
+        <Box
+            sx={{
+                width: "100%",
+                minHeight: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "24px",
+            }}
+        >
             <Worker
                 title="Shop List"
                 searchValue={searchText}
                 setSearchValue={setSearchText}
                 buttonText="Add New Shop"
-                btnpath="/admin/shopmanagement/shopadd"
+                // ✅ matches App.js -> /admin/shopmanagement/add
+                btnpath="/admin/shopmanagement/add"
             />
+
             <Card>
                 <CardHeader sx={{paddingX: 3}} />
 
@@ -141,7 +156,7 @@ function ShopList() {
                             </TableHead>
                             <TableBody>
                                 {filteredData.map((item, index) => (
-                                    <TableRow hover key={index}>
+                                    <TableRow hover key={item.id}>
                                         <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
                                         <TableCell sx={{borderBottom: "none"}}>{item.shopName}</TableCell>
                                         <TableCell sx={{borderBottom: "none"}}>{item.name}</TableCell>
@@ -166,18 +181,23 @@ function ShopList() {
                                                 borderBottom: "none",
                                             }}
                                         >
+                                            {/* ✅ matches App.js -> /admin/shopmanagement/view/:id */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate("/admin/shopmanagement/shopview", {state: {shop: item}})
+                                                    navigate(`/admin/shopmanagement/view/${item.id}`, {
+                                                        state: {shop: item},
+                                                    })
                                                 }
                                             >
                                                 <ViewIcon />
                                             </IconButton>
+
+                                            {/* ✅ matches App.js -> /admin/shopmanagement/edit/:id */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate("/admin/shopmanagement/shopedit", {
+                                                    navigate(`/admin/shopmanagement/edit/${item.id}`, {
                                                         state: {
                                                             shop: {
                                                                 ...item,
@@ -190,6 +210,7 @@ function ShopList() {
                                             >
                                                 <EditIcon />
                                             </IconButton>
+
                                             <IconButton size="small">
                                                 <DeleteIcon />
                                             </IconButton>
