@@ -8,7 +8,6 @@ const BigProductEdit = () => {
     const fileInputRef = useRef(null);
     const {state} = useLocation();
 
-    // ✅ Use data from state if available
     const [productImage, setProductImage] = useState(state?.image || editBig);
     const [productName, setProductName] = useState(state?.name || "");
     const [productCategory, setProductCategory] = useState(state?.category || "");
@@ -25,7 +24,6 @@ const BigProductEdit = () => {
     };
 
     const handleUpdate = () => {
-        // do your update logic here...
         navigate(`/admin/bigproduct/view/${id}`, {
             state: {
                 image: productImage,
@@ -38,11 +36,9 @@ const BigProductEdit = () => {
     };
 
     return (
-        <div className="p-6">
-            {/* Back Button and Heading */}
-            <div className="flex items-center mb-6">
+        <div className="p-2">
+            <div className="border rounded-md p-4 shadow bg-white w-[100%] flex items-center mb-6">
                 <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
-                    {/* ✅ Keeping your original back arrow SVG */}
                     <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
@@ -70,9 +66,7 @@ const BigProductEdit = () => {
                 <h1 className="ml-4 text-xl font-semibold">Edit Big Product</h1>
             </div>
 
-            {/* Left-aligned product edit box */}
-            <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
-                {/* Product Image */}
+            <div className="border rounded-md p-6 shadow bg-white w-[100%]">
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
                     <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
@@ -91,7 +85,6 @@ const BigProductEdit = () => {
                     </div>
                 </div>
 
-                {/* Editable Fields */}
                 <div className="space-y-4">
                     <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Name:</label>
@@ -134,7 +127,6 @@ const BigProductEdit = () => {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
                     <button
                         onClick={handleCancel}

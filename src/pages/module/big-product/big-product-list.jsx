@@ -40,6 +40,22 @@ const productData = [
         status: "Add By Admin",
         image: pvc,
     },
+    {
+        id: 6,
+        name: "Asian Paints Ultima Weather Proof Exterior…",
+        category: "Painter",
+        price: "₹499",
+        status: "Approved",
+        image: pvc,
+    },
+    {
+        id: 7,
+        name: "UXCELL Plush Sleeve Cover Wall Paint Paintin…",
+        category: "Painter",
+        price: "₹499",
+        status: "Add By Admin",
+        image: pvc,
+    },
 ];
 
 const statusColor = {
@@ -77,13 +93,17 @@ export default function BigProductList() {
         return matchesSearch && matchesFilter;
     });
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+    const paginatedData = filteredData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     return (
-        <div className="p-4">
-            {/* Header Section */}
-            <div className="flex items-center justify-between bg-[#E9ECF6] rounded-lg p-4 mb-4">
+        <div className="p-2">
+            <div className="flex items-center justify-between bg-[#FFFFFF] rounded-lg p-4 mb-4">
                 <h2 className="text-xl font-bold">Big Product List</h2>
 
-                {/* Search */}
                 <div className="relative w-1/3">
                     <input
                         type="text"
@@ -108,7 +128,6 @@ export default function BigProductList() {
                     </svg>
                 </div>
 
-                {/* Add Button */}
                 <Button
                     onClick={() => navigate("/admin/bigproduct/add")}
                     className="bg-[#2D65BC] text-white rounded-lg px-4 py-2"
@@ -117,8 +136,7 @@ export default function BigProductList() {
                 </Button>
             </div>
 
-            {/* Filters */}
-            <Box className="mb-4 flex items-center gap-2 flex-wrap">
+            <Box className="mb-4 flex items-center justify-start gap-2 flex-wrap">
                 <Box
                     sx={{
                         background: "#E0E9E9",
@@ -146,13 +164,12 @@ export default function BigProductList() {
                     ))}
                 </Box>
 
-                <Button
-                    variant="outlined"
+                <button
                     onClick={handleResetFilters}
-                    className="ml-auto border border-blue-500 text-blue-600 bg-white hover:bg-blue-50"
+                    className="px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
                 >
                     Reset Filter
-                </Button>
+                </button>
 
                 <Popover
                     open={open}
@@ -180,24 +197,23 @@ export default function BigProductList() {
                 </Popover>
             </Box>
 
-            {/* Table */}
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white shadow rounded-lg">
                     <thead>
                         <tr className="bg-gray-100 text-left">
                             <th className="p-3">Sr.No.</th>
-                            <th className="p-3">Product Image</th>
+                            <th className="p-3 leading-none">Product Image</th>
                             <th className="p-3">Product Name</th>
-                            <th className="p-3">Product Category</th>
-                            <th className="p-3">Product Price</th>
-                            <th className="p-3">Approval Status</th>
+                            <th className="p-3 leading-none">Product Category</th>
+                            <th className="p-3 leading-none">Product Price</th>
+                            <th className="p-3 leading-none">Approval Status</th>
                             <th className="p-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredData.map((product, idx) => (
+                        {paginatedData.map((product, idx) => (
                             <tr key={product.id} className="border-t hover:bg-gray-50">
-                                <td className="p-3">{idx + 1}</td>
+                                <td className="p-3">{(currentPage - 1) * itemsPerPage + idx + 1}</td>
                                 <td className="p-3">
                                     <img src={product.image} alt="Product" className="w-12 h-12 rounded-full border" />
                                 </td>
@@ -253,17 +269,18 @@ export default function BigProductList() {
                 </table>
             </div>
 
-            {/* Pagination */}
             <div className="flex justify-between items-center mt-4 bg-gray-100 px-3 py-2 rounded-lg text-sm">
                 <span>
-                    Showing 1 to {filteredData.length} of {productData.length} Entries
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} Entries
                 </span>
                 <div className="space-x-1">
-                    {[1, 2, 3].map((page) => (
+                    {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
                         <button
                             key={page}
+                            onClick={() => setCurrentPage(page)}
                             className={`px-2 py-1 rounded-full ${
-                                page === 1 ? "bg-blue-600 text-white" : "bg-gray-200"
+                                page === currentPage ? "bg-blue-600 text-white" : "bg-gray-200"
                             }`}
                         >
                             {page}

@@ -16,9 +16,8 @@ const BigProductView = () => {
     const productId = state?.id;
 
     return (
-        <div className="p-6">
-            {/* Back Button and Heading */}
-            <div className="flex items-center mb-6">
+        <div className="p-2">
+            <div className="border rounded-md p-4 shadow bg-white w-[100%] flex items-center mb-6">
                 <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
                     <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -27,29 +26,27 @@ const BigProductView = () => {
                             strokeWidth="3"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                        ></path>
+                        />
                         <path
                             d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
                             stroke="#0D2E28"
                             strokeWidth="3"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                        ></path>
+                        />
                         <path
                             d="M26.6663 20H13.333"
                             stroke="#0D2E28"
                             strokeWidth="3"
                             strokeLinecap="round"
                             strokeLinejoin="round"
-                        ></path>
+                        />
                     </svg>
                 </button>
                 <h1 className="ml-4 text-xl font-semibold">View Big Product</h1>
             </div>
 
-            {/* Main Card */}
-            <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
-                {/* Product Image */}
+            <div className="border rounded-md p-6 shadow bg-white w-[100%]">
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
                     <div className="rounded-lg p-2 w-[200px] h-[200px] flex items-center justify-center border border-gray-300">
@@ -57,7 +54,6 @@ const BigProductView = () => {
                     </div>
                 </div>
 
-                {/* Product Details */}
                 <div className="space-y-4">
                     <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Name:</label>
@@ -100,7 +96,6 @@ const BigProductView = () => {
                     </div>
                 </div>
 
-                {/* Action Button */}
                 <div className="flex justify-center mt-6">
                     <button
                         onClick={() => navigate(`/admin/bigproduct/edit/${productId}`, {state})}
