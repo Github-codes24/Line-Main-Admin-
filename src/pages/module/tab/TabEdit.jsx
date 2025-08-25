@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { X } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const TabEdit = () => {
   const [tabName, setTabName] = useState("Plumbing");
   const [subTabs, setSubTabs] = useState(["Plumber", "Tank Cleaner"]);
 
    const navigate = useNavigate();
+   const { id } = useParams();
 
    const handleBack = () => {
     navigate("/admin/tabmanagement"); // adjust route as per your setup
@@ -33,7 +34,7 @@ const TabEdit = () => {
   };
 
   return (
-    <div className="w-full mx-auto mt-6 bg-white shadow-xl rounded-lg border h-full">
+    <div className="w-full mx-auto mt-6 bg-white shadow-xl rounded-lg border h-full font-[Poppins]">
       {/* Header */}
       <div className="flex items-center gap-2 border-b px-4 py-3 bg-gray-50 rounded-lg shadow-xl border-2 ">
       <img
@@ -99,7 +100,11 @@ const TabEdit = () => {
         <button className="px-5 py-2 rounded-md border-2 bg-[#CED4F2] text-[#001580] hover:bg-teal-100 border-[#001580] " onClick={handleBack}>
           Cancel
         </button>
-        <button className="px-5 py-2 rounded-md bg-[#001580] text-white hover:bg-[#001580]">
+        <button 
+        onClick={() => {
+          navigate(`/admin/tabmanagement/view/${id}`);
+        }}
+        className="px-5 py-2 rounded-md bg-[#001580] text-white hover:bg-[#001580]">
           Update
         </button>
       </div>

@@ -22,7 +22,7 @@ const SmallProductAdd = () => {
   };
 
   return (
-    <div className="p-2">
+    <div className="p-2 font-[Poppins]">
       <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
         {/* Back Button and Heading */}
         <div className="flex items-center">
@@ -60,7 +60,7 @@ const SmallProductAdd = () => {
               ></path>
             </svg>
           </button>
-          <h1 className="ml-4 text-xl font-semibold">Add New Small Product</h1>
+          <h1 className="ml-4 text-xl font-medium">Add New Small Product</h1>
         </div>
       </div>
 
@@ -163,7 +163,7 @@ const SmallProductAdd = () => {
             Cancel
           </button>
           <button
-            onClick={() => navigate("/admin/smallproduct/small-product-list")}
+            onClick={() => navigate("/admin/smallproduct")}
             className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
           >
             Add Product
