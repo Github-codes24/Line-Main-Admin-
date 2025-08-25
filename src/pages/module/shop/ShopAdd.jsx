@@ -33,7 +33,6 @@ function ShopAdd() {
                                 paddingBottom: 10,
                             }}
                         >
-                            {/* Shop Name */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -63,7 +62,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* Owner Name */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -93,7 +91,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* Email/Phone */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -123,7 +120,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* Address */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -153,7 +149,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Number */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -183,7 +178,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Card Image */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -234,7 +228,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Number */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -264,7 +257,6 @@ function ShopAdd() {
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Image */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -316,7 +308,6 @@ function ShopAdd() {
                             </Box>
                         </Box>
 
-                        {/* Action Buttons */}
                         <Box
                             sx={{
                                 display: "flex",

@@ -260,7 +260,6 @@ function WorkerList() {
                                                 borderBottom: "none",
                                             }}
                                         >
-                                            {/* View Button */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
@@ -270,7 +269,6 @@ function WorkerList() {
                                                 <ViewIcon />
                                             </IconButton>
 
-                                            {/* Edit Button */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
@@ -280,7 +278,6 @@ function WorkerList() {
                                                 <EditIcon />
                                             </IconButton>
 
-                                            {/* Delete Button */}
                                             <IconButton size="small">
                                                 <DeleteIcon />
                                             </IconButton>

@@ -5,10 +5,9 @@ import {useNavigate, useLocation} from "react-router-dom";
 
 function WorkerView() {
     const navigate = useNavigate();
-    const {state} = useLocation(); // Get worker data passed from WorkerList
+    const {state} = useLocation();
     const worker = state?.worker;
 
-    // If no state (user opened page directly), handle gracefully
     if (!state) {
         return (
             <Box sx={{p: 3}}>
@@ -41,7 +40,6 @@ function WorkerView() {
                                 paddingBottom: 10,
                             }}
                         >
-                            {/* Worker Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Worker Name:</Typography>
@@ -58,7 +56,6 @@ function WorkerView() {
                                 </Box>
                             </Box>
 
-                            {/* Expertise */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Expertise:</Typography>
@@ -75,7 +72,6 @@ function WorkerView() {
                                 </Box>
                             </Box>
 
-                            {/* Contact */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
@@ -92,7 +88,6 @@ function WorkerView() {
                                 </Box>
                             </Box>
 
-                            {/* Address */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
@@ -109,7 +104,6 @@ function WorkerView() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
@@ -126,7 +120,6 @@ function WorkerView() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Card Image */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Aadhaar Card Image:</Typography>
@@ -150,7 +143,6 @@ function WorkerView() {
                             </Box>
                         </Box>
 
-                        {/* Action Buttons (Active/Inactive + Edit) */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -160,7 +152,6 @@ function WorkerView() {
                                 gap: "10px",
                             }}
                         >
-                            {/* Toggle Status Button */}
                             <Button
                                 variant="contained"
                                 sx={{
@@ -173,17 +164,15 @@ function WorkerView() {
                                 onClick={() => {
                                     const newStatus = state.status === "Active" ? "Inactive" : "Active";
                                     alert(`Worker marked as ${newStatus}`);
-                                    // TODO: Update worker status via API or state management
                                 }}
                             >
                                 {state.status === "Active" ? "Inactive" : "Active"}
                             </Button>
 
-                            {/* Edit Button */}
                             <Button
                                 variant="outlined"
                                 sx={{background: "#001580", color: "#FFFFFF", px: 4}}
-                                onClick={() => navigate("/admin/workermanagement/workeredit", {state: {worker}})} // ✅ pass worker data
+                                onClick={() => navigate("/admin/workermanagement/workeredit", {state: {worker}})}
                             >
                                 Edit
                             </Button>

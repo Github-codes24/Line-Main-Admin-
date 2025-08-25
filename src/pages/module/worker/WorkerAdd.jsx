@@ -237,7 +237,6 @@ function WorkerAdd() {
                             </Box>
                         </Box>
 
-                       
                         <Box
                             sx={{
                                 display: "flex",

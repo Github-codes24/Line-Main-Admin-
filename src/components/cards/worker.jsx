@@ -111,7 +111,7 @@ function Worker({back = false, title = "", searchValue, setSearchValue, buttonTe
                         {buttonText}
                     </Button>
                 ) : (
-                    <Box sx={{width: 100}} /> // placeholder button size
+                    <Box sx={{width: 100}} />
                 )}
             </Box>
         </Box>

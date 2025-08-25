@@ -1,16 +1,12 @@
-import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, {useState} from "react";
+import {useNavigate, useParams} from "react-router-dom";
 import viewBig from "../../../assets/images/viewBigImage.png";
 
 const SmallProductView = () => {
     const navigate = useNavigate();
-    const { id } = useParams();
-    console.log("Product ID:", id); 
+    const {id} = useParams();
+    console.log("Product ID:", id);
 
-    // Initial values (can be fetched from API later)
-    // const [productImage] = useState(
-    //   "/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png"
-    // );
     const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
     const [productCategory, setProductCategory] = useState("Electrician");
     const [productPrice, setProductPrice] = useState("₹499");
@@ -20,19 +16,9 @@ const SmallProductView = () => {
 
     return (
         <div className="p-2 font-[Poppins]">
-            {/* Back Button and Heading */}
             <div className="flex items-center mb-4 bg-white rounded-lg shadow-md p-4">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="text-xl text-black hover:text-gray-600"
-                >
-                    <svg
-                        width="32"
-                        height="32"
-                        viewBox="0 0 40 40"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
+                <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
+                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
                             stroke="#0D2E28"
@@ -59,18 +45,12 @@ const SmallProductView = () => {
                 <h1 className="ml-4 text-xl font-medium">View Small Product</h1>
             </div>
 
-            {/* Left-aligned product view box */}
             <div className="border rounded-xl p-4 shadow-md bg-white">
                 <div className="border border-black p-6 rounded-lg">
-                    {/* Product Image */}
                     <div className="flex gap-4 mb-6">
                         <label className="min-w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
                         <div className="border border-[#001580] rounded-3xl p-3 w-[240px] h-[240px] flex items-center justify-center">
-                            <img
-                                src={viewBig}
-                                alt="Product"
-                                className="max-h-full max-w-full object-contain"
-                            />
+                            <img src={viewBig} alt="Product" className="max-h-full max-w-full object-contain" />
                         </div>
                     </div>
 
@@ -133,11 +113,11 @@ const SmallProductView = () => {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
-                    <button 
-                    onClick={() => navigate(`/admin/smallproduct/edit/${id}`)}
-                    className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg">
+                    <button
+                        onClick={() => navigate(`/admin/smallproduct/edit/${id}`)}
+                        className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
+                    >
                         Edit
                     </button>
                 </div>

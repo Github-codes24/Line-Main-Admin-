@@ -12,7 +12,6 @@ function ShopView() {
         return <Typography>No shop data available</Typography>;
     }
 
-    // Reusable Image Preview Box
     const ImagePreviewBox = ({label, src, alt, fallback}) => (
         <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2, mb: 2}}>
             <Box sx={{display: "flex", alignItems: "center"}}>
@@ -83,7 +82,6 @@ function ShopView() {
                                 paddingBottom: 10,
                             }}
                         >
-                            {/* Shop Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
@@ -100,7 +98,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* Owner Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
@@ -117,7 +114,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* Contact */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
@@ -134,7 +130,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* Address */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
@@ -151,7 +146,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
@@ -168,7 +162,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Card Image */}
                             <ImagePreviewBox
                                 label="Aadhaar Card Image:"
                                 src={shop.aadhaarImage}
@@ -176,7 +169,6 @@ function ShopView() {
                                 fallback="No Aadhaar image available"
                             />
 
-                            {/* GSTIN Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
@@ -193,7 +185,6 @@ function ShopView() {
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Image */}
                             <ImagePreviewBox
                                 label="GSTIN Image:"
                                 src={shop.gstinImage}
@@ -202,7 +193,6 @@ function ShopView() {
                             />
                         </Box>
 
-                        {/* Buttons */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -212,7 +202,6 @@ function ShopView() {
                                 gap: "10px",
                             }}
                         >
-                            {/* Toggle Status Button */}
                             <Button
                                 variant="contained"
                                 sx={{
@@ -225,13 +214,11 @@ function ShopView() {
                                 onClick={() => {
                                     const newStatus = shop.status === "Active" ? "Inactive" : "Active";
                                     alert(`Shop marked as ${newStatus}`);
-                                    // TODO: Update worker status via API or state management
                                 }}
                             >
                                 {shop.status === "Active" ? "Inactive" : "Active"}
                             </Button>
 
-                            {/* Edit Button -> matches App.js: /admin/shopmanagement/edit/:id */}
                             <Button
                                 variant="outlined"
                                 sx={{

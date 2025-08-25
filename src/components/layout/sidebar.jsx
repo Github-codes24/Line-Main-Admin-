@@ -68,7 +68,7 @@ function Sidebar({activeTab, setActiveTab}) {
         {
             icon: (color) => <SetCommision color={color} />,
             title: "Set Commission",
-            path: "/admin/bigproduct/approve/1", // demo id (so sidebar link works)
+            path: "/admin/bigproduct/approve/1", 
         },
         {
             icon: (color) => <SetCharges color={color} />,
@@ -78,7 +78,7 @@ function Sidebar({activeTab, setActiveTab}) {
         {
             icon: (color) => <SetLimit color={color} />,
             title: "Set Limit Amount",
-            path: "/admin/order/progress/1", // demo id
+            path: "/admin/order/progress/1", 
         },
     ];
 

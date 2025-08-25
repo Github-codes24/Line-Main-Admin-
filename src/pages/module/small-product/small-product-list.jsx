@@ -28,7 +28,6 @@ const productData = [
         price: "₹499",
         status: "Add By Admin",
     },
-    // Repeat for testing
     ...Array(10)
     .fill()
     .map((_, i) => ({
@@ -74,19 +73,16 @@ export default function SmallProductList({productId}) {
         setShowDeletePanel(false);
     };
 
-    // Apply filters and search
     const filteredData = productData.filter((p) => {
         const matchesFilter = activeFilters.length === 0 || activeFilters.includes(p.category);
         const matchesSearch = searchTerm === "" || p.name.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 
-    // Reset to first page when filter/search changes
     useEffect(() => {
         setCurrentPage(1);
     }, [activeFilters, searchTerm]);
 
-    // Pagination Logic
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -105,7 +101,6 @@ export default function SmallProductList({productId}) {
 
     return (
         <div className="p-2 font-[Poppins]">
-            {/* Header */}
             <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
                 <h2 className="text-xl font-medium">Small Product List</h2>
 
@@ -141,10 +136,8 @@ export default function SmallProductList({productId}) {
                 </button>
             </div>
 
-            {/* Filter Section */}
             <div className="bg-white p-4 rounded-lg shadow mb-4">
                 <div className="relative flex flex-wrap gap-2 mb-4">
-                    {/* Filter Icon */}
                     <svg
                         onClick={() => setShowFilterPanel(true)}
                         xmlns="http://www.w3.org/2000/svg"
@@ -218,7 +211,6 @@ export default function SmallProductList({productId}) {
                     )}
                 </div>
 
-                {/* Table */}
                 <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
                     <table className="min-w-full bg-white shadow rounded-lg">
                         <thead>
@@ -280,7 +272,6 @@ export default function SmallProductList({productId}) {
                                                 onClick={() => setShowDeletePanel(true)}
                                             />
 
-                                            {/* Delete Confirmation Panel */}
                                             {showDeletePanel && (
                                                 <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-0 z-50">
                                                     <div className="bg-white rounded-2xl shadow-md p-10 w-[496px] h-[264px] text-center">
@@ -317,7 +308,6 @@ export default function SmallProductList({productId}) {
                     </table>
                 </div>
 
-                {/* Pagination */}
                 <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
                     <span className="text-sm font-semibold">
                         Showing {paginatedData.length} of {filteredData.length} Entries

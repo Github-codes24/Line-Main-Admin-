@@ -7,17 +7,16 @@ import {UploadIcon} from "lucide-react";
 function ShopEdit() {
     const navigate = useNavigate();
     const location = useLocation();
-    const shop = location.state?.shop; // 👈 get data from ShopList
-
+    const shop = location.state?.shop;
     // Keep editable form state
     const [formData, setFormData] = React.useState({
         shopName: shop?.shopName || "",
         name: shop?.name || "",
         contact: shop?.contact || "",
         address: shop?.address || "",
-        aadhaarNumber: shop?.aadhaarNumber || "", // ✅ fixed
+        aadhaarNumber: shop?.aadhaarNumber || "",
         aadhaarImage: shop?.aadhaarImage || null,
-        gstinNumber: shop?.gstinNumber || "", // ✅ fixed
+        gstinNumber: shop?.gstinNumber || "",
         gstinImage: shop?.gstinImage || null,
     });
 
@@ -36,8 +35,7 @@ function ShopEdit() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("Updated shop data:", formData);
-        // TODO: send update to backend here
-        navigate(-1); // go back to list after save
+        navigate(-1);
     };
 
     return (
@@ -67,7 +65,6 @@ function ShopEdit() {
                                 paddingBottom: 10,
                             }}
                         >
-                            {/* Shop Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
@@ -89,7 +86,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* Owner Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
@@ -111,7 +107,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* Email/Phone */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
@@ -133,7 +128,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* Address */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
@@ -155,7 +149,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
@@ -177,7 +170,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Image */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -236,7 +228,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
@@ -258,7 +249,6 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Image */}
                             <Box
                                 sx={{
                                     display: "grid",
@@ -318,7 +308,6 @@ function ShopEdit() {
                             </Box>
                         </Box>
 
-                        {/* Buttons */}
                         <Box
                             sx={{
                                 display: "flex",

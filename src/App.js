@@ -59,7 +59,7 @@ function AdminRoute({children, activeTab, setActiveTab}) {
     const location = useLocation();
 
     useEffect(() => {
-        setActiveTab(location.pathname); // update active tab automatically
+        setActiveTab(location.pathname); 
     }, [location.pathname, setActiveTab]);
 
     return (

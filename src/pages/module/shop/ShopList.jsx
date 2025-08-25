@@ -22,7 +22,6 @@ function ShopList() {
     const navigate = useNavigate();
     const [searchText, setSearchText] = React.useState("");
 
-    // ✅ Dummy data with IDs + Aadhaar/GSTIN
     const shopData = [
         {
             id: 1,
@@ -104,7 +103,6 @@ function ShopList() {
                 searchValue={searchText}
                 setSearchValue={setSearchText}
                 buttonText="Add New Shop"
-                // ✅ matches App.js -> /admin/shopmanagement/add
                 btnpath="/admin/shopmanagement/add"
             />
 
@@ -181,7 +179,6 @@ function ShopList() {
                                                 borderBottom: "none",
                                             }}
                                         >
-                                            {/* ✅ matches App.js -> /admin/shopmanagement/view/:id */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
@@ -193,7 +190,6 @@ function ShopList() {
                                                 <ViewIcon />
                                             </IconButton>
 
-                                            {/* ✅ matches App.js -> /admin/shopmanagement/edit/:id */}
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
