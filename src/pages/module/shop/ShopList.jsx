@@ -12,81 +12,98 @@ import {
     TableContainer,
     TableHead,
     TableRow,
+    Typography,
+    Pagination,
+    CircularProgress
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
 
 import {DeleteIcon, EditIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
+import {getAllShops, deleteShop} from "../../../config/index.js";
 
 function ShopList() {
     const navigate = useNavigate();
+    
+    // State management
     const [searchText, setSearchText] = React.useState("");
+    const [shops, setShops] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
+    
+    // Pagination state
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [itemsPerPage] = React.useState(5);
+    const [totalPages, setTotalPages] = React.useState(1);
+    const [totalItems, setTotalItems] = React.useState(0);
 
-    const shopData = [
-        {
-            id: 1,
-            name: "Ravi Kumar",
-            shopName: "Kumar Electricals",
-            contact: "ravi.kumar@gmail.com / +91-9876543210",
-            address: "Banjara Hills, Hyderabad, Telangana",
-            status: "Active",
-            aadhaar: "XXXX-XXXX-1234",
-            gstin: "36ABCDE1234F1Z5",
-        },
-        {
-            id: 2,
-            name: "Anjali Mehta",
-            shopName: "Mehta Plumbing Works",
-            contact: "anjali.mehta@yahoo.com / +91-9123456789",
-            address: "Sector 22, Noida, Uttar Pradesh",
-            status: "Active",
-            aadhaar: "XXXX-XXXX-5678",
-            gstin: "09ABCDE5678G1Z6",
-        },
-        {
-            id: 3,
-            name: "Sunil Sharma",
-            shopName: "Sharma Carpentry",
-            contact: "sunil.sharma@outlook.com / +91-9988776655",
-            address: "MG Road, Pune, Maharashtra",
-            status: "Active",
-            aadhaar: "XXXX-XXXX-8765",
-            gstin: "27ABCDE8765H1Z2",
-        },
-        {
-            id: 4,
-            name: "Preeti Verma",
-            shopName: "Green Thumb Gardening",
-            contact: "preeti.verma@gmail.com / +91-8765432109",
-            address: "Indiranagar, Bengaluru, Karnataka",
-            status: "Active",
-            aadhaar: "XXXX-XXXX-4321",
-            gstin: "29ABCDE4321J1Z8",
-        },
-        {
-            id: 5,
-            name: "Amit Das",
-            shopName: "Das Paints & Decor",
-            contact: "amit.das@hotmail.com / +91-8899776655",
-            address: "Salt Lake, Kolkata, West Bengal",
-            status: "Inactive",
-            aadhaar: "XXXX-XXXX-2468",
-            gstin: "19ABCDE2468K1Z4",
-        },
-    ];
+    // Fetch shops function
+    const fetchShops = async (page = 1, search = "") => {
+        setLoading(true);
+        setError("");
+        
+        try {
+            console.log("Fetching shops - Page:", page, "Search:", search);
+            const response = await getAllShops(page, itemsPerPage, search);
+            
+            if (response.success) {
+                setShops(response.data || []);
+                setTotalPages(response.totalPages || 1);
+                setTotalItems(response.totalItems || 0);
+                setCurrentPage(page);
+            } else {
+                setError(response.message || "Failed to fetch shops");
+            }
+        } catch (error) {
+            console.error("Error fetching shops:", error);
+            setError("Failed to load shops");
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    const filteredData = shopData.filter((item) => {
-        const searchLower = searchText.toLowerCase();
-        return (
-            item.name.toLowerCase().includes(searchLower) ||
-            item.shopName.toLowerCase().includes(searchLower) ||
-            item.contact.toLowerCase().includes(searchLower) ||
-            item.address.toLowerCase().includes(searchLower) ||
-            item.status.toLowerCase().includes(searchLower) ||
-            (item.aadhaar && item.aadhaar.toLowerCase().includes(searchLower)) ||
-            (item.gstin && item.gstin.toLowerCase().includes(searchLower))
+    // Handle search
+    const handleSearch = (searchValue) => {
+        setSearchText(searchValue);
+        setCurrentPage(1); // Reset to first page when searching
+        fetchShops(1, searchValue);
+    };
+
+    // Handle page change
+    const handlePageChange = (event, page) => {
+        setCurrentPage(page);
+        fetchShops(page, searchText);
+    };
+
+    // Handle delete shop
+    const handleDeleteShop = async (shopId, shopName) => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
         );
-    });
+        
+        if (!confirmDelete) return;
+
+        try {
+            console.log("Deleting shop with ID:", shopId);
+            const response = await deleteShop(shopId);
+            
+            if (response.success) {
+                // Refresh the shop list after successful deletion
+                fetchShops(currentPage, searchText);
+                alert("Shop deleted successfully!");
+            } else {
+                alert(response.message || "Failed to delete shop");
+            }
+        } catch (error) {
+            console.error("Error deleting shop:", error);
+            alert("Failed to delete shop. Please try again.");
+        }
+    };
+
+    // Load shops on component mount
+    React.useEffect(() => {
+        fetchShops(1, "");
+    }, []);
 
     return (
         <Box
@@ -101,7 +118,7 @@ function ShopList() {
             <Worker
                 title="Shop List"
                 searchValue={searchText}
-                setSearchValue={setSearchText}
+                setSearchValue={handleSearch}
                 buttonText="Add New Shop"
                 btnpath="/admin/shopmanagement/add"
             />
@@ -110,112 +127,168 @@ function ShopList() {
                 <CardHeader sx={{paddingX: 3}} />
 
                 <CardContent sx={{paddingTop: 0}}>
-                    <TableContainer
-                        component={Paper}
-                        elevation={0}
-                        sx={{
-                            border: "1px solid black",
-                            maxHeight: 500,
-                            overflowY: "scroll",
-                            scrollbarWidth: "thin",
-                        }}
-                    >
-                        <Table stickyHeader sx={{borderRadius: 2}}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Sr.No.
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Shop Name
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Owner Name
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Email ID/Phone Number
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Shop Address
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Aadhaar
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        GSTIN
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Status
-                                    </TableCell>
-                                    <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
-                                        Action
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {filteredData.map((item, index) => (
-                                    <TableRow hover key={item.id}>
-                                        <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.shopName}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.name}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.address}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.aadhaar}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.gstin}</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                borderBottom: "none",
-                                                color: item.status === "Active" ? "green" : "red",
-                                            }}
-                                        >
-                                            {item.status}
-                                        </TableCell>
-                                        <TableCell
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                gap: 1,
-                                                borderBottom: "none",
-                                            }}
-                                        >
-                                            <IconButton
-                                                size="small"
-                                                onClick={() =>
-                                                    navigate(`/admin/shopmanagement/view/${item.id}`, {
-                                                        state: {shop: item},
-                                                    })
-                                                }
-                                            >
-                                                <ViewIcon />
-                                            </IconButton>
+                    {/* Error Display */}
+                    {error && (
+                        <Box sx={{ mb: 2, textAlign: "center" }}>
+                            <Typography color="error" variant="body2">
+                                {error}
+                            </Typography>
+                        </Box>
+                    )}
 
-                                            <IconButton
-                                                size="small"
-                                                onClick={() =>
-                                                    navigate(`/admin/shopmanagement/edit/${item.id}`, {
-                                                        state: {
-                                                            shop: {
-                                                                ...item,
-                                                                aadhaarNumber: item.aadhaar,
-                                                                gstinNumber: item.gstin,
-                                                            },
-                                                        },
-                                                    })
-                                                }
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
+                    {/* Loading State */}
+                    {loading ? (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                            <CircularProgress />
+                        </Box>
+                    ) : (
+                        <>
+                            <TableContainer
+                                component={Paper}
+                                elevation={0}
+                                sx={{
+                                    border: "1px solid black",
+                                    maxHeight: 500,
+                                    overflowY: "scroll",
+                                    scrollbarWidth: "thin",
+                                }}
+                            >
+                                <Table stickyHeader sx={{borderRadius: 2}}>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Sr.No.
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Shop Name
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Owner Name
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Email ID/Phone Number
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Shop Address
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Aadhaar
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                GSTIN
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Status
+                                            </TableCell>
+                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                                Action
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {shops.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
+                                                    <Typography variant="body2" color="textSecondary">
+                                                        {searchText ? 'No shops found matching your search.' : 'No shops available.'}
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            shops.map((item, index) => (
+                                                <TableRow hover key={item._id}>
+                                                    <TableCell sx={{borderBottom: "none", py: 2}}>
+                                                        {(currentPage - 1) * itemsPerPage + index + 1}
+                                                    </TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.shopName}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.ownerName}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.address}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.aadhaarNumber}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>{item.gstin || 'N/A'}</TableCell>
+                                                    <TableCell
+                                                        sx={{
+                                                            borderBottom: "none",
+                                                            color: item.isActive ? "green" : "red",
+                                                        }}
+                                                    >
+                                                        {item.isActive ? "Active" : "Inactive"}
+                                                    </TableCell>
+                                                    <TableCell
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            gap: 1,
+                                                            borderBottom: "none",
+                                                        }}
+                                                    >
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() =>
+                                                                navigate(`/admin/shopmanagement/view/${item._id}`, {
+                                                                    state: {shop: item},
+                                                                })
+                                                            }
+                                                        >
+                                                            <ViewIcon />
+                                                        </IconButton>
 
-                                            <IconButton size="small">
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() =>
+                                                                navigate(`/admin/shopmanagement/edit/${item._id}`, {
+                                                                    state: {
+                                                                        shop: {
+                                                                            ...item,
+                                                                            name: item.ownerName,
+                                                                            gstinNumber: item.gstin,
+                                                                        },
+                                                                    },
+                                                                })
+                                                            }
+                                                        >
+                                                            <EditIcon />
+                                                        </IconButton>
+
+                                                        <IconButton 
+                                                            size="small"
+                                                            onClick={() => handleDeleteShop(item._id, item.shopName)}
+                                                            sx={{ color: 'error.main' }}
+                                                        >
+                                                            <DeleteIcon />
+                                                        </IconButton>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                                    <Pagination
+                                        count={totalPages}
+                                        page={currentPage}
+                                        onChange={handlePageChange}
+                                        color="primary"
+                                        showFirstButton
+                                        showLastButton
+                                    />
+                                </Box>
+                            )}
+
+                            {/* Results Info */}
+                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                                <Typography variant="body2" color="textSecondary">
+                                    Showing {shops.length} of {totalItems} shops
+                                    {searchText && ` for "${searchText}"`}
+                                </Typography>
+                            </Box>
+                        </>
+                    )}
                 </CardContent>
             </Card>
         </Box>

@@ -1,63 +1,96 @@
 // CustomerList.jsx
-import React, {useState} from "react";
-import {ToastContainer} from "react-toastify";
+// import { getAllCustomers } from "../../../config";
+import { getAllCustomers, deleteCustomer } from "../../../config";
+
+import React, { useState, useEffect } from "react";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {Eye, Trash2} from "lucide-react";
-import {useNavigate} from "react-router-dom";
-import {Button} from "../../../components/ui/button";
+import { Eye, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../../components/ui/button";
 
 const CustomerList = () => {
     const navigate = useNavigate();
-
     const [searchTerm, setSearchTerm] = useState("");
-    const handleAddCustomer = () => {
-        // toast.success("Add Customer clicked!");
+    
+    // API states
+    const [customers, setCustomers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState('');
+ // Add this function inside CustomerList component
+const handleDeleteCustomer = async (customerId, customerName) => {
+    // Confirm before deleting
+    const confirmDelete = window.confirm(`Are you sure you want to delete customer "${customerName}"?`);
+    
+    if (confirmDelete) {
+        try {
+            setIsLoading(true);
+            await deleteCustomer(customerId);
+            
+            // Remove customer from local state (immediate UI update)
+            setCustomers(customers.filter(customer => 
+                (customer._id || customer.id) !== customerId
+            ));
+            
+            // Or refresh the entire list from API
+            // const response = await getAllCustomers();
+            // setCustomers(response.customers || response.data || response);
+            
+        } catch (error) {
+            console.error('Error deleting customer:', error);
+            alert('Failed to delete customer. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+};
 
-        setTimeout(() => {
-            navigate("/customer-add");
-        }, 1000);
-    };
+    // Fetch customers on component mount
+    useEffect(() => {
+        const fetchCustomers = async () => {
+            try {
+                setIsLoading(true);
+                const response = await getAllCustomers();
+                
+                // Add these debug logs
+                console.log('🔍 Full API Response:', response);
+                console.log('🔍 Response type:', typeof response);
+                console.log('🔍 Is response an array?', Array.isArray(response));
+                
+                // setCustomers(response.customers || response.data || response);
+                // Handle different API response structures
+let customerData = [];
 
-    const customers = [
-        {
-            id: 1,
-            name: "John Doe",
-            email: "john@example.com",
-            phone: "123-456-7890",
-            address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-        },
-        {
-            id: 2,
-            name: "Jane Smith",
-            email: "jane@example.com",
-            phone: "987-654-3210",
-            address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-        },
-        {
-            id: 3,
-            name: "Alice Johnson",
-            email: "alice@example.com",
-            phone: "555-123-4567",
-            address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-        },
-        {
-            id: 4,
-            name: "Bob Brown",
-            email: "bob@example.com",
-            phone: "777-888-9999",
-            address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-        },
-        {
-            id: 5,
-            name: "Charlie White",
-            email: "charlie@example.com",
-            phone: "999-111-2222",
-            address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-        },
-    ];
+if (Array.isArray(response)) {
+    customerData = response;
+} else if (response.customers && Array.isArray(response.customers)) {
+    customerData = response.customers;
+} else if (response.data && Array.isArray(response.data)) {
+    customerData = response.data;
+} else if (response.users && Array.isArray(response.users)) {
+    customerData = response.users;
+} else {
+    console.log('⚠️ Unexpected API response format:', response);
+    customerData = [];
+}
 
+setCustomers(customerData);
+
+            } catch (error) {
+                console.error('Error fetching customers:', error);
+                setError('Failed to load customers');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+    
+        fetchCustomers();
+    }, []);
+    
+
+    // Filter customers based on search
     const filteredCustomers = customers.filter((customer) =>
-        customer.name.toLowerCase().includes(searchTerm.toLowerCase())
+        customer.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
@@ -73,25 +106,31 @@ const CustomerList = () => {
                         placeholder="Search..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border border-gray-300 rounded-full p-1 px-4 w-64 text-sm "
+                        className="border border-gray-300 rounded-full p-1 px-4 w-64 text-sm"
                     />
                 </div>
 
-                {/* Right side - Button */}
                 <Button
-                    className="px-4 py-2  text-white rounded hover:bg-blue-800"
-                    onClick={() => navigate("/admin/set-charges-of-worker/add")}
+                    className="px-4 py-2 text-white rounded hover:bg-blue-800"
+                    onClick={() => navigate("/admin/customermanagement/add")}
                 >
-                    Add Customer
+                    + Add New Customer
                 </Button>
             </div>
 
             {/* Main Content Box */}
             <div className="bg-white p-4 shadow rounded-md">
-                {/* Table Data Box */}
-                <div className="">
-                    <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
-                        <table className="w-full text-sm text-left text-gray-700  ">
+                <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-[400px]">
+                            <div className="text-lg">Loading customers...</div>
+                        </div>
+                    ) : error ? (
+                        <div className="flex justify-center items-center h-[400px]">
+                            <div className="text-lg text-red-500">{error}</div>
+                        </div>
+                    ) : (
+                        <table className="w-full text-sm text-left text-gray-700">
                             <thead className="bg-[#e6efef] text-black text-base font-semibold">
                                 <tr>
                                     <th className="px-6 py-4">Sr.No.</th>
@@ -103,63 +142,74 @@ const CustomerList = () => {
                             </thead>
                             <tbody>
                                 {filteredCustomers.map((customer, index) => (
-                                    <tr key={customer.id} className="">
+                                    <tr key={customer._id || customer.id} className="">
                                         <td className="px-6 py-4">{index + 1}</td>
                                         <td className="px-6 py-4">{customer.name}</td>
-                                        <td className="px-6 py-4">{customer.phone}</td>
+                                        <td className="px-6 py-4">{customer.contact}</td>
                                         <td className="px-6 py-4">{customer.address}</td>
                                         <td className="px-6 py-4">
                                             <div className="flex justify-center space-x-4">
                                                 <button
-                                                    onClick={() => navigate(`/admin/customermanagement/view/:id`)}
+                                                    onClick={() => navigate(`/admin/customermanagement/view/${customer._id || customer.id}`)}
                                                     className="text-[#F15A29] hover:text-orange-700"
                                                 >
                                                     <Eye size={20} />
                                                 </button>
-                                                <button className="text-[#F15A29] hover:text-orange-700">
-                                                    <svg
-                                                        width="20"
-                                                        height="20"
-                                                        viewBox="0 0 24 24"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        onClick={() => navigate(`/admin/customermanagement/edit/:id`)}
-                                                    >
-                                                        <path
-                                                            d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
-                                                            stroke="#EC2D01"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                        <path
-                                                            d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
-                                                            stroke="#EC2D01"
-                                                            strokeWidth="2"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>
-                                                </button>
+                                                <button 
+    className="text-[#F15A29] hover:text-orange-700"
+    onClick={() => navigate(`/admin/customermanagement/edit/${customer._id || customer.id}`)}
+>
+    <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        <path
+            d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+            stroke="#EC2D01"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+        <path
+            d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+            stroke="#EC2D01"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </svg>
+</button>
+
+                                                {/* </button>
                                                 <button
-                                                    onClick={() => navigate(`/customer/delete/${customer.id}`)}
+                                                    onClick={() => navigate(`/customer/delete/${customer._id || customer.id}`)}
                                                     className="text-[#F15A29] hover:text-orange-700"
                                                 >
                                                     <Trash2 size={20} />
-                                                </button>
+                                                </button> */}
+                                                <button
+    onClick={() => handleDeleteCustomer(customer._id || customer.id, customer.name)}
+    className="text-[#F15A29] hover:text-orange-700"
+>
+    <Trash2 size={20} />
+</button>
+
                                             </div>
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
-                    </div>
+                    )}
                 </div>
 
                 {/* Pagination Box */}
-                <div className="p-4 ">
+                <div className="p-4">
                     <div className="flex justify-between items-center text-sm text-black">
-                        <span>Showing 1 to 5 of {customers.length} entries</span>
+                        <span>Showing 1 to {filteredCustomers.length} of {customers.length} entries</span>
                         <div>
                             <button className="px-3 py-1 border border-gray-300 rounded mr-2">Previous</button>
                             <button className="px-3 py-1 border border-gray-300 rounded">Next</button>

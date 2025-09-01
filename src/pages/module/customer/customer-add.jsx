@@ -1,4 +1,11 @@
 // src/pages/AddCustomer.jsx
+//For API importing 
+// import { addCustomer } from '../../../services/customerService';
+import { addCustomer } from '../../../config';  // NEW PATH
+
+import { useState } from 'react';
+
+
 import React from "react";
 
 import {Formik, Form, Field, ErrorMessage} from "formik";
@@ -17,6 +24,13 @@ const AddCustomer = () => {
     const handleBack = () => {
         navigate(-1);
     };
+
+    //Adding state for API
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({ type:'', message:''});
+
+     
+
     return (
         <div className="p-4 bg-[#E0E9E9] min-h-screen">
             <div className="bg-white border rounded-md shadow mb-2">
@@ -61,10 +75,50 @@ const AddCustomer = () => {
                 <Formik
                     initialValues={{name: "", contact: "", address: ""}}
                     validationSchema={validationSchema}
-                    onSubmit={(values, {resetForm}) => {
-                        console.log("Submitted:", values);
-                        resetForm();
+
+                    // onSubmit={(values, {resetForm}) => {
+                    //     console.log("Submitted:", values);
+                    //     resetForm();
+                    // }}
+
+                    //Replacing onsubmit function with API
+                    onSubmit={async (values, { resetForm, setSubmitting}) => {
+                        console.log(' Form submitted with values:', values);
+                        console.log(' addCustomer function:', addCustomer);
+                        
+                        setIsLoading(true);
+                        setSubmitStatus({ type: '', message: ''});
+                    
+                        try {
+                            const customerData = {
+                                name: values.name,
+                                contact: values.contact,
+                                address: values.address
+                            };
+                    
+                            console.log(' Sending customer data:', customerData);
+                            const result = await addCustomer(customerData);
+                            console.log(' API Success result:', result);
+                    
+                            setSubmitStatus({
+                                type:'success',
+                                message: 'Customer added successfully'
+                            });
+                            resetForm();
+                    
+                        }catch (error) {
+                            console.log(' API Error:', error);
+                            console.log(' Error message:', error.message);
+                            setSubmitStatus ({
+                                type: 'error',
+                                message: 'Failed to add customer. Please try again.'
+                            });
+                        }finally {
+                            setIsLoading(false);
+                            setSubmitting(false);
+                        }
                     }}
+                       
                 >
                     {() => (
                         <Form>
@@ -127,6 +181,19 @@ const AddCustomer = () => {
                                 </div>
                             </div>
 
+                {/* Adding status message for JSX API */}
+
+                {submitStatus.message && (
+  <div className={`p-3 rounded-md mb-4 ${
+    submitStatus.type === 'success' 
+      ? 'bg-green-100 text-green-700 border border-green-300' 
+      : 'bg-red-100 text-red-700 border border-red-300'
+  }`}>
+    {submitStatus.message}
+  </div>
+)}
+
+ {/* End of status message for JSX API */}
                             <div className="flex justify-center gap-6 mt-4">
                                 <button
                                     type="reset"
@@ -134,12 +201,26 @@ const AddCustomer = () => {
                                 >
                                     Cancel
                                 </button>
-                                <button
+
+                                {/* Adding submit button for API  */}
+
+                                {/* <button
                                     type="submit"
                                     className="w-32 h-10 bg-[#007E74] text-white rounded-md hover:bg-teal-800 text-sm"
                                 >
                                     Add Customer
-                                </button>
+                                </button> */}
+                                <button
+  type="submit"
+  disabled={isLoading}
+  className={`w-32 h-10 rounded-md text-sm ${
+    isLoading 
+      ? 'bg-gray-400 cursor-not-allowed' 
+      : 'bg-[#007E74] hover:bg-teal-800'
+  } text-white`}
+>
+  {isLoading ? 'Adding...' : 'Add Customer'}
+</button>
                             </div>
                         </Form>
                     )}
