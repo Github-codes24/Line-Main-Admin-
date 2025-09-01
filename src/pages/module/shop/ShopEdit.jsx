@@ -1,13 +1,16 @@
 import React from "react";
-import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
+import { Box, Button, Card, CardContent, TextField, Typography } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-import {useNavigate, useLocation} from "react-router-dom";
-import {UploadIcon} from "lucide-react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { UploadIcon } from "lucide-react";
+import { updateShop } from "../../../config/index.js";
 
 function ShopEdit() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { id } = useParams(); // Get ID from URL parameters
     const shop = location.state?.shop;
+
     // Keep editable form state
     const [formData, setFormData] = React.useState({
         shopName: shop?.shopName || "",
@@ -20,22 +23,85 @@ function ShopEdit() {
         gstinImage: shop?.gstinImage || null,
     });
 
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
+
     const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleFileChange = (e) => {
-        const {name, files} = e.target;
+        const { name, files } = e.target;
         if (files.length > 0) {
-            setFormData((prev) => ({...prev, [name]: files[0]}));
+            setFormData((prev) => ({ ...prev, [name]: files[0] }));
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Updated shop data:", formData);
-        navigate(-1);
+        setLoading(true);
+        setError("");
+
+        try {
+            // Get shop ID from URL params or state
+            const shopId = id || shop?._id;
+            
+            if (!shopId) {
+                throw new Error("Shop ID is missing");
+            }
+
+            // Debug: Log the data being sent
+            console.log("Shop ID:", shopId);
+            console.log("Form Data being sent:", formData);
+
+            // Map form data to match backend expectations (based on Postman success)
+            const shopUpdateData = {
+                shopName: formData.shopName,
+                ownerName: formData.name,
+                contact: formData.contact,
+                address: formData.address,
+                aadhaarNumber: formData.aadhaarNumber
+            };
+            
+            // Only add GSTIN if it's provided and has valid format
+            if (formData.gstinNumber && formData.gstinNumber.trim() !== '') {
+                const gstinValue = formData.gstinNumber.trim();
+                // Basic GSTIN format validation (15 characters, alphanumeric)
+                if (gstinValue.length === 15 && /^[0-9A-Z]+$/.test(gstinValue)) {
+                    console.log("Adding valid GSTIN:", gstinValue);
+                    shopUpdateData.gstin = gstinValue;
+                } else {
+                    console.log("Invalid GSTIN format - skipping. GSTIN must be 15 alphanumeric characters.");
+                    setError("GSTIN must be 15 characters long and contain only numbers and capital letters (e.g., 10FPVTT9859K5Z1)");
+                    setLoading(false);
+                    return;
+                }
+            } else {
+                console.log("Skipping GSTIN - empty");
+            }
+            
+            // Only add images if they're provided
+            if (formData.aadhaarImage) {
+                shopUpdateData.aadhaarImage = formData.aadhaarImage;
+            }
+            if (formData.gstinImage) {
+                shopUpdateData.gstinImage = formData.gstinImage;
+            }
+
+            console.log("Mapped data for backend:", shopUpdateData);
+
+            const response = await updateShop(shopId, shopUpdateData);
+            console.log("Shop updated successfully:", response);
+
+            // Navigate back to shop list or previous page
+            navigate(-1);
+        } catch (error) {
+            console.error("Error updating shop:", error);
+            setError(error.message || "Failed to update shop");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -65,11 +131,11 @@ function ShopEdit() {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Shop Name:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -78,19 +144,19 @@ function ShopEdit() {
                                         name="shopName"
                                         value={formData.shopName}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
                             </Box>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Owner Name:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -99,19 +165,19 @@ function ShopEdit() {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
                             </Box>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Email ID/Phone Number:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -120,19 +186,19 @@ function ShopEdit() {
                                         name="contact"
                                         value={formData.contact}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
                             </Box>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Address:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Address:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -141,19 +207,19 @@ function ShopEdit() {
                                         name="address"
                                         value={formData.address}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
                             </Box>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Aadhaar Number:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -162,9 +228,9 @@ function ShopEdit() {
                                         name="aadhaarNumber"
                                         value={formData.aadhaarNumber}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
@@ -177,8 +243,8 @@ function ShopEdit() {
                                     gap: 2,
                                 }}
                             >
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Aadhaar Card Image:</Typography>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>Aadhaar Card Image:</Typography>
                                 </Box>
                                 <Box
                                     sx={{
@@ -201,7 +267,7 @@ function ShopEdit() {
                                             fontSize: "14px",
                                             boxShadow: "none",
                                             borderRadius: 2.5,
-                                            "&:hover": {background: "#3A57A6"},
+                                            "&:hover": { background: "#3A57A6" },
                                         }}
                                     >
                                         Upload Photo
@@ -228,11 +294,11 @@ function ShopEdit() {
                                 </Box>
                             </Box>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
+                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>GSTIN Number:</Typography>
                                 </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
+                                <Box sx={{ gridColumn: "span 2" }}>
                                     <TextField
                                         fullWidth
                                         type="text"
@@ -241,9 +307,9 @@ function ShopEdit() {
                                         name="gstinNumber"
                                         value={formData.gstinNumber}
                                         onChange={handleChange}
-                                        sx={{background: "#CED4F2"}}
+                                        sx={{ background: "#CED4F2" }}
                                         InputProps={{
-                                            sx: {"& input::placeholder": {color: "black", opacity: 1}},
+                                            sx: { "& input::placeholder": { color: "black", opacity: 1 } },
                                         }}
                                     />
                                 </Box>
@@ -256,8 +322,8 @@ function ShopEdit() {
                                     gap: 2,
                                 }}
                             >
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>GSTIN Image:</Typography>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Typography sx={{ fontWeight: 500 }}>GSTIN Image:</Typography>
                                 </Box>
                                 <Box
                                     sx={{
@@ -280,7 +346,7 @@ function ShopEdit() {
                                             fontSize: "14px",
                                             boxShadow: "none",
                                             borderRadius: 2.5,
-                                            "&:hover": {background: "#3A57A6"},
+                                            "&:hover": { background: "#3A57A6" },
                                         }}
                                     >
                                         Upload Photo
@@ -308,6 +374,14 @@ function ShopEdit() {
                             </Box>
                         </Box>
 
+                        {error && (
+                            <Box sx={{ mb: 2, textAlign: "center" }}>
+                                <Typography color="error" variant="body2">
+                                    {error}
+                                </Typography>
+                            </Box>
+                        )}
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -333,14 +407,19 @@ function ShopEdit() {
                             <Button
                                 type="submit"
                                 variant="outlined"
+                                disabled={loading}
                                 sx={{
                                     background: "#001580",
                                     color: "#FFFFFF",
                                     px: 4,
                                     textTransform: "none",
+                                    "&:disabled": {
+                                        background: "#cccccc",
+                                        color: "#666666"
+                                    }
                                 }}
                             >
-                                Update
+                                {loading ? "Updating..." : "Update"}
                             </Button>
                         </Box>
                     </form>

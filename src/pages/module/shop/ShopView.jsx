@@ -1,15 +1,114 @@
 import React from "react";
-import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, TextField, Typography, CircularProgress} from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, useParams} from "react-router-dom";
+import {getSingleShop, deleteShop} from "../../../config/index.js";
 
 function ShopView() {
     const navigate = useNavigate();
     const {state} = useLocation();
-    const shop = state?.shop;
+    const {id} = useParams(); // Get shop ID from URL
+    
+    // State management
+    const [shop, setShop] = React.useState(state?.shop || null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
+    // Fetch shop data from API
+    const fetchShop = async (shopId) => {
+        setLoading(true);
+        setError("");
+        
+        try {
+            console.log("Fetching shop with ID:", shopId);
+            const response = await getSingleShop(shopId);
+            
+            if (response.success) {
+                setShop(response.data);
+                console.log("Shop data loaded:", response.data);
+            } else {
+                setError(response.message || "Failed to fetch shop details");
+            }
+        } catch (error) {
+            console.error("Error fetching shop:", error);
+            setError("Failed to load shop details");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Handle delete shop
+    const handleDeleteShop = async () => {
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${shop.shopName}"? This action cannot be undone.`
+        );
+        
+        if (!confirmDelete) return;
+
+        try {
+            console.log("Deleting shop with ID:", shop.id || shop._id);
+            const response = await deleteShop(shop.id || shop._id);
+            
+            if (response.success) {
+                alert("Shop deleted successfully!");
+                navigate("/admin/shopmanagement/list");
+            } else {
+                alert(response.message || "Failed to delete shop");
+            }
+        } catch (error) {
+            console.error("Error deleting shop:", error);
+            alert("Failed to delete shop. Please try again.");
+        }
+    };
+
+    // Load shop data on component mount if not already available
+    React.useEffect(() => {
+        if (!shop && id) {
+            fetchShop(id);
+        }
+    }, [id, shop]);
+
+    // Loading state
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    // Error state
+    if (error) {
+        return (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography color="error" variant="h6">
+                    {error}
+                </Typography>
+                <Button 
+                    variant="contained" 
+                    onClick={() => navigate(-1)}
+                    sx={{ mt: 2 }}
+                >
+                    Go Back
+                </Button>
+            </Box>
+        );
+    }
+
+    // No shop data
     if (!shop) {
-        return <Typography>No shop data available</Typography>;
+        return (
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+                <Typography variant="h6">No shop data available</Typography>
+                <Button 
+                    variant="contained" 
+                    onClick={() => navigate(-1)}
+                    sx={{ mt: 2 }}
+                >
+                    Go Back
+                </Button>
+            </Box>
+        );
     }
 
     const ImagePreviewBox = ({label, src, alt, fallback}) => (
@@ -90,10 +189,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.shopName}
+                                        value={shop.shopName || ''}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -106,10 +209,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.name}
+                                        value={shop.ownerName || ''}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -122,10 +229,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.contact}
+                                        value={shop.contact || ''}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -138,10 +249,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.address}
+                                        value={shop.address || ''}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -154,10 +269,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.aadhaar}
+                                        value={shop.aadhaarNumber || ''}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -165,7 +284,7 @@ function ShopView() {
                             <ImagePreviewBox
                                 label="Aadhaar Card Image:"
                                 src={shop.aadhaarImage}
-                                alt={`Aadhaar Card of ${shop.name}`}
+                                alt={`Aadhaar Card of ${shop.ownerName || shop.shopName}`}
                                 fallback="No Aadhaar image available"
                             />
 
@@ -177,10 +296,14 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.gstin}
+                                        value={shop.gstin || 'N/A'}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true
+                                            }
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -233,7 +356,8 @@ function ShopView() {
                                         state: {
                                             shop: {
                                                 ...shop,
-                                                aadhaarNumber: shop.aadhaar,
+                                                // Ensure field mapping consistency for edit form
+                                                name: shop.ownerName,
                                                 gstinNumber: shop.gstin,
                                             },
                                         },
@@ -241,6 +365,23 @@ function ShopView() {
                                 }
                             >
                                 Edit
+                            </Button>
+
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    background: "#dc3545",
+                                    color: "#FFFFFF",
+                                    paddingX: 4,
+                                    paddingY: "2px",
+                                    textTransform: "none",
+                                    "&:hover": {
+                                        background: "#c82333",
+                                    }
+                                }}
+                                onClick={handleDeleteShop}
+                            >
+                                Delete
                             </Button>
                         </Box>
                     </form>
