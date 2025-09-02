@@ -18,12 +18,12 @@ export default function SetLimitAmount() {
       const data = res.data;
 
       if (data?.success) {
-        setLimit(data.data?.nagativeLimit ?? ""); // 👈 backend spelling
+        setLimit(data.data?.nagativeLimit ?? ""); 
       } else {
         setMsg(data?.message || "Failed to fetch wallet limit");
       }
     } catch (err) {
-      console.error("❌ fetchLimit error:", err.response || err.message);
+      console.error("fetchLimit error:", err.response || err.message);
       const serverMsg = err?.response?.data?.message;
       setMsg(serverMsg || "Error fetching wallet limit");
     } finally {
@@ -40,7 +40,7 @@ export default function SetLimitAmount() {
     setMsg("");
     try {
       const res = await api.put(API_ENDPOINTS.UPDATE_WALLET_LIMIT, {
-        nagativeLimit: Number(limit), // 👈 backend spelling
+        nagativeLimit: Number(limit), 
       });
       const data = res.data;
 
@@ -50,7 +50,7 @@ export default function SetLimitAmount() {
         setMsg(data?.message || "Failed to update limit");
       }
     } catch (err) {
-      console.error("❌ update error:", err.response || err.message);
+      console.error("update error:", err.response || err.message);
       const serverMsg = err?.response?.data?.message;
       setMsg(serverMsg || "Error updating wallet limit");
     } finally {
