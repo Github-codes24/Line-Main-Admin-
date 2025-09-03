@@ -1,9 +1,13 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import BG from "../../../assets/images/BG.png";
 import {MdOutlineFileUpload} from "react-icons/md";
+import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
+import {useFormik} from "formik";
+import * as Yup from "yup";
 
 const SmallProductAdd = () => {
+    const {loading, addSmallProduct, createSmallProduct} = useSmallProduct();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const [setProductImage] = useState("/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png");
@@ -12,12 +16,36 @@ const SmallProductAdd = () => {
     const [productPrice, setProductPrice] = useState("Enter Price");
     const [productDescription, setProductDescription] = useState("Enter Product Description");
 
+    useEffect(() => {
+        createSmallProduct();
+    }, []);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setProductImage(URL.createObjectURL(file));
         }
     };
+    const formik = useFormik({
+        initialValues: {
+            productImg: "",
+            productName: "",
+            productCategory: "",
+            productPrice: "",
+            productDescription: "",
+        },
+        // validationSchema: Yup.object({
+        //     emailOrPhone: Yup.string()
+        //     .required("Email or Mobile Number is required")
+        //     .min(4, "Must be at least 4 characters"),
+        // }),
+        onSubmit: (values) => {
+            const formData = FormData();
+            formData.append("productName", productName);
+            formData.append("productCategory", productCategory);
+            formData.append("productPrice", productPrice);
+            formData.append("productDescription", productDescription);
+        },
+    });
 
     return (
         <div className="p-2 font-[Poppins]">
@@ -52,102 +80,104 @@ const SmallProductAdd = () => {
                 </div>
             </div>
 
-            <div className="border rounded-lg p-4 shadow bg-white">
-                <div className="border border-black p-4 rounded-lg">
-                    <div className="flex gap-4 mb-6">
-                        <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
-                        <div className=" rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
-                            <img
-                                src={BG}
-                                alt="Product"
-                                onClick={() => fileInputRef.current.click()}
-                                className="min-h-[240px] w-[240px] object-cover mb-2 cursor-pointer border-2 border-[#001580] rounded-3xl"
-                            />
-                            <button
-                                className="w-[200px] h-[40px] top-50 right-50 absolute bg-[#00158099] text-white text-base font-medium px-3 py-1 rounded-lg"
-                                onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                                type="button"
-                            >
-                                <div className="relative left-4">
-                                    <MdOutlineFileUpload className="absolute h-6 w-6 left-2 top-1/2 transform -translate-y-1/2" />
-                                    Upload Photo
-                                </div>
-                            </button>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                ref={fileInputRef}
-                                onChange={handleImageChange}
-                                className="hidden cursor-pointer"
-                            />
+            <form onSubmit={formik.handleSubmit}>
+                <div className="border rounded-lg p-4 shadow bg-white">
+                    <div className="border border-black p-4 rounded-lg">
+                        <div className="flex gap-4 mb-6">
+                            <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                            <div className=" rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
+                                <img
+                                    src={BG}
+                                    alt="Product"
+                                    onClick={() => fileInputRef.current.click()}
+                                    className="min-h-[240px] w-[240px] object-cover mb-2 cursor-pointer border-2 border-[#001580] rounded-3xl"
+                                />
+                                <button
+                                    className="w-[200px] h-[40px] top-50 right-50 absolute bg-[#00158099] text-white text-base font-medium px-3 py-1 rounded-lg"
+                                    onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                                    type="button"
+                                >
+                                    <div className="relative left-4">
+                                        <MdOutlineFileUpload className="absolute h-6 w-6 left-2 top-1/2 transform -translate-y-1/2" />
+                                        Upload Photo
+                                    </div>
+                                </button>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    ref={fileInputRef}
+                                    onChange={handleImageChange}
+                                    className="hidden cursor-pointer"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex items-start gap-4">
+                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                    Product Name:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    value={productName}
+                                    onChange={(e) => setProductName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                    Product Category:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    value={productCategory}
+                                    onChange={(e) => setProductCategory(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                    Product Price:
+                                </label>
+                                <input
+                                    type="text"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    value={productPrice}
+                                    onChange={(e) => setProductPrice(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="flex items-start gap-4">
+                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                    Product Description:
+                                </label>
+                                <textarea
+                                    rows="5"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
+                                    value={productDescription}
+                                    onChange={(e) => setProductDescription(e.target.value)}
+                                />
+                            </div>
                         </div>
                     </div>
-
-                    <div className="space-y-4">
-                        <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Name:
-                            </label>
-                            <input
-                                type="text"
-                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                value={productName}
-                                onChange={(e) => setProductName(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Category:
-                            </label>
-                            <input
-                                type="text"
-                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                value={productCategory}
-                                onChange={(e) => setProductCategory(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Price:
-                            </label>
-                            <input
-                                type="text"
-                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                value={productPrice}
-                                onChange={(e) => setProductPrice(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Description:
-                            </label>
-                            <textarea
-                                rows="5"
-                                className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
-                                value={productDescription}
-                                onChange={(e) => setProductDescription(e.target.value)}
-                            />
-                        </div>
+                    <div className="flex justify-center mt-6 gap-4">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="w-[200px] bg-[#CECEF2] text-[#001580] border border-[#001580] font-medium px-10 py-2 rounded-lg"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            onClick={() => navigate("/admin/smallproduct")}
+                            className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
+                        >
+                            Add Product
+                        </button>
                     </div>
                 </div>
-                <div className="flex justify-center mt-6 gap-4">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="w-[200px] bg-[#CECEF2] text-[#001580] border border-[#001580] font-medium px-10 py-2 rounded-lg"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={() => navigate("/admin/smallproduct")}
-                        className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
-                    >
-                        Add Product
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
     );
 };
