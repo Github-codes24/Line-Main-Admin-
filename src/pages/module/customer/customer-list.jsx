@@ -1,13 +1,97 @@
 // CustomerList.jsx
-// import { getAllCustomers } from "../../../config";
-import { getAllCustomers, deleteCustomer } from "../../../config";
-
 import React, { useState, useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
+
+// API Configuration
+const API_BASE_URL = 'https://linemen-be-1.onrender.com';
+const API_ENDPOINTS = {
+    GET_ALL_CUSTOMERS: '/admin/customer/get-all-customer',
+    DELETE_CUSTOMER: '/admin/Customer/delete-customer'
+};
+
+const getAuthToken = () => {
+    return localStorage.getItem('authToken') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGIxNTRlNTlmMzU3OWJiOGQzMTA1OWYiLCJlbWFpbCI6ImQyZXZhbnNoc2FlZGh1MjBAZ21haWwuY29tIiwiaWF0IjoxNzU2NzMxNDc2LCJleHAiOjE3NTkzMjM0NzZ9.xI3UxSCp6wyb-EHCd5LBqIA5AqIOPIFG7cJyi6XZmsM';
+};
+
+// Get All Customers API Function
+const getAllCustomers = async () => {
+    try {
+        const url = `${API_BASE_URL}${API_ENDPOINTS.GET_ALL_CUSTOMERS}`;
+        console.log('Get All Customers API URL:', url);
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
+
+        console.log('Get All Customers Response Status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log('Get All Customers Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Get All Customers Success:', data);
+        return data;
+    } catch (error) {
+        console.error('Error getting all customers:', error);
+        throw error;
+    }
+};
+
+// Delete Customer API Function
+const deleteCustomer = async (customerId) => {
+    try {
+        const url = `${API_BASE_URL}${API_ENDPOINTS.DELETE_CUSTOMER}/${customerId}`;
+        console.log('Delete Customer API URL:', url);
+
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            }
+        });
+
+        console.log('Delete Customer Response Status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log('Delete Customer Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Handle different response types
+        const contentType = response.headers.get('content-type');
+        let data;
+
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            const textResponse = await response.text();
+            data = {
+                success: true,
+                message: textResponse || 'Customer deleted successfully',
+                status: response.status
+            };
+        }
+
+        console.log('Delete Customer Success:', data);
+        return data;
+    } catch (error) {
+        console.error('Error deleting customer:', error);
+        throw error;
+    }
+};
 
 const CustomerList = () => {
     const navigate = useNavigate();

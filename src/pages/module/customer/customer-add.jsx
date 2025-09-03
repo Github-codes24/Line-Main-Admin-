@@ -1,16 +1,52 @@
 // src/pages/AddCustomer.jsx
-//For API importing 
-// import { addCustomer } from '../../../services/customerService';
-import { addCustomer } from '../../../config';  // NEW PATH
-
 import { useState } from 'react';
-
-
 import React from "react";
 
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
+
+// API Configuration
+const API_BASE_URL = 'https://linemen-be-1.onrender.com';
+const API_ENDPOINTS = {
+    ADD_CUSTOMER: '/admin/Customer/add-customer'
+};
+
+const getAuthToken = () => {
+    return localStorage.getItem('authToken') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGIxNTRlNTlmMzU3OWJiOGQzMTA1OWYiLCJlbWFpbCI6ImQyZXZhbnNoc2FlZGh1MjBAZ21haWwuY29tIiwiaWF0IjoxNzU2NzMxNDc2LCJleHAiOjE3NTkzMjM0NzZ9.xI3UxSCp6wyb-EHCd5LBqIA5AqIOPIFG7cJyi6XZmsM';
+};
+
+// Add Customer API Function
+const addCustomer = async (customerData) => {
+    try {
+        console.log('Add Customer API URL:', `${API_BASE_URL}${API_ENDPOINTS.ADD_CUSTOMER}`);
+        console.log('Add Customer Request Data:', customerData);
+
+        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADD_CUSTOMER}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getAuthToken()}`
+            },
+            body: JSON.stringify(customerData)
+        });
+
+        console.log('Add Customer Response Status:', response.status);
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.log('Add Customer Error Response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Add Customer Success:', data);
+        return data;
+    } catch (error) {
+        console.error('Error adding customer:', error);
+        throw error;
+    }
+};
 
 const validationSchema = Yup.object({
     name: Yup.string().required("Customer name is required"),

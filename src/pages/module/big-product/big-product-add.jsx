@@ -1,22 +1,83 @@
 import React, {useState, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import addImage from "../../../assets/images/addImage.png";
+import {addBigProduct} from "../../../config/index.js";
 
 const BigProductAdd = () => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    const [setProductImage] = useState("/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png");
-    const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
-    const [productCategory, setProductCategory] = useState("Electrician");
-    const [productPrice, setProductPrice] = useState("₹499");
-    const [productDescription, setProductDescription] = useState(
-        "Lorem ipsum dolor sit amet consectetur. Dolor pulvinar aliquet donec in auctor ultrices nunc. In ut ipsum varius egestas dolor senectus. Posuere ut urna ac aliquam. Et tellus consequat consectetur ornare massa augue. Odio mauris."
-    );
+    
+    // State management
+    const [productImage, setProductImage] = useState(null);
+    const [productImagePreview, setProductImagePreview] = useState(addImage);
+    const [productName, setProductName] = useState("");
+    const [productCategory, setProductCategory] = useState("");
+    const [productPrice, setProductPrice] = useState("");
+    const [productDescription, setProductDescription] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setProductImage(URL.createObjectURL(file));
+            setProductImage(file);
+            setProductImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleCancel = () => {
+        navigate("/admin/bigproduct");
+    };
+
+    const handleAddProduct = async () => {
+        // Validation
+        if (!productName.trim()) {
+            setError("Product name is required");
+            return;
+        }
+        if (!productCategory.trim()) {
+            setError("Product category is required");
+            return;
+        }
+        if (!productPrice.trim()) {
+            setError("Product price is required");
+            return;
+        }
+        if (!productDescription.trim()) {
+            setError("Product description is required");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const productData = {
+                productName: productName.trim(),
+                productCategory: productCategory.trim(),
+                productPrice: productPrice.trim(),
+                productDescription: productDescription.trim()
+            };
+
+            // Add image if selected
+            if (productImage) {
+                productData.productImage = productImage;
+            }
+
+            console.log("Adding big product:", productData);
+            const response = await addBigProduct(productData);
+
+            if (response.success) {
+                alert("Big product added successfully!");
+                navigate("/admin/bigproduct");
+            } else {
+                setError(response.message || "Failed to add big product");
+            }
+        } catch (error) {
+            console.error("Error adding big product:", error);
+            setError("Failed to add big product. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -57,8 +118,8 @@ const BigProductAdd = () => {
                 {/* Product Image */}
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
-                    <div className=" rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
-                        <img src={addImage} alt="Product" className="max-h-[140px] max-w-[140px] object-contain mb-2" />
+                    <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative border-2 border-dashed border-gray-300">
+                        <img src={productImagePreview} alt="Product" className="max-h-[140px] max-w-[140px] object-contain mb-2" />
                         <input
                             type="file"
                             accept="image/*"
@@ -66,12 +127,13 @@ const BigProductAdd = () => {
                             onChange={handleImageChange}
                             className="hidden"
                         />
-                        {/* <button
-              onClick={() => fileInputRef.current.click()}
-              className="bg-teal-400 text-white text-sm px-3 py-1 rounded-md hover:bg-gray-500"
-            >
-              Upload Photo
-            </button> */}
+                        <button
+                            type="button"
+                            onClick={() => fileInputRef.current.click()}
+                            className="bg-teal-400 text-white text-sm px-3 py-1 rounded-md hover:bg-teal-500"
+                        >
+                            Upload Photo
+                        </button>
                     </div>
                 </div>
 
@@ -118,13 +180,30 @@ const BigProductAdd = () => {
                     </div>
                 </div>
 
+                {/* Error Display */}
+                {error && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                        {error}
+                    </div>
+                )}
+
                 {/* Action Buttons */}
                 <div className="flex justify-center mt-6 gap-4">
-                    <button className="bg-teal-100 hover:bg-teal-800 text-teal-700 px-10 py-2 rounded-lg">
+                    <button 
+                        type="button"
+                        onClick={handleCancel}
+                        disabled={loading}
+                        className="bg-teal-100 hover:bg-teal-200 text-teal-700 px-10 py-2 rounded-lg disabled:opacity-50"
+                    >
                         Cancel
                     </button>
-                    <button className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg">
-                        Add Product
+                    <button 
+                        type="button"
+                        onClick={handleAddProduct}
+                        disabled={loading}
+                        className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg disabled:opacity-50"
+                    >
+                        {loading ? "Adding..." : "Add Product"}
                     </button>
                 </div>
             </div>

@@ -1,6 +1,7 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 import editBig from "../../../assets/images/editBigImage.png";
+import {updateBigProduct, getSingleBigProduct} from "../../../config/index.js";
 
 const BigProductEdit = () => {
     const navigate = useNavigate();
@@ -8,33 +9,128 @@ const BigProductEdit = () => {
     const fileInputRef = useRef(null);
     const {state} = useLocation();
 
-    // ✅ Use data from state if available
-    const [productImage, setProductImage] = useState(state?.image || editBig);
-    const [productName, setProductName] = useState(state?.name || "");
-    const [productCategory, setProductCategory] = useState(state?.category || "");
-    const [productPrice, setProductPrice] = useState(state?.price || "");
-    const [productDescription, setProductDescription] = useState(state?.description || "");
+    // State management
+    const [productImage, setProductImage] = useState(null); // File object for upload
+    const [productImagePreview, setProductImagePreview] = useState(editBig); // Preview URL
+    const [productName, setProductName] = useState("");
+    const [productCategory, setProductCategory] = useState("");
+    const [productPrice, setProductPrice] = useState("");
+    const [productDescription, setProductDescription] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [initialLoading, setInitialLoading] = useState(false);
+
+    // Load product data if not passed via state
+    const loadProductData = async () => {
+        if (state) {
+            // Use data from navigation state
+            setProductName(state.productName || state.name || "");
+            setProductCategory(state.productCategory || state.category || "");
+            setProductPrice(state.productPrice || state.price || "");
+            setProductDescription(state.productDescription || state.description || "");
+            setProductImagePreview(state.productImage || state.image || editBig);
+        } else if (id) {
+            // Fetch data from API
+            setInitialLoading(true);
+            try {
+                console.log("Fetching big product for edit with ID:", id);
+                const response = await getSingleBigProduct(id);
+                
+                if (response.success) {
+                    const productData = response.data;
+                    setProductName(productData.productName || "");
+                    setProductCategory(productData.productCategory || "");
+                    setProductPrice(productData.productPrice || "");
+                    setProductDescription(productData.productDescription || productData.description || "");
+                    setProductImagePreview(productData.productImage || editBig);
+                } else {
+                    setError(response.message || "Failed to load product data");
+                }
+            } catch (error) {
+                console.error("Error loading product data:", error);
+                setError("Failed to load product data");
+            } finally {
+                setInitialLoading(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        loadProductData();
+    }, [id, state]);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (file) setProductImage(URL.createObjectURL(file));
+        if (file) {
+            setProductImage(file);
+            setProductImagePreview(URL.createObjectURL(file));
+        }
     };
 
     const handleCancel = () => {
         navigate("/admin/bigproduct");
     };
 
-    const handleUpdate = () => {
-        // do your update logic here...
-        navigate(`/admin/bigproduct/view/${id}`, {
-            state: {
-                image: productImage,
-                name: productName,
-                category: productCategory,
-                price: productPrice,
-                description: productDescription,
-            },
-        });
+    const handleUpdate = async () => {
+        // Validation
+        if (!productName.trim()) {
+            setError("Product name is required");
+            return;
+        }
+        if (!productCategory.trim()) {
+            setError("Product category is required");
+            return;
+        }
+        if (!productPrice.trim()) {
+            setError("Product price is required");
+            return;
+        }
+        if (!productDescription.trim()) {
+            setError("Product description is required");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+
+        try {
+            const updateData = {
+                productName: productName.trim(),
+                productCategory: productCategory.trim(),
+                productPrice: productPrice.trim(),
+                productDescription: productDescription.trim()
+            };
+
+            // Add image if a new one was selected
+            if (productImage) {
+                updateData.productImage = productImage;
+            }
+
+            console.log("Updating big product with ID:", id, "Data:", updateData);
+            const response = await updateBigProduct(id, updateData);
+
+            if (response.success) {
+                alert("Big product updated successfully!");
+                navigate(`/admin/bigproduct/view/${id}`, {
+                    state: {
+                        ...response.data,
+                        // Ensure consistent field mapping
+                        name: response.data.productName,
+                        category: response.data.productCategory,
+                        price: response.data.productPrice,
+                        description: response.data.productDescription,
+                        image: response.data.productImage
+                    }
+                });
+            } else {
+                setError(response.message || "Failed to update big product");
+            }
+        } catch (error) {
+            console.error("Error updating big product:", error);
+            setError("Failed to update big product. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -70,26 +166,46 @@ const BigProductEdit = () => {
                 <h1 className="ml-4 text-xl font-semibold">Edit Big Product</h1>
             </div>
 
-            {/* Left-aligned product edit box */}
-            <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
-                {/* Product Image */}
-                <div className="flex items-center gap-6 mb-6">
-                    <label className="w-[160px] font-semibold">Product Image:</label>
-                    <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative">
-                        <img
-                            src={productImage}
-                            alt="Product"
-                            className="max-h-[140px] max-w-[140px] object-contain mb-2"
-                        />
-                        <input
-                            type="file"
-                            accept="image/*"
-                            ref={fileInputRef}
-                            onChange={handleImageChange}
-                            className="hidden"
-                        />
-                    </div>
+            {/* Loading State */}
+            {initialLoading ? (
+                <div className="flex justify-center items-center min-h-[400px]">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600"></div>
                 </div>
+            ) : (
+                /* Left-aligned product edit box */
+                <div className="border rounded-xl p-6 shadow bg-white w-[900px]">
+                    {/* Error Display */}
+                    {error && (
+                        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                            {error}
+                        </div>
+                    )}
+
+                    {/* Product Image */}
+                    <div className="flex items-center gap-6 mb-6">
+                        <label className="w-[160px] font-semibold">Product Image:</label>
+                        <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative border-2 border-dashed border-gray-300">
+                            <img
+                                src={productImagePreview}
+                                alt="Product"
+                                className="max-h-[140px] max-w-[140px] object-contain mb-2"
+                            />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleImageChange}
+                                className="hidden"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => fileInputRef.current.click()}
+                                className="bg-teal-400 text-white text-sm px-3 py-1 rounded-md hover:bg-teal-500"
+                            >
+                                Change Photo
+                            </button>
+                        </div>
+                    </div>
 
                 {/* Editable Fields */}
                 <div className="space-y-4">
@@ -134,22 +250,27 @@ const BigProductEdit = () => {
                     </div>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex justify-center mt-6 gap-4">
-                    <button
-                        onClick={handleCancel}
-                        className="bg-teal-100 hover:bg-teal-200 text-teal-700 px-10 py-2 rounded-lg"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        onClick={handleUpdate}
-                        className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg"
-                    >
-                        Update
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="flex justify-center mt-6 gap-4">
+                        <button
+                            type="button"
+                            onClick={handleCancel}
+                            disabled={loading}
+                            className="bg-teal-100 hover:bg-teal-200 text-teal-700 px-10 py-2 rounded-lg disabled:opacity-50"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleUpdate}
+                            disabled={loading}
+                            className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg disabled:opacity-50"
+                        >
+                            {loading ? "Updating..." : "Update"}
+                        </button>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
