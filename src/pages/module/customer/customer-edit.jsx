@@ -1,3 +1,7 @@
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
+
+// End of edit importing customer API
 import React from "react";
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
@@ -8,11 +12,6 @@ import {useNavigate} from "react-router-dom";
 
 const EditCustomer = () => {
     const navigate = useNavigate();
-    const initialValues = {
-        customerName: "Theresa Webb",
-        phoneOrEmail: "+91-9876543210",
-        address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-    };
 
     const validationSchema = Yup.object({
         customerName: Yup.string().required("Customer Name is required"),
@@ -20,16 +19,32 @@ const EditCustomer = () => {
         address: Yup.string().required("Address is required"),
     });
 
-    const handleSubmit = (values) => {
-        console.log(values);
-        toast.success("Customer updated successfully!");
-
-        setTimeout(() => {
-            navigate(-1);
-        }, 1000);
+    //Adding the function for the API
+    const handleSubmit = async (values, {setSubmitting}) => {
+        setIsLoading(true);
+        setSubmitStatus({type: "", message: ""});
     };
+
+    // Ending of this API function
+
     const handleBack = () => {
         navigate(-1);
+    };
+
+    //Adding states for the API
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState({type: "", message: ""});
+    const {id} = useParams();
+
+    const [isLoadingCustomer, setIsLoadingCustomer] = useState(true);
+
+    const [customerData, setCustomerData] = useState(null);
+
+    const initialValues = {
+        customerName: customerData?.name || "",
+        phoneOrEmail: customerData?.contact || "",
+        address: customerData?.address || "",
     };
 
     return (
@@ -73,82 +88,108 @@ const EditCustomer = () => {
                         Edit Customer
                     </div>
                 </div>
-
-                <div className="rounded-xl shadow-md p-4 border bg-white">
-                    <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-                        {({resetForm}) => (
-                            <Form>
-                                <div className="border border-[#616666] rounded-lg p-4 min-h-[400px]">
-                                    <div className="space-y-4">
-                                        <div className="flex items-center">
-                                            <label className="w-40 font-medium">Customer Name:</label>
-                                            <div className="flex-1">
-                                                <Field
-                                                    type="text"
-                                                    name="customerName"
-                                                    className="w-full  border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
-                                                />
-                                                <ErrorMessage
-                                                    name="customerName"
-                                                    component="div"
-                                                    className="text-red-500 text-sm"
-                                                />
+                {isLoadingCustomer ? (
+                    <div className="text-center p-4">Loading customer data...</div>
+                ) : (
+                    <div className="rounded-xl shadow-md p-4 border bg-white">
+                        <Formik
+                            initialValues={initialValues}
+                            validationSchema={validationSchema}
+                            onSubmit={handleSubmit}
+                        >
+                            {({resetForm}) => (
+                                <Form>
+                                    <div className="border border-[#616666] rounded-lg p-4 min-h-[400px]">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center">
+                                                <label className="w-40 font-medium">Customer Name:</label>
+                                                <div className="flex-1">
+                                                    <Field
+                                                        type="text"
+                                                        name="customerName"
+                                                        className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
+                                                    />
+                                                    <ErrorMessage
+                                                        name="customerName"
+                                                        component="div"
+                                                        className="text-red-500 text-sm"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="flex items-center">
-                                            <label className="w-40 font-medium">Email ID/Phone Number:</label>
-                                            <div className="flex-1 items-center">
-                                                <Field
-                                                    type="text"
-                                                    name="phoneOrEmail"
-                                                    className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
-                                                />
-                                                <ErrorMessage
-                                                    name="phoneOrEmail"
-                                                    component="div"
-                                                    className="text-red-500 text-sm"
-                                                />
+                                            <div className="flex items-center">
+                                                <label className="w-40 font-medium">Email ID/Phone Number:</label>
+                                                <div className="flex-1 items-center">
+                                                    <Field
+                                                        type="text"
+                                                        name="phoneOrEmail"
+                                                        className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
+                                                    />
+                                                    <ErrorMessage
+                                                        name="phoneOrEmail"
+                                                        component="div"
+                                                        className="text-red-500 text-sm"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <div className="flex items-center">
-                                            <label className="w-40 font-medium">Address:</label>
-                                            <div className="flex-1">
-                                                <Field
-                                                    type="text"
-                                                    name="address"
-                                                    className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
-                                                />
-                                                <ErrorMessage
-                                                    name="address"
-                                                    component="div"
-                                                    className="text-red-500 text-sm"
-                                                />
+                                            <div className="flex items-center">
+                                                <label className="w-40 font-medium">Address:</label>
+                                                <div className="flex-1">
+                                                    <Field
+                                                        type="text"
+                                                        name="address"
+                                                        className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"
+                                                    />
+                                                    <ErrorMessage
+                                                        name="address"
+                                                        component="div"
+                                                        className="text-red-500 text-sm"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="flex justify-center gap-4 mt-6">
-                                    <button
-                                        type="button"
-                                        onClick={() => resetForm()}
-                                        className="border border-[#0f9e9e] text-[#0f9e9e] px-6 py-2 rounded-md hover:bg-[#e0f7f7]"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="bg-[#0f9e9e] text-white px-6 py-2 rounded-md hover:bg-[#0c7d7d]"
-                                    >
-                                        Update
-                                    </button>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
-                </div>
+                                    {/* Status Messages */}
+                                    {submitStatus.message && (
+                                        <div
+                                            className={`p-3 rounded-md mb-4 ${
+                                                submitStatus.type === "success"
+                                                    ? "bg-green-100 text-green-700 border border-green-300"
+                                                    : "bg-red-100 text-red-700 border border-red-300"
+                                            }`}
+                                        >
+                                            {submitStatus.message}
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-center gap-4 mt-6">
+                                        <button
+                                            type="button"
+                                            onClick={() => resetForm()}
+                                            className="border border-[#0f9e9e] text-[#0f9e9e] px-6 py-2 rounded-md hover:bg-[#e0f7f7]"
+                                        >
+                                            Cancel
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            disabled={isLoading}
+                                            className={`px-6 py-2 rounded-md ${
+                                                isLoading
+                                                    ? "bg-gray-400 cursor-not-allowed"
+                                                    : "bg-[#0f9e9e] hover:bg-[#0c7d7d]"
+                                            } text-white`}
+                                        >
+                                            {isLoading ? "Updating..." : "Update"}
+                                        </button>
+                                    </div>
+                                </Form>
+                            )}
+                        </Formik>
+                    </div>
+                )}
             </div>
         </div>
     );

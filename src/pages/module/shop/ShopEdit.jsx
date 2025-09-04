@@ -1,42 +1,17 @@
 import React from "react";
 import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, useParams} from "react-router-dom";
 import {UploadIcon} from "lucide-react";
 
 function ShopEdit() {
     const navigate = useNavigate();
     const location = useLocation();
+    const {id} = useParams();
     const shop = location.state?.shop;
-    // Keep editable form state
-    const [formData, setFormData] = React.useState({
-        shopName: shop?.shopName || "",
-        name: shop?.name || "",
-        contact: shop?.contact || "",
-        address: shop?.address || "",
-        aadhaarNumber: shop?.aadhaarNumber || "",
-        aadhaarImage: shop?.aadhaarImage || null,
-        gstinNumber: shop?.gstinNumber || "",
-        gstinImage: shop?.gstinImage || null,
-    });
 
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
-    };
-
-    const handleFileChange = (e) => {
-        const {name, files} = e.target;
-        if (files.length > 0) {
-            setFormData((prev) => ({...prev, [name]: files[0]}));
-        }
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log("Updated shop data:", formData);
-        navigate(-1);
-    };
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
     return (
         <Box
@@ -308,6 +283,14 @@ function ShopEdit() {
                             </Box>
                         </Box>
 
+                        {error && (
+                            <Box sx={{mb: 2, textAlign: "center"}}>
+                                <Typography color="error" variant="body2">
+                                    {error}
+                                </Typography>
+                            </Box>
+                        )}
+
                         <Box
                             sx={{
                                 display: "flex",
@@ -333,14 +316,19 @@ function ShopEdit() {
                             <Button
                                 type="submit"
                                 variant="outlined"
+                                disabled={loading}
                                 sx={{
                                     background: "#001580",
                                     color: "#FFFFFF",
                                     px: 4,
                                     textTransform: "none",
+                                    "&:disabled": {
+                                        background: "#cccccc",
+                                        color: "#666666",
+                                    },
                                 }}
                             >
-                                Update
+                                {loading ? "Updating..." : "Update"}
                             </Button>
                         </Box>
                     </form>

@@ -6,6 +6,12 @@ import {UploadIcon} from "lucide-react";
 
 function ShopAdd() {
     const navigate = useNavigate();
+
+    // Form state
+
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
+
     return (
         <Box
             sx={{
@@ -49,6 +55,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter Shop Name"
+                                        name="shopName"
+                                        value={formData.shopName}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -78,6 +87,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter Full Name"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -107,6 +119,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter Email ID/Phone Number"
+                                        name="contact"
+                                        value={formData.contact}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -136,6 +151,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter Full Address"
+                                        name="address"
+                                        value={formData.address}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -165,6 +183,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter 12 digit Aadhaar number of shop owner"
+                                        name="aadhaarNumber"
+                                        value={formData.aadhaarNumber}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -213,7 +234,13 @@ function ShopAdd() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input hidden accept="image/*" type="file" />
+                                        <input
+                                            hidden
+                                            accept="image/*"
+                                            type="file"
+                                            name="aadhaarImage"
+                                            onChange={handleFileChange}
+                                        />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -223,7 +250,7 @@ function ShopAdd() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        Upload Aadhaar Card
+                                        {formData.aadhaarImage ? formData.aadhaarImage.name : "Upload Aadhaar Card"}
                                     </Typography>
                                 </Box>
                             </Box>
@@ -244,6 +271,9 @@ function ShopAdd() {
                                         type="text"
                                         variant="outlined"
                                         placeholder="Enter GSTIN number"
+                                        name="gstinNumber"
+                                        value={formData.gstinNumber}
+                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -292,7 +322,13 @@ function ShopAdd() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input hidden accept="image/*" type="file" />
+                                        <input
+                                            hidden
+                                            accept="image/*"
+                                            type="file"
+                                            name="gstinImage"
+                                            onChange={handleFileChange}
+                                        />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -302,11 +338,19 @@ function ShopAdd() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        Upload GSTIN Card
+                                        {formData.gstinImage ? formData.gstinImage.name : "Upload GSTIN Card"}
                                     </Typography>
                                 </Box>
                             </Box>
                         </Box>
+
+                        {error && (
+                            <Box sx={{mb: 2, textAlign: "center"}}>
+                                <Typography color="error" variant="body2">
+                                    {error}
+                                </Typography>
+                            </Box>
+                        )}
 
                         <Box
                             sx={{
@@ -332,16 +376,22 @@ function ShopAdd() {
                                 Cancel
                             </Button>
                             <Button
+                                type="submit"
                                 variant="outlined"
+                                disabled={loading}
                                 sx={{
                                     background: "#001580",
                                     color: "#FFFFFF",
                                     paddingX: 4,
                                     paddingY: "2px",
                                     textTransform: "none",
+                                    "&:disabled": {
+                                        background: "#cccccc",
+                                        color: "#666666",
+                                    },
                                 }}
                             >
-                                Add Shop
+                                {loading ? "Adding..." : "Add Shop"}
                             </Button>
                         </Box>
                     </form>
