@@ -6,7 +6,6 @@ const BigProductView = () => {
     const navigate = useNavigate();
     const {state} = useLocation();
     const {id} = useParams();
-
     const [productName, setProductName] = useState("");
     const [productCategory, setProductCategory] = useState("");
     const [productPrice, setProductPrice] = useState("");
