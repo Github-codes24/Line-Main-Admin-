@@ -20,7 +20,6 @@ import {
     Checkbox,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-
 import {DeleteIcon, EditIcon, FilterIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
 

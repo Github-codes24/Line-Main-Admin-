@@ -1,19 +1,17 @@
-import React, {useState} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import viewBig from "../../../assets/images/viewBigImage.png";
 
 const BigProductView = () => {
     const navigate = useNavigate();
-
-    const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
-    const [productCategory, setProductCategory] = useState("Electrician");
-    const [productPrice, setProductPrice] = useState("₹499");
-    const [productDescription, setProductDescription] = useState(
-        "Lorem ipsum dolor sit amet consectetur. Dolor pulvinar aliquet donec in auctor ultrices nunc. In ut ipsum varius egestas dolor senectus. Posuere ut urna ac aliquam. Et tellus consequat consectetur ornare massa augue. Odio mauris."
-    );
-
     const {state} = useLocation();
-    const productId = state?.id;
+    const {id} = useParams();
+
+    const [productName, setProductName] = useState("");
+    const [productCategory, setProductCategory] = useState("");
+    const [productPrice, setProductPrice] = useState("");
+    const [productDescription, setProductDescription] = useState("");
+    const [productImage, setProductImage] = useState(viewBig);
 
     return (
         <div className="p-2">
@@ -50,7 +48,14 @@ const BigProductView = () => {
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
                     <div className="rounded-lg p-2 w-[200px] h-[200px] flex items-center justify-center border border-gray-300">
-                        <img src={viewBig} alt="Product" className="max-h-full max-w-full object-contain" />
+                        <img
+                            src={productImage}
+                            alt="Product"
+                            className="max-h-full max-w-full object-contain"
+                            onError={(e) => {
+                                e.target.src = viewBig; // Fallback to default image
+                            }}
+                        />
                     </div>
                 </div>
 
@@ -61,7 +66,7 @@ const BigProductView = () => {
                             type="text"
                             className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
                             value={productName}
-                            onChange={(e) => setProductName(e.target.value)}
+                            readOnly
                         />
                     </div>
 
@@ -71,7 +76,7 @@ const BigProductView = () => {
                             type="text"
                             className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
                             value={productCategory}
-                            onChange={(e) => setProductCategory(e.target.value)}
+                            readOnly
                         />
                     </div>
 
@@ -80,8 +85,8 @@ const BigProductView = () => {
                         <input
                             type="text"
                             className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none"
-                            value={productPrice}
-                            onChange={(e) => setProductPrice(e.target.value)}
+                            value={`₹${productPrice}`}
+                            readOnly
                         />
                     </div>
 
@@ -91,14 +96,14 @@ const BigProductView = () => {
                             rows="5"
                             className="bg-[#E9ECF6] rounded-md px-4 py-2 w-full outline-none resize-none"
                             value={productDescription}
-                            onChange={(e) => setProductDescription(e.target.value)}
+                            readOnly
                         />
                     </div>
                 </div>
 
                 <div className="flex justify-center mt-6">
                     <button
-                        onClick={() => navigate(`/admin/bigproduct/edit/${productId}`, {state})}
+                        onClick={() => navigate(`/admin/bigproduct/edit/${id}`, {})}
                         className="bg-[#001580] hover:bg-blue-900 text-white px-10 py-2 rounded-lg"
                     >
                         Edit
