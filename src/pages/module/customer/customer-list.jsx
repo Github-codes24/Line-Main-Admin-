@@ -1,176 +1,18 @@
-// CustomerList.jsx
-import React, { useState, useEffect } from "react";
-import { ToastContainer } from "react-toastify";
+import React, {useState, useEffect} from "react";
+import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Eye, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "../../../components/ui/button";
-
-// API Configuration
-const API_BASE_URL = 'https://linemen-be-1.onrender.com';
-const API_ENDPOINTS = {
-    GET_ALL_CUSTOMERS: '/admin/customer/get-all-customer',
-    DELETE_CUSTOMER: '/admin/Customer/delete-customer'
-};
-
-const getAuthToken = () => {
-    return localStorage.getItem('authToken') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGIxNTRlNTlmMzU3OWJiOGQzMTA1OWYiLCJlbWFpbCI6ImQyZXZhbnNoc2FlZGh1MjBAZ21haWwuY29tIiwiaWF0IjoxNzU2NzMxNDc2LCJleHAiOjE3NTkzMjM0NzZ9.xI3UxSCp6wyb-EHCd5LBqIA5AqIOPIFG7cJyi6XZmsM';
-};
-
-// Get All Customers API Function
-const getAllCustomers = async () => {
-    try {
-        const url = `${API_BASE_URL}${API_ENDPOINTS.GET_ALL_CUSTOMERS}`;
-        console.log('Get All Customers API URL:', url);
-
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            }
-        });
-
-        console.log('Get All Customers Response Status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log('Get All Customers Error Response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Get All Customers Success:', data);
-        return data;
-    } catch (error) {
-        console.error('Error getting all customers:', error);
-        throw error;
-    }
-};
-
-// Delete Customer API Function
-const deleteCustomer = async (customerId) => {
-    try {
-        const url = `${API_BASE_URL}${API_ENDPOINTS.DELETE_CUSTOMER}/${customerId}`;
-        console.log('Delete Customer API URL:', url);
-
-        const response = await fetch(url, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            }
-        });
-
-        console.log('Delete Customer Response Status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log('Delete Customer Error Response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Handle different response types
-        const contentType = response.headers.get('content-type');
-        let data;
-
-        if (contentType && contentType.includes('application/json')) {
-            data = await response.json();
-        } else {
-            const textResponse = await response.text();
-            data = {
-                success: true,
-                message: textResponse || 'Customer deleted successfully',
-                status: response.status
-            };
-        }
-
-        console.log('Delete Customer Success:', data);
-        return data;
-    } catch (error) {
-        console.error('Error deleting customer:', error);
-        throw error;
-    }
-};
+import {Eye, Trash2} from "lucide-react";
+import {useNavigate} from "react-router-dom";
+import {Button} from "../../../components/ui/button";
 
 const CustomerList = () => {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
-    
+
     // API states
     const [customers, setCustomers] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState('');
- // Add this function inside CustomerList component
-const handleDeleteCustomer = async (customerId, customerName) => {
-    // Confirm before deleting
-    const confirmDelete = window.confirm(`Are you sure you want to delete customer "${customerName}"?`);
-    
-    if (confirmDelete) {
-        try {
-            setIsLoading(true);
-            await deleteCustomer(customerId);
-            
-            // Remove customer from local state (immediate UI update)
-            setCustomers(customers.filter(customer => 
-                (customer._id || customer.id) !== customerId
-            ));
-            
-            // Or refresh the entire list from API
-            // const response = await getAllCustomers();
-            // setCustomers(response.customers || response.data || response);
-            
-        } catch (error) {
-            console.error('Error deleting customer:', error);
-            alert('Failed to delete customer. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
-    }
-};
-
-    // Fetch customers on component mount
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                setIsLoading(true);
-                const response = await getAllCustomers();
-                
-                // Add these debug logs
-                console.log('🔍 Full API Response:', response);
-                console.log('🔍 Response type:', typeof response);
-                console.log('🔍 Is response an array?', Array.isArray(response));
-                
-                // setCustomers(response.customers || response.data || response);
-                // Handle different API response structures
-let customerData = [];
-
-if (Array.isArray(response)) {
-    customerData = response;
-} else if (response.customers && Array.isArray(response.customers)) {
-    customerData = response.customers;
-} else if (response.data && Array.isArray(response.data)) {
-    customerData = response.data;
-} else if (response.users && Array.isArray(response.users)) {
-    customerData = response.users;
-} else {
-    console.log('⚠️ Unexpected API response format:', response);
-    customerData = [];
-}
-
-setCustomers(customerData);
-
-            } catch (error) {
-                console.error('Error fetching customers:', error);
-                setError('Failed to load customers');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-    
-        fetchCustomers();
-    }, []);
-    
+    const [error, setError] = useState("");
 
     // Filter customers based on search
     const filteredCustomers = customers.filter((customer) =>
@@ -234,38 +76,50 @@ setCustomers(customerData);
                                         <td className="px-6 py-4">
                                             <div className="flex justify-center space-x-4">
                                                 <button
-                                                    onClick={() => navigate(`/admin/customermanagement/view/${customer._id || customer.id}`)}
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/admin/customermanagement/view/${
+                                                                customer._id || customer.id
+                                                            }`
+                                                        )
+                                                    }
                                                     className="text-[#F15A29] hover:text-orange-700"
                                                 >
                                                     <Eye size={20} />
                                                 </button>
-                                                <button 
-    className="text-[#F15A29] hover:text-orange-700"
-    onClick={() => navigate(`/admin/customermanagement/edit/${customer._id || customer.id}`)}
->
-    <svg
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-    >
-        <path
-            d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
-            stroke="#EC2D01"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-        <path
-            d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
-            stroke="#EC2D01"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
-</button>
+                                                <button
+                                                    className="text-[#F15A29] hover:text-orange-700"
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/admin/customermanagement/edit/${
+                                                                customer._id || customer.id
+                                                            }`
+                                                        )
+                                                    }
+                                                >
+                                                    <svg
+                                                        width="20"
+                                                        height="20"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                                                            stroke="#EC2D01"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                        <path
+                                                            d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                                                            stroke="#EC2D01"
+                                                            strokeWidth="2"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </svg>
+                                                </button>
 
                                                 {/* </button>
                                                 <button
@@ -274,13 +128,9 @@ setCustomers(customerData);
                                                 >
                                                     <Trash2 size={20} />
                                                 </button> */}
-                                                <button
-    onClick={() => handleDeleteCustomer(customer._id || customer.id, customer.name)}
-    className="text-[#F15A29] hover:text-orange-700"
->
-    <Trash2 size={20} />
-</button>
-
+                                                <button className="text-[#F15A29] hover:text-orange-700">
+                                                    <Trash2 size={20} />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -293,7 +143,9 @@ setCustomers(customerData);
                 {/* Pagination Box */}
                 <div className="p-4">
                     <div className="flex justify-between items-center text-sm text-black">
-                        <span>Showing 1 to {filteredCustomers.length} of {customers.length} entries</span>
+                        <span>
+                            Showing 1 to {filteredCustomers.length} of {customers.length} entries
+                        </span>
                         <div>
                             <button className="px-3 py-1 border border-gray-300 rounded mr-2">Previous</button>
                             <button className="px-3 py-1 border border-gray-300 rounded">Next</button>

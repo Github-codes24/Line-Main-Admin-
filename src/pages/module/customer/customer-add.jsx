@@ -1,52 +1,8 @@
-// src/pages/AddCustomer.jsx
-import { useState } from 'react';
+import {useState} from "react";
 import React from "react";
-
 import {Formik, Form, Field, ErrorMessage} from "formik";
 import * as Yup from "yup";
 import {useNavigate} from "react-router-dom";
-
-// API Configuration
-const API_BASE_URL = 'https://linemen-be-1.onrender.com';
-const API_ENDPOINTS = {
-    ADD_CUSTOMER: '/admin/Customer/add-customer'
-};
-
-const getAuthToken = () => {
-    return localStorage.getItem('authToken') || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGIxNTRlNTlmMzU3OWJiOGQzMTA1OWYiLCJlbWFpbCI6ImQyZXZhbnNoc2FlZGh1MjBAZ21haWwuY29tIiwiaWF0IjoxNzU2NzMxNDc2LCJleHAiOjE3NTkzMjM0NzZ9.xI3UxSCp6wyb-EHCd5LBqIA5AqIOPIFG7cJyi6XZmsM';
-};
-
-// Add Customer API Function
-const addCustomer = async (customerData) => {
-    try {
-        console.log('Add Customer API URL:', `${API_BASE_URL}${API_ENDPOINTS.ADD_CUSTOMER}`);
-        console.log('Add Customer Request Data:', customerData);
-
-        const response = await fetch(`${API_BASE_URL}${API_ENDPOINTS.ADD_CUSTOMER}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getAuthToken()}`
-            },
-            body: JSON.stringify(customerData)
-        });
-
-        console.log('Add Customer Response Status:', response.status);
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.log('Add Customer Error Response:', errorText);
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Add Customer Success:', data);
-        return data;
-    } catch (error) {
-        console.error('Error adding customer:', error);
-        throw error;
-    }
-};
 
 const validationSchema = Yup.object({
     name: Yup.string().required("Customer name is required"),
@@ -63,9 +19,7 @@ const AddCustomer = () => {
 
     //Adding state for API
     const [isLoading, setIsLoading] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState({ type:'', message:''});
-
-     
+    const [submitStatus, setSubmitStatus] = useState({type: "", message: ""});
 
     return (
         <div className="p-4 bg-[#E0E9E9] min-h-screen">
@@ -111,50 +65,7 @@ const AddCustomer = () => {
                 <Formik
                     initialValues={{name: "", contact: "", address: ""}}
                     validationSchema={validationSchema}
-
-                    // onSubmit={(values, {resetForm}) => {
-                    //     console.log("Submitted:", values);
-                    //     resetForm();
-                    // }}
-
-                    //Replacing onsubmit function with API
-                    onSubmit={async (values, { resetForm, setSubmitting}) => {
-                        console.log(' Form submitted with values:', values);
-                        console.log(' addCustomer function:', addCustomer);
-                        
-                        setIsLoading(true);
-                        setSubmitStatus({ type: '', message: ''});
-                    
-                        try {
-                            const customerData = {
-                                name: values.name,
-                                contact: values.contact,
-                                address: values.address
-                            };
-                    
-                            console.log(' Sending customer data:', customerData);
-                            const result = await addCustomer(customerData);
-                            console.log(' API Success result:', result);
-                    
-                            setSubmitStatus({
-                                type:'success',
-                                message: 'Customer added successfully'
-                            });
-                            resetForm();
-                    
-                        }catch (error) {
-                            console.log(' API Error:', error);
-                            console.log(' Error message:', error.message);
-                            setSubmitStatus ({
-                                type: 'error',
-                                message: 'Failed to add customer. Please try again.'
-                            });
-                        }finally {
-                            setIsLoading(false);
-                            setSubmitting(false);
-                        }
-                    }}
-                       
+                    onSubmit={async (values, {resetForm, setSubmitting}) => {}}
                 >
                     {() => (
                         <Form>
@@ -217,19 +128,21 @@ const AddCustomer = () => {
                                 </div>
                             </div>
 
-                {/* Adding status message for JSX API */}
+                            {/* Adding status message for JSX API */}
 
-                {submitStatus.message && (
-  <div className={`p-3 rounded-md mb-4 ${
-    submitStatus.type === 'success' 
-      ? 'bg-green-100 text-green-700 border border-green-300' 
-      : 'bg-red-100 text-red-700 border border-red-300'
-  }`}>
-    {submitStatus.message}
-  </div>
-)}
+                            {submitStatus.message && (
+                                <div
+                                    className={`p-3 rounded-md mb-4 ${
+                                        submitStatus.type === "success"
+                                            ? "bg-green-100 text-green-700 border border-green-300"
+                                            : "bg-red-100 text-red-700 border border-red-300"
+                                    }`}
+                                >
+                                    {submitStatus.message}
+                                </div>
+                            )}
 
- {/* End of status message for JSX API */}
+                            {/* End of status message for JSX API */}
                             <div className="flex justify-center gap-6 mt-4">
                                 <button
                                     type="reset"
@@ -240,23 +153,15 @@ const AddCustomer = () => {
 
                                 {/* Adding submit button for API  */}
 
-                                {/* <button
-                                    type="submit"
-                                    className="w-32 h-10 bg-[#007E74] text-white rounded-md hover:bg-teal-800 text-sm"
-                                >
-                                    Add Customer
-                                </button> */}
                                 <button
-  type="submit"
-  disabled={isLoading}
-  className={`w-32 h-10 rounded-md text-sm ${
-    isLoading 
-      ? 'bg-gray-400 cursor-not-allowed' 
-      : 'bg-[#007E74] hover:bg-teal-800'
-  } text-white`}
->
-  {isLoading ? 'Adding...' : 'Add Customer'}
-</button>
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className={`w-32 h-10 rounded-md text-sm ${
+                                        isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#007E74] hover:bg-teal-800"
+                                    } text-white`}
+                                >
+                                    {isLoading ? "Adding..." : "Add Customer"}
+                                </button>
                             </div>
                         </Form>
                     )}
