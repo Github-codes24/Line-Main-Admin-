@@ -14,96 +14,27 @@ import {
     TableRow,
     Typography,
     Pagination,
-    CircularProgress
+    CircularProgress,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
 
 import {DeleteIcon, EditIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
-import {getAllShops, deleteShop} from "../../../config/index.js";
 
 function ShopList() {
     const navigate = useNavigate();
-    
+
     // State management
     const [searchText, setSearchText] = React.useState("");
     const [shops, setShops] = React.useState([]);
     const [loading, setLoading] = React.useState(false);
     const [error, setError] = React.useState("");
-    
+
     // Pagination state
     const [currentPage, setCurrentPage] = React.useState(1);
     const [itemsPerPage] = React.useState(5);
     const [totalPages, setTotalPages] = React.useState(1);
     const [totalItems, setTotalItems] = React.useState(0);
-
-    // Fetch shops function
-    const fetchShops = async (page = 1, search = "") => {
-        setLoading(true);
-        setError("");
-        
-        try {
-            console.log("Fetching shops - Page:", page, "Search:", search);
-            const response = await getAllShops(page, itemsPerPage, search);
-            
-            if (response.success) {
-                setShops(response.data || []);
-                setTotalPages(response.totalPages || 1);
-                setTotalItems(response.totalItems || 0);
-                setCurrentPage(page);
-            } else {
-                setError(response.message || "Failed to fetch shops");
-            }
-        } catch (error) {
-            console.error("Error fetching shops:", error);
-            setError("Failed to load shops");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Handle search
-    const handleSearch = (searchValue) => {
-        setSearchText(searchValue);
-        setCurrentPage(1); // Reset to first page when searching
-        fetchShops(1, searchValue);
-    };
-
-    // Handle page change
-    const handlePageChange = (event, page) => {
-        setCurrentPage(page);
-        fetchShops(page, searchText);
-    };
-
-    // Handle delete shop
-    const handleDeleteShop = async (shopId, shopName) => {
-        const confirmDelete = window.confirm(
-            `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
-        );
-        
-        if (!confirmDelete) return;
-
-        try {
-            console.log("Deleting shop with ID:", shopId);
-            const response = await deleteShop(shopId);
-            
-            if (response.success) {
-                // Refresh the shop list after successful deletion
-                fetchShops(currentPage, searchText);
-                alert("Shop deleted successfully!");
-            } else {
-                alert(response.message || "Failed to delete shop");
-            }
-        } catch (error) {
-            console.error("Error deleting shop:", error);
-            alert("Failed to delete shop. Please try again.");
-        }
-    };
-
-    // Load shops on component mount
-    React.useEffect(() => {
-        fetchShops(1, "");
-    }, []);
 
     return (
         <Box
@@ -118,7 +49,7 @@ function ShopList() {
             <Worker
                 title="Shop List"
                 searchValue={searchText}
-                setSearchValue={handleSearch}
+                setSearchValue={setSearchText}
                 buttonText="Add New Shop"
                 btnpath="/admin/shopmanagement/add"
             />
@@ -129,7 +60,7 @@ function ShopList() {
                 <CardContent sx={{paddingTop: 0}}>
                     {/* Error Display */}
                     {error && (
-                        <Box sx={{ mb: 2, textAlign: "center" }}>
+                        <Box sx={{mb: 2, textAlign: "center"}}>
                             <Typography color="error" variant="body2">
                                 {error}
                             </Typography>
@@ -138,7 +69,7 @@ function ShopList() {
 
                     {/* Loading State */}
                     {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                        <Box sx={{display: "flex", justifyContent: "center", py: 4}}>
                             <CircularProgress />
                         </Box>
                     ) : (
@@ -156,31 +87,49 @@ function ShopList() {
                                 <Table stickyHeader sx={{borderRadius: 2}}>
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Sr.No.
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Shop Name
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Owner Name
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Email ID/Phone Number
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Shop Address
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Aadhaar
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 GSTIN
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Status
                                             </TableCell>
-                                            <TableCell sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}>
+                                            <TableCell
+                                                sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            >
                                                 Action
                                             </TableCell>
                                         </TableRow>
@@ -188,9 +137,11 @@ function ShopList() {
                                     <TableBody>
                                         {shops.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={9} sx={{ textAlign: 'center', py: 4 }}>
+                                                <TableCell colSpan={9} sx={{textAlign: "center", py: 4}}>
                                                     <Typography variant="body2" color="textSecondary">
-                                                        {searchText ? 'No shops found matching your search.' : 'No shops available.'}
+                                                        {searchText
+                                                            ? "No shops found matching your search."
+                                                            : "No shops available."}
                                                     </Typography>
                                                 </TableCell>
                                             </TableRow>
@@ -204,8 +155,12 @@ function ShopList() {
                                                     <TableCell sx={{borderBottom: "none"}}>{item.ownerName}</TableCell>
                                                     <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
                                                     <TableCell sx={{borderBottom: "none"}}>{item.address}</TableCell>
-                                                    <TableCell sx={{borderBottom: "none"}}>{item.aadhaarNumber}</TableCell>
-                                                    <TableCell sx={{borderBottom: "none"}}>{item.gstin || 'N/A'}</TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>
+                                                        {item.aadhaarNumber}
+                                                    </TableCell>
+                                                    <TableCell sx={{borderBottom: "none"}}>
+                                                        {item.gstin || "N/A"}
+                                                    </TableCell>
                                                     <TableCell
                                                         sx={{
                                                             borderBottom: "none",
@@ -251,11 +206,7 @@ function ShopList() {
                                                             <EditIcon />
                                                         </IconButton>
 
-                                                        <IconButton 
-                                                            size="small"
-                                                            onClick={() => handleDeleteShop(item._id, item.shopName)}
-                                                            sx={{ color: 'error.main' }}
-                                                        >
+                                                        <IconButton size="small" sx={{color: "error.main"}}>
                                                             <DeleteIcon />
                                                         </IconButton>
                                                     </TableCell>
@@ -268,11 +219,10 @@ function ShopList() {
 
                             {/* Pagination */}
                             {totalPages > 1 && (
-                                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                                <Box sx={{display: "flex", justifyContent: "center", mt: 3}}>
                                     <Pagination
                                         count={totalPages}
                                         page={currentPage}
-                                        onChange={handlePageChange}
                                         color="primary"
                                         showFirstButton
                                         showLastButton
@@ -281,7 +231,7 @@ function ShopList() {
                             )}
 
                             {/* Results Info */}
-                            <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <Box sx={{mt: 2, textAlign: "center"}}>
                                 <Typography variant="body2" color="textSecondary">
                                     Showing {shops.length} of {totalItems} shops
                                     {searchText && ` for "${searchText}"`}
