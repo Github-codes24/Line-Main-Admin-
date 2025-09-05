@@ -26,7 +26,7 @@ function ShopEdit() {
             <Worker back title="Edit Shop" />
             <Card>
                 <CardContent>
-                    <form onSubmit={handleSubmit}>
+                    <form>
                         <Box
                             sx={{
                                 display: "flex",
@@ -51,8 +51,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter Shop Name"
                                         name="shopName"
-                                        value={formData.shopName}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -72,8 +70,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter Owner Name"
                                         name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -93,8 +89,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter Email ID/Phone Number"
                                         name="contact"
-                                        value={formData.contact}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -114,8 +108,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter Full Address"
                                         name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -135,8 +127,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter Aadhaar Number"
                                         name="aadhaarNumber"
-                                        value={formData.aadhaarNumber}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -180,13 +170,7 @@ function ShopEdit() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="aadhaarImage"
-                                            onChange={handleFileChange}
-                                        />
+                                        <input hidden accept="image/*" type="file" name="aadhaarImage" />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -196,9 +180,7 @@ function ShopEdit() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        {formData.aadhaarImage
-                                            ? formData.aadhaarImage.name || formData.aadhaarImage
-                                            : "Upload Aadhaar Card"}
+                                        "Upload Aadhaar Card"
                                     </Typography>
                                 </Box>
                             </Box>
@@ -214,8 +196,6 @@ function ShopEdit() {
                                         variant="outlined"
                                         placeholder="Enter GSTIN Number"
                                         name="gstinNumber"
-                                        value={formData.gstinNumber}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {"& input::placeholder": {color: "black", opacity: 1}},
@@ -259,13 +239,7 @@ function ShopEdit() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="gstinImage"
-                                            onChange={handleFileChange}
-                                        />
+                                        <input hidden accept="image/*" type="file" name="gstinImage" />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -275,9 +249,7 @@ function ShopEdit() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        {formData.gstinImage
-                                            ? formData.gstinImage.name || formData.gstinImage
-                                            : "Upload GSTIN Card"}
+                                        "Upload GSTIN Card"
                                     </Typography>
                                 </Box>
                             </Box>

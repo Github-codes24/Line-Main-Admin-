@@ -56,8 +56,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter Shop Name"
                                         name="shopName"
-                                        value={formData.shopName}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -88,8 +86,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter Full Name"
                                         name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -120,8 +116,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter Email ID/Phone Number"
                                         name="contact"
-                                        value={formData.contact}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -152,8 +146,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter Full Address"
                                         name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -184,8 +176,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter 12 digit Aadhaar number of shop owner"
                                         name="aadhaarNumber"
-                                        value={formData.aadhaarNumber}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -234,13 +224,7 @@ function ShopAdd() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="aadhaarImage"
-                                            onChange={handleFileChange}
-                                        />
+                                        <input hidden accept="image/*" type="file" name="aadhaarImage" />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -250,7 +234,7 @@ function ShopAdd() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        {formData.aadhaarImage ? formData.aadhaarImage.name : "Upload Aadhaar Card"}
+                                        "Upload Aadhaar Card"
                                     </Typography>
                                 </Box>
                             </Box>
@@ -272,8 +256,6 @@ function ShopAdd() {
                                         variant="outlined"
                                         placeholder="Enter GSTIN number"
                                         name="gstinNumber"
-                                        value={formData.gstinNumber}
-                                        onChange={handleChange}
                                         sx={{background: "#CED4F2"}}
                                         InputProps={{
                                             sx: {
@@ -322,13 +304,7 @@ function ShopAdd() {
                                         }}
                                     >
                                         Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="gstinImage"
-                                            onChange={handleFileChange}
-                                        />
+                                        <input hidden accept="image/*" type="file" name="gstinImage" />
                                     </Button>
                                     <Typography
                                         variant="body2"
@@ -338,7 +314,7 @@ function ShopAdd() {
                                             fontWeight: 500,
                                         }}
                                     >
-                                        {formData.gstinImage ? formData.gstinImage.name : "Upload GSTIN Card"}
+                                        "Upload GSTIN Card"
                                     </Typography>
                                 </Box>
                             </Box>

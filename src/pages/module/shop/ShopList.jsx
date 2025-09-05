@@ -49,7 +49,7 @@ function ShopList() {
             <Worker
                 title="Shop List"
                 searchValue={searchText}
-                setSearchValue={handleSearch}
+                setSearchValue={setSearchText}
                 buttonText="Add New Shop"
                 btnpath="/admin/shopmanagement/add"
             />
@@ -206,11 +206,7 @@ function ShopList() {
                                                             <EditIcon />
                                                         </IconButton>
 
-                                                        <IconButton
-                                                            size="small"
-                                                            onClick={() => handleDeleteShop(item._id, item.shopName)}
-                                                            sx={{color: "error.main"}}
-                                                        >
+                                                        <IconButton size="small" sx={{color: "error.main"}}>
                                                             <DeleteIcon />
                                                         </IconButton>
                                                     </TableCell>
@@ -227,7 +223,6 @@ function ShopList() {
                                     <Pagination
                                         count={totalPages}
                                         page={currentPage}
-                                        onChange={handlePageChange}
                                         color="primary"
                                         showFirstButton
                                         showLastButton

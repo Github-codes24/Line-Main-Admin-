@@ -37,7 +37,7 @@ const useAuth = () => {
         setLoading(true);
         try {
             const res = await fetchData({
-                method: "PUT",
+                method: "POST",
                 url: `${conf.apiBaseUrl}/admin/auth/generate-otp`,
                 data: payload,
             });
@@ -79,7 +79,7 @@ const useAuth = () => {
         setLoading(true);
         try {
             const res = await fetchData({
-                method: "PUT",
+                method: "POST",
                 url: `${conf.apiBaseUrl}/admin/auth/verify-otp`,
                 data: data,
             });
@@ -113,8 +113,8 @@ const useAuth = () => {
             });
 
             if (res) {
-                setAdminProfile(res?.data?.user);
-                sessionStorage.setItem("isAdminLogin", res?.data?.user?.isVerified);
+                setAdminProfile(res?.data);
+                sessionStorage.setItem("isAdminLogin", res?.data?.isVerified);
             }
 
             return res;

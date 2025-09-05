@@ -16,12 +16,12 @@ const useSmallProduct = () => {
     const [getSmallProduct, setGetSmallProduct] = useRecoilState(getSmallProductAtom);
     const [searchSmallProduct, setSearchSmallProduct] = useRecoilState(searchSmallProductAtom);
 
-    const createTheSmallProducts = async (data) => {
+    const createSmallProducts = async (data) => {
         setLoading(true);
         try {
             const res = await fetchData({
                 method: "POST",
-                url: `${conf.apiBaseUrl}admin/small-products`,
+                url: `${conf.apiBaseUrl}/admin/small-products`,
                 data,
             });
             if (res?.data) {
@@ -71,7 +71,7 @@ const useSmallProduct = () => {
     return {
         loading,
         addSmallProduct,
-        createTheSmallProducts,
+        createSmallProducts,
         getSmallProduct,
         getTheSmallProducts,
         searchSmallProduct,

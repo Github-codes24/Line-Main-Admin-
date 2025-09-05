@@ -281,7 +281,6 @@ function ShopView() {
                                         background: "#c82333",
                                     },
                                 }}
-                                onClick={handleDeleteShop}
                             >
                                 Delete
                             </Button>
