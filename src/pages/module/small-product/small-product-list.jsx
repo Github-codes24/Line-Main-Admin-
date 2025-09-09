@@ -32,8 +32,8 @@ export default function SmallProductList({productId}) {
     } = useSmallProduct();
     console.log("Get data", getSmallProduct);
     useEffect(() => {
-        getSmallProductList();
-    }, []);
+        getSmallProductList(page, limit);
+    }, [page, limit]);
 
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
@@ -70,11 +70,13 @@ export default function SmallProductList({productId}) {
         setActiveFilters((prev) => (prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]));
     };
 
-    const handleDelete = (id) => {
-        console.log("Item deleted!");
-        deleteSmallProductById(id);
-        setShowDeletePanel(false);
-        getSmallProductList();
+    const handleDelete = async (id) => {
+        try {
+            await deleteSmallProductById(id); // delete from API
+            await getSmallProductList(page, limit); // refresh list with current pagination
+        } catch (error) {
+            console.error("Delete failed:", error);
+        }
     };
 
     const filteredData = (getSmallProduct?.data ?? []).filter((p) => {
@@ -278,7 +280,7 @@ export default function SmallProductList({productId}) {
                                                     />
                                                 </svg>
                                             </button>
-                                            <button onClick={() => setShowDeletePanel(true)}>
+                                            <button onClick={() => handleDelete(product._id)}>
                                                 <Trash2 className="text-red-600" size={20} />
                                             </button>
                                         </div>
