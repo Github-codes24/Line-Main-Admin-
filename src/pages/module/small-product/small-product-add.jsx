@@ -1,17 +1,21 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import BG from "../../../assets/images/BG.png";
 import {MdOutlineFileUpload} from "react-icons/md";
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 
 const SmallProductAdd = () => {
     const {createSmallProducts} = useSmallProduct();
+    const {productCategory, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory} =
+        useDropdown();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const [productImage, setProductImage] = useState("");
     const [imageFile, setImageFile] = useState(null);
+    console.log("Product category", productCategory);
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -24,10 +28,10 @@ const SmallProductAdd = () => {
     const formik = useFormik({
         initialValues: {
             productName: "",
-            productCategory: "68b0a29f14b58963a4b28766",
+            productCategory: "",
             productPrice: "",
             productDescription: "",
-            productSubCategory: "Painter",
+            productSubCategory: "",
         },
         validationSchema: Yup.object({
             productName: Yup.string().required("Product name is required"),
@@ -52,6 +56,10 @@ const SmallProductAdd = () => {
             createSmallProducts(formData);
         },
     });
+
+    useEffect(() => {
+        fetchProductCategory();
+    }, []);
 
     return (
         <div className="p-2 font-[Poppins]">
@@ -131,33 +139,56 @@ const SmallProductAdd = () => {
                                     onChange={formik.handleChange}
                                 />
                             </div>
+                            {/* Product Category */}
                             <div className="flex items-start gap-4">
                                 <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                     Product Category:
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="productCategory"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
                                     value={formik.values.productCategory}
-                                    // onChange={formik.handleChange}
-                                    readOnly
-                                />
+                                    onChange={async (e) => {
+                                        const categoryId = e.target.value;
+                                        formik.setFieldValue("productCategory", categoryId);
+                                        formik.setFieldValue("productSubCategory", "");
+
+                                        // Clear old options first
+                                        setProductSubCategory([]);
+
+                                        if (categoryId) {
+                                            await fetchProductSubCategory(categoryId);
+                                        }
+                                    }}
+                                >
+                                    <option value="">-- Select Category --</option>
+                                    {productCategory.map((category) => (
+                                        <option key={category._id} value={category._id}>
+                                            {category.tabName}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
+                            {/* Product Sub-Category */}
                             <div className="flex items-start gap-4">
                                 <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                     Product Sub-Category:
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     name="productSubCategory"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
                                     value={formik.values.productSubCategory}
-                                    readOnly
-                                    // onChange={formik.handleChange}
-                                />
+                                    onChange={formik.handleChange}
+                                    disabled={!productSubCategory.length}
+                                >
+                                    <option value="">-- Select Sub-Category --</option>
+                                    {productSubCategory.map((sub) => (
+                                        <option key={sub._id} value={sub.name}>
+                                            {sub.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
+
                             <div className="flex items-start gap-4">
                                 <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                     Product Price:

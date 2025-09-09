@@ -8,14 +8,26 @@ export const createSmallProductAtom = atom({
     effects_UNSTABLE: [persistAtom],
 });
 
-export const getSmallProductAtom = atom({
-    key: "getSmallProduct",
+export const getSmallProductListAtom = atom({
+    key: "getSmallProductList",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const getSmallProductByIdAtom = atom({
+    key: "getSmallProductById",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
 
 export const searchSmallProductAtom = atom({
     key: "searchSmallProduct",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const searchSmallProductByIdAtom = atom({
+    key: "searchSmallProductById",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
