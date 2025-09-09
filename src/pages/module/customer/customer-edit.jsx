@@ -40,13 +40,20 @@ const EditCustomer = () => {
                 url: `${conf.apiBaseUrl}/admin/Customer/get-single-customer/${customerId}`,
             });
 
-            if (result.success) {
+            console.log('Customer Edit API Response:', result);
+
+            if (result.success || result.user) {
+                // Handle different response structures - API returns data in 'user' field
+                const customerInfo = result.user || result.data || result.customer || result;
+                console.log('Customer Edit Info:', customerInfo);
+                
                 setInitialValues({
-                    name: result.data.name || "",
-                    contact: result.data.contact || "",
-                    address: result.data.address || "",
+                    name: customerInfo.name || customerInfo.customerName || "",
+                    contact: customerInfo.contact || customerInfo.phone || customerInfo.email || "",
+                    address: customerInfo.address || customerInfo.customerAddress || "",
                 });
             } else {
+                console.error('API response not successful:', result);
                 toast.error(result.message || 'Failed to fetch customer data');
             }
         } catch (error) {
