@@ -1,92 +1,304 @@
-import React, {useState} from "react";
-import {X} from "lucide-react";
-import {useNavigate, useParams} from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { X, ArrowLeft } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
+
 const TabEdit = () => {
-    const [tabName, setTabName] = useState("Plumbing");
-    const [subTabs, setSubTabs] = useState(["Plumber", "Tank Cleaner"]);
     const navigate = useNavigate();
-    const {id} = useParams();
+    const { id } = useParams(); // Get tab ID from URL
+    const location = useLocation();
+    const [fetchData] = useFetch();
+    const [isLoading, setIsLoading] = useState(false);
+    const [tabName, setTabName] = useState("");
+    const [subTabs, setSubTabs] = useState([{ id: Date.now(), name: "" }]);
+    const [originalTabData, setOriginalTabData] = useState(null);
+
+    // Predefined tabs that cannot be edited (as per Figma requirement)
+    const nonEditableTabs = [
+        "Plumbing", 
+        "Painting", 
+        "Electrician", 
+        "TilesFitting", 
+        "AC & Refrigerator"
+    ];
+
+    // Check if tab data was passed via navigation state
+    const passedTabData = location.state?.tab;
+
+    useEffect(() => {
+        if (passedTabData) {
+            // Use passed data if available
+            initializeFormData(passedTabData);
+        } else if (id) {
+            // Fetch data from API if not passed
+            fetchSingleTab(id);
+        }
+    }, [id, passedTabData]);
+
+    const initializeFormData = (tabData) => {
+        const tabNameValue = tabData.name || tabData.tabName || "";
+        const subTabsData = tabData.subTabs || tabData.subTabNames || [];
+        
+        setOriginalTabData(tabData);
+        setTabName(tabNameValue);
+        
+        // Initialize sub tabs
+        if (subTabsData.length > 0) {
+            setSubTabs(subTabsData.map((subTab, index) => ({
+                id: Date.now() + index,
+                name: subTab.name || subTab || ""
+            })));
+        } else {
+            setSubTabs([{ id: Date.now(), name: "" }]);
+        }
+
+        // Check if this tab is editable
+        if (nonEditableTabs.includes(tabNameValue)) {
+            toast.error(`Editing of "${tabNameValue}" tab is not allowed as per system requirements.`);
+            navigate(-1);
+        }
+    };
+
+    const fetchSingleTab = async (tabId) => {
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "GET",
+                url: `${conf.apiBaseUrl}/admin/tabs/${tabId}`,
+            });
+
+            console.log('Fetch single tab result:', result);
+
+            if (result.success || result.data) {
+                const tab = result.data || result.tab || result;
+                initializeFormData(tab);
+            } else {
+                toast.error(result.message || 'Failed to fetch tab data');
+                navigate(-1);
+            }
+        } catch (error) {
+            console.error('Error fetching tab:', error);
+            toast.error(error.response?.data?.message || error.message || 'Error fetching tab data');
+            navigate(-1);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const handleBack = () => {
-        navigate("/admin/tabmanagement");
+        navigate(-1);
     };
 
     const handleAddSubTab = () => {
-        setSubTabs([...subTabs, ""]);
+        setSubTabs([...subTabs, { id: Date.now(), name: "" }]);
     };
-    const handleRemoveSubTab = (index) => {
-        const updated = subTabs.filter((_, i) => i !== index);
-        setSubTabs(updated);
+
+    const handleRemoveSubTab = (id) => {
+        if (subTabs.length > 1) {
+            setSubTabs(subTabs.filter((sub) => sub.id !== id));
+        }
     };
-    const handleChangeSubTab = (index, value) => {
-        const updated = [...subTabs];
-        updated[index] = value;
-        setSubTabs(updated);
+
+    const handleChangeSubTab = (id, value) => {
+        setSubTabs(subTabs.map((sub) => (sub.id === id ? { ...sub, name: value } : sub)));
     };
-    return (
-        <div className="p-2 font-[Poppins]">
-            <div className="flex items-center gap-2 border-b px-4 py-3 bg-gray-50 rounded-lg shadow border-2 ">
-                <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
-                <h2 className="text-lg font-semibold text-gray-800">Edit Tab</h2>
+
+    const updateTab = async (tabData) => {
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "PUT",
+                url: `${conf.apiBaseUrl}/admin/tabs/${id}`,
+                data: tabData
+            });
+
+            console.log('Update tab result:', result);
+
+            if (result.success || result.status === 'success' || result.data) {
+                toast.success(result.message || "Tab updated successfully!");
+                setTimeout(() => {
+                    navigate(-1);
+                }, 1500);
+                return { success: true, data: result };
+            } else {
+                throw new Error(result.message || 'Failed to update tab');
+            }
+        } catch (error) {
+            console.error('Error updating tab:', error);
+            let errorMessage = 'Failed to update tab';
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.response?.data) {
+                errorMessage = typeof error.response.data === 'string'
+                    ? error.response.data
+                    : JSON.stringify(error.response.data);
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            toast.error(errorMessage);
+            return { success: false, error: error.message };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        
+        // Validation
+        if (!tabName.trim()) {
+            toast.error("Tab name is required");
+            return;
+        }
+
+        // Check if tab name is in non-editable list
+        if (nonEditableTabs.includes(tabName.trim())) {
+            toast.error(`"${tabName.trim()}" tab cannot be edited as per system requirements.`);
+            return;
+        }
+
+        // Filter out empty sub tabs
+        const validSubTabs = subTabs.filter(sub => sub.name.trim() !== "");
+        
+        if (validSubTabs.length === 0) {
+            toast.error("At least one sub tab is required");
+            return;
+        }
+
+        // Based on the API structure, prepare the data
+        const tabData = {
+            tabName: tabName.trim(),
+            subTabNames: validSubTabs.map(sub => ({ name: sub.name.trim() }))
+        };
+
+        console.log("Updating tab with data:", tabData);
+        await updateTab(tabData);
+    };
+
+    if (isLoading && !originalTabData) {
+        return (
+            <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+                <ToastContainer />
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-lg">Loading tab data...</div>
+                </div>
             </div>
-            <div className="bg-white shadow rounded-lg p-4 mt-4 h-screen">
-                <div className="p-6 space-y-4 shadow border rounded-lg h-[90%] border-[#616666]">
-                    <div className="flex items-center">
-                        <label className="w-80 text-black font-medium">Tab Name:</label>
+        );
+    }
+
+    return (
+        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+            <ToastContainer />
+            
+            {/* Header */}
+            <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+                <button
+                    onClick={handleBack}
+                    className="mr-3 p-2 hover:bg-gray-100 rounded-full"
+                >
+                    <ArrowLeft size={20} />
+                </button>
+                <h2 className="text-lg font-semibold">Edit Tab</h2>
+            </div>
+
+            {/* Restriction Notice */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                <div className="flex">
+                    <div className="text-yellow-800">
+                        <strong>Note:</strong> Editing of Plumbing, Painting, Electrician, TilesFitting, and AC & Refrigerator tabs is not allowed as per system requirements.
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white p-4 rounded-lg shadow-md h-screen">
+                <form
+                    onSubmit={handleSubmit}
+                    className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
+                >
+                    {/* Tab Name */}
+                    <div className="flex items-center gap-[24px]">
+                        <label className="w-1/4 font-medium">Tab Name:</label>
                         <input
                             type="text"
                             value={tabName}
                             onChange={(e) => setTabName(e.target.value)}
-                            className="flex-1 rounded-md px-3 py-3 border border-[#001580] bg-[#CED4F2] focus: outline-none"
+                            placeholder="Enter Tab Name"
+                            className={`flex-1 border rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-black ${
+                                nonEditableTabs.includes(tabName) 
+                                    ? 'opacity-50 cursor-not-allowed' 
+                                    : ''
+                            }`}
+                            disabled={nonEditableTabs.includes(tabName)}
                         />
                     </div>
-                    <div className="flex items-start">
-                        <label className="w-80 text-black font-medium ">Sub Tab Name:</label>
-                        <div className="flex-1 space-y-4 ">
-                            {subTabs.map((subTab, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center gap-2 border rounded-md px-3 py-3 bg-[#CED4F2] border-[#001580]"
-                                >
-                                    <input
-                                        type="text"
-                                        value={subTab}
-                                        onChange={(e) => handleChangeSubTab(index, e.target.value)}
-                                        className="flex-1 outline-none bg-[#CED4F2]"
-                                    />
+
+                    {/* Sub Tabs */}
+                    {subTabs.map((sub, index) => (
+                        <div key={sub.id} className="flex items-center gap-[24px]">
+                            <label className="w-1/4 font-medium">
+                                {index === 0 ? "Sub Tab Name:" : ""}
+                            </label>
+                            <div className="relative flex-1">
+                                <input
+                                    type="text"
+                                    value={sub.name}
+                                    onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
+                                    placeholder="Enter Sub Tab Name"
+                                    className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-black"
+                                />
+                                {subTabs.length > 1 && (
                                     <X
-                                        className="w-5 h-5 text-black cursor-pointer"
-                                        onClick={() => handleRemoveSubTab(index)}
+                                        onClick={() => handleRemoveSubTab(sub.id)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-black cursor-pointer hover:text-red-600"
                                     />
-                                </div>
-                            ))}
-                            <button
-                                type="button"
-                                onClick={handleAddSubTab}
-                                className="text-base font-medium text-[#001580] hover:underline ml-[72%]"
-                            >
-                                + Add More Sub Tab
-                            </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className="flex justify-center p-4 space-x-4">
+                    ))}
+
+                    {/* Add More Sub Tab Button */}
                     <button
-                        className="w-[200px] px-5 py-2 rounded-md border-2 bg-[#CED4F2] text-[#001580] border-[#001580] "
+                        type="button"
+                        onClick={handleAddSubTab}
+                        className="text-base text-[#001580] hover:underline ml-[82%]"
+                    >
+                        + Add More Sub Tab
+                    </button>
+                </form>
+
+                {/* Action Buttons */}
+                <div className="flex justify-center gap-4 pt-4">
+                    <button
+                        type="button"
                         onClick={handleBack}
+                        className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
                     >
                         Cancel
                     </button>
                     <button
-                        onClick={() => {
-                            navigate(`/admin/tabmanagement/view/${id}`);
-                        }}
-                        className="w-[200px] px-5 py-2 rounded-md bg-[#001580] text-white hover:bg-[#001580]"
+                        type="submit"
+                        disabled={isLoading || nonEditableTabs.includes(tabName)}
+                        className={`w-[200px] px-6 py-2 rounded-lg text-white ${
+                            isLoading || nonEditableTabs.includes(tabName)
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-[#001580] hover:bg-[#001580]'
+                        }`}
+                        onClick={handleSubmit}
                     >
-                        Update
+                        {isLoading ? 'Updating...' : 'Update Tab'}
                     </button>
                 </div>
             </div>
         </div>
     );
 };
+
 export default TabEdit;

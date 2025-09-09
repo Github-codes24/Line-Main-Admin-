@@ -1,178 +1,388 @@
-import React, {useState, useMemo} from "react";
-import {Eye, Pencil, Trash2} from "lucide-react";
-import {useNavigate} from "react-router-dom";
-
-const tabs = [
-    {id: 1, name: "Plumbing", subTabs: "Plumber, Tank Cleaner"},
-    {id: 2, name: "Electrician", subTabs: "NA"},
-    {id: 3, name: "Tiles Fitting", subTabs: "NA"},
-    {id: 4, name: "Painting", subTabs: "Painter, POP Person"},
-    {id: 5, name: "AC & Refrigerator Repairing", subTabs: "NA"},
-    {id: 6, name: "Carpentry", subTabs: "NA"},
-    {id: 7, name: "Masonry", subTabs: "NA"},
-    {id: 8, name: "Gardening", subTabs: "NA"},
-    {id: 9, name: "Cleaning", subTabs: "NA"},
-    {id: 10, name: "Housekeeping", subTabs: "NA"},
-];
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Eye, Trash2, Edit } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 const TabList = () => {
     const navigate = useNavigate();
+    const [fetchData] = useFetch();
+
     const [searchTerm, setSearchTerm] = useState("");
+    const [tabs, setTabs] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
 
-    const handleEdit = (id) => navigate(`/admin/tabmanagement/edit/${id}`);
-    const handleView = (id) => navigate(`/admin/tabmanagement/view/${id}`);
-    const handleAdd = () => navigate("/admin/tabmanagement/add");
+    // Fetch all tabs when component mounts or search term changes
+    useEffect(() => {
+        fetchAllTabs();
+    }, []);
 
-    const filteredData = useMemo(() => {
-        return tabs.filter(
-            (tab) =>
-                tab.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                tab.subTabs.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+    // Debounced search effect - reset to page 1 when searching
+    useEffect(() => {
+        const delayedSearch = setTimeout(() => {
+            if (currentPage !== 1) {
+                setCurrentPage(1);
+            } else {
+                fetchAllTabs();
+            }
+        }, 500); // 500ms delay for debouncing
+
+        return () => clearTimeout(delayedSearch);
     }, [searchTerm]);
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const paginatedData = useMemo(() => {
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        return filteredData.slice(startIndex, startIndex + itemsPerPage);
-    }, [filteredData, currentPage]);
+    // Fetch tabs when page changes
+    useEffect(() => {
+        fetchAllTabs();
+    }, [currentPage, itemsPerPage]);
 
-    const handlePrev = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    const fetchAllTabs = async () => {
+        try {
+            setIsLoading(true);
+
+            // Build URL with pagination and search parameters
+            let url = `${conf.apiBaseUrl}/admin/tabs?page=${currentPage}&limit=${itemsPerPage}`;
+            if (searchTerm.trim()) {
+                url += `&search=${encodeURIComponent(searchTerm.trim())}`;
+            }
+
+            const result = await fetchData({
+                method: "GET",
+                url: url,
+            });
+
+
+
+            if (result.success || result.data) {
+                // Extract tabs data from response
+                const tabsData = result.data || result.tabs || [];
+
+                // Extract pagination info
+                const pagination = result.pagination || {};
+                setTotalPages(pagination.totalPages || Math.ceil((result.total || tabsData.length) / itemsPerPage));
+                setTotalItems(pagination.total || result.total || tabsData.length);
+
+                // Normalize tab data
+                const normalizedTabs = tabsData.map(tab => ({
+                    ...tab,
+                    id: tab.id || tab._id,
+                    name: tab.tabName || tab.name,
+                    subTabs: (tab.subTabNames || tab.subTabs || []).map(subTab => {
+                        // Handle different sub-tab structures
+                        if (typeof subTab === 'string') {
+                            return { name: subTab };
+                        } else if (typeof subTab === 'object' && subTab !== null) {
+                            return {
+                                id: subTab._id || subTab.id,
+                                name: subTab.tabName || subTab.name || subTab
+                            };
+                        }
+                        return { name: subTab };
+                    }),
+                    isActive: tab.isActive !== undefined ? tab.isActive : true,
+                    createdAt: tab.createdAt
+                }));
+
+                setTabs(normalizedTabs);
+
+                if (normalizedTabs.length === 0) {
+                    toast.info('No tabs found');
+                }
+            } else {
+                toast.error(result.message || 'Failed to fetch tabs');
+                setTabs([]);
+            }
+        } catch (error) {
+            console.error('Error fetching tabs:', error);
+            toast.error(error.response?.data?.message || error.message || 'Error fetching tabs');
+            setTabs([]);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    const handleNext = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    const deleteTab = async (tabId, tabName) => {
+        // Predefined tabs that cannot be deleted (same as edit restrictions)
+        const nonDeletableTabs = [
+            "Plumbing", 
+            "Painting", 
+            "Electrician", 
+            "TilesFitting", 
+            "AC & Refrigerator"
+        ];
+
+        // Check if tab is deletable
+        if (nonDeletableTabs.includes(tabName)) {
+            toast.error(`Deletion of "${tabName}" tab is not allowed as per system requirements.`);
+            return;
+        }
+
+        if (!window.confirm(`Are you sure you want to delete "${tabName}"? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "DELETE",
+                url: `${conf.apiBaseUrl}/admin/tabs/${tabId}`,
+            });
+
+            console.log('Delete tab result:', result);
+
+            if (result.success || result.status === 'success') {
+                toast.success(result.message || 'Tab deleted successfully');
+                fetchAllTabs(); // Refresh list
+            } else {
+                toast.error(result.message || 'Failed to delete tab');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            let errorMessage = 'Error deleting tab';
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            toast.error(errorMessage);
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    // Since we're doing server-side search, we don't need client-side filtering
+    const filteredTabs = tabs;
 
     return (
-        <div className="flex bg-[#E0E9E9] font-medium min-h-screen h-full font-[Poppins]">
-            <div className="flex-1 p-2 gap-2">
-                <div className="flex justify-between items-center mb-4 shadow bg-white h-70 border rounded-lg p-2">
-                    <h1 className="text-xl font-semibold ml-2">Tab List</h1>
-                    <div className="relative w-full max-w-sm flex-grow md:flex-grow-0">
-                        <input
-                            type="text"
-                            placeholder="Search by Tab Name, Sub Tab Name..."
-                            value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
-                                setCurrentPage(1);
-                            }}
-                            className="w-full pl-10 pr-4 bg-[#E4E5EB] text-[#001580] font-medium placeholder-[#001580] py-1 border-2 border-[#001580] rounded-full focus:outline-none"
-                        />
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#001580]"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
-                            />
-                        </svg>
-                    </div>
+        <div className="p-8 bg-[#E0E9E9]">
+            <ToastContainer />
 
-                    <button onClick={handleAdd} className="w-[200px] bg-[#001580] text-white px-6 rounded-lg h-10 mr-2">
-                        + Add New Tab
-                    </button>
+            <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex justify-between items-center min-h-[48px]">
+                <h1 className="text-xl font-semibold ml-2">Admin Tab List</h1>
+
+                <div className="absolute left-1/2 transform -translate-x-1/2">
+                    <input
+                        type="text"
+                        placeholder="Search tabs..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-full p-1 px-4 w-64 text-sm"
+                    />
                 </div>
 
-                <div className="bg-white p-4 rounded-lg shadow mb-4">
-                    <div className="border border-[#616666] rounded-lg shadow-sm h-screen overflow-x-auto">
-                        <table className="w-full text-left bg-white p-4">
-                            <thead>
-                                <tr className="bg-[#E4E5EB] text-center text-[#001580] font-medium">
-                                    <th className="p-3">Sr.No.</th>
-                                    <th className="p-3">Tab Name</th>
-                                    <th className="p-3">Sub Tabs</th>
-                                    <th className="p-3">Action</th>
+                <button
+                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800"
+                    onClick={() => navigate("/admin/tabmanagement/add")}
+                >
+                    Add Tab
+                </button>
+            </div>
+
+            {/* Main Content Box */}
+            <div className="bg-white p-4 shadow rounded-md">
+                <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+                    <table className="w-full text-sm text-left text-gray-700">
+                        <thead className="bg-[#e6efef] text-black text-base font-semibold">
+                            <tr>
+                                <th className="px-6 py-4">Sr.No.</th>
+                                <th className="px-6 py-4">Tab Name</th>
+                                <th className="px-6 py-4">Sub Tabs</th>
+                                <th className="px-6 py-4">Status</th>
+                                <th className="px-6 py-4">Created Date</th>
+                                <th className="px-6 py-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-8 text-center">
+                                        <div className="text-lg">Loading tabs...</div>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {paginatedData.length > 0 ? (
-                                    paginatedData.map((tab, index) => (
-                                        <tr key={tab.id} className="h-20 text-center">
-                                            <td className="p-2 ">{(currentPage - 1) * itemsPerPage + (index + 1)}</td>
-                                            <td className="p-2 ">{tab.name}</td>
-                                            <td className="p-2">{tab.subTabs}</td>
-                                            <td className="p-2 space-x-2 flex justify-center">
-                                                <Eye
-                                                    onClick={() => handleView(tab.id)}
-                                                    className="w-5 h-5 cursor-pointer text-red-600"
-                                                />
-                                                <button onClick={() => handleEdit(tab.id)}>
-                                                    <Pencil className="w-5 h-5 text-red-600" />
+                            ) : filteredTabs.length === 0 ? (
+                                <tr>
+                                    <td colSpan="6" className="px-6 py-8 text-center">
+                                        <div className="text-lg text-gray-500">
+                                            {searchTerm ? `No tabs found matching "${searchTerm}"` : 'No tabs available'}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredTabs.map((tab, index) => (
+                                    <tr key={tab.id} className="border-b hover:bg-gray-50">
+                                        <td className="px-6 py-4 font-medium">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                                        <td className="px-6 py-4 font-medium text-gray-900">
+                                            {tab.name}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex flex-wrap gap-1">
+                                                {tab.subTabs && tab.subTabs.length > 0 ? (
+                                                    tab.subTabs.map((subTab, subIndex) => (
+                                                        <span
+                                                            key={subTab.id || subIndex}
+                                                            className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                                                        >
+                                                            {subTab.name}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-gray-500 text-sm">No sub tabs</span>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${tab.isActive
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                                }`}>
+                                                {tab.isActive ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500">
+                                            {tab.createdAt ? new Date(tab.createdAt).toLocaleDateString() : 'N/A'}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex justify-center space-x-2">
+                                                <button
+                                                    onClick={() => navigate(`/admin/tabmanagement/view/${tab.id}`, {
+                                                        state: { tab }
+                                                    })}
+                                                    className="p-2 text-blue-600 hover:bg-blue-100 rounded-full"
+                                                    title="View Tab"
+                                                >
+                                                    <Eye size={16} />
                                                 </button>
-                                                <Trash2 className="w-5 h-5 cursor-pointer text-red-600" />
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan="4" className="text-center p-4">
-                                            No results found.
+                                                <button
+                                                    onClick={() => navigate(`/admin/tabmanagement/edit/${tab.id}`, {
+                                                        state: { tab }
+                                                    })}
+                                                    className="p-2 text-green-600 hover:bg-green-100 rounded-full"
+                                                    title="Edit Tab"
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => deleteTab(tab.id, tab.name)}
+                                                    className={`p-2 rounded-full ${
+                                                        ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+                                                            ? "text-gray-400 cursor-not-allowed"
+                                                            : "text-red-600 hover:bg-red-100"
+                                                    }`}
+                                                    title={
+                                                        ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+                                                            ? "System tab cannot be deleted"
+                                                            : "Delete Tab"
+                                                    }
+                                                    disabled={isLoading || ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-                    {filteredData.length > itemsPerPage && (
-                        <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
-                            <span className="text-sm font-semibold">
-                                Showing {paginatedData.length} of {filteredData.length} Entries
-                            </span>
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-between items-center mt-4 px-4">
+                        <div className="text-sm text-gray-700">
+                            Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
+                        </div>
+
+                        <div className="flex items-center space-x-2">
+                            {/* Items per page selector */}
                             <div className="flex items-center space-x-2">
-                                <button
-                                    onClick={handlePrev}
-                                    disabled={currentPage === 1}
-                                    className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                        currentPage === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
-                                    }`}
+                                <span className="text-sm text-gray-700">Show:</span>
+                                <select
+                                    value={itemsPerPage}
+                                    onChange={(e) => {
+                                        setItemsPerPage(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                    className="border border-gray-300 rounded px-2 py-1 text-sm"
                                 >
-                                    &lt;
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={20}>20</option>
+                                    <option value={50}>50</option>
+                                </select>
+                                <span className="text-sm text-gray-700">entries</span>
+                            </div>
+
+                            {/* Pagination buttons */}
+                            <div className="flex items-center space-x-1">
+                                <button
+                                    onClick={() => setCurrentPage(1)}
+                                    disabled={currentPage === 1}
+                                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    First
+                                </button>
+                                <button
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    disabled={currentPage === 1}
+                                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Previous
                                 </button>
 
-                                {[...Array(totalPages)].map((_, i) => {
-                                    const page = i + 1;
+                                {/* Page numbers */}
+                                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                                    let pageNum;
+                                    if (totalPages <= 5) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage <= 3) {
+                                        pageNum = i + 1;
+                                    } else if (currentPage >= totalPages - 2) {
+                                        pageNum = totalPages - 4 + i;
+                                    } else {
+                                        pageNum = currentPage - 2 + i;
+                                    }
+
                                     return (
                                         <button
-                                            key={page}
-                                            onClick={() => setCurrentPage(page)}
-                                            className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
-                                                page === currentPage
-                                                    ? "bg-[#001580] text-white"
-                                                    : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                                            }`}
+                                            key={pageNum}
+                                            onClick={() => setCurrentPage(pageNum)}
+                                            className={`px-3 py-1 text-sm border border-gray-300 rounded ${currentPage === pageNum
+                                                    ? 'bg-blue-600 text-white border-blue-600'
+                                                    : 'hover:bg-gray-50'
+                                                }`}
                                         >
-                                            {page}
+                                            {pageNum}
                                         </button>
                                     );
                                 })}
 
                                 <button
-                                    onClick={handleNext}
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                                     disabled={currentPage === totalPages}
-                                    className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                        currentPage === totalPages
-                                            ? "bg-gray-200 text-[#001580]"
-                                            : "bg-white hover:bg-gray-100"
-                                    }`}
+                                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    &gt;
+                                    Next
+                                </button>
+                                <button
+                                    onClick={() => setCurrentPage(totalPages)}
+                                    disabled={currentPage === totalPages}
+                                    className="px-3 py-1 text-sm border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Last
                                 </button>
                             </div>
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
         </div>
     );

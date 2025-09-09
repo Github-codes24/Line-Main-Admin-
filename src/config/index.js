@@ -1,5 +1,7 @@
 const conf = {
-    apiBaseUrl: process.env.REACT_APP_API_BASE_URL || 'https://linemen-be-1.onrender.com',
+    apiBaseUrl: 'https://linemen-be-1.onrender.com',
 };
+
+
 
 export default conf;
