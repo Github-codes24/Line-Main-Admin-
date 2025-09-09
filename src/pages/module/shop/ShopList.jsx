@@ -17,7 +17,6 @@ import {
     CircularProgress,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-
 import {DeleteIcon, EditIcon, ViewIcon} from "../../../assets/CommonAssets";
 import {useNavigate} from "react-router-dom";
 

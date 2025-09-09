@@ -1,11 +1,20 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import viewBig from "../../../assets/images/viewBigImage.png";
+import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 
 const SmallProductView = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     console.log("Product ID:", id);
+    const {getsmallProductById, fetchSmallProductById} = useSmallProduct();
+    const data = getsmallProductById;
+    console.log("data", data);
+
+    useEffect(() => {
+        fetchSmallProductById(id);
+    }, []);
+    console.log("product data", getsmallProductById);
 
     const [productName, setProductName] = useState("PVC Wire Cable (Red Colour)");
     const [productCategory, setProductCategory] = useState("Electrician");
@@ -50,7 +59,11 @@ const SmallProductView = () => {
                     <div className="flex gap-4 mb-6">
                         <label className="min-w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
                         <div className="border border-[#001580] rounded-3xl p-3 w-[240px] h-[240px] flex items-center justify-center">
-                            <img src={viewBig} alt="Product" className="max-h-full max-w-full object-contain" />
+                            <img
+                                src={data.productImageUrl}
+                                alt="Product"
+                                className="max-h-full max-w-full object-contain"
+                            />
                         </div>
                     </div>
 
@@ -62,8 +75,7 @@ const SmallProductView = () => {
                             <input
                                 type="text"
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
-                                value={productName}
-                                onChange={(e) => setProductName(e.target.value)}
+                                value={data?.productName || "NA"}
                                 readOnly
                                 disabled
                             />
@@ -71,13 +83,25 @@ const SmallProductView = () => {
 
                         <div className="flex items-start gap-4">
                             <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product For:
+                                Product Category:
                             </label>
                             <input
                                 type="text"
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
-                                value={productCategory}
-                                onChange={(e) => setProductCategory(e.target.value)}
+                                value={data?.productCategory?.tabName || "NA"}
+                                readOnly
+                                disabled
+                            />
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                Product Subcategory:
+                            </label>
+                            <input
+                                type="text"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                value={data?.productSubCategory?.tabName || "NA"}
                                 readOnly
                                 disabled
                             />
@@ -90,8 +114,7 @@ const SmallProductView = () => {
                             <input
                                 type="text"
                                 className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
-                                value={productPrice}
-                                onChange={(e) => setProductPrice(e.target.value)}
+                                value={data?.productPrice || "NA"}
                                 readOnly
                                 disabled
                             />
@@ -103,9 +126,8 @@ const SmallProductView = () => {
                             </label>
                             <textarea
                                 rows="5"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg  font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
-                                value={productDescription}
-                                onChange={(e) => setProductDescription(e.target.value)}
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
+                                value={data?.productDescription || "NA"}
                                 readOnly
                                 disabled
                             />

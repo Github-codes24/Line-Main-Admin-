@@ -23,18 +23,6 @@ const BigProductEdit = () => {
         navigate("/admin/bigproduct");
     };
 
-    const handleUpdate = () => {
-        navigate(`/admin/bigproduct/view/${id}`, {
-            state: {
-                image: productImage,
-                name: productName,
-                category: productCategory,
-                price: productPrice,
-                description: productDescription,
-            },
-        });
-    };
-
     return (
         <div className="p-2">
             <div className="border rounded-md p-4 shadow bg-white w-[100%] flex items-center mb-6">
@@ -134,12 +122,7 @@ const BigProductEdit = () => {
                     >
                         Cancel
                     </button>
-                    <button
-                        onClick={handleUpdate}
-                        className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg"
-                    >
-                        Update
-                    </button>
+                    <button className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg">Update</button>
                 </div>
             </div>
         </div>

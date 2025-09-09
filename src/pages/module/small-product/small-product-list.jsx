@@ -1,245 +1,60 @@
-
-
-// import { useState, useEffect } from 'react';
-// import { FiSearch, FiEdit2, FiTrash2, FiPlus } from 'react-icons/fi';
-
-// const ProductList = () => {
-//   const [products, setProducts] = useState([]);
-//   const [searchTerm, setSearchTerm] = useState('');
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const itemsPerPage = 5;
-
-//   // Mock data - in a real app, this would come from an API
-//   useEffect(() => {
-//     const mockProducts = [
-//       {
-//         id: 1,
-//         image: 'https://via.placeholder.com/50',
-//         name: 'PVC Wire Cable (Red Colour)',
-//         category: 'Electrician',
-//         price: '₹2499'
-//       },
-//       {
-//         id: 2,
-//         image: 'https://via.placeholder.com/50',
-//         name: 'Havelis 9W LED Bulb',
-//         category: 'Electrician',
-//         price: '₹2499'
-//       },
-//       {
-//         id: 3,
-//         image: 'https://via.placeholder.com/50',
-//         name: 'UPVC Plumbing Pipe (Schedule - 40) - 40mm(1/12")',
-//         category: 'Plumber',
-//         price: '₹2499'
-//       },
-//       {
-//         id: 4,
-//         image: 'https://via.placeholder.com/50',
-//         name: 'Asian Points Ultima Weather Proof Exterior Emulsion 41TR (White)',
-//         category: 'Painter',
-//         price: '₹2499'
-//       },
-//       {
-//         id: 5,
-//         image: 'https://via.placeholder.com/50',
-//         name: 'UXCEL Push Sieave Cover Wall Point Painting Brush Roller',
-//         category: 'Painter',
-//         price: '₹2499'
-//       }
-//     ];
-//     setProducts(mockProducts);
-//   }, []);
-
-//   // Filter products based on search term
-//   const filteredProducts = products.filter(
-//     (product) =>
-//       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-//       product.category.toLowerCase().includes(searchTerm.toLowerCase())
-//   );
-
-//   // Pagination logic
-//   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-//   const currentItems = filteredProducts.slice(
-//     (currentPage - 1) * itemsPerPage,
-//     currentPage * itemsPerPage
-//   );
-
-//   return (
-//     <div className="container mx-auto p-4 max-w-6xl">
-//       <h1 className="text-2xl font-bold mb-6">Product List</h1>
-
-//       {/* Search and Add New Product */}
-//       <div className="flex justify-between items-center mb-6">
-//         <div className="relative flex-1 max-w-md">
-//           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-//             <FiSearch className="text-gray-400" />
-//           </div>
-//           <input
-//             type="text"
-//             className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-//             placeholder="Search by Product Name, Category..."
-//             value={searchTerm}
-//             onChange={(e) => setSearchTerm(e.target.value)}
-//           />
-//         </div>
-//         <button className="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-//           <FiPlus className="mr-2" />
-//           Add New Product
-//         </button>
-//       </div>
-
-//       {/* Table */}
-//       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-//         <table className="min-w-full divide-y divide-gray-200">
-//           <thead className="bg-gray-50">
-//             <tr>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Sr.No.
-//               </th>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Product Image
-//               </th>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Product Name
-//               </th>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Product Category
-//               </th>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Product Price
-//               </th>
-//               <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-//                 Action
-//               </th>
-//             </tr>
-//           </thead>
-//           <tbody className="bg-white divide-y divide-gray-200">
-//             {currentItems.map((product, index) => (
-//               <tr key={product.id}>
-//                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-//                   {(currentPage - 1) * itemsPerPage + index + 1}
-//                 </td>
-//                 <td className="px-6 py-4 whitespace-nowrap">
-//                   <img 
-//                     src={product.image} 
-//                     alt={product.name} 
-//                     className="h-10 w-10 rounded-full object-cover"
-//                   />
-//                 </td>
-//                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-//                   {product.name}
-//                 </td>
-//                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-//                   {product.category}
-//                 </td>
-//                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-//                   {product.price}
-//                 </td>
-//                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-//                   <div className="flex space-x-2">
-//                     <button className="text-blue-600 hover:text-blue-900">
-//                       <FiEdit2 className="h-5 w-5" />
-//                     </button>
-//                     <button className="text-red-600 hover:text-red-900">
-//                       <FiTrash2 className="h-5 w-5" />
-//                     </button>
-//                   </div>
-//                 </td>
-//               </tr>
-//             ))}
-//           </tbody>
-//         </table>
-//       </div>
-
-//       {/* Pagination */}
-//       <div className="flex items-center justify-between mt-4">
-//         <div className="text-sm text-gray-700">
-//           Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}
-//           <span className="font-medium">
-//             {Math.min(currentPage * itemsPerPage, filteredProducts.length)}
-//           </span>{' '}
-//           of <span className="font-medium">{filteredProducts.length}</span> Entries
-//         </div>
-//         <div className="flex space-x-2">
-//           <button
-//             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-//             disabled={currentPage === 1}
-//             className={`px-3 py-1 rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-//           >
-//             Previous
-//           </button>
-//           <button
-//             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-//             disabled={currentPage === totalPages || totalPages === 0}
-//             className={`px-3 py-1 rounded-md ${currentPage === totalPages || totalPages === 0 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
-//           >
-//             Next
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ProductList;
-
-
 import React, {useState, useEffect} from "react";
 import {Eye, Trash2} from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import pvc from "../../../assets/images/pvc.png";
 import {IoClose} from "react-icons/io5";
-
-const productData = [
-    {id: 1, name: "PVC Wire Cable (Red Colour)", category: "Electrician", price: "₹499", status: "Add By Admin"},
-    {id: 2, name: "Havells 9W LED Bulb", category: "Electrician", price: "₹499", status: "Pending"},
-    {
-        id: 3,
-        name: "{UPVC Plumbing Pipe (Schedule - 40) - 40mm(1.1/2)}",
-        category: "Plumber",
-        price: "₹499",
-        status: "Approved",
-    },
-    {
-        id: 4,
-        name: "Asian Paints Ultima Weather Proof Exterior Emulsion 4 LTR (White)",
-        category: "Painter",
-        price: "₹499",
-        status: "Approved",
-    },
-    {
-        id: 5,
-        name: "UXCELL Plush Sleeve Cover Wall Paint Painting Brush Roller",
-        category: "Painter",
-        price: "₹499",
-        status: "Add By Admin",
-    },
-    ...Array(10)
-    .fill()
-    .map((_, i) => ({
-        id: i + 6,
-        name: `Product ${i + 6}`,
-        category: i % 2 === 0 ? "Electrician" : "Plumber",
-        price: "₹499",
-        status: "Pending",
-    })),
-];
+import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
+import {data} from "autoprefixer";
 
 const expertiseList = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
 export default function SmallProductList({productId}) {
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const onPageChange = (newPage) => {
+        if (newPage >= 1 && newPage <= totalPages) {
+            setPage(newPage);
+        }
+    };
+
+    const onItemsPerPageChange = (e) => {
+        const newLimit = parseInt(e.target.value, 10);
+        setLimit(newLimit);
+        setPage(1);
+    };
+
+    const {
+        getSmallProduct,
+        getSmallProductList,
+        deleteSmallProductById,
+        searchTheSmallProducts,
+        searchTheSmallProductById,
+    } = useSmallProduct();
+    console.log("Get data", getSmallProduct);
+    useEffect(() => {
+        getSmallProductList();
+    }, []);
+
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [activeFilters, setActiveFilters] = useState([]);
     const [showFilterPanel, setShowFilterPanel] = useState(false);
     const [showDeletePanel, setShowDeletePanel] = useState(false);
+    const [selectedCategoryId, setSelectedCategoryId] = useState("");
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
     const handleSearch = (e) => {
-        setSearchTerm(e.target.value);
+        const value = e.target.value;
+        setSearchTerm(value);
+        searchTheSmallProducts(value);
+        if (/^[0-9a-fA-F]{24}$/.test(value)) {
+            searchTheSmallProductById(value);
+            setSelectedCategoryId(value);
+        } else {
+            setSelectedCategoryId("");
+        }
     };
 
     const removeFilter = (filter) => {
@@ -255,24 +70,30 @@ export default function SmallProductList({productId}) {
         setActiveFilters((prev) => (prev.includes(item) ? prev.filter((x) => x !== item) : [...prev, item]));
     };
 
-    const handleDelete = () => {
+    const handleDelete = (id) => {
         console.log("Item deleted!");
+        deleteSmallProductById(id);
         setShowDeletePanel(false);
+        getSmallProductList();
     };
 
-    const filteredData = productData.filter((p) => {
-        const matchesFilter = activeFilters.length === 0 || activeFilters.includes(p.category);
-        const matchesSearch = searchTerm === "" || p.name.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesFilter && matchesSearch;
+    const filteredData = (getSmallProduct?.data ?? []).filter((p) => {
+        const matchesFilter = activeFilters.length === 0 || activeFilters.includes(p.productCategory?.tabName);
+
+        const matchesSearch = searchTerm === "" || p.productName?.toLowerCase().includes(searchTerm.toLowerCase());
+
+        const matchesCategoryId = !selectedCategoryId || p.productCategoryId === selectedCategoryId;
+
+        return matchesFilter && matchesSearch && matchesCategoryId;
     });
 
     useEffect(() => {
         setCurrentPage(1);
     }, [activeFilters, searchTerm]);
 
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+    const totalPages = Math.ceil(filteredData.length / limit) || 1;
+    const startIndex = (page - 1) * limit;
+    const paginatedData = filteredData.slice(startIndex, startIndex + limit);
 
     const handlePrev = () => {
         if (currentPage > 1) {
@@ -399,95 +220,68 @@ export default function SmallProductList({productId}) {
                 </div>
 
                 <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
-                    <table className="min-w-full bg-white shadow rounded-lg">
+                    <table className="min-w-full table-fixed bg-white shadow rounded-lg">
                         <thead>
                             <tr className="bg-[#E4E5EB] text-center text-[#001580] font-medium">
-                                <th className="px-2 py-3">Sr.No.</th>
-                                <th className="px-2 py-3">Product Image</th>
-                                <th className="px-2 py-3">Product Name</th>
-                                <th className="px-2 py-3">Product For</th>
-                                <th className="px-2 py-3">Product Price</th>
-                                <th className="px-2 py-3">Action</th>
+                                <th className="px-2 py-3 w-16">Sr.No.</th>
+                                <th className="px-2 py-3 w-28">Product Image</th>
+                                <th className="px-2 py-3 w-52">Product Name</th>
+                                <th className="px-2 py-3 w-40">Product Category</th>
+                                <th className="px-2 py-3 w-44">Product Sub Category</th>
+                                {/* <th className="px-2 py-3 w-40">Product For</th> */}
+                                <th className="px-2 py-3 w-28">Product Price</th>
+                                <th className="px-2 py-3 w-32">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {paginatedData.map((product, idx) => (
-                                <tr key={product.id} className="text-center">
+                                <tr key={idx} className="text-center border-b">
                                     <td className="p-3">{startIndex + idx + 1}</td>
                                     <td className="p-3 flex justify-center">
                                         <img
-                                            src={pvc}
+                                            src={product.productImageUrl}
                                             alt="Product"
-                                            className="w-14 h-14 rounded border border-[#007E74] p-0.5 "
+                                            className="w-14 h-14 rounded border border-[#007E74] p-0.5"
                                         />
                                     </td>
-                                    <td className="p-3 max-w-60">{product.name}</td>
-                                    <td className="p-3">{product.category}</td>
-                                    <td className="p-3">{product.price}</td>
-                                    <td className="p-3 space-x-2">
-                                        <button onClick={() => navigate(`/admin/smallproduct/view/${product.id}`)}>
-                                            <Eye className="text-red-600" size={20} />
-                                        </button>
-                                        <button onClick={() => navigate(`/admin/smallproduct/edit/${product.id}`)}>
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="20"
-                                                height="20"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
-                                            >
-                                                <path
-                                                    d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
-                                                    stroke="#EC2D01"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                                <path
-                                                    d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
-                                                    stroke="#EC2D01"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </button>
-                                        <button>
-                                            <Trash2
-                                                className="text-red-600"
-                                                size={20}
-                                                onClick={() => setShowDeletePanel(true)}
-                                            />
-
-                                            {showDeletePanel && (
-                                                <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-0 z-50">
-                                                    <div className="bg-white rounded-2xl shadow-md p-10 w-[496px] h-[264px] text-center">
-                                                        <h2 className="text-[#001580] text-2xl font-bold mb-6">
-                                                            Delete Item
-                                                        </h2>
-                                                        <p className="text-[#616666] text-xl mb-8 px-6">
-                                                            Are you sure you want to delete this item? This action
-                                                            cannot be undone.
-                                                        </p>
-
-                                                        <div className="flex justify-center gap-4">
-                                                            <button
-                                                                onClick={() => setShowDeletePanel(false)}
-                                                                className="w-[200px] border border-[#001580] text-[#001580] font-medium px-4 py-2 rounded-lg bg-[#CECEF2]"
-                                                            >
-                                                                Cancel
-                                                            </button>
-                                                            <button
-                                                                onClick={handleDelete}
-                                                                className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg hover:bg-[#001580]"
-                                                            >
-                                                                Delete
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </button>
+                                    <td className="p-3 truncate">{product.productName}</td>
+                                    <td className="p-3">{product?.productCategory?.tabName || "-"}</td>
+                                    <td className="p-3">{product?.productSubCategory || "-"}</td>
+                                    {/* <td className="p-3">{product?.productCategory?.tabName || "-"}</td> */}
+                                    <td className="p-3">{product.productPrice}</td>
+                                    <td className="p-3">
+                                        <div className="flex justify-center items-center gap-3">
+                                            <button onClick={() => navigate(`/admin/smallproduct/view/${product._id}`)}>
+                                                <Eye className="text-red-600" size={20} />
+                                            </button>
+                                            <button onClick={() => navigate(`/admin/smallproduct/edit/${product._id}`)}>
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="20"
+                                                    height="20"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                >
+                                                    <path
+                                                        d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                                                        stroke="#EC2D01"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                    <path
+                                                        d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                                                        stroke="#EC2D01"
+                                                        strokeWidth="2"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                            </button>
+                                            <button onClick={() => setShowDeletePanel(true)}>
+                                                <Trash2 className="text-red-600" size={20} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -499,60 +293,57 @@ export default function SmallProductList({productId}) {
                     <span className="text-sm font-semibold">
                         Showing {paginatedData.length} of {filteredData.length} Entries
                     </span>
-                    <div className="flex items-center space-x-2">
+
+                    <div className="flex items-center space-x-4">
+                        {/* Rows per page */}
+                        <select
+                            value={limit}
+                            onChange={onItemsPerPageChange}
+                            className="border rounded px-2 py-1 text-sm"
+                        >
+                            <option value={5}>5</option>
+                            <option value={10}>10</option>
+                            <option value={20}>20</option>
+                        </select>
+
+                        {/* Prev */}
                         <button
-                            onClick={handlePrev}
-                            disabled={currentPage === 1}
+                            onClick={() => onPageChange(page - 1)}
+                            disabled={page === 1}
                             className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                currentPage === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
+                                page === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
                             }`}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                stroke="currentColor"
-                                className="w-5 h-5 text-[#001580]"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                            </svg>
+                            ◀
                         </button>
 
+                        {/* Page numbers */}
                         {[...Array(totalPages)].map((_, i) => {
-                            const page = i + 1;
+                            const pageNum = i + 1;
                             return (
                                 <button
-                                    key={page}
-                                    onClick={() => setCurrentPage(page)}
+                                    key={pageNum}
+                                    onClick={() => onPageChange(pageNum)}
                                     className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
-                                        page === currentPage
+                                        pageNum === page
                                             ? "bg-[#001580] text-white"
                                             : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
                                     }`}
                                 >
-                                    {page}
+                                    {pageNum}
                                 </button>
                             );
                         })}
 
+                        {/* Next */}
                         <button
-                            onClick={handleNext}
-                            disabled={currentPage === totalPages}
+                            onClick={() => onPageChange(page + 1)}
+                            disabled={page === totalPages}
                             className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                                currentPage === totalPages ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
+                                page === totalPages ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
                             }`}
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="2"
-                                stroke="currentColor"
-                                className="w-5 h-5 text-[#001580]"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                            </svg>
+                            ▶
                         </button>
                     </div>
                 </div>
