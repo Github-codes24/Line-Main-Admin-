@@ -57,21 +57,21 @@ const useAuth = () => {
     };
 
     // 3️⃣ Regenerate OTP
-    const regenerateOtp = async (userId) => {
-        setLoading(true);
-        try {
-            const res = await fetchData({
-                method: "PUT",
-                url: `${conf.apiBaseUrl}/admin/auth/regenerate-otp`,
-                data: {userId},
-            });
-            return res;
-        } catch (error) {
-            throw error.response?.data || {message: "Failed to regenerate OTP"};
-        } finally {
-            setLoading(false);
-        }
-    };
+    // const regenerateOtp = async (userId) => {
+    //     setLoading(true);
+    //     try {
+    //         const res = await fetchData({
+    //             method: "PUT",
+    //             url: `${conf.apiBaseUrl}/admin/auth/regenerate-otp`,
+    //             data: {userId},
+    //         });
+    //         return res;
+    //     } catch (error) {
+    //         throw error.response?.data || {message: "Failed to regenerate OTP"};
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     // 4️⃣ Verify OTP
     const verifyOtp = async (otp, contact) => {
@@ -94,7 +94,9 @@ const useAuth = () => {
                 sessionStorage.setItem("name", res?.data?.user?.name);
                 sessionStorage.setItem("email", res?.data?.user?.email);
                 sessionStorage.setItem("mobile", res?.data?.user?.mobile);
-                navigate("/admin/adminprofile");
+                sessionStorage.setItem("Id", res?.data?.user?.id); // Add company ID for API calls
+                sessionStorage.setItem("isAdminLogin", "true"); // Ensure it's set as string
+                navigate("/admin/dashboard"); // Navigate to dashboard instead of profile
             }
         } catch (error) {
             throw error.response?.data || {message: "Failed to verify OTP"};
@@ -113,8 +115,8 @@ const useAuth = () => {
             });
 
             if (res) {
-                setAdminProfile(res?.data);
-                sessionStorage.setItem("isAdminLogin", res?.data?.isVerified);
+                setAdminProfile(res?.data?.user);
+                sessionStorage.setItem("isAdminLogin", res?.data?.user?.isVerified ? "true" : "false");
             }
 
             return res;
@@ -158,7 +160,7 @@ const useAuth = () => {
         loading,
         register,
         generateOtp,
-        regenerateOtp,
+        // regenerateOtp,
         verifyOtp,
         getProfile,
         adminProfile,

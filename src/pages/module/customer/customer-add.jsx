@@ -1,8 +1,12 @@
-import {useState} from "react";
-import React from "react";
-import {Formik, Form, Field, ErrorMessage} from "formik";
+// src/pages/AddCustomer.jsx
+import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 const validationSchema = Yup.object({
     name: Yup.string().required("Customer name is required"),
@@ -12,17 +16,43 @@ const validationSchema = Yup.object({
 
 const AddCustomer = () => {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
+    const [fetchData] = useFetch();
 
     const handleBack = () => {
         navigate(-1);
     };
 
-    //Adding state for API
-    const [isLoading, setIsLoading] = useState(false);
-    const [submitStatus, setSubmitStatus] = useState({type: "", message: ""});
+    const addCustomer = async (customerData) => {
+        try {
+            setIsLoading(true);
 
+            const result = await fetchData({
+                method: "POST",
+                url: `${conf.apiBaseUrl}/admin/Customer/add-customer`,
+                data: customerData
+            });
+
+            if (result.success) {
+                toast.success(result.message || "Customer added successfully!");
+                setTimeout(() => {
+                    navigate(-1); // Navigate back to customer list
+                }, 1500);
+                return { success: true, data: result };
+            } else {
+                throw new Error(result.message || 'Failed to add customer');
+            }
+        } catch (error) {
+            console.error('Error adding customer:', error);
+            toast.error(error.response?.data?.message || error.message || 'Failed to add customer');
+            return { success: false, error: error.message };
+        } finally {
+            setIsLoading(false);
+        }
+    };
     return (
         <div className="p-4 bg-[#E0E9E9] min-h-screen">
+            <ToastContainer />
             <div className="bg-white border rounded-md shadow mb-2">
                 <div className="flex items-center gap-2 p-2">
                     <svg
@@ -63,11 +93,19 @@ const AddCustomer = () => {
 
             <div className="bg-white border rounded-md shadow p-4">
                 <Formik
-                    initialValues={{name: "", contact: "", address: ""}}
+                    initialValues={{ name: "", contact: "", address: "" }}
                     validationSchema={validationSchema}
-                    onSubmit={async (values, {resetForm, setSubmitting}) => {}}
+                    onSubmit={async (values, { resetForm, setSubmitting }) => {
+                        setSubmitting(true);
+                        const result = await addCustomer(values);
+
+                        if (result.success) {
+                            resetForm();
+                        }
+                        setSubmitting(false);
+                    }}
                 >
-                    {() => (
+                    {({ isSubmitting }) => (
                         <Form>
                             <div className="border  border-[#616666] rounded-md p-8 min-h-[400px]">
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
@@ -128,21 +166,8 @@ const AddCustomer = () => {
                                 </div>
                             </div>
 
-                            {/* Adding status message for JSX API */}
 
-                            {submitStatus.message && (
-                                <div
-                                    className={`p-3 rounded-md mb-4 ${
-                                        submitStatus.type === "success"
-                                            ? "bg-green-100 text-green-700 border border-green-300"
-                                            : "bg-red-100 text-red-700 border border-red-300"
-                                    }`}
-                                >
-                                    {submitStatus.message}
-                                </div>
-                            )}
 
-                            {/* End of status message for JSX API */}
                             <div className="flex justify-center gap-6 mt-4">
                                 <button
                                     type="reset"
@@ -155,12 +180,13 @@ const AddCustomer = () => {
 
                                 <button
                                     type="submit"
-                                    disabled={isLoading}
-                                    className={`w-32 h-10 rounded-md text-sm ${
-                                        isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#007E74] hover:bg-teal-800"
-                                    } text-white`}
+                                    disabled={isSubmitting || isLoading}
+                                    className={`w-32 h-10 text-white rounded-md text-sm ${isSubmitting || isLoading
+                                        ? 'bg-gray-400 cursor-not-allowed'
+                                        : 'bg-[#007E74] hover:bg-teal-800'
+                                        }`}
                                 >
-                                    {isLoading ? "Adding..." : "Add Customer"}
+                                    {isSubmitting || isLoading ? 'Adding...' : 'Add Customer'}
                                 </button>
                             </div>
                         </Form>

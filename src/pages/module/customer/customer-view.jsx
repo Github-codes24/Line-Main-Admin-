@@ -1,31 +1,65 @@
-import React from "react";
-import {Formik, Form, Field} from "formik";
+import React, { useState, useEffect } from "react";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import {toast, ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 const ViewCustomer = () => {
     const navigate = useNavigate();
-
-    const initialValues = {
-        customerName: "Theresa Webb",
-        phoneNumber: "+91-9876543210",
-        address: "3517 W. Gray St. Utica, Pennsylvania 57867",
-    };
+    const { id } = useParams(); // Get customer ID from URL
+    const [isLoading, setIsLoading] = useState(false);
+    const [fetchData] = useFetch();
+    const [customerData, setCustomerData] = useState({
+        name: "",
+        contact: "",
+        address: "",
+    });
 
     const validationSchema = Yup.object({
-        customerName: Yup.string().required("Customer name is required"),
-        phoneNumber: Yup.string().required("Phone number is required"),
+        name: Yup.string().required("Customer name is required"),
+        contact: Yup.string().required("Phone number is required"),
         address: Yup.string().required("Address is required"),
     });
 
-    const handleEditClick = () => {
-        toast.info("Edit button clicked");
+    // Fetch customer data when component mounts
+    useEffect(() => {
+        if (id) {
+            fetchSingleCustomer(id);
+        }
+    }, [id]);
 
-        setTimeout(() => {
-            navigate("/customer/edit/:id");
-        }, 1000);
+    const fetchSingleCustomer = async (customerId) => {
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "GET",
+                url: `${conf.apiBaseUrl}/admin/Customer/get-single-customer/${customerId}`,
+            });
+
+            if (result.success) {
+                setCustomerData({
+                    name: result.data.name || "",
+                    contact: result.data.contact || "",
+                    address: result.data.address || "",
+                });
+            } else {
+                toast.error(result.message || 'Failed to fetch customer data');
+            }
+        } catch (error) {
+            console.error('Error fetching customer:', error);
+            toast.error(error.response?.data?.message || error.message || 'Error fetching customer data');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
+    const handleEditClick = () => {
+        navigate(`/admin/customermanagement/edit/${id}`);
     };
 
     const handleBack = () => {
@@ -72,55 +106,65 @@ const ViewCustomer = () => {
             </div>
 
             <div className="bg-white rounded-md shadow-md p-4">
-                <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={() => {}}>
-                    {({errors, touched}) => (
-                        <Form>
-                            <div className="space-y-8 border border-[#616666] rounded-lg p-4 min-h-[400px]">
-                                <div className="flex items-center">
-                                    <label htmlFor="customerName" className="w-48 font-medium">
-                                        Customer Name:
-                                    </label>
-                                    <Field
-                                        id="customerName"
-                                        name="customerName"
-                                        className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                        disabled
-                                    />
+                {isLoading ? (
+                    <div className="flex justify-center items-center min-h-[400px]">
+                        <div className="text-lg">Loading customer data...</div>
+                    </div>
+                ) : (
+                    <Formik initialValues={customerData} validationSchema={validationSchema} onSubmit={() => { }} enableReinitialize={true}>
+                        {() => (
+                            <Form>
+                                <div className="space-y-8 border border-[#616666] rounded-lg p-4 min-h-[400px]">
+                                    <div className="flex items-center">
+                                        <label htmlFor="name" className="w-48 font-medium">
+                                            Customer Name:
+                                        </label>
+                                        <Field
+                                            id="name"
+                                            name="name"
+                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                            disabled
+                                        />
+                                    </div>
+                                    <div className="flex items-center">
+                                        <label htmlFor="contact" className="w-48 font-medium">
+                                            Email ID/Phone Number:
+                                        </label>
+                                        <Field
+                                            id="contact"
+                                            name="contact"
+                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                            disabled
+                                        />
+                                    </div>
+                                    <div className="flex items-center">
+                                        <label htmlFor="address" className="w-48 font-medium">
+                                            Address:
+                                        </label>
+                                        <Field
+                                            id="address"
+                                            name="address"
+                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
-                                <div className="flex items-center">
-                                    <label htmlFor="phoneNumber" className="w-48 font-medium">
-                                        Email ID/Phone Number:
-                                    </label>
-                                    <Field
-                                        id="phoneNumber"
-                                        name="phoneNumber"
-                                        className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                        disabled
-                                    />
-                                </div>
-                                <div className="flex items-center">
-                                    <label htmlFor="address" className="w-48 font-medium">
-                                        Address:
-                                    </label>
-                                    <Field
-                                        id="address"
-                                        name="address"
-                                        className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                        disabled
-                                    />
-                                </div>
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
+                            </Form>
+                        )}
+                    </Formik>
+                )}
 
                 <div className="flex justify-center mt-8">
                     <button
                         type="button"
-                        className="bg-teal-700 text-white px-24 py-3 rounded-md hover:bg-teal-800"
+                        className={`px-24 py-3 rounded-md text-white ${isLoading
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-teal-700 hover:bg-teal-800'
+                            }`}
                         onClick={handleEditClick}
+                        disabled={isLoading}
                     >
-                        Edit
+                        {isLoading ? 'Loading...' : 'Edit'}
                     </button>
                 </div>
             </div>
