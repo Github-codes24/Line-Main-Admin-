@@ -145,6 +145,7 @@ const SmallProductAdd = () => {
                                     Product Category:
                                 </label>
                                 <select
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
                                     name="productCategory"
                                     value={formik.values.productCategory}
                                     onChange={async (e) => {
@@ -175,6 +176,7 @@ const SmallProductAdd = () => {
                                     Product Sub-Category:
                                 </label>
                                 <select
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
                                     name="productSubCategory"
                                     value={formik.values.productSubCategory}
                                     onChange={formik.handleChange}
