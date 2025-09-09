@@ -1,30 +1,99 @@
-import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {X} from "lucide-react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { X } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 const TabAdd = () => {
     const navigate = useNavigate();
+    const [fetchData] = useFetch();
+    const [isLoading, setIsLoading] = useState(false);
     const [tabName, setTabName] = useState("");
-    const [subTabs, setSubTabs] = useState([{id: Date.now(), name: ""}]);
+    const [subTabs, setSubTabs] = useState([{ id: Date.now(), name: "" }]);
     const handleBack = () => {
         navigate("/admin/tabmanagement");
     };
     const handleAddSubTab = () => {
-        setSubTabs([...subTabs, {id: Date.now(), name: ""}]);
+        setSubTabs([...subTabs, { id: Date.now(), name: "" }]);
     };
     const handleRemoveSubTab = (id) => {
         setSubTabs(subTabs.filter((sub) => sub.id !== id));
     };
     const handleChangeSubTab = (id, value) => {
-        setSubTabs(subTabs.map((sub) => (sub.id === id ? {...sub, name: value} : sub)));
+        setSubTabs(subTabs.map((sub) => (sub.id === id ? { ...sub, name: value } : sub)));
     };
-    const handleSubmit = (e) => {
+    const addTab = async (tabData) => {
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "POST",
+                url: `${conf.apiBaseUrl}/admin/tabs`,
+                data: tabData
+            });
+
+            if (result.success || result.status === 'success' || result.data) {
+                toast.success(result.message || "Tab added successfully!");
+                setTimeout(() => {
+                    navigate("/admin/tabmanagement");
+                }, 1500);
+                return { success: true, data: result };
+            } else {
+                throw new Error(result.message || 'Failed to add tab');
+            }
+        } catch (error) {
+            console.error('Error adding tab:', error);
+            console.error('Error response:', error.response?.data);
+            console.error('Error status:', error.response?.status);
+
+            let errorMessage = 'Failed to add tab';
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            } else if (error.response?.data) {
+                errorMessage = typeof error.response.data === 'string'
+                    ? error.response.data
+                    : JSON.stringify(error.response.data);
+            }
+
+            toast.error(errorMessage);
+            return { success: false, error: error.message };
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Tab Name:", tabName);
-        console.log("Sub Tabs:", subTabs);
-        navigate("/admin/tabmanagement");
+
+        // Validation
+        if (!tabName.trim()) {
+            toast.error("Tab name is required");
+            return;
+        }
+
+        // Filter out empty sub tabs
+        const validSubTabs = subTabs.filter(sub => sub.name.trim() !== "");
+
+        if (validSubTabs.length === 0) {
+            toast.error("At least one sub tab is required");
+            return;
+        }
+
+        // Based on your Postman response, the API expects this structure:
+        const tabData = {
+            tabName: tabName.trim(),
+            subTabNames: validSubTabs.map(sub => ({ name: sub.name.trim() }))
+        };
+
+        console.log("Submitting tab data:", tabData);
+        await addTab(tabData);
     };
     return (
         <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+            <ToastContainer />
             <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
                 <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
                 <h2 className="text-lg font-semibold">Add New Tab</h2>
@@ -82,10 +151,14 @@ const TabAdd = () => {
                     </button>
                     <button
                         type="submit"
-                        className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580]"
+                        disabled={isLoading}
+                        className={`w-[200px] px-6 py-2 rounded-lg text-white ${isLoading
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-[#001580] hover:bg-[#001580]'
+                            }`}
                         onClick={handleSubmit}
                     >
-                        Add Tab
+                        {isLoading ? 'Adding...' : 'Add Tab'}
                     </button>
                 </div>
             </div>
