@@ -1,18 +1,18 @@
 import React from "react";
-import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, TextField, Typography, CircularProgress} from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-import {useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation, useParams} from "react-router-dom";
 
 function ShopView() {
     const navigate = useNavigate();
     const {state} = useLocation();
-    const shop = state?.shop;
+    const {id} = useParams(); // Get shop ID from URL
 
-    if (!shop) {
-        return <Typography>No shop data available</Typography>;
-    }
+    // State management
+    const [shop, setShop] = React.useState(state?.shop || null);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
-    // Reusable Image Preview Box
     const ImagePreviewBox = ({label, src, alt, fallback}) => (
         <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2, mb: 2}}>
             <Box sx={{display: "flex", alignItems: "center"}}>
@@ -83,7 +83,6 @@ function ShopView() {
                                 paddingBottom: 10,
                             }}
                         >
-                            {/* Shop Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
@@ -92,15 +91,18 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.shopName}
+                                        value={shop.shopName || ""}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* Owner Name */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
@@ -109,15 +111,18 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.name}
+                                        value={shop.ownerName || ""}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* Contact */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
@@ -126,15 +131,18 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.contact}
+                                        value={shop.contact || ""}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* Address */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
@@ -143,15 +151,18 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.address}
+                                        value={shop.address || ""}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
@@ -160,23 +171,25 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.aadhaar}
+                                        value={shop.aadhaarNumber || ""}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* Aadhaar Card Image */}
                             <ImagePreviewBox
                                 label="Aadhaar Card Image:"
                                 src={shop.aadhaarImage}
-                                alt={`Aadhaar Card of ${shop.name}`}
+                                alt={`Aadhaar Card of ${shop.ownerName || shop.shopName}`}
                                 fallback="No Aadhaar image available"
                             />
 
-                            {/* GSTIN Number */}
                             <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
                                 <Box sx={{display: "flex", alignItems: "center"}}>
                                     <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
@@ -185,15 +198,18 @@ function ShopView() {
                                     <TextField
                                         fullWidth
                                         type="text"
-                                        value={shop.gstin}
+                                        value={shop.gstin || "N/A"}
                                         variant="outlined"
                                         sx={{background: "#E4E5EB"}}
-                                        InputProps={{readOnly: true}}
+                                        slotProps={{
+                                            input: {
+                                                readOnly: true,
+                                            },
+                                        }}
                                     />
                                 </Box>
                             </Box>
 
-                            {/* GSTIN Image */}
                             <ImagePreviewBox
                                 label="GSTIN Image:"
                                 src={shop.gstinImage}
@@ -202,7 +218,6 @@ function ShopView() {
                             />
                         </Box>
 
-                        {/* Buttons */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -212,7 +227,6 @@ function ShopView() {
                                 gap: "10px",
                             }}
                         >
-                            {/* Toggle Status Button */}
                             <Button
                                 variant="contained"
                                 sx={{
@@ -225,13 +239,11 @@ function ShopView() {
                                 onClick={() => {
                                     const newStatus = shop.status === "Active" ? "Inactive" : "Active";
                                     alert(`Shop marked as ${newStatus}`);
-                                    // TODO: Update worker status via API or state management
                                 }}
                             >
                                 {shop.status === "Active" ? "Inactive" : "Active"}
                             </Button>
 
-                            {/* Edit Button */}
                             <Button
                                 variant="outlined"
                                 sx={{
@@ -242,11 +254,12 @@ function ShopView() {
                                     textTransform: "none",
                                 }}
                                 onClick={() =>
-                                    navigate("/admin/shopmanagement/shopedit", {
+                                    navigate(`/admin/shopmanagement/edit/${shop.id}`, {
                                         state: {
                                             shop: {
                                                 ...shop,
-                                                aadhaarNumber: shop.aadhaar,
+                                                // Ensure field mapping consistency for edit form
+                                                name: shop.ownerName,
                                                 gstinNumber: shop.gstin,
                                             },
                                         },
@@ -254,6 +267,22 @@ function ShopView() {
                                 }
                             >
                                 Edit
+                            </Button>
+
+                            <Button
+                                variant="outlined"
+                                sx={{
+                                    background: "#dc3545",
+                                    color: "#FFFFFF",
+                                    paddingX: 4,
+                                    paddingY: "2px",
+                                    textTransform: "none",
+                                    "&:hover": {
+                                        background: "#c82333",
+                                    },
+                                }}
+                            >
+                                Delete
                             </Button>
                         </Box>
                     </form>

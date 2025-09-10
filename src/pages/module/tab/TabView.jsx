@@ -1,71 +1,238 @@
-// TabView.jsx
-import React from "react";
-
-import { useNavigate } from "react-router";
-
+import React, { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Edit, ArrowLeft } from "lucide-react";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 const TabView = () => {
- const navigate = useNavigate();
+    const navigate = useNavigate();
+    const { id } = useParams(); // Get tab ID from URL
+    const location = useLocation();
+    const [fetchData] = useFetch();
+    const [isLoading, setIsLoading] = useState(false);
+    const [tabData, setTabData] = useState({
+        tabName: "",
+        subTabNames: [],
+        isActive: true,
+        isEditable: true,
+        createdAt: "",
+        updatedAt: ""
+    });
 
-   const handleBack = () => {
-    navigate("/admin/tabmanagement"); // adjust route as per your setup
-  };
+    // Check if tab data was passed via navigation state
+    const passedTabData = location.state?.tab;
 
-  return (
-    <div className=" bg-gray-50 p-4 h-full">
-      {/* Header */}
-      <div className="bg-white shadow-xl rounded-xl p-3 flex items-center gap-2 border-2">
-             <img
-  src="/Back Button (1).png"
-  onClick={handleBack}
-  className="mr-3 cursor-pointer w-8"
-  alt="Back"
-/>
-        <h2 className="text-lg font-semibold text-gray-800">View Tab</h2>
-      </div>
+    useEffect(() => {
+        if (passedTabData) {
+            // Use passed data if available
+            setTabData({
+                tabName: passedTabData.name || passedTabData.tabName || "",
+                subTabNames: passedTabData.subTabs || passedTabData.subTabNames || [],
+                isActive: passedTabData.isActive !== undefined ? passedTabData.isActive : true,
+                isEditable: passedTabData.isEditable !== undefined ? passedTabData.isEditable : true,
+                createdAt: passedTabData.createdAt || "",
+                updatedAt: passedTabData.updatedAt || ""
+            });
+        } else if (id) {
+            // Fetch data from API if not passed
+            fetchSingleTab(id);
+        }
+    }, [id, passedTabData]);
 
-      {/* Form Card */}
-      <div className="bg-white shadow-xl rounded-lg p-6 mt-4 border-2 h-[78%] border-[#001580]">
-        {/* Tab Name */}
-        <div className="mb-4 flex items-center ">
-          <label className="w-32 font-medium text-black ">Tab Name:</label>
-          <input
-            type="text"
-            value="Plumbing"
-            disabled
-            className="flex-1 p-2 rounded  text-black border-2 border-[#001580] bg-[#E4E5EB] "
-          />
+    const fetchSingleTab = async (tabId) => {
+        try {
+            setIsLoading(true);
+
+            const result = await fetchData({
+                method: "GET",
+                url: `${conf.apiBaseUrl}/admin/tabs/${tabId}`,
+            });
+
+            console.log('Fetch single tab result:', result);
+
+            if (result.success || result.data) {
+                const tab = result.data || result.tab || result;
+                setTabData({
+                    tabName: tab.tabName || tab.name || "",
+                    subTabNames: tab.subTabNames || tab.subTabs || [],
+                    isActive: tab.isActive !== undefined ? tab.isActive : true,
+                    isEditable: tab.isEditable !== undefined ? tab.isEditable : true,
+                    createdAt: tab.createdAt || "",
+                    updatedAt: tab.updatedAt || ""
+                });
+            } else {
+                toast.error(result.message || 'Failed to fetch tab data');
+                navigate(-1); // Go back if failed to fetch
+            }
+        } catch (error) {
+            console.error('Error fetching tab:', error);
+            toast.error(error.response?.data?.message || error.message || 'Error fetching tab data');
+            navigate(-1); // Go back on error
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleBack = () => {
+        navigate(-1);
+    };
+
+    const handleEdit = () => {
+        navigate(`/admin/tabmanagement/edit/${id}`, { 
+            state: { tab: { ...tabData, id } } 
+        });
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+                <ToastContainer />
+                <div className="flex items-center justify-center h-64">
+                    <div className="text-lg">Loading tab details...</div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+            <ToastContainer />
+            
+            {/* Header */}
+            <div className="flex items-center justify-between bg-white border rounded-lg shadow p-3 mb-4">
+                <div className="flex items-center">
+                    <button
+                        onClick={handleBack}
+                        className="mr-3 p-2 hover:bg-gray-100 rounded-full"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
+                    <h2 className="text-lg font-semibold">View Tab Details</h2>
+                </div>
+                
+                {tabData.isEditable && (
+                    <button
+                        onClick={handleEdit}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    >
+                        <Edit size={16} />
+                        Edit Tab
+                    </button>
+                )}
+            </div>
+
+            {/* Main Content */}
+            <div className="bg-white p-6 rounded-lg shadow-md">
+                <div className="bg-white border rounded-lg p-6 space-y-6 border-[#616666]">
+                    
+                    {/* Tab Name */}
+                    <div className="flex items-center gap-6">
+                        <label className="w-1/4 font-medium text-gray-700">Tab Name:</label>
+                        <div className="flex-1">
+                            <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                {tabData.tabName || 'N/A'}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Status */}
+                    <div className="flex items-center gap-6">
+                        <label className="w-1/4 font-medium text-gray-700">Status:</label>
+                        <div className="flex-1">
+                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                                tabData.isActive 
+                                    ? 'bg-green-100 text-green-800' 
+                                    : 'bg-red-100 text-red-800'
+                            }`}>
+                                {tabData.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Editable Status */}
+                    <div className="flex items-center gap-6">
+                        <label className="w-1/4 font-medium text-gray-700">Editable:</label>
+                        <div className="flex-1">
+                            <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
+                                tabData.isEditable 
+                                    ? 'bg-blue-100 text-blue-800' 
+                                    : 'bg-gray-100 text-gray-800'
+                            }`}>
+                                {tabData.isEditable ? 'Yes' : 'No'}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Sub Tabs */}
+                    <div className="flex gap-6">
+                        <label className="w-1/4 font-medium text-gray-700">Sub Tabs:</label>
+                        <div className="flex-1">
+                            {tabData.subTabNames && tabData.subTabNames.length > 0 ? (
+                                <div className="space-y-2">
+                                    {tabData.subTabNames.map((subTab, index) => (
+                                        <div
+                                            key={index}
+                                            className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300"
+                                        >
+                                            {subTab.name || subTab}
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-500 border-gray-300">
+                                    No sub tabs available
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Created Date */}
+                    {tabData.createdAt && (
+                        <div className="flex items-center gap-6">
+                            <label className="w-1/4 font-medium text-gray-700">Created Date:</label>
+                            <div className="flex-1">
+                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                    {new Date(tabData.createdAt).toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Updated Date */}
+                    {tabData.updatedAt && (
+                        <div className="flex items-center gap-6">
+                            <label className="w-1/4 font-medium text-gray-700">Last Updated:</label>
+                            <div className="flex-1">
+                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                    {new Date(tabData.updatedAt).toLocaleString()}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-center gap-4 mt-6">
+                    <button
+                        onClick={handleBack}
+                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
+                    >
+                        Back to List
+                    </button>
+                    {tabData.isEditable && (
+                        <button
+                            onClick={handleEdit}
+                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        >
+                            Edit Tab
+                        </button>
+                    )}
+                </div>
+            </div>
         </div>
-
-        {/* Sub Tab Names */}
-        <div className="mb-4 flex items-start">
-          <label className="w-32 font-medium text-black border-2 ">Sub Tab Name:</label>
-          <div className="flex-1 space-y-2 ">
-            <input
-              type="text"
-              value="Plumber"
-              disabled
-              className="w-full p-2  rounded  text-black border-2 bg-[#E4E5EB] border-[#001580]"
-            />
-            <input
-              type="text"
-              value="Tank Cleaner"
-              disabled
-              className="w-full p-2  rounded   text-black border-2 bg-[#E4E5EB] border-[#001580]"
-            />
-          </div>
-        </div>
-
-        {/* Edit Button */}
-        
-      </div>
-      <div className="flex justify-center p-4 ">
-          <button className="bg-[#001580] hover:bg-[#001580] text-white px-6 py-1 rounded">
-            Edit
-          </button>
-        </div>
-    </div>
-  );
+    );
 };
 
 export default TabView;

@@ -122,7 +122,9 @@ function WorkerList() {
                 setSearchValue={setSearchText}
                 buttonText="Add New Worker"
                 btnpath="/admin/workermanagement/add"
+                btnpath="/admin/workermanagement/add"
             />
+
             <Card>
                 <CardHeader
                     sx={{ paddingX: 3 }}
@@ -271,6 +273,7 @@ function WorkerList() {
                                             >
                                                 <ViewIcon />
                                             </IconButton>
+
 
                                             <IconButton
                                                 size="small"

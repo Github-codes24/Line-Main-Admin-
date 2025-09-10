@@ -68,17 +68,17 @@ function Sidebar({activeTab, setActiveTab}) {
         {
             icon: (color) => <SetCommision color={color} />,
             title: "Set Commission",
-            path: "/admin/bigproduct/approve/1", // demo id (so sidebar link works)
+            path: "/admin/set-commission", // demo id
         },
         {
             icon: (color) => <SetCharges color={color} />,
             title: "Set Charges Of Worker",
-            path: "/admin/order/list",
+            path: "/admin/set-charges-of-worker",
         },
         {
             icon: (color) => <SetLimit color={color} />,
             title: "Set Limit Amount",
-            path: "/admin/order/progress/1", // demo id
+            path: "/admin/set-limit-amount", // demo id
         },
     ];
 
@@ -88,6 +88,7 @@ function Sidebar({activeTab, setActiveTab}) {
                 width: "270px",
                 minWidth: "270px",
                 maxWidth: "270px",
+                font: "myfont",
                 minHeight: "100vh",
                 display: "flex",
                 flexDirection: "column",
