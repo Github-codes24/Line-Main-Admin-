@@ -87,19 +87,21 @@ const Dashboard = () => {
               "Expertise",
               "Email/Phone",
               "Total Orders",
+              "Status"
             ]}
             data={[
-              ["1", "Theresa Webb", "Plumber", "example@mail.com", "965"],
-              ["2", "Jane Cooper", "AC Mechanic", "+91-9876543210", "945"],
+              ["1", "Theresa Webb", "Plumber", "example@mail.com", "965" , "Active"],
+              ["2", "Jane Cooper", "AC Mechanic", "+91-9876543210", "945", "Active"],
               [
                 "3",
                 "Brooklyn Simmons",
                 "Electrician",
                 "example@mail.com",
                 "930",
+                "Inactive"
               ],
-              ["4", "Jacob Jones", "Painter", "+91-9876543210", "880"],
-              ["5", "Jerome Bell", "Tiler", "example@mail.com", "825"],
+              ["4", "Jacob Jones", "Painter", "+91-9876543210", "880", "Active"],
+              ["5", "Jerome Bell", "Tiler", "example@mail.com", "825","Active"],
             ]}
           />
         </div>

@@ -12,9 +12,8 @@ const CustomerList = () => {
   const handleAddCustomer = () => {
     toast.success("Add Customer clicked!");
 
-    setTimeout(() => {
-      navigate("/customer-add");
-    }, 1000);
+      navigate("/admin/customermanagement/add");
+    
   };
 
   

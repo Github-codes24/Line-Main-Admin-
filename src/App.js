@@ -1,6 +1,9 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
+import AdminProfile from "./pages/auth/adminProfile";
+import AdminEditProfile from "./pages/auth/adminEditProfile";
+
 import React from "react";
 
 // Pages
@@ -69,6 +72,23 @@ function App() {
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <Dashboard />
+
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <AdminProfile />
+            </AdminLayout>
+          }
+        />
+        <Route
+          path="/admin/edit-profile"
+          element={
+            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+              <AdminEditProfile />
             </AdminLayout>
           }
         />
@@ -125,7 +145,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/workermanagement/view/:id"
+          path="/admin/workermanagement/workerview/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <WorkerView />
@@ -133,7 +153,7 @@ function App() {
           }
         />
         <Route
-          path="/admin/workermanagement/edit/:id"
+          path="/admin/workermanagement/workeredit/:id"
           element={
             <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
               <WorkerEdit />

@@ -12,6 +12,12 @@ import AddCustomer from '../pages/module/customer/customer-add';
 import ViewCustomer from '../pages/module/customer/customer-view';
 import EditCustomer from '../pages/module/customer/customer-edit';
 
+import WorkerList from '../pages/module/worker/WorkerList';
+import WorkerAdd from '../pages/module/worker/WorkerAdd';
+import WorkerEdit from '../pages/module/worker/WorkerEdit';
+import WorkerView from '../pages/module/worker/WorkerView';
+
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -79,6 +85,40 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+       <Route
+        path="/admin/workermanagement"
+        element={
+          <ProtectedRoute>
+            <WorkerList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/workermanagement/add"
+        element={
+          <ProtectedRoute>
+            <WorkerAdd />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+       path="/admin/workermanagement/workeredit/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerEdit />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+       path="/admin/workermanagement/workerview/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerView />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
