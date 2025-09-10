@@ -6,7 +6,7 @@ import {ToastContainer} from "react-toastify";
 import AdminProfile from "./pages/auth/adminProfile";
 import AdminEditProfile from "./pages/auth/adminEditProfile";
 
-import React from "react";
+
 
 // Pages
 import Dashboard from "./pages/dashbaord";
@@ -76,8 +76,8 @@ import SetLimitAmount from "./pages/module/set-limit-amount/set-limit-amount";
 import SetLimitAmount2 from "./pages/module/set-limit-amount/set-limit-amount2";
 import AdminLogin from "./pages/auth/login";
 import VerifyOtp from "./pages/auth/VerifyOtp";
-import AdminProfile from "./pages/auth/adminProfile";
-import AdminEditProfile from "./pages/auth/adminEditProfile";
+
+
 import ProtectedRoute from "./route/protected";
 
 // Layout wrapper so you don’t repeat AdminLayout for every route

@@ -122,7 +122,7 @@ function WorkerList() {
                 setSearchValue={setSearchText}
                 buttonText="Add New Worker"
                 btnpath="/admin/workermanagement/add"
-                btnpath="/admin/workermanagement/add"
+               
             />
 
             <Card>
