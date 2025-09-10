@@ -36,6 +36,12 @@ import ViewCharges from '../pages/module/set-charges-of-worker/view-commission';
 import SetLimitAmount from '../pages/module/set-limit-amount/set-limit-amount';
 import SetLimitAmount2 from '../pages/module/set-limit-amount/set-limit-amount2';
 
+import WorkerList from '../pages/module/worker/WorkerList';
+import WorkerAdd from '../pages/module/worker/WorkerAdd';
+import WorkerEdit from '../pages/module/worker/WorkerEdit';
+import WorkerView from '../pages/module/worker/WorkerView';
+
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -198,6 +204,40 @@ const AppRoutes = () => {
       />
 
       {/* Catch-all */}
+       <Route
+        path="/admin/workermanagement"
+        element={
+          <ProtectedRoute>
+            <WorkerList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/workermanagement/add"
+        element={
+          <ProtectedRoute>
+            <WorkerAdd />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+       path="/admin/workermanagement/workeredit/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerEdit />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+       path="/admin/workermanagement/workerview/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerView />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
