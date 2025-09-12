@@ -1,26 +1,14 @@
-// import React, { useState } from "react";
+import React from "react";
 import { ArrowDropDown } from "@mui/icons-material";
-import React, { useState } from "react";
-
-import {
-  Avatar,
-  Box,
-  IconButton,
-  Typography,
-  Menu,
-  MenuItem,
-} from "@mui/material";
+import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // import the hook
 import profileImage from "../../assets/images/profileImage.jpg";
 
 function Navbar() {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate(); // initialize navigate
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleProfileClick = () => {
+    navigate("/admin/profile"); // Set your profile route
   };
 
   return (
@@ -45,30 +33,23 @@ function Navbar() {
         LineMan Logo
       </Typography>
 
+      {/* Make the profile section clickable */}
       <Box
+        onClick={handleProfileClick}
         sx={{
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           gap: "5px",
+          cursor: "pointer", // shows pointer cursor on hover
         }}
       >
         <Avatar src={profileImage} alt="profile">
           GS
         </Avatar>
-
-        <IconButton size="small" sx={{ p: 0 }} onClick={handleClick}>
+        <IconButton size="small" sx={{ p: 0 }}>
           <ArrowDropDown />
         </IconButton>
-
-        {/* Dropdown Menu */}
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={handleClose}>Admin Profile</MenuItem>
-        </Menu>
       </Box>
     </Box>
   );
