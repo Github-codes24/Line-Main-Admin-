@@ -361,7 +361,7 @@ export default function BigProductList() {
                         placeholder="Search by Product Name..."
                         value={searchTerm}
                         onChange={handleSearch}
-                        className="w-full pl-10 pr-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="w-full pl-10 pr-4 py-2 text-sm text-gray-700 placeholder:font-bold bg-[#E4E5EB] border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#0D2E28]"
                     />
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +381,7 @@ export default function BigProductList() {
 
                 <Button
                     onClick={() => navigate("/admin/bigproduct/add")}
-                    className="bg-[#2D65BC] text-white rounded-lg px-4 py-2"
+                    className="bg-[#001580] text-white rounded-lg px-4 py-2"
                 >
                     + Add New Product
                 </Button>
@@ -401,7 +401,11 @@ export default function BigProductList() {
                     onClick={handleFilterClick}
                 >
                     <FilterIcon />
+       
                 </Box>
+                  
+    
+
 
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                     {appliedFilters.map((filterId, index) => {
@@ -412,7 +416,7 @@ export default function BigProductList() {
                                 label={category?.name || filterId}
                                 size="small"
                                 onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filterId))}
-                                sx={{ backgroundColor: "#F0F0F0" }}
+                                sx={{ backgroundColor: "#E4E5EB" }}
                             />
                         );
                     })}
@@ -421,7 +425,7 @@ export default function BigProductList() {
                             label={`Status: ${approvalStatusFilter}`}
                             size="small"
                             onDelete={() => setApprovalStatusFilter("")}
-                            sx={{ backgroundColor: "#E3F2FD" }}
+                            sx={{ backgroundColor: "#E4E5EB" }}
                         />
                     )}
                     {subCategoryFilter && (
@@ -429,7 +433,7 @@ export default function BigProductList() {
                             label={`Sub-Category: ${subCategoryFilter}`}
                             size="small"
                             onDelete={() => setSubCategoryFilter("")}
-                            sx={{ backgroundColor: "#FFF3E0" }}
+                            sx={{ backgroundColor: "#E4E5EB" }}
                         />
                     )}
                 </Box>
@@ -441,7 +445,7 @@ export default function BigProductList() {
                         setApprovalStatusFilter(e.target.value);
                         setCurrentPage(1);
                     }}
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="px-3 py-1 border border-[#0D2E28] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#0D2E28]"
                 >
                     <option value="">All Status</option>
                     <option value="Pending">Pending</option>
@@ -457,7 +461,7 @@ export default function BigProductList() {
                             setSubCategoryFilter(e.target.value);
                             setCurrentPage(1);
                         }}
-                        className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        className="px-3 py-1 border border-[#0D2E28] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#E4E5EB]"
                         disabled={subCategories.length === 0}
                     >
                         <option value="">All Sub-Categories</option>
@@ -471,7 +475,8 @@ export default function BigProductList() {
 
                 <button
                     onClick={handleResetFilters}
-                    className="px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
+                    // className="px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
+                     className="ml-auto px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
                 >
                     Reset Filter
                 </button>

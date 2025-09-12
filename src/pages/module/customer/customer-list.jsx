@@ -107,15 +107,15 @@ const CustomerList = () => {
                 <div className="absolute left-1/2 transform -translate-x-1/2">
                     <input
                         type="text"
-                        placeholder="Search..."
+                        placeholder="Search by Name, Phone Number, Email..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border border-gray-300 rounded-full p-1 px-4 w-64 text-sm"
+                        className="border border-gray-300 bg-[#E4E5EB] rounded-full p-1 px-4 w-64 text-sm"
                     />
                 </div>
 
                 <Button
-                    className="px-4 py-2 text-white rounded hover:bg-blue-800"
+                    className="px-4 py-2 text-white rounded "
                     onClick={() => navigate("/admin/customermanagement/add")}
                 >
                     + Add New Customer
@@ -135,7 +135,7 @@ const CustomerList = () => {
                         </div>
                     ) : (
                         <table className="w-full text-sm text-left text-gray-700">
-                            <thead className="bg-[#e6efef] text-black text-base font-semibold">
+                            <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
                                 <tr>
                                     <th className="px-6 py-4">Sr.No.</th>
                                     <th className="px-6 py-4">Customer Name</th>
@@ -210,7 +210,7 @@ const CustomerList = () => {
                     )}
                 </div>
 
-                {/* Pagination Box */}
+                {/* Pagination Box */} 
                 <div className="p-4">
                     <div className="flex justify-between items-center text-sm text-black">
                         <span>Showing 1 to {filteredCustomers.length} of {customers.length} entries</span>
@@ -218,8 +218,10 @@ const CustomerList = () => {
                             <button className="px-3 py-1 border border-gray-300 rounded mr-2">Previous</button>
                             <button className="px-3 py-1 border border-gray-300 rounded">Next</button>
                         </div>
-                    </div>
-                </div>
+                    </div> 
+                </div> 
+
+              
             </div>
         </div>
     );

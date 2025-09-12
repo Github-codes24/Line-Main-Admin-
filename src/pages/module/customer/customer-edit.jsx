@@ -133,25 +133,25 @@ const EditCustomer = () => {
                                 <div className="border border-[#616666] rounded-lg p-4 min-h-[400px] space-y-4">
                                     <div className="flex items-center gap-4">
                                         <label className="w-40 font-medium">Customer Name:</label>
-                                        <Field type="text" name="name" placeholder="Enter Full Name" className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"/>
+                                        <Field type="text" name="name" placeholder="Enter Full Name" className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"/>
                                         <ErrorMessage name="name" component="div" className="text-red-500 text-sm"/>
                                     </div>
 
                                     <div className="flex items-center gap-4">
                                         <label className="w-40 font-medium">Email ID/Phone Number:</label>
-                                        <Field type="text" name="contact" placeholder="Enter Email ID/Phone Number" className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"/>
+                                        <Field type="text" name="contact" placeholder="Enter Email ID/Phone Number" className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"/>
                                         <ErrorMessage name="contact" component="div" className="text-red-500 text-sm"/>
                                     </div>
 
                                     <div className="flex items-center gap-4">
                                         <label className="w-40 font-medium">Address:</label>
-                                        <Field type="text" name="address" placeholder="Enter Full Address" className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none"/>
+                                        <Field type="text" name="address" placeholder="Enter Full Address" className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"/>
                                         <ErrorMessage name="address" component="div" className="text-red-500 text-sm"/>
                                     </div>
 
                                     <div className="flex justify-center gap-4 mt-6">
-                                        <button type="button" onClick={handleBack} className="border border-[#0f9e9e] text-[#0f9e9e] px-6 py-2 rounded-md hover:bg-[#e0f7f7]">Cancel</button>
-                                        <button type="submit" disabled={isSubmitting || isLoading} className={`px-6 py-2 rounded-md text-white ${isSubmitting || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#0f9e9e] hover:bg-[#0c7d7d]'}`}>
+                                        <button type="button" onClick={handleBack} className="border border-[#001580] text-[#001580] px-6 py-2 rounded-md hover:bg-[#CED4F2] bg-[#CED4F2]">Cancel</button>
+                                        <button type="submit" disabled={isSubmitting || isLoading} className={`px-6 py-2 rounded-md text-white ${isSubmitting || isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#001580] hover:bg-[#CED4F2]'}`}>
                                             {isSubmitting || isLoading ? 'Updating...' : 'Update Customer'}
                                         </button>
                                     </div>

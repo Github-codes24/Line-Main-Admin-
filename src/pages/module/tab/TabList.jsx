@@ -18,6 +18,10 @@ const TabList = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [totalItems, setTotalItems] = useState(0);
 
+    
+
+
+
     // Fetch all tabs when component mounts or search term changes
     useEffect(() => {
         fetchAllTabs();
@@ -166,23 +170,23 @@ const TabList = () => {
             <ToastContainer />
 
             <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex justify-between items-center min-h-[48px]">
-                <h1 className="text-xl font-semibold ml-2">Admin Tab List</h1>
+                <h1 className="text-xl font-semibold ml-2">Tab List</h1>
 
                 <div className="absolute left-1/2 transform -translate-x-1/2">
                     <input
                         type="text"
-                        placeholder="Search tabs..."
+                        placeholder="Search by Tab Name, Sub Tab Name..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border border-gray-300 rounded-full p-1 px-4 w-64 text-sm"
+                        className="border border-gray-300 bg-[#E4E5EB] rounded-full p-1 px-4 w-64 text-sm"
                     />
                 </div>
 
                 <button
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-800"
+                    className="px-2 py-2 bg-[#001580] text-white rounded"
                     onClick={() => navigate("/admin/tabmanagement/add")}
                 >
-                    Add Tab
+                    + Add New Tab
                 </button>
             </div>
 
@@ -190,7 +194,7 @@ const TabList = () => {
             <div className="bg-white p-4 shadow rounded-md">
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
                     <table className="w-full text-sm text-left text-gray-700">
-                        <thead className="bg-[#e6efef] text-black text-base font-semibold">
+                        <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
                             <tr>
                                 <th className="px-6 py-4">Sr.No.</th>
                                 <th className="px-6 py-4">Tab Name</th>

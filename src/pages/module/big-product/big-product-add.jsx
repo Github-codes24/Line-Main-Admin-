@@ -170,7 +170,7 @@ const BigProductAdd = () => {
                         <input
                             type="text"
                             name="productName"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                             value={formData.productName}
                             onChange={handleInputChange}
                             placeholder="Enter product name"
@@ -182,7 +182,18 @@ const BigProductAdd = () => {
                         <input
                             type="text"
                             name="productCategory"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
+                            value={formData.productCategory}
+                            onChange={handleInputChange}
+                            placeholder="Enter product category"
+                        />
+                    </div>
+                     <div className="flex items-start gap-4">
+                        <label className="min-w-[160px] font-semibold pt-2">Product Sub Category:</label>
+                        <input
+                            type="text"
+                            name="productCategory"
+                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                             value={formData.productCategory}
                             onChange={handleInputChange}
                             placeholder="Enter product category"
@@ -194,7 +205,7 @@ const BigProductAdd = () => {
                         <input
                             type="text"
                             name="productPrice"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                             value={formData.productPrice}
                             onChange={handleInputChange}
                             placeholder="Enter product price (e.g., ₹499)"
@@ -206,7 +217,7 @@ const BigProductAdd = () => {
                         <textarea
                             rows="5"
                             name="productDescription"
-                            className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
+                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none resize-none"
                             value={formData.productDescription}
                             onChange={handleInputChange}
                             placeholder="Enter product description"
@@ -217,7 +228,7 @@ const BigProductAdd = () => {
                 <div className="flex justify-center mt-6 gap-4">
                     <button
                         type="button"
-                        className="bg-teal-100 hover:bg-teal-200 text-teal-700 px-10 py-2 rounded-lg"
+                        className="bg-[#CED4F2]  px-10 py-2 rounded-lg"
                         onClick={() => navigate(-1)}
                         disabled={isLoading}
                     >
@@ -225,7 +236,7 @@ const BigProductAdd = () => {
                     </button>
                     <button
                         type="submit"
-                        className="bg-teal-700 hover:bg-teal-800 text-white px-10 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="bg-[#001580] hover:bg-[#CED4F2] text-white px-10 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={handleSubmit}
                         disabled={isLoading}
                     >

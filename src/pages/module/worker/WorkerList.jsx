@@ -28,6 +28,9 @@ function WorkerList() {
     const [searchText, setSearchText] = React.useState("");
     const [appliedFilters, setAppliedFilters] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [currentPage, setCurrentPage] = React.useState(1);
+const recordsPerPage = 5;
+
 
     const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
@@ -97,19 +100,47 @@ function WorkerList() {
 
     const open = Boolean(anchorEl);
 
-    const filteredWorkers = workerData.filter((worker) => {
-        const matchesSearch =
-            searchText.trim() === "" ||
-            worker.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.expertise.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.contact.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.address.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.status.toLowerCase().includes(searchText.toLowerCase());
+    // const filteredWorkers = workerData.filter((worker) => {
+    //     const matchesSearch =
+    //         searchText.trim() === "" ||
+    //         worker.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    //         worker.expertise.toLowerCase().includes(searchText.toLowerCase()) ||
+    //         worker.contact.toLowerCase().includes(searchText.toLowerCase()) ||
+    //         worker.address.toLowerCase().includes(searchText.toLowerCase()) ||
+    //         worker.status.toLowerCase().includes(searchText.toLowerCase());
 
-        const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
+    //     const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
 
-        return matchesSearch && matchesFilter;
-    });
+    //     return matchesSearch && matchesFilter;
+    // });
+    // Pagination calculations
+// Filtering
+const filteredWorkers = workerData.filter((worker) => {
+  const matchesSearch =
+    searchText.trim() === "" ||
+    worker.name.toLowerCase().includes(searchText.toLowerCase()) ||
+    worker.expertise.toLowerCase().includes(searchText.toLowerCase()) ||
+    worker.contact.toLowerCase().includes(searchText.toLowerCase()) ||
+    worker.address.toLowerCase().includes(searchText.toLowerCase()) ||
+    worker.status.toLowerCase().includes(searchText.toLowerCase());
+
+  const matchesFilter =
+    appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
+
+  return matchesSearch && matchesFilter;
+});
+
+// Pagination calculations
+const totalPages = Math.ceil(filteredWorkers.length / recordsPerPage);
+const indexOfLastRecord = currentPage * recordsPerPage;
+const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+const currentRecords = filteredWorkers.slice(indexOfFirstRecord, indexOfLastRecord);
+
+const goToPage = (pg) => {
+  if (pg >= 1 && pg <= totalPages) setCurrentPage(pg);
+};
+
+
 
     return (
         <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
@@ -117,7 +148,7 @@ function WorkerList() {
                 title="Worker List"
                 searchValue={searchText}
                 setSearchValue={setSearchText}
-                buttonText="Add New Worker"
+                buttonText="+ Add New Worker"
                 btnpath="/admin/workermanagement/add"
             />
 
@@ -128,7 +159,7 @@ function WorkerList() {
                         <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", gap: 2}}>
                             <Box
                                 sx={{
-                                    background: "#E0E9E9",
+                                    background: "#E4E5EB",
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: "center",
@@ -143,13 +174,27 @@ function WorkerList() {
 
                             <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
                                 {appliedFilters.map((filter, index) => (
+                                    // <Chip
+                                    //     key={index}
+                                    //     label={filter}
+                                    //     size="small"
+                                    //     onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
+                                    //     sx={{backgroundColor: "#F0F0F0"}}
+                                    // />
                                     <Chip
-                                        key={index}
-                                        label={filter}
-                                        size="small"
-                                        onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
-                                        sx={{backgroundColor: "#F0F0F0"}}
-                                    />
+  key={index}
+  label={filter}
+  size="small"
+  onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
+  sx={{
+    backgroundColor: "#E4E5EB",        //  your Figma background
+    color: "#0D2E28",                  //  your Figma text color
+    "& .MuiChip-deleteIcon": {
+      color: "#0D2E28",                //  your Figma delete (X) color
+    },
+  }}
+/>
+
                                 ))}
                             </Box>
 
@@ -194,6 +239,8 @@ function WorkerList() {
                                 paddingX: 4,
                                 paddingY: "2px",
                                 textTransform: "none",
+                                fontWeight: 600,
+                                
                             }}
                         >
                             Reset Filter
@@ -212,7 +259,16 @@ function WorkerList() {
                             "&::-webkit-scrollbar": {display: "none"},
                         }}
                     >
-                        <Table stickyHeader sx={{borderRadius: 2}}>
+                        {/* <Table stickyHeader sx={{borderRadius: 2}}> */}
+                        <Table
+  stickyHeader
+  sx={{
+    borderRadius: 2,
+    "& th, & td": {
+      textAlign: "center",   // Centers header + body cells
+    },
+  }}
+>
                             <TableHead>
                                 <TableRow>
                                     {[
@@ -226,7 +282,7 @@ function WorkerList() {
                                     ].map((head, i) => (
                                         <TableCell
                                             key={i}
-                                            sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            sx={{fontWeight: 600, textAlign: "center", background: "#E4E5EB"}}
                                         >
                                             {head}
                                         </TableCell>
@@ -234,9 +290,13 @@ function WorkerList() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {filteredWorkers.map((item, index) => (
+                               {currentRecords.map((item, index) => (
+
                                     <TableRow hover key={index}>
-                                        <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
+                                      <TableCell sx={{borderBottom: "none", py: 2}}>
+  {indexOfFirstRecord + index + 1}
+</TableCell>
+
                                         <TableCell sx={{borderBottom: "none"}}>{item.name}</TableCell>
                                         <TableCell sx={{borderBottom: "none"}}>{item.expertise}</TableCell>
                                         <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
@@ -286,6 +346,42 @@ function WorkerList() {
                             </TableBody>
                         </Table>
                     </TableContainer>
+                    {/* Pagination Bar */}
+<div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+  <p className="font-bold text-black">
+    Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredWorkers.length)} of {filteredWorkers.length} Entries
+  </p>
+  <div className="flex items-center space-x-2">
+    <button
+      onClick={() => goToPage(currentPage - 1)}
+      disabled={currentPage === 1}
+      className="px-2 py-1 bg-white text-green-600 border border-green-300 rounded-md hover:bg-green-50 disabled:opacity-50"
+    >
+      &lt;
+    </button>
+    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+      <button
+        key={pg}
+        onClick={() => goToPage(pg)}
+        className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
+          pg === currentPage
+            ? "bg-[#001580] text-white"
+            : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
+        }`}
+      >
+        {pg}
+      </button>
+    ))}
+    <button
+      onClick={() => goToPage(currentPage + 1)}
+      disabled={currentPage === totalPages}
+      className="px-2 py-1 bg-white text-green-600 border border-green-300 rounded-md hover:bg-green-50 disabled:opacity-50"
+    >
+      &gt;
+    </button>
+  </div>
+</div>
+
                 </CardContent>
             </Card>
         </Box>

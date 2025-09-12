@@ -296,7 +296,7 @@ const BigProductEdit = () => {
                             <label className="min-w-[160px] font-semibold pt-2">Product Name:</label>
                             <input
                                 type="text"
-                                className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                                 value={productName}
                                 onChange={(e) => setProductName(e.target.value)}
                                 placeholder="Enter product name"
@@ -308,7 +308,7 @@ const BigProductEdit = () => {
                         <div className="flex items-start gap-4">
                             <label className="min-w-[160px] font-semibold pt-2">Product Category:</label>
                             <select
-                                className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                                 value={productCategory}
                                 onChange={(e) => setProductCategory(e.target.value)}
                                 required
@@ -329,7 +329,7 @@ const BigProductEdit = () => {
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                                 value={productPrice}
                                 onChange={(e) => setProductPrice(e.target.value)}
                                 placeholder="Enter product price"
@@ -342,7 +342,7 @@ const BigProductEdit = () => {
                             <label className="min-w-[160px] font-semibold pt-2">Product Description:</label>
                             <textarea
                                 rows="5"
-                                className="bg-teal-100 rounded-md px-4 py-2 w-full outline-none resize-none"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none resize-none"
                                 value={productDescription}
                                 onChange={(e) => setProductDescription(e.target.value)}
                                 placeholder="Enter product description"
@@ -356,7 +356,7 @@ const BigProductEdit = () => {
                         <button
                             type="button"
                             onClick={handleBack}
-                            className="bg-teal-100 hover:bg-teal-200 text-teal-700 px-10 py-2 rounded-lg"
+                            className="bg-[#CED4F2]  px-10 py-2 rounded-lg"
                         >
                             Cancel
                         </button>
@@ -364,8 +364,8 @@ const BigProductEdit = () => {
                             type="submit"
                             disabled={isLoading}
                             className={`px-10 py-2 rounded-lg text-white ${isLoading
-                                ? 'bg-gray-400 cursor-not-allowed'
-                                : 'bg-teal-700 hover:bg-teal-800'
+                                ? 'bg-[#001580] cursor-not-allowed'
+                                : 'bg-[#001580] hover:bg-[#CED4F2]'
                                 }`}
                         >
                             {isLoading ? 'Updating...' : 'Update Product'}

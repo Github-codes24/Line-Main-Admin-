@@ -20,7 +20,9 @@ function WorkerAdd() {
                 gap: "24px",
             }}
         >
-            <Worker back title="Add New Worker" />
+           <Worker back title=" Add New Worker" />
+
+
             <Card>
                 <CardContent>
                     <form>

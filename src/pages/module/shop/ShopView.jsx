@@ -93,7 +93,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.shopName || ""}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -113,7 +113,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.ownerName || ""}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -133,7 +133,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.contact || ""}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -153,7 +153,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.address || ""}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -173,7 +173,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.aadhaarNumber || ""}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -200,7 +200,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.gstin || "N/A"}
                                         variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
+                                        sx={{background: "#CED4F2"}}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
