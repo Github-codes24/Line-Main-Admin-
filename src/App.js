@@ -96,7 +96,6 @@ function App() {
 
     return (
         <>
-            {" "}
             <Routes>
                 <Route path="/" element={<AdminLogin />} />
                 <Route path="/verifyotp" element={<VerifyOtp />} />

@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import React, {useState, useRef} from "react";
+import {useNavigate} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import addImage from "../../../assets/images/addImage.png";
 import useFetch from "../../../hook/useFetch";
@@ -18,24 +18,24 @@ const BigProductAdd = () => {
         productCategory: "",
         productPrice: "",
         productDescription: "",
-        productImage: null
+        productImage: null,
     });
     const [imagePreview, setImagePreview] = useState(null);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
+        const {name, value} = e.target;
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
                 ...prev,
-                productImage: file
+                productImage: file,
             }));
             setImagePreview(URL.createObjectURL(file));
         }
@@ -67,13 +67,13 @@ const BigProductAdd = () => {
 
             // Prepare form data for API
             const submitData = new FormData();
-            submitData.append('productName', formData.productName.trim());
-            submitData.append('productCategory', formData.productCategory.trim());
-            submitData.append('productPrice', formData.productPrice.trim());
-            submitData.append('productDescription', formData.productDescription.trim());
+            submitData.append("productName", formData.productName.trim());
+            submitData.append("productCategory", formData.productCategory.trim());
+            submitData.append("productPrice", formData.productPrice.trim());
+            submitData.append("productDescription", formData.productDescription.trim());
 
             if (formData.productImage) {
-                submitData.append('productImage', formData.productImage);
+                submitData.append("productImage", formData.productImage);
             }
 
             const result = await fetchData({
@@ -81,22 +81,22 @@ const BigProductAdd = () => {
                 url: `${conf.apiBaseUrl}/admin/big-products`,
                 data: submitData,
                 headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            if (result.success || result.status === 'success' || result.data) {
+            if (result.success || result.status === "success" || result.data) {
                 toast.success(result.message || "Big Product added successfully!");
                 setTimeout(() => {
                     navigate("/admin/bigproduct");
                 }, 1500);
             } else {
-                throw new Error(result.message || 'Failed to add big product');
+                throw new Error(result.message || "Failed to add big product");
             }
         } catch (error) {
-            console.error('Error adding big product:', error);
+            console.error("Error adding big product:", error);
 
-            let errorMessage = 'Failed to add big product';
+            let errorMessage = "Failed to add big product";
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.response?.data?.error) {
@@ -146,8 +146,10 @@ const BigProductAdd = () => {
             <div className="border rounded-xl p-6 shadow bg-white w-[100%]">
                 <div className="flex items-center gap-6 mb-6">
                     <label className="w-[160px] font-semibold">Product Image:</label>
-                    <div className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative border-2 border-dashed border-gray-300 cursor-pointer hover:border-gray-400"
-                        onClick={() => fileInputRef.current?.click()}>
+                    <div
+                        className="rounded-lg p-2 w-[200px] h-[200px] flex flex-col items-center justify-center relative border-2 border-dashed border-gray-300 cursor-pointer hover:border-gray-400"
+                        onClick={() => fileInputRef.current?.click()}
+                    >
                         <img
                             src={imagePreview || addImage}
                             alt="Product"
