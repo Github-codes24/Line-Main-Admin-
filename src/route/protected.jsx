@@ -11,7 +11,7 @@ const ProtectedRoute = () => {
 
     // If we have valid session data but Recoil state is lost, restore it
     if (token && isAdminLogin && !isAuthenticated) {
-        setAuthState({ isAuthenticated: true });
+        setAuthState({isAuthenticated: true});
     }
 
     if (token && isAdminLogin) {
