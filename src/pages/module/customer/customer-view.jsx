@@ -40,13 +40,21 @@ const ViewCustomer = () => {
                 url: `${conf.apiBaseUrl}/admin/Customer/get-single-customer/${customerId}`,
             });
 
-            if (result.success) {
+            console.log('Customer API Response:', result);
+            console.log('Customer ID:', customerId);
+
+            if (result.success || result.user || result.data) {
+                // Handle different response structures - API returns data in 'user' field
+                const customerInfo = result.user || result.data || result.customer || result;
+                console.log('Customer Info:', customerInfo);
+                
                 setCustomerData({
-                    name: result.data.name || "",
-                    contact: result.data.contact || "",
-                    address: result.data.address || "",
+                    name: customerInfo.name || customerInfo.customerName || "",
+                    contact: customerInfo.contact || customerInfo.phone || customerInfo.email || "",
+                    address: customerInfo.address || customerInfo.customerAddress || "",
                 });
             } else {
+                console.error('API response not successful:', result);
                 toast.error(result.message || 'Failed to fetch customer data');
             }
         } catch (error) {
@@ -111,47 +119,47 @@ const ViewCustomer = () => {
                         <div className="text-lg">Loading customer data...</div>
                     </div>
                 ) : (
-                    <Formik initialValues={customerData} validationSchema={validationSchema} onSubmit={() => { }} enableReinitialize={true}>
-                        {() => (
-                            <Form>
-                                <div className="space-y-8 border border-[#616666] rounded-lg p-4 min-h-[400px]">
-                                    <div className="flex items-center">
-                                        <label htmlFor="name" className="w-48 font-medium">
-                                            Customer Name:
-                                        </label>
-                                        <Field
-                                            id="name"
-                                            name="name"
-                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                            disabled
-                                        />
-                                    </div>
-                                    <div className="flex items-center">
-                                        <label htmlFor="contact" className="w-48 font-medium">
-                                            Email ID/Phone Number:
-                                        </label>
-                                        <Field
-                                            id="contact"
-                                            name="contact"
-                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                            disabled
-                                        />
-                                    </div>
-                                    <div className="flex items-center">
-                                        <label htmlFor="address" className="w-48 font-medium">
-                                            Address:
-                                        </label>
-                                        <Field
-                                            id="address"
-                                            name="address"
-                                            className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-                            </Form>
-                        )}
-                    </Formik>
+                    <div className="space-y-8 border border-[#616666] rounded-lg p-4 min-h-[400px]">
+                        <div className="flex items-center">
+                            <label htmlFor="name" className="w-48 font-medium">
+                                Customer Name:
+                            </label>
+                            <input
+                                id="name"
+                                name="name"
+                                value={customerData.name}
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
+                                disabled
+                                readOnly
+                            />
+                        </div>
+                        <div className="flex items-center">
+                            <label htmlFor="contact" className="w-48 font-medium">
+                                Email ID/Phone Number:
+                            </label>
+                            <input
+                                id="contact"
+                                name="contact"
+                                value={customerData.contact}
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
+                                disabled
+                                readOnly
+                            />
+                        </div>
+                        <div className="flex items-center">
+                            <label htmlFor="address" className="w-48 font-medium">
+                                Address:
+                            </label>
+                            <input
+                                id="address"
+                                name="address"
+                                value={customerData.address}
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
+                                disabled
+                                readOnly
+                            />
+                        </div>
+                    </div>
                 )}
 
                 <div className="flex justify-center mt-8">
@@ -159,7 +167,7 @@ const ViewCustomer = () => {
                         type="button"
                         className={`px-24 py-3 rounded-md text-white ${isLoading
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-teal-700 hover:bg-teal-800'
+                            : 'bg-[#001580] hover:bg-[#CED4F2]'
                             }`}
                         onClick={handleEditClick}
                         disabled={isLoading}
