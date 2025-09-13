@@ -1,13 +1,14 @@
-import React, {useState, useRef} from "react";
-import {useNavigate} from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import BG from "../../../assets/images/BG.png";
-import {MdOutlineFileUpload} from "react-icons/md";
+import { MdOutlineFileUpload } from "react-icons/md";
+import { KeyboardArrowDown } from "@mui/icons-material"; // ✅ Updated icon
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
-import {useFormik} from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const SmallProductAdd = () => {
-    const {createSmallProducts} = useSmallProduct();
+    const { createSmallProducts } = useSmallProduct();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const [productImage, setProductImage] = useState("");
@@ -24,7 +25,7 @@ const SmallProductAdd = () => {
     const formik = useFormik({
         initialValues: {
             productName: "",
-            productCategory: "68b0a29f14b58963a4b28766",
+            productCategory: "Painter",
             productPrice: "",
             productDescription: "",
             productSubCategory: "Painter",
@@ -53,33 +54,26 @@ const SmallProductAdd = () => {
         },
     });
 
+    const placeholderStyle = {
+        fontFamily: "Poppins",
+        fontWeight: 500,
+        fontStyle: "normal",
+        fontSize: "20px",
+        lineHeight: "100%",
+        letterSpacing: "0%",
+        verticalAlign: "Middle",
+        backgroundColor: "#CED4F2",
+    };
+
     return (
         <div className="p-2 font-[Poppins]">
             <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
                 <div className="flex items-center">
                     <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
                         <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
-                                stroke="#0D2E28"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            ></path>
-                            <path
-                                d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
-                                stroke="#0D2E28"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            ></path>
-                            <path
-                                d="M26.6663 20H13.333"
-                                stroke="#0D2E28"
-                                strokeWidth="3"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                            ></path>
+                            <path d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z" stroke="#0D2E28" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673" stroke="#0D2E28" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            <path d="M26.6663 20H13.333" stroke="#0D2E28" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     </button>
                     <h1 className="ml-4 text-xl font-medium">Add New Small Product</h1>
@@ -90,7 +84,7 @@ const SmallProductAdd = () => {
                 <div className="border rounded-lg p-4 shadow bg-white">
                     <div className="border border-black p-4 rounded-lg">
                         <div className="flex gap-4 mb-6">
-                            <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                            <label className="w-[240px] font-medium text-lg text-[#0D2E28]">Product Image:</label>
                             <div className="rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
                                 <img
                                     src={productImage || BG}
@@ -119,71 +113,103 @@ const SmallProductAdd = () => {
                         </div>
 
                         <div className="space-y-4">
+                            {/* Product Name */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
                                     Product Name:
                                 </label>
                                 <input
                                     type="text"
                                     name="productName"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    placeholder="Enter product name"
+                                    style={placeholderStyle}
+                                    className="border border-[#001580] text-[#0D2E28] placeholder:text-[#0D2E28] placeholder:font-medium placeholder:text-[20px] rounded-lg px-4 py-2 pr-10 w-full appearance-none outline-none"
                                     value={formik.values.productName}
                                     onChange={formik.handleChange}
                                 />
                             </div>
+
+                            {/* Product Category */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
                                     Product Category:
                                 </label>
-                                <input
-                                    type="text"
-                                    name="productCategory"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={formik.values.productCategory}
-                                    // onChange={formik.handleChange}
-                                    readOnly
-                                />
+                                <div className="relative w-full">
+                                    <select
+                                        name="productCategory"
+                                        value={formik.values.productCategory}
+                                        onChange={formik.handleChange}
+                                        style={placeholderStyle}
+                                        className="border border-[#001580] text-[#0D2E28] placeholder:text-[#0D2E28] placeholder:font-medium placeholder:text-[20px] rounded-lg px-4 py-2 pr-10 w-full appearance-none outline-none"
+                                    >
+                                        <option value="Electrician">Electrician</option>
+                                        <option value="Plumber">Plumber</option>
+                                        <option value="Painter">Painter</option>
+                                    </select>
+                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                        <KeyboardArrowDown style={{ color: "#0D2E28", width: 24, height: 24 }} />
+                                    </div>
+                                </div>
                             </div>
 
+                            {/* Product Sub-Category */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
                                     Product Sub-Category:
                                 </label>
-                                <input
-                                    type="text"
-                                    name="productSubCategory"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={formik.values.productSubCategory}
-                                    readOnly
-                                    // onChange={formik.handleChange}
-                                />
+                                <div className="relative w-full">
+                                    <select
+                                        name="productSubCategory"
+                                        value={formik.values.productSubCategory}
+                                        onChange={formik.handleChange}
+                                        style={placeholderStyle}
+                                        className="border border-[#001580] text-[#0D2E28] placeholder:text-[#0D2E28] placeholder:font-medium placeholder:text-[20px] rounded-lg px-4 py-2 pr-10 w-full appearance-none outline-none"
+                                    >
+                                        <option value="Electrician">Electrician</option>
+                                        <option value="Plumber">Plumber</option>
+                                        <option value="Painter">Painter</option>
+                                    </select>
+                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                        <KeyboardArrowDown style={{ color: "#0D2E28", width: 24, height: 24 }} />
+                                    </div>
+                                </div>
                             </div>
+
+                            {/* Product Price */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
                                     Product Price:
                                 </label>
                                 <input
                                     type="text"
                                     name="productPrice"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    placeholder="Enter product price"
+                                    style={placeholderStyle}
+                                    className="border border-[#001580] text-[#0D2E28] placeholder:text-[#0D2E28] placeholder:font-medium placeholder:text-[20px] rounded-lg px-4 py-2 w-full outline-none"
                                     value={formik.values.productPrice}
                                     onChange={formik.handleChange}
                                 />
                             </div>
+
+                            {/* Product Description */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
                                     Product Description:
                                 </label>
                                 <textarea
                                     rows="5"
                                     name="productDescription"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
+                                    placeholder="Enter product description"
+                                    style={placeholderStyle}
+                                    className="border border-[#001580] text-[#0D2E28] placeholder:text-[#0D2E28] placeholder:font-medium placeholder:text-[20px] rounded-lg px-4 py-2 w-full outline-none resize-none"
                                     value={formik.values.productDescription}
                                     onChange={formik.handleChange}
                                 />
                             </div>
                         </div>
                     </div>
+
+                    {/* Buttons */}
                     <div className="flex justify-center mt-6 gap-4">
                         <button
                             type="button"
