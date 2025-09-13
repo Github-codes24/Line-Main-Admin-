@@ -1,50 +1,95 @@
-import React, {useEffect, useState} from "react";
-export default function SetLimitAmount2() {
-    const [limit, setLimit] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [msg, setMsg] = useState("");
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import conf from "../../../config";
+import useFetch from "../../../hook/useFetch";
 
-    return (
-        <div className="min-h-screen bg-gray-200 p-4 mb-30">
-            <div>
-                {/* Header Section */}
-                <div className="bg-white rounded-lg border border-gray-300 mb-2">
-                    <div className="flex items-center p-4 border-b border-gray-300">
-                        <h2 className="text-lg font-medium text-gray-800">Set Limit Amount</h2>
-                    </div>
-                </div>
+export default function SetLimitAmount() {
+  const [limit, setLimit] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState("");
+  const [fetchData] = useFetch();
 
-                {/* Form and Buttons Section */}
-                <div className="bg-white rounded-lg pt-3 h-96">
-                    <div className="border border-gray-300 rounded-lg px-6 py-12 mb-6 ml-4 mr-4 h-72">
-                        <div className="space-y-6">
-                            <div className="flex items-center">
-                                <label className="w-80 text-sm font-medium text-gray-700">
-                                    Wallet Balance Nagative Limit :
-                                </label>
-                                <input
-                                    type="number"
-                                    value={limit}
-                                    onChange={(e) => setLimit(e.target.value)}
-                                    placeholder="₹ 1000"
-                                    className="flex-1 border border-gray-300 rounded px-3 py-2 bg-blue-100 text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400"
-                                />
-                            </div>
+  // ✅ Fetch current wallet limit on mount
+  useEffect(() => {
+    const getLimit = async () => {
+      try {
+        setLoading(true);
+        const res = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/limit-amount/get-limit-amount`,
+        });
 
-                            {msg && <p className="text-sm text-center pt-2 text-gray-700">{msg}</p>}
-                        </div>
-                    </div>
+        if (res?.success && res?.data) {
+          // Some APIs return { nagativeLimit: ... } instead of { limitAmount: ... }
+          setLimit(res.data.limitAmount || res.data.nagativeLimit || "");
+        } else {
+          toast.error(res?.message || "Failed to fetch limit");
+        }
+      } catch (err) {
+        toast.error(err.message || "Failed to fetch wallet limit");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-                    <div className="flex justify-center gap-4 px-6 pb-6">
-                        <button
-                            className="px-12 py-2 rounded bg-blue-800 text-white hover:bg-blue-900 transition-colors disabled:opacity-60"
-                            disabled={loading}
-                        >
-                            {loading ? "Saving..." : "Update"}
-                        </button>
-                    </div>
-                </div>
-            </div>
+    getLimit();
+  }, [fetchData]);
+
+  // ✅ Update wallet limit
+  const handleUpdate = async () => {
+    if (!limit) return toast.error("Please enter a limit amount");
+
+    try {
+      setLoading(true);
+      const res = await fetchData({
+        method: "PUT",
+        url: `${conf.apiBaseUrl}/admin/limit-amount/update-limit-amount`,
+        data: { limitAmount: Number(limit) },
+      });
+
+      if (res?.success) {
+        setMsg("Limit updated successfully!");
+        toast.success(res.message || "Limit updated successfully");
+      } else {
+        toast.error(res?.message || "Failed to update limit");
+      }
+    } catch (err) {
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-200 p-5">
+      <div className="bg-white rounded-lg border border-gray-300 p-6">
+        <h2 className="text-lg font-medium text-gray-800 mb-4">
+          Set Wallet Negative Limit
+        </h2>
+
+        <div className="flex items-center gap-4 mb-4">
+          <label className="w-64 text-sm font-medium text-gray-700">
+            Wallet Balance Negative Limit :
+          </label>
+          <input
+            type="number"
+            value={limit}
+            onChange={(e) => setLimit(e.target.value)}
+            placeholder="₹ 1000"
+            className="flex-1 border border-gray-300 rounded px-3 py-2 bg-blue-100 text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400"
+          />
         </div>
-    );
+
+        {msg && <p className="text-sm text-green-600 mb-3">{msg}</p>}
+
+        <button
+          onClick={handleUpdate}
+          disabled={loading}
+          className="px-6 py-2 rounded bg-blue-800 text-white hover:bg-blue-900 transition-colors disabled:opacity-60"
+        >
+          {loading ? "Saving..." : "Update"}
+        </button>
+      </div>
+    </div>
+  );
 }
