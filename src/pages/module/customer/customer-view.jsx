@@ -128,7 +128,7 @@ const ViewCustomer = () => {
                                 id="name"
                                 name="name"
                                 value={customerData.name}
-                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />
@@ -141,7 +141,7 @@ const ViewCustomer = () => {
                                 id="contact"
                                 name="contact"
                                 value={customerData.contact}
-                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />
@@ -154,7 +154,7 @@ const ViewCustomer = () => {
                                 id="address"
                                 name="address"
                                 value={customerData.address}
-                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />

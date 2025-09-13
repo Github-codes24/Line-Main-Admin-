@@ -12,6 +12,9 @@ const CustomerList = () => {
     const navigate = useNavigate();
     const [fetchData] = useFetch();
 
+    const [currentPage, setCurrentPage] = useState(1);
+const recordsPerPage = 5; // you can adjust number of records per page
+
     const [searchTerm, setSearchTerm] = useState("");
     const [customers, setCustomers] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -86,41 +89,70 @@ const CustomerList = () => {
         }
     };
 
-    const filteredCustomers = customers.filter((customer) => {
-        if (!customer || !customer.name) return false;
+   const filteredCustomers = customers.filter((customer) => {
+    if (!customer || !customer.name) return false;
 
-        const searchLower = searchTerm.toLowerCase();
-        return (
-            customer.name.toLowerCase().includes(searchLower) ||
-            (customer.contact && customer.contact.toLowerCase().includes(searchLower)) ||
-            (customer.address && customer.address.toLowerCase().includes(searchLower))
-        );
-    });
+    const searchLower = searchTerm.toLowerCase();
+    return (
+        customer.name.toLowerCase().includes(searchLower) ||
+        (customer.contact && customer.contact.toLowerCase().includes(searchLower)) ||
+        (customer.address && customer.address.toLowerCase().includes(searchLower))
+    );
+});
+
+const totalPages = Math.ceil(filteredCustomers.length / recordsPerPage);
+const indexOfLastRecord = currentPage * recordsPerPage;
+const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+const currentRecords = filteredCustomers.slice(indexOfFirstRecord, indexOfLastRecord);
+
+const goToPage = (pg) => {
+    if (pg >= 1 && pg <= totalPages) setCurrentPage(pg);
+};
+
 
     return (
         <div className="p-8 bg-[#E0E9E9]">
             <ToastContainer />
+<div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
+    {/* Heading */}
+    <h2 className="text-xl font-medium">Customer List</h2>
 
-            <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex justify-between items-center min-h-[48px]">
-                <h1 className="text-xl font-semibold ml-2">Customer List</h1>
+    {/* Search Input */}
+    <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
+        <input
+            type="text"
+            placeholder="Search by Name, Phone Number, Email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 bg-[#E4E5EB] text-[#0D2E28] font-medium placeholder-[#0D2E28] py-2 border-2 border-[#001580] rounded-full focus:outline-none"
+            style={{ fontFamily: 'Poppins, sans-serif' }}
+        />
+        {/* Search Icon */}
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+            />
+        </svg>
+    </div>
 
-                <div className="absolute left-1/2 transform -translate-x-1/2">
-                    <input
-                        type="text"
-                        placeholder="Search by Name, Phone Number, Email..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="border border-gray-300 bg-[#E4E5EB] rounded-full p-1 px-4 w-64 text-sm"
-                    />
-                </div>
+    {/* Add Customer Button */}
+    <button
+        onClick={() => navigate("/admin/customermanagement/add")}
+        className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg"
+    >
+        + Add New Customer
+    </button>
+</div>
 
-                <Button
-                    className="px-4 py-2 text-white rounded "
-                    onClick={() => navigate("/admin/customermanagement/add")}
-                >
-                    + Add New Customer
-                </Button>
-            </div>
 
             {/* Main Content Box */}
             <div className="bg-white p-4 shadow rounded-md">
@@ -152,13 +184,13 @@ const CustomerList = () => {
                                         </td>
                                     </tr>
                                 ) : (
-                                    filteredCustomers.map((customer, index) => (
-                                        <tr key={customer.id || customer._id}>
-                                            <td className="px-6 py-4">{index + 1}</td>
+                                   currentRecords.map((customer, index) => (
+                                      <tr key={customer.id || customer._id}>
+                                             <td className="px-6 py-4">{indexOfFirstRecord + index + 1}</td>
                                             <td className="px-6 py-4">{customer.name}</td>
                                             <td className="px-6 py-4">{customer.contact}</td>
-                                            <td className="px-6 py-4">{customer.address}</td>
-                                            <td className="px-6 py-4">
+                                              <td className="px-6 py-4">{customer.address}</td>
+                                              <td className="px-6 py-4">
                                                 <div className="flex justify-center space-x-4">
                                                     <button
                                                         onClick={() => navigate(`/admin/customermanagement/view/${customer.id || customer._id}`)}
@@ -211,15 +243,38 @@ const CustomerList = () => {
                 </div>
 
                 {/* Pagination Box */} 
-                <div className="p-4">
-                    <div className="flex justify-between items-center text-sm text-black">
-                        <span>Showing 1 to {filteredCustomers.length} of {customers.length} entries</span>
-                        <div>
-                            <button className="px-3 py-1 border border-gray-300 rounded mr-2">Previous</button>
-                            <button className="px-3 py-1 border border-gray-300 rounded">Next</button>
-                        </div>
-                    </div> 
-                </div> 
+              <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+    <p className="font-bold text-black">
+        Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredCustomers.length)} of {filteredCustomers.length} entries
+    </p>
+    <div className="flex items-center space-x-2">
+        <button
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-2 py-1 bg-white text-black border border-gray-300 rounded-md disabled:opacity-50"
+        >
+            &lt;
+        </button>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+            <button
+                key={pg}
+                onClick={() => goToPage(pg)}
+                className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
+                    pg === currentPage ? "bg-[#001580] text-white" : "bg-white text-black hover:bg-gray-100"
+                }`}
+            >
+                {pg}
+            </button>
+        ))}
+        <button
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-2 py-1 bg-white text-black border border-gray-300 rounded-md disabled:opacity-50"
+        >
+            &gt;
+        </button>
+    </div>
+</div>
 
               
             </div>

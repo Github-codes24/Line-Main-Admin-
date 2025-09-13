@@ -51,7 +51,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="bg-[#E0E9E9] min-h-screen p-4">
+        <div className="bg-[#E0E9E9] min-h-screen p-0">
             <div className="bg-[#FFFFFF] p-2 rounded-md ">
                 {/* Cards Section */}
                 <div className="mb-6">
