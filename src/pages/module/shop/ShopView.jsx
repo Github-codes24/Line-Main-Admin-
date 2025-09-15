@@ -1,295 +1,141 @@
+// ShopView.jsx
 import React from "react";
-import {Box, Button, Card, CardContent, TextField, Typography, CircularProgress} from "@mui/material";
-import Worker from "../../../components/cards/worker.jsx";
-import {useNavigate, useLocation, useParams} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import AadharImage from "../../../assets/images/aadhar.png";
 
 function ShopView() {
-    const navigate = useNavigate();
-    const {state} = useLocation();
-    const {id} = useParams(); // Get shop ID from URL
+  const navigate = useNavigate();
 
-    // State management
-    const [shop, setShop] = React.useState(state?.shop || null);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState("");
+  const handleBack = () => {
+    navigate(-1);
+  };
 
-    const ImagePreviewBox = ({label, src, alt, fallback}) => (
-        <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2, mb: 2}}>
-            <Box sx={{display: "flex", alignItems: "center"}}>
-                <Typography sx={{fontWeight: 500}}>{label}</Typography>
-            </Box>
-            <Box sx={{gridColumn: "span 2"}}>
-                <Box
-                    sx={{
-                        width: 200,
-                        height: 120,
-                        border: "1px solid #ccc",
-                        borderRadius: 2,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        background: "#fff",
-                        cursor: src ? "pointer" : "default",
-                    }}
-                    onClick={() => {
-                        if (src) window.open(src, "_blank");
-                    }}
-                >
-                    {src ? (
-                        <img
-                            src={src}
-                            alt={alt}
-                            style={{
-                                maxWidth: "100%",
-                                maxHeight: "100%",
-                                objectFit: "contain",
-                                borderRadius: "4px",
-                            }}
-                        />
-                    ) : (
-                        <Typography variant="body2" color="text.secondary">
-                            {fallback}
-                        </Typography>
-                    )}
-                </Box>
-            </Box>
-        </Box>
-    );
+  return (
+    <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+      {/* Header */}
+      <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+        <img
+          src="/Back Button (1).png"
+          onClick={handleBack}
+          className="mr-3 cursor-pointer w-8"
+          alt="Back"
+        />
+        <h2 className="text-lg font-semibold text-gray-800">Shop View</h2>
+      </div>
 
-    return (
-        <Box
-            sx={{
-                width: "100%",
-                minHeight: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "24px",
-            }}
+      {/* Main Layout */}
+      <div
+        className="bg-white rounded-lg p-4 flex flex-col gap-4"
+        style={{
+          width: "1108px",
+          height: "830px",
+          borderRadius: "8px",
+          padding: "16px",
+          gap: "16px",
+        }}
+      >
+        {/* Table Container */}
+        <div
+          className="flex flex-col gap-6"
+          style={{
+            width: "1076px",
+            height: "742px",
+            borderRadius: "8px",
+            padding: "24px",
+            border: "1px solid #616666",
+          }}
         >
-            <Worker back title="View Shop" />
-            <Card>
-                <CardContent>
-                    <form>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 2,
-                                marginBottom: 2,
-                                border: "1px solid black",
-                                borderRadius: 1,
-                                padding: 2,
-                                boxSizing: "border-box",
-                                paddingBottom: 10,
-                            }}
-                        >
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.shopName || ""}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Expertise */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Expertise:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              Electrician
+            </span>
+          </div>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.ownerName || ""}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Shop Name */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Shop Name:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              Surge Solutions
+            </span>
+          </div>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.contact || ""}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Owner Name */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Owner Name:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              Emma Watson
+            </span>
+          </div>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Address:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.address || ""}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Email / Phone */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Email ID/Phone Number:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              emma@example.com / +91-9876543210
+            </span>
+          </div>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.aadhaarNumber || ""}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Shop Address */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Shop Address:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              123, Main Street, Nagpur
+            </span>
+          </div>
 
-                            <ImagePreviewBox
-                                label="Aadhaar Card Image:"
-                                src={shop.aadhaarImage}
-                                alt={`Aadhaar Card of ${shop.ownerName || shop.shopName}`}
-                                fallback="No Aadhaar image available"
-                            />
+          {/* Aadhaar Number */}
+          <div className="flex w-full h-[62px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Aadhaar Number:
+            </label>
+            <span className="flex items-center w-[644px] h-[62px] px-4 border border-[#001580] rounded-lg text-[20px] font-[500] bg-[#E4E5EB]">
+              1234 5678 9012
+            </span>
+          </div>
 
-                            <Box sx={{display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2}}>
-                                <Box sx={{display: "flex", alignItems: "center"}}>
-                                    <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
-                                </Box>
-                                <Box sx={{gridColumn: "span 2"}}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.gstin || "N/A"}
-                                        variant="outlined"
-                                        sx={{background: "#E4E5EB"}}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
+          {/* Aadhaar Card Image */}
+          <div className="flex w-[1028px] h-[210px] gap-6 items-center">
+            <label className="w-[360px] text-[#0D2E28] font-[500] text-[20px]">
+              Aadhaar Card Image:
+            </label>
+            <img
+              src={AadharImage}
+              alt="aadhar"
+              className="w-[644px] h-[200px] rounded-[24px] border border-[#001580] object-cover"
+            />
+          </div>
+        </div>
 
-                            <ImagePreviewBox
-                                label="GSTIN Image:"
-                                src={shop.gstinImage}
-                                alt={`GSTIN Certificate of ${shop.shopName}`}
-                                fallback="No GSTIN image available"
-                            />
-                        </Box>
-
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "10px",
-                            }}
-                        >
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    background: shop.status === "Active" ? "#CECEF2" : "#D1F2CE",
-                                    color: shop.status === "Active" ? "#001580" : "#006400",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                }}
-                                onClick={() => {
-                                    const newStatus = shop.status === "Active" ? "Inactive" : "Active";
-                                    alert(`Shop marked as ${newStatus}`);
-                                }}
-                            >
-                                {shop.status === "Active" ? "Inactive" : "Active"}
-                            </Button>
-
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    background: "#001580",
-                                    color: "#FFFFFF",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                }}
-                                onClick={() =>
-                                    navigate(`/admin/shopmanagement/edit/${shop.id}`, {
-                                        state: {
-                                            shop: {
-                                                ...shop,
-                                                // Ensure field mapping consistency for edit form
-                                                name: shop.ownerName,
-                                                gstinNumber: shop.gstin,
-                                            },
-                                        },
-                                    })
-                                }
-                            >
-                                Edit
-                            </Button>
-
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    background: "#dc3545",
-                                    color: "#FFFFFF",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                    "&:hover": {
-                                        background: "#c82333",
-                                    },
-                                }}
-                            >
-                                Delete
-                            </Button>
-                        </Box>
-                    </form>
-                </CardContent>
-            </Card>
-        </Box>
-    );
+        {/* Buttons */}
+        <div className="flex justify-center gap-4 w-[416px] mx-auto">
+          <button
+            type="button"
+            className="w-[200px] h-[40px] rounded-lg border border-[#001580] bg-[#CECEF2] text-[#001580] text-[16px] font-[500]"
+          >
+            Inactive
+          </button>
+          <button
+            type="button"
+            className="w-[200px] h-[40px] rounded-lg bg-[#001580] text-white text-[16px] font-[500]"
+          >
+            Active
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default ShopView;

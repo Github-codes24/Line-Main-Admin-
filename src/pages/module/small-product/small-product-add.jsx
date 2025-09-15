@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import BG from "../../../assets/images/BG.png";
 import { MdOutlineFileUpload } from "react-icons/md";
-import { KeyboardArrowDown } from "@mui/icons-material"; // ✅ Updated icon
+import { KeyboardArrowDown } from "@mui/icons-material"; 
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 import { useFormik } from "formik";
 import * as Yup from "yup";

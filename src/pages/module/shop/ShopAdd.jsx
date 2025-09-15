@@ -1,380 +1,189 @@
-// import React from "react";
-// import {Box, Button, Card, CardContent, TextField, Typography} from "@mui/material";
-// import Worker from "../../../components/cards/worker.jsx";
-// import {useNavigate} from "react-router-dom";
-// import {UploadIcon} from "lucide-react";
+// ShopAdd.jsx
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { UploadIcon } from "lucide-react";
+import { KeyboardArrowDown } from "@mui/icons-material";
 
-// function ShopAdd() {
-//     const navigate = useNavigate();
+function ShopAdd() {
+  const navigate = useNavigate();
 
-//     // Form state
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
+  const [expertise, setExpertise] = React.useState("");
 
-//     const [loading, setLoading] = React.useState(false);
-//     const [error, setError] = React.useState("");
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/admin/dashboard");
+    }
+  };
 
-//     return (
-//         <Box
-//             sx={{
-//                 width: "100%",
-//                 minHeight: "auto",
-//                 display: "flex",
-//                 flexDirection: "column",
-//                 gap: "24px",
-//             }}
-//         >
-//             <Worker back title="Add New Shop" />
-//             <Card>
-//                 <CardContent>
-//                     <form>
-//                         <Box
-//                             sx={{
-//                                 display: "flex",
-//                                 flexDirection: "column",
-//                                 gap: 2,
-//                                 marginBottom: 2,
-//                                 border: "1px solid black",
-//                                 borderRadius: 1,
-//                                 padding: 2,
-//                                 boxSizing: "border-box",
-//                                 paddingBottom: 10,
-//                             }}
-//                         >
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Shop Name:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter Shop Name"
-//                                         name="shopName"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+  return (
+    <div className="w-full min-h-screen flex flex-col gap-6 p-4">
+      {/* Header */}
+      <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+        <img
+          src="/Back Button (1).png"
+          onClick={handleBack}
+          className="mr-3 cursor-pointer w-8"
+          alt="Back"
+        />
+        <h1 className="text-xl font-semibold text-[#0D2E28]">Add New Shop</h1>
+      </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Owner Name:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter Full Name"
-//                                         name="name"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+      {/* Form Card */}
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <form>
+          <div className="flex flex-col gap-4 border border-black rounded p-4 pb-10 box-border">
+            {/* Expertise */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Expertise:</label>
+              <div className="relative col-span-2">
+                <select
+                  name="expertise"
+                  value={expertise}
+                  onChange={(e) => setExpertise(e.target.value)}
+                  className="w-full text-lg font-medium text-[#0D2E28] p-4 rounded-lg bg-[#CED4F2] border border-[#001580] appearance-none pr-10"
+                >
+                  <option value="" disabled>
+                    Select Expertise
+                  </option>
+                  <option value="Electrician">Electrician</option>
+                  <option value="Plumber">Plumber</option>
+                  <option value="Painter">Painter</option>
+                </select>
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                  <KeyboardArrowDown style={{ color: "#0D2E28", width: 24, height: 24 }} />
+                </div>
+              </div>
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Email ID/Phone Number:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter Email ID/Phone Number"
-//                                         name="contact"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+            {/* Shop Name */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Shop Name:</label>
+              <input
+                type="text"
+                name="shopName"
+                placeholder="Enter Shop Name"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Address:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter Full Address"
-//                                         name="address"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+            {/* Owner Name */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Owner Name:</label>
+              <input
+                type="text"
+                name="ownerName"
+                placeholder="Enter Full Name"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Aadhaar Number:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter 12 digit Aadhaar number of shop owner"
-//                                         name="aadhaarNumber"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+            {/* Email/Phone */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Email ID/Phone Number:</label>
+              <input
+                type="text"
+                name="contact"
+                placeholder="Enter Email ID/Phone Number"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>Aadhaar Card Image:</Typography>
-//                                 </Box>
-//                                 <Box
-//                                     sx={{
-//                                         gridColumn: "span 2",
-//                                         display: "flex",
-//                                         alignItems: "center",
-//                                         border: "1px solid #A3AED0",
-//                                         borderRadius: "3px",
-//                                         background: "#CED4F2",
-//                                         padding: "8px 8px",
-//                                     }}
-//                                 >
-//                                     <Button
-//                                         variant="contained"
-//                                         component="label"
-//                                         startIcon={<UploadIcon size={16} />}
-//                                         sx={{
-//                                             background: "#00158099",
-//                                             textTransform: "none",
-//                                             fontSize: "14px",
-//                                             boxShadow: "none",
-//                                             borderRadius: 2.5,
-//                                             "&:hover": {background: "#3A57A6"},
-//                                         }}
-//                                     >
-//                                         Upload Photo
-//                                         <input hidden accept="image/*" type="file" name="aadhaarImage" />
-//                                     </Button>
-//                                     <Typography
-//                                         variant="body2"
-//                                         sx={{
-//                                             ml: 2,
-//                                             color: "#1C1C1C",
-//                                             fontWeight: 500,
-//                                         }}
-//                                     >
-//                                         "Upload Aadhaar Card"
-//                                     </Typography>
-//                                 </Box>
-//                             </Box>
+            {/* Address */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Shop Address:</label>
+              <input
+                type="text"
+                name="address"
+                placeholder="Enter Full Address"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>GSTIN Number:</Typography>
-//                                 </Box>
-//                                 <Box sx={{gridColumn: "span 2"}}>
-//                                     <TextField
-//                                         fullWidth
-//                                         type="text"
-//                                         variant="outlined"
-//                                         placeholder="Enter GSTIN number"
-//                                         name="gstinNumber"
-//                                         sx={{background: "#CED4F2"}}
-//                                         InputProps={{
-//                                             sx: {
-//                                                 "& input::placeholder": {
-//                                                     color: "black",
-//                                                     opacity: 1,
-//                                                 },
-//                                             },
-//                                         }}
-//                                     />
-//                                 </Box>
-//                             </Box>
+            {/* Aadhaar Number */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Aadhaar Number:</label>
+              <input
+                type="text"
+                name="aadhaarNumber"
+                placeholder="Enter Aadhaar Number"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                             <Box
-//                                 sx={{
-//                                     display: "grid",
-//                                     gridTemplateColumns: "repeat(3,1fr)",
-//                                     gap: 2,
-//                                 }}
-//                             >
-//                                 <Box sx={{display: "flex", alignItems: "center"}}>
-//                                     <Typography sx={{fontWeight: 500}}>GSTIN Image:</Typography>
-//                                 </Box>
-//                                 <Box
-//                                     sx={{
-//                                         gridColumn: "span 2",
-//                                         display: "flex",
-//                                         alignItems: "center",
-//                                         border: "1px solid #A3AED0",
-//                                         borderRadius: "3px",
-//                                         background: "#CED4F2",
-//                                         padding: "8px 8px",
-//                                     }}
-//                                 >
-//                                     <Button
-//                                         variant="contained"
-//                                         component="label"
-//                                         startIcon={<UploadIcon size={16} />}
-//                                         sx={{
-//                                             background: "#00158099",
-//                                             textTransform: "none",
-//                                             fontSize: "14px",
-//                                             boxShadow: "none",
-//                                             borderRadius: 2.5,
-//                                             "&:hover": {background: "#3A57A6"},
-//                                         }}
-//                                     >
-//                                         Upload Photo
-//                                         <input hidden accept="image/*" type="file" name="gstinImage" />
-//                                     </Button>
-//                                     <Typography
-//                                         variant="body2"
-//                                         sx={{
-//                                             ml: 2,
-//                                             color: "#1C1C1C",
-//                                             fontWeight: 500,
-//                                         }}
-//                                     >
-//                                         "Upload GSTIN Card"
-//                                     </Typography>
-//                                 </Box>
-//                             </Box>
-//                         </Box>
+            {/* Aadhaar Image */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">Aadhaar Card Image:</label>
+              <div className="col-span-2 flex items-center border border-[#A3AED0] bg-[#CED4F2] rounded px-2 py-2">
+                <label className="inline-flex items-center bg-[#00158099] text-white text-sm px-4 py-2 rounded-md cursor-pointer hover:bg-[#3A57A6]">
+                  <UploadIcon size={16} className="mr-2" />
+                  Upload Photo
+                  <input type="file" accept="image/*" name="aadhaarImage" className="hidden" />
+                </label>
+                <span className="ml-4 text-sm font-medium text-[#1C1C1C]">
+                  Upload Aadhaar Card
+                </span>
+              </div>
+            </div>
 
-//                         {error && (
-//                             <Box sx={{mb: 2, textAlign: "center"}}>
-//                                 <Typography color="error" variant="body2">
-//                                     {error}
-//                                 </Typography>
-//                             </Box>
-//                         )}
+            {/* GSTIN Number */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">GSTIN Number:</label>
+              <input
+                type="text"
+                name="gstinNumber"
+                placeholder="Enter GSTIN Number"
+                className="col-span-2 w-full p-3 bg-[#CED4F2] rounded border border-gray-300 placeholder-black placeholder-opacity-100"
+              />
+            </div>
 
-//                         <Box
-//                             sx={{
-//                                 display: "flex",
-//                                 flexDirection: "row",
-//                                 justifyContent: "center",
-//                                 alignItems: "center",
-//                                 gap: "10px",
-//                             }}
-//                         >
-//                             <Button
-//                                 variant="outlined"
-//                                 sx={{
-//                                     borderColor: "#001580",
-//                                     color: "#001580",
-//                                     background: "#CECEF2",
-//                                     paddingX: 4,
-//                                     paddingY: "2px",
-//                                     textTransform: "none",
-//                                 }}
-//                                 onClick={() => navigate(-1)}
-//                             >
-//                                 Cancel
-//                             </Button>
-//                             <Button
-//                                 type="submit"
-//                                 variant="outlined"
-//                                 disabled={loading}
-//                                 sx={{
-//                                     background: "#001580",
-//                                     color: "#FFFFFF",
-//                                     paddingX: 4,
-//                                     paddingY: "2px",
-//                                     textTransform: "none",
-//                                     "&:disabled": {
-//                                         background: "#cccccc",
-//                                         color: "#666666",
-//                                     },
-//                                 }}
-//                             >
-//                                 {loading ? "Adding..." : "Add Shop"}
-//                             </Button>
-//                         </Box>
-//                     </form>
-//                 </CardContent>
-//             </Card>
-//         </Box>
-//     );
-// }
+            {/* GSTIN Image */}
+            <div className="grid grid-cols-3 gap-4">
+              <label className="flex items-center font-medium">GSTIN Image:</label>
+              <div className="col-span-2 flex items-center border border-[#A3AED0] bg-[#CED4F2] rounded px-2 py-2">
+                <label className="inline-flex items-center bg-[#00158099] text-white text-sm px-4 py-2 rounded-md cursor-pointer hover:bg-[#3A57A6]">
+                  <UploadIcon size={16} className="mr-2" />
+                  Upload Photo
+                  <input type="file" accept="image/*" name="gstinImage" className="hidden" />
+                </label>
+                <span className="ml-4 text-sm font-medium text-[#1C1C1C]">
+                  Upload GSTIN Card
+                </span>
+              </div>
+            </div>
+          </div>
 
-// export default ShopAdd;
+          {/* Error Message */}
+          {error && (
+            <div className="text-center text-red-600 text-sm mt-4">{error}</div>
+          )}
+
+          {/* Buttons */}
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="px-6 py-1 border border-[#001580] text-[#001580] bg-[#CECEF2] rounded"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={loading}
+              className={`px-6 py-1 rounded text-white ${
+                loading ? "bg-gray-400 text-gray-600" : "bg-[#001580]"
+              }`}
+            >
+              {loading ? "Adding..." : "Add Shop"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default ShopAdd;

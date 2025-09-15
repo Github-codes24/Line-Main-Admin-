@@ -304,11 +304,11 @@ export default function BigProductList() {
 
                 {/* Product Image */}
                 <td className="p-3 flex justify-center">
-                  <div className="w-36 h-20 p-4 border border-[#001580] rounded-lg flex items-center justify-center">
+                  <div className="p-3 flex justify-center">
                     <img
                       src={product.image}
                       alt="Product"
-                      className="max-w-full max-h-full object-contain"
+                      className="w-14 h-14 rounded border border-[#001580] p-0.5"
                     />
                   </div>
                 </td>
