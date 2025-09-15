@@ -75,7 +75,7 @@ const VerifyOtp = () => {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#0d9488", marginX: 0 }}>
+    <Box sx={{ backgroundColor: "#3d55cc", marginX: 0 }}>
       <Grid
         container
         justifyContent="center"
@@ -101,7 +101,7 @@ const VerifyOtp = () => {
               <Typography
                 variant="h5"
                 fontWeight="bold"
-                color="teal"
+                color="black"
                 mt={2}
                 gutterBottom
               >
