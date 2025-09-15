@@ -36,10 +36,11 @@ import ViewCharges from '../pages/module/set-charges-of-worker/view-commission';
 import SetLimitAmount from '../pages/module/set-limit-amount/set-limit-amount';
 import SetLimitAmount2 from '../pages/module/set-limit-amount/set-limit-amount2';
 
-import WorkerList from '../pages/module/worker/WorkerList';
-import WorkerAdd from '../pages/module/worker/WorkerAdd';
-import WorkerEdit from '../pages/module/worker/WorkerEdit';
-import WorkerView from '../pages/module/worker/WorkerView';
+// Worker Management
+import WorkerList from "../pages/module/workermanagement/WorkerList";
+import WorkerAdd from "../pages/module/workermanagement/WorkerAdd";
+import WorkerView from "../pages/module/workermanagement/WorkerView";
+import WorkerEdit from "../pages/module/workermanagement/WorkerEdit";
 
 
 const AppRoutes = () => {
@@ -84,160 +85,34 @@ const AppRoutes = () => {
       />
 
       {/* Customer */}
-      <Route
-        path="/customer-list"
-        element={
-          <ProtectedRoute>
-            <CustomerList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer-add"
-        element={
-          <ProtectedRoute>
-            <AddCustomer />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCustomer />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCustomer />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/customer-list" element={<ProtectedRoute><CustomerList /></ProtectedRoute>} />
+      <Route path="/customer-add" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />
+      <Route path="/customer/view/:id" element={<ProtectedRoute><ViewCustomer /></ProtectedRoute>} />
+      <Route path="/customer/edit/:id" element={<ProtectedRoute><EditCustomer /></ProtectedRoute>} />
 
       {/* Set Commission */}
-      <Route
-        path="/set-commission"
-        element={
-          <ProtectedRoute>
-            <CommissionList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/add"
-        element={
-          <ProtectedRoute>
-            <AddCommission />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCommission />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCommission />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/set-commission" element={<ProtectedRoute><CommissionList /></ProtectedRoute>} />
+      <Route path="/set-commission/add" element={<ProtectedRoute><AddCommission /></ProtectedRoute>} />
+      <Route path="/set-commission/view/:id" element={<ProtectedRoute><ViewCommission /></ProtectedRoute>} />
+      <Route path="/set-commission/edit/:id" element={<ProtectedRoute><EditCommission /></ProtectedRoute>} />
 
       {/* Set Charges of Worker */}
-      <Route
-        path="/set-charges-of-worker"
-        element={
-          <ProtectedRoute>
-            <ChargesList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/add"
-        element={
-          <ProtectedRoute>
-            <AddCharges />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCharges />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCharges />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/set-charges-of-worker" element={<ProtectedRoute><ChargesList /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/add" element={<ProtectedRoute><AddCharges /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/view/:id" element={<ProtectedRoute><ViewCharges /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/edit/:id" element={<ProtectedRoute><EditCharges /></ProtectedRoute>} />
 
       {/* Set Limit Amount */}
-      <Route
-        path="/set-limit-amount"
-        element={
-          <ProtectedRoute>
-            <SetLimitAmount />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-limit-amount/alt"
-        element={
-          <ProtectedRoute>
-            <SetLimitAmount2 />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/set-limit-amount" element={<ProtectedRoute><SetLimitAmount /></ProtectedRoute>} />
+      <Route path="/set-limit-amount/alt" element={<ProtectedRoute><SetLimitAmount2 /></ProtectedRoute>} />
 
-      {/* Catch-all */}
-       <Route
-        path="/admin/workermanagement"
-        element={
-          <ProtectedRoute>
-            <WorkerList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/workermanagement/add"
-        element={
-          <ProtectedRoute>
-            <WorkerAdd />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-       path="/admin/workermanagement/workeredit/:id"
-        element={
-          <ProtectedRoute>
-            <WorkerEdit />
-          </ProtectedRoute>
-        }
-      />
+      {/* Worker Management */}
+      <Route path="/admin/workermanagement" element={<ProtectedRoute><WorkerList /></ProtectedRoute>} />
+      <Route path="/admin/workermanagement/add" element={<ProtectedRoute><WorkerAdd /></ProtectedRoute>} />
+      <Route path="/admin/workermanagement/view/:id" element={<ProtectedRoute><WorkerView /></ProtectedRoute>} />
+      <Route path="/admin/workermanagement/edit/:id" element={<ProtectedRoute><WorkerEdit /></ProtectedRoute>} />
 
-      <Route
-       path="/admin/workermanagement/workerview/:id"
-        element={
-          <ProtectedRoute>
-            <WorkerView />
-          </ProtectedRoute>
-        }
-      />
-
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
