@@ -1,301 +1,304 @@
 // WorkerList.jsx
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Chip,
-    Popover,
-    FormGroup,
-    FormControlLabel,
-    Checkbox,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Chip,
+  Popover,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
 import { DeleteIcon, EditIcon, FilterIcon, ViewIcon } from "../../../assets/CommonAssets";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 function WorkerList() {
-    const navigate = useNavigate();
-    const [searchText, setSearchText] = useState("");
-    const [appliedFilters, setAppliedFilters] = useState([]);
-    const [anchorEl, setAnchorEl] = useState(null);
+  const navigate = useNavigate();
+  const [fetchData] = useFetch();
 
-    const handleAddworker = () => {
-        toast.success("Add worker clicked!");
+  const [searchText, setSearchText] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-        navigate("/admin/workermanagement/add");
+  const [workerData, setWorkerData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    };
+  const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
-    // 👇 API data state
-    const [workerData, setWorkerData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  // 👇 Fetch workers with custom hook
+  useEffect(() => {
+    fetchAllWorkers();
+  }, []);
 
-    const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
+  const fetchAllWorkers = async () => {
+    try {
+      setError("");
+      setLoading(true);
 
-    // 👇 JWT Token
-    const token =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2ODFkZGI4YzdmOTU5MDA2ZjE0MGYiLCJlbWFpbCI6ImRpdnlhMTIzNEBnbWFpbC5jb20iLCJpYXQiOjE3NTY3OTE0NzQsImV4cCI6MTc1OTM4MzQ3NH0.b99vHox8Sjvc6KJHMwdlygK8zspf8-Hf50UVs5ntS4M";
+      const result = await fetchData({
+        method: "GET",
+        url: `${conf.apiBaseUrl}/admin/Worker/get-all-worker`,
+      });
 
-    // 👇 Fetch workers from API with token
-    useEffect(() => {
-        const fetchWorkers = async () => {
-            try {
-                const response = await axios.get(
-                    "https://linemen-be-1.onrender.com/admin/Worker/get-all-worker",
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`, // ✅ attach token here
-                        },
+      if (result.success) {
+        const normalizedWorkers = (result.workers || []).map((worker) => ({
+          ...worker,
+          name: worker.name || "Unknown",
+          expertise: worker.experties || worker.expertise || "N/A",
+          contact: worker.contact || worker.phone || worker.email || "N/A",
+          address: worker.address || "N/A",
+          id: worker._id || worker.id,
+          status: worker.status || "Inactive",
+        })).filter((w) => w.name !== "Unknown");
+
+        setWorkerData(normalizedWorkers);
+
+        if (normalizedWorkers.length === 0) {
+          toast.info("No workers found");
+        }
+      } else {
+        setError(result.message || "Failed to fetch workers");
+        setWorkerData([]);
+      }
+    } catch (err) {
+      console.error("Error fetching workers:", err);
+      setError(err.response?.data?.message || err.message || "Error fetching workers");
+      setWorkerData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (workerId) => {
+    if (!window.confirm("Are you sure you want to delete this worker?")) return;
+
+    try {
+      setLoading(true);
+
+      const result = await fetchData({
+        method: "DELETE",
+        url: `${conf.apiBaseUrl}/admin/Worker/delete-worker/${workerId}`,
+      });
+
+      if (result.success) {
+        toast.success(result.message || "Worker deleted successfully");
+        fetchAllWorkers(); // refresh list
+      } else {
+        toast.error(result.message || "Failed to delete worker");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error(err.response?.data?.message || err.message || "Error deleting worker");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 👇 Filter workers
+  const filteredWorkers = workerData.filter((worker) => {
+    const searchLower = searchText.toLowerCase();
+
+    const matchesSearch =
+      searchText.trim() === "" ||
+      worker.name?.toLowerCase().includes(searchLower) ||
+      worker.expertise?.toLowerCase().includes(searchLower) ||
+      worker.contact?.toLowerCase().includes(searchLower) ||
+      worker.address?.toLowerCase().includes(searchLower) ||
+      worker.status?.toLowerCase().includes(searchLower);
+
+    const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
+
+    return matchesSearch && matchesFilter;
+  });
+
+  if (loading) return <p>Loading workers...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
+  return (
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: "24px" }}>
+      <Worker
+        onClick={() => navigate("/admin/workermanagement/add")}
+        title="Worker List"
+        searchValue={searchText}
+        setSearchValue={setSearchText}
+        buttonText="Add New Worker"
+        btnpath="/admin/workermanagement/add"
+      />
+
+      <Card>
+        <CardHeader
+          sx={{ paddingX: 3 }}
+          title={
+            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
+              <Box
+                sx={{
+                  background: "#E0E9E9",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "5px",
+                  borderRadius: 1,
+                  cursor: "pointer",
+                }}
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                <FilterIcon />
+              </Box>
+
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                {appliedFilters.map((filter, index) => (
+                  <Chip
+                    key={index}
+                    label={filter}
+                    size="small"
+                    onDelete={() =>
+                      setAppliedFilters((prev) => prev.filter((f) => f !== filter))
                     }
-                );
-                setWorkerData(response.data?.workers || []); // adjust if backend sends { workers: [] }
-            } catch (err) {
-                console.error("Error fetching workers:", err);
-                setError("Failed to load workers");
-            } finally {
-                setLoading(false);
-            }
-        };
+                    sx={{ backgroundColor: "#F0F0F0" }}
+                  />
+                ))}
+              </Box>
 
-        fetchWorkers();
-    }, []);
+              <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+              >
+                <Box sx={{ p: 2, minWidth: 200 }}>
+                  <strong>Expertise</strong>
+                  <FormGroup>
+                    {expertiseOptions.map((option) => (
+                      <FormControlLabel
+                        key={option}
+                        control={
+                          <Checkbox
+                            checked={appliedFilters.includes(option)}
+                            onChange={() =>
+                              setAppliedFilters((prev) =>
+                                prev.includes(option)
+                                  ? prev.filter((f) => f !== option)
+                                  : [...prev, option]
+                              )
+                            }
+                          />
+                        }
+                        label={option}
+                      />
+                    ))}
+                  </FormGroup>
+                </Box>
+              </Popover>
+            </Box>
+          }
+          action={
+            <Button
+              variant="outlined"
+              onClick={() => setAppliedFilters([])}
+              sx={{
+                marginTop: 1,
+                borderColor: "#001580",
+                color: "#001580",
+                background: "#CECEF2",
+                paddingX: 4,
+                paddingY: "2px",
+                textTransform: "none",
+              }}
+            >
+              Reset Filter
+            </Button>
+          }
+        />
 
-    const handleFilterClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleFilterClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleCheckboxChange = (option) => {
-        setAppliedFilters((prev) =>
-            prev.includes(option) ? prev.filter((f) => f !== option) : [...prev, option]
-        );
-    };
-
-    const handleResetFilters = () => {
-        setAppliedFilters([]);
-    };
-
-    const open = Boolean(anchorEl);
-
-    // 👇 Filter workers with search + filters
-    const filteredWorkers = workerData.filter((worker) => {
-        const matchesSearch =
-            searchText.trim() === "" ||
-            worker.name?.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.expertise?.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.contact?.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.address?.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.status?.toLowerCase().includes(searchText.toLowerCase());
-
-        const matchesFilter =
-            appliedFilters.length === 0 || appliedFilters.includes(worker.experties);
-
-        return matchesSearch && matchesFilter;
-    });
-
-    if (loading) return <p>Loading workers...</p>;
-    if (error) return <p>{error}</p>;
-
-    return (
-        <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px" }}>
-            <Worker
-                onClick={handleAddworker}
-                title="Worker List"
-                searchValue={searchText}
-                setSearchValue={setSearchText}
-                buttonText="Add New Worker"
-                btnpath="/admin/workermanagement/add"
-               
-            />
-
-            <Card>
-                <CardHeader
-                    sx={{ paddingX: 3 }}
-                    title={
-                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-                            <Box
-                                sx={{
-                                    background: "#E0E9E9",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    padding: "5px",
-                                    borderRadius: 1,
-                                    cursor: "pointer",
-                                }}
-                                onClick={handleFilterClick}
-                            >
-                                <FilterIcon />
-                            </Box>
-
-                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                {appliedFilters.map((filter, index) => (
-                                    <Chip
-                                        key={index}
-                                        label={filter}
-                                        size="small"
-                                        onDelete={() =>
-                                            setAppliedFilters((prev) => prev.filter((f) => f !== filter))
-                                        }
-                                        sx={{ backgroundColor: "#F0F0F0" }}
-                                    />
-                                ))}
-                            </Box>
-
-                            <Popover
-                                open={open}
-                                anchorEl={anchorEl}
-                                onClose={handleFilterClose}
-                                anchorOrigin={{
-                                    vertical: "bottom",
-                                    horizontal: "left",
-                                }}
-                            >
-                                <Box sx={{ p: 2, minWidth: 200 }}>
-                                    <strong>Experties</strong>
-                                    <FormGroup>
-                                        {expertiseOptions.map((option) => (
-                                            <FormControlLabel
-                                                key={option}
-                                                control={
-                                                    <Checkbox
-                                                        checked={appliedFilters.includes(option)}
-                                                        onChange={() => handleCheckboxChange(option)}
-                                                    />
-                                                }
-                                                label={option}
-                                            />
-                                        ))}
-                                    </FormGroup>
-                                </Box>
-                            </Popover>
-                        </Box>
-                    }
-                    action={
-                        <Button
-                            variant="outlined"
-                            onClick={handleResetFilters}
-                            sx={{
-                                marginTop: 1,
-                                borderColor: "#001580",
-                                color: "#001580",
-                                background: "#CECEF2",
-                                paddingX: 4,
-                                paddingY: "2px",
-                                textTransform: "none",
-                            }}
-                        >
-                            Reset Filter
-                        </Button>
-                    }
-                />
-
-                <CardContent sx={{ paddingTop: 0 }}>
-                    <TableContainer
-                        component={Paper}
-                        elevation={0}
-                        sx={{
-                            border: "1px solid black",
-                            maxHeight: 300,
-                            overflowY: "scroll",
-                            "&::-webkit-scrollbar": { display: "none" },
-                        }}
+        <CardContent sx={{ paddingTop: 0 }}>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{
+              border: "1px solid black",
+              maxHeight: 300,
+              overflowY: "scroll",
+              "&::-webkit-scrollbar": { display: "none" },
+            }}
+          >
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  {["Sr.No.", "Worker Name", "Expertise", "Contact", "Address", "Status", "Action"].map(
+                    (head, i) => (
+                      <TableCell
+                        key={i}
+                        sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}
+                      >
+                        {head}
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredWorkers.map((item, index) => (
+                  <TableRow hover key={item.id || index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.expertise}</TableCell>
+                    <TableCell>{item.contact}</TableCell>
+                    <TableCell>{item.address}</TableCell>
+                    <TableCell
+                      sx={{
+                        color: item.status === "Active" ? "#34C759" : "#FF383C",
+                        fontWeight: 500,
+                      }}
                     >
-                        <Table stickyHeader sx={{ borderRadius: 2 }}>
-                            <TableHead>
-                                <TableRow>
-                                    {[
-                                        "Sr.No.",
-                                        "Worker Name",
-                                        "experties",
-                                        "Email ID/Phone Number",
-                                        "Address",
-                                        "Status",
-                                        "Action",
-                                    ].map((head, i) => (
-                                        <TableCell
-                                            key={i}
-                                            sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}
-                                        >
-                                            {head}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {filteredWorkers.map((item, index) => (
-                                    <TableRow hover key={index}>
-                                        <TableCell sx={{ borderBottom: "none", py: 2 }}>{index + 1}</TableCell>
-                                        <TableCell sx={{ borderBottom: "none" }}>{item.name}</TableCell>
-                                        <TableCell sx={{ borderBottom: "none" }}>{item.experties}</TableCell>
-                                        <TableCell sx={{ borderBottom: "none" }}>{item.contact}</TableCell>
-                                        <TableCell sx={{ borderBottom: "none" }}>{item.address}</TableCell>
-                                        <TableCell
-                                            sx={{
-                                                borderBottom: "none",
-                                                color: item.status === "Active" ? "#34C759" : "#FF383C",
-                                                fontWeight: 400,
-                                                fontSize: "16px",
-                                            }}
-                                        >
-                                            {item.status}
-                                        </TableCell>
-                                        <TableCell
-                                            sx={{
-                                                display: "flex",
-                                                justifyContent: "center",
-                                                gap: 1,
-                                                borderBottom: "none",
-                                            }}
-                                        >
-                                            <IconButton
-                                                size="small"
-                                                onClick={() =>
-                                                    navigate(`/admin/workermanagement/workerview/${item._id}`)}
-                                                
-                                            >
-                                                <ViewIcon />
-                                            </IconButton>
+                      {item.status}
+                    </TableCell>
+                    <TableCell sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => navigate(`/admin/workermanagement/workerview/${item.id}`)}
+                      >
+                        <ViewIcon />
+                      </IconButton>
 
+                      <IconButton
+                        size="small"
+                        onClick={() => navigate(`/admin/workermanagement/workeredit/${item.id}`)}
+                      >
+                        <EditIcon />
+                      </IconButton>
 
-                                            <IconButton
-                                                size="small"
-                                                onClick={() => navigate(`/admin/workermanagement/workeredit/${item._id}`)}
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
-
-
-                                            <IconButton size="small">
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </CardContent>
-            </Card>
-        </Box>
-    );
+                      <IconButton size="small" onClick={() => handleDelete(item.id)} disabled={loading}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </CardContent>
+      </Card>
+    </Box>
+  );
 }
 
 export default WorkerList;
