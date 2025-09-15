@@ -77,11 +77,12 @@ function Worker({back = false, title = "", searchValue, setSearchValue, buttonTe
                                 </InputAdornment>
                             ),
                             sx: {
+                                 borderColor:"#001580",
                                 borderRadius: 5,
                                 background: "#E4E5EB",
                                 fontWeight: 600,
                                 fontSize: "14px",
-                                color: "#001580",
+                                color: "#0D2E28",
                             },
                         }}
                     />

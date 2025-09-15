@@ -128,7 +128,7 @@ const ViewCustomer = () => {
                                 id="name"
                                 name="name"
                                 value={customerData.name}
-                                className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />
@@ -141,7 +141,7 @@ const ViewCustomer = () => {
                                 id="contact"
                                 name="contact"
                                 value={customerData.contact}
-                                className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />
@@ -154,7 +154,7 @@ const ViewCustomer = () => {
                                 id="address"
                                 name="address"
                                 value={customerData.address}
-                                className="w-[54%] ml-auto bg-gray-100 border border-teal-600 text-black rounded-md px-2 py-2 focus:outline-none"
+                                className="w-[54%] ml-auto  border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
                                 disabled
                                 readOnly
                             />
@@ -167,7 +167,7 @@ const ViewCustomer = () => {
                         type="button"
                         className={`px-24 py-3 rounded-md text-white ${isLoading
                             ? 'bg-gray-400 cursor-not-allowed'
-                            : 'bg-teal-700 hover:bg-teal-800'
+                            : 'bg-[#001580] hover:bg-[#CED4F2]'
                             }`}
                         onClick={handleEditClick}
                         disabled={isLoading}

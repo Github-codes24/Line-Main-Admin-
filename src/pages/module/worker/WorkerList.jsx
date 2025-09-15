@@ -1,6 +1,7 @@
 // WorkerList.jsx
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { toast } from "react-toastify";
 import {
   Box,
   Button,
@@ -27,8 +28,16 @@ import { DeleteIcon, EditIcon, FilterIcon, ViewIcon } from "../../../assets/Comm
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 function WorkerList() {
+  const navigate = useNavigate();
+  const [fetchData] = useFetch();
+
+  const [searchText, setSearchText] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
@@ -39,7 +48,11 @@ function WorkerList() {
   const [workerData, setWorkerData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [workerData, setWorkerData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
   const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
   // 👇 Fetch workers with custom hook
@@ -124,12 +137,53 @@ function WorkerList() {
       worker.contact?.toLowerCase().includes(searchLower) ||
       worker.address?.toLowerCase().includes(searchLower) ||
       worker.status?.toLowerCase().includes(searchLower);
+  const handleDelete = async (workerId) => {
+    if (!window.confirm("Are you sure you want to delete this worker?")) return;
 
+    try {
+      setLoading(true);
+
+      const result = await fetchData({
+        method: "DELETE",
+        url: `${conf.apiBaseUrl}/admin/Worker/delete-worker/${workerId}`,
+      });
+
+      if (result.success) {
+        toast.success(result.message || "Worker deleted successfully");
+        fetchAllWorkers(); // refresh list
+      } else {
+        toast.error(result.message || "Failed to delete worker");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      toast.error(err.response?.data?.message || err.message || "Error deleting worker");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 👇 Filter workers
+  const filteredWorkers = workerData.filter((worker) => {
+    const searchLower = searchText.toLowerCase();
+
+    const matchesSearch =
+      searchText.trim() === "" ||
+      worker.name?.toLowerCase().includes(searchLower) ||
+      worker.expertise?.toLowerCase().includes(searchLower) ||
+      worker.contact?.toLowerCase().includes(searchLower) ||
+      worker.address?.toLowerCase().includes(searchLower) ||
+      worker.status?.toLowerCase().includes(searchLower);
+
+    const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
     const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
 
     return matchesSearch && matchesFilter;
   });
+    return matchesSearch && matchesFilter;
+  });
 
+  if (loading) return <p>Loading workers...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
   if (loading) return <p>Loading workers...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -143,7 +197,36 @@ function WorkerList() {
         buttonText="Add New Worker"
         btnpath="/admin/workermanagement/add"
       />
+  return (
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: "24px" }}>
+      <Worker
+        onClick={() => navigate("/admin/workermanagement/add")}
+        title="Worker List"
+        searchValue={searchText}
+        setSearchValue={setSearchText}
+        buttonText="Add New Worker"
+        btnpath="/admin/workermanagement/add"
+      />
 
+      <Card>
+        <CardHeader
+          sx={{ paddingX: 3 }}
+          title={
+            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
+              <Box
+                sx={{
+                  background: "#E0E9E9",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  padding: "5px",
+                  borderRadius: 1,
+                  cursor: "pointer",
+                }}
+                onClick={(e) => setAnchorEl(e.currentTarget)}
+              >
+                <FilterIcon />
+              </Box>
       <Card>
         <CardHeader
           sx={{ paddingX: 3 }}
@@ -176,6 +259,59 @@ function WorkerList() {
                 ))}
               </Box>
 
+              <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+              >
+                <Box sx={{ p: 2, minWidth: 200 }}>
+                  <strong>Expertise</strong>
+                  <FormGroup>
+                    {expertiseOptions.map((option) => (
+                      <FormControlLabel
+                        key={option}
+                        control={
+                          <Checkbox
+                            checked={appliedFilters.includes(option)}
+                            onChange={() =>
+                              setAppliedFilters((prev) =>
+                                prev.includes(option)
+                                  ? prev.filter((f) => f !== option)
+                                  : [...prev, option]
+                              )
+                            }
+                          />
+                        }
+                        label={option}
+                      />
+                    ))}
+                  </FormGroup>
+                </Box>
+              </Popover>
+            </Box>
+          }
+          action={
+            <Button
+              variant="outlined"
+              onClick={() => setAppliedFilters([])}
+              sx={{
+                marginTop: 1,
+                borderColor: "#001580",
+                color: "#001580",
+                background: "#CECEF2",
+                paddingX: 4,
+                paddingY: "2px",
+                textTransform: "none",
+              }}
+            >
+              Reset Filter
+            </Button>
+          }
+        />
               <Popover
                 open={Boolean(anchorEl)}
                 anchorEl={anchorEl}

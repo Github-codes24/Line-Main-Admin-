@@ -117,7 +117,7 @@ const AddCustomer = () => {
                                             name="name"
                                             type="text"
                                             placeholder="Enter Full Name"
-                                            className="w-full border border-[#007E74] rounded-md px-8 py-2 focus:outline-none bg-[#F5FFFF]"
+                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
                                         />
                                         <ErrorMessage
                                             name="name"
@@ -135,8 +135,8 @@ const AddCustomer = () => {
                                         <Field
                                             name="contact"
                                             type="text"
-                                            placeholder="Enter Email ID/Phone Number"
-                                            className="w-full border border-[#007E74] rounded-md px-8 py-2 focus:outline-none bg-[#F5FFFF]"
+                                            placeholder="Enter your Email ID/phone number"
+                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
                                         />
                                         <ErrorMessage
                                             name="contact"
@@ -154,8 +154,8 @@ const AddCustomer = () => {
                                         <Field
                                             name="address"
                                             type="text"
-                                            placeholder="Enter Full Address"
-                                            className="w-full border border-[#007E74] rounded-md px-8 py-2 focus:outline-none bg-[#F5FFFF] shadow-sm"
+                                            placeholder="Enter Your Full Address"
+                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
                                         />
                                         <ErrorMessage
                                             name="address"
@@ -171,7 +171,7 @@ const AddCustomer = () => {
                             <div className="flex justify-center gap-6 mt-4">
                                 <button
                                     type="reset"
-                                    className="w-32 h-10 border border-teal-500 text-teal-700 rounded-md hover:bg-teal-50 text-sm bg-[#D9F1EB]"
+                                    className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
                                 >
                                     Cancel
                                 </button>
@@ -183,7 +183,7 @@ const AddCustomer = () => {
                                     disabled={isSubmitting || isLoading}
                                     className={`w-32 h-10 text-white rounded-md text-sm ${isSubmitting || isLoading
                                         ? 'bg-gray-400 cursor-not-allowed'
-                                        : 'bg-[#007E74] hover:bg-teal-800'
+                                        : 'bg-[#001580] hover:bg-[#CED4F2]'
                                         }`}
                                 >
                                     {isSubmitting || isLoading ? 'Adding...' : 'Add Customer'}
