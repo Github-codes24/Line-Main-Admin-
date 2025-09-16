@@ -5,47 +5,61 @@ import {MdOutlineFileUpload} from "react-icons/md";
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 import {useFormik} from "formik";
 import * as Yup from "yup";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 
 const SmallProductAdd = () => {
-    const {loading, addSmallProduct, createSmallProduct} = useSmallProduct();
+    const {createSmallProducts} = useSmallProduct();
+    const {productCategory, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory} =
+        useDropdown();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    const [setProductImage] = useState("/uploads/93098cce-43f3-46c5-a324-fd0829edd88f.png");
-    const [productName, setProductName] = useState("Enter Product Name");
-    const [productCategory, setProductCategory] = useState("Enter Product Category");
-    const [productPrice, setProductPrice] = useState("Enter Price");
-    const [productDescription, setProductDescription] = useState("Enter Product Description");
+    const [productImage, setProductImage] = useState("");
+    const [imageFile, setImageFile] = useState(null);
+    console.log("Product category", productCategory);
 
-    useEffect(() => {
-        createSmallProduct();
-    }, []);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setProductImage(URL.createObjectURL(file));
+            setImageFile(file);
         }
     };
+
     const formik = useFormik({
         initialValues: {
-            productImg: "",
             productName: "",
             productCategory: "",
             productPrice: "",
             productDescription: "",
+            productSubCategory: "",
         },
-        // validationSchema: Yup.object({
-        //     emailOrPhone: Yup.string()
-        //     .required("Email or Mobile Number is required")
-        //     .min(4, "Must be at least 4 characters"),
-        // }),
+        validationSchema: Yup.object({
+            productName: Yup.string().required("Product name is required"),
+            productCategory: Yup.string().required("Category is required"),
+            productSubCategory: Yup.string().required("Sub-category is required"),
+            productPrice: Yup.number().typeError("Price must be a number").required("Price is required"),
+            productDescription: Yup.string().required("Description is required"),
+        }),
         onSubmit: (values) => {
-            const formData = FormData();
-            formData.append("productName", productName);
-            formData.append("productCategory", productCategory);
-            formData.append("productPrice", productPrice);
-            formData.append("productDescription", productDescription);
+            const formData = new FormData();
+
+            formData.append("productName", values.productName);
+            formData.append("productCategory", values.productCategory);
+            formData.append("productPrice", values.productPrice);
+            formData.append("productDescription", values.productDescription);
+            formData.append("productSubCategory", values.productSubCategory);
+
+            if (imageFile) {
+                formData.append("productImage", imageFile);
+            }
+
+            createSmallProducts(formData);
         },
     });
+
+    useEffect(() => {
+        fetchProductCategory();
+    }, []);
 
     return (
         <div className="p-2 font-[Poppins]">
@@ -56,23 +70,23 @@ const SmallProductAdd = () => {
                             <path
                                 d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
                                 stroke="#0D2E28"
-                                stroke-width="3"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             ></path>
                             <path
                                 d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
                                 stroke="#0D2E28"
-                                stroke-width="3"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             ></path>
                             <path
                                 d="M26.6663 20H13.333"
                                 stroke="#0D2E28"
-                                stroke-width="3"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeWidth="3"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                             ></path>
                         </svg>
                     </button>
@@ -85,9 +99,9 @@ const SmallProductAdd = () => {
                     <div className="border border-black p-4 rounded-lg">
                         <div className="flex gap-4 mb-6">
                             <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
-                            <div className=" rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
+                            <div className="rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
                                 <img
-                                    src={BG}
+                                    src={productImage || BG}
                                     alt="Product"
                                     onClick={() => fileInputRef.current.click()}
                                     className="min-h-[240px] w-[240px] object-cover mb-2 cursor-pointer border-2 border-[#001580] rounded-3xl"
@@ -119,22 +133,62 @@ const SmallProductAdd = () => {
                                 </label>
                                 <input
                                     type="text"
+                                    name="productName"
                                     className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={productName}
-                                    onChange={(e) => setProductName(e.target.value)}
+                                    value={formik.values.productName}
+                                    onChange={formik.handleChange}
                                 />
                             </div>
-
+                            {/* Product Category */}
                             <div className="flex items-start gap-4">
                                 <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                     Product Category:
                                 </label>
-                                <input
-                                    type="text"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={productCategory}
-                                    onChange={(e) => setProductCategory(e.target.value)}
-                                />
+                                <select
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    name="productCategory"
+                                    value={formik.values.productCategory}
+                                    onChange={async (e) => {
+                                        const categoryId = e.target.value;
+                                        formik.setFieldValue("productCategory", categoryId);
+                                        formik.setFieldValue("productSubCategory", "");
+
+                                        // Clear old options first
+                                        setProductSubCategory([]);
+
+                                        if (categoryId) {
+                                            await fetchProductSubCategory(categoryId);
+                                        }
+                                    }}
+                                >
+                                    <option value="">-- Select Category --</option>
+                                    {productCategory.map((category) => (
+                                        <option key={category._id} value={category._id}>
+                                            {category.tabName}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Product Sub-Category */}
+                            <div className="flex items-start gap-4">
+                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
+                                    Product Sub-Category:
+                                </label>
+                                <select
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    name="productSubCategory"
+                                    value={formik.values.productSubCategory}
+                                    onChange={formik.handleChange}
+                                    disabled={!productSubCategory.length}
+                                >
+                                    <option value="">-- Select Sub-Category --</option>
+                                    {productSubCategory.map((sub) => (
+                                        <option key={sub._id} value={sub.name}>
+                                            {sub.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="flex items-start gap-4">
@@ -143,34 +197,36 @@ const SmallProductAdd = () => {
                                 </label>
                                 <input
                                     type="text"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={productPrice}
-                                    onChange={(e) => setProductPrice(e.target.value)}
+                                    name="productPrice"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                    value={formik.values.productPrice}
+                                    onChange={formik.handleChange}
                                 />
                             </div>
-
                             <div className="flex items-start gap-4">
                                 <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
                                     Product Description:
                                 </label>
                                 <textarea
                                     rows="5"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg  font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
-                                    value={productDescription}
-                                    onChange={(e) => setProductDescription(e.target.value)}
+                                    name="productDescription"
+                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
+                                    value={formik.values.productDescription}
+                                    onChange={formik.handleChange}
                                 />
                             </div>
                         </div>
                     </div>
                     <div className="flex justify-center mt-6 gap-4">
                         <button
+                            type="button"
                             onClick={() => navigate(-1)}
                             className="w-[200px] bg-[#CECEF2] text-[#001580] border border-[#001580] font-medium px-10 py-2 rounded-lg"
                         >
                             Cancel
                         </button>
                         <button
-                            onClick={() => navigate("/admin/smallproduct")}
+                            type="submit"
                             className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
                         >
                             Add Product

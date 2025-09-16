@@ -1,79 +1,140 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TotalCardsPage from "../components/cards/card";
 import DashboardTable from "../components/table/dashboardTable";
 
-import wireImg from "../assets/images/wire.png";
+import useFetch from "../hook/useFetch";
+import conf from "../config";
 
 const Dashboard = () => {
+    const [dashboardData, setDashboardData] = useState(null);
+    const [topProducts, setTopProducts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [fetchData] = useFetch();
+
+    useEffect(() => {
+        const getDashboardData = async () => {
+            try {
+                // Fetch dashboard main data
+                const dashboardResult = await fetchData({
+                    method: "GET",
+                    url: `${conf.apiBaseUrl}/admin/dashboard`,
+                });
+
+                // Fetch top products separately
+                const productsResult = await fetchData({
+                    method: "GET",
+                    url: `${conf.apiBaseUrl}/admin/dashboard/top-products`,
+                });
+
+                if (dashboardResult) {
+                    setDashboardData(dashboardResult);
+                }
+                if (productsResult && productsResult.topProducts) {
+                    setTopProducts(productsResult.topProducts);
+                }
+            } catch (error) {
+                console.error("Error fetching dashboard data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        getDashboardData();
+    }, [fetchData]);
+
+    if (isLoading) {
+        return <div className="p-6">Loading dashboard...</div>;
+    }
+
+    if (!dashboardData) {
+        return <div className="p-6 text-red-500">Failed to load dashboard data</div>;
+    }
+
     return (
-        <div className="bg-[#E0E9E9] min-h-screen p-4">
+        <div className="bg-[#E0E9E9] min-h-screen p-0">
             <div className="bg-[#FFFFFF] p-2 rounded-md ">
+                {/* Cards Section */}
                 <div className="mb-6">
-                    <TotalCardsPage />
+                    <TotalCardsPage
+                        totalOrders={dashboardData.totalOrders}
+                        orderChange={dashboardData.orderChange}
+                        totalCustomers={dashboardData.totalCustomers}
+                        customerChange={dashboardData.customerChange}
+                        totalWorkers={dashboardData.totalWorkers}
+                        workerChange={dashboardData.workerChange}
+                        totalShops={dashboardData.totalShops}
+                        shopChange={dashboardData.shopChange}
+                    />
                 </div>
 
+                {/* Orders + Products */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    {/* Recent Orders */}
                     <DashboardTable
                         title="Recent Orders"
                         actionLink="See All Order"
                         headers={["Order No.", "Service Required", "Status"]}
-                        data={[
-                            [
-                                "ORD8468163287164",
-                                "Plumber",
-                                <span className="text-green-500 font-semibold">Assigned</span>,
-                            ],
-                            [
-                                "ORD8468163287164",
-                                "AC Repair",
-                                <span className="text-yellow-500 font-semibold">Pending</span>,
-                            ],
-                            [
-                                "ORD8468163287164",
-                                "Electrician",
-                                <span className="text-blue-500 font-semibold">Completed</span>,
-                            ],
-                            [
-                                "ORD8468163287164",
-                                "Painter",
-                                <span className="text-red-500 font-semibold">Rejected</span>,
-                            ],
-                            [
-                                "ORD8468163287164",
-                                "Carpenter",
-                                <span className="text-green-500 font-semibold">Assigned</span>,
-                            ],
-                        ]}
+                        data={
+                            dashboardData.recentOrders && dashboardData.recentOrders.length > 0
+                                ? dashboardData.recentOrders.map((order) => [
+                                      order.orderId,
+                                      order.specificServiceName,
+                                      <span
+                                          className={`font-semibold ${
+                                              order.orderStatus === "Pending"
+                                                  ? "text-yellow-500"
+                                                  : order.orderStatus === "Assigned"
+                                                  ? "text-green-500"
+                                                  : order.orderStatus === "Completed"
+                                                  ? "text-blue-500"
+                                                  : "text-red-500"
+                                          }`}
+                                      >
+                                          {order.orderStatus}
+                                      </span>,
+                                  ])
+                                : [["-", "-", "No Orders Found"]]
+                        }
                     />
+
+                    {/* Top Products */}
                     <DashboardTable
                         title="Top Selling Products"
                         actionLink="See All Product"
                         headers={["Product", "Name", "Category"]}
-                        data={[
-                            [<img src={wireImg} alt="product" className="w-8 h-8" />, "PVC Wire Cable", "Electrician"],
-                            [
-                                <img src={wireImg} alt="product" className="w-8 h-8" />,
-                                "Havells 9W LED Bulb",
-                                "Electrician",
-                            ],
-                            [<img src={wireImg} alt="product" className="w-8 h-8" />, "UPVC Plumbing Pipe", "Plumber"],
-                            [<img src={wireImg} alt="product" className="w-8 h-8" />, "Asian Paints Ultima", "Painter"],
-                        ]}
+                        data={
+                            topProducts && topProducts.length > 0
+                                ? topProducts.map((product) => [
+                                      <img
+                                          src={product.productImageUrl}
+                                          alt={product.productName}
+                                          className="w-8 h-8 rounded"
+                                      />,
+                                      product.productName,
+                                      product.productCategory,
+                                  ])
+                                : [["-", "-", "No Products Found"]]
+                        }
                     />
                 </div>
 
+                {/* Top Workers */}
                 <div className="mb-6">
                     <DashboardTable
                         title="Top Workers"
                         actionLink="See All Worker"
                         headers={["Sr.No.", "Worker Name", "Expertise", "Email/Phone", "Total Orders"]}
-                        data={[
-                            ["1", "Theresa Webb", "Plumber", "example@mail.com", "965"],
-                            ["2", "Jane Cooper", "AC Mechanic", "+91-9876543210", "945"],
-                            ["3", "Brooklyn Simmons", "Electrician", "example@mail.com", "930"],
-                            ["4", "Jacob Jones", "Painter", "+91-9876543210", "880"],
-                            ["5", "Jerome Bell", "Tiler", "example@mail.com", "825"],
-                        ]}
+                        data={
+                            dashboardData.topWorkers && dashboardData.topWorkers.length > 0
+                                ? dashboardData.topWorkers.map((worker, idx) => [
+                                      idx + 1,
+                                      worker.name,
+                                      worker.expertise,
+                                      worker.contact,
+                                      worker.totalOrders,
+                                  ])
+                                : [["-", "-", "-", "-", "No Workers Found"]]
+                        }
                     />
                 </div>
             </div>

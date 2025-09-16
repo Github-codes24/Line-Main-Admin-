@@ -115,7 +115,7 @@ const TabView = () => {
                 {tabData.isEditable && (
                     <button
                         onClick={handleEdit}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        className="flex items-center gap-2 px-4 py-2 bg-[#001580] text-white rounded-lg"
                     >
                         <Edit size={16} />
                         Edit Tab
@@ -131,7 +131,7 @@ const TabView = () => {
                     <div className="flex items-center gap-6">
                         <label className="w-1/4 font-medium text-gray-700">Tab Name:</label>
                         <div className="flex-1">
-                            <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                            <div className="border rounded-lg px-4 py-3 bg-[#CED4F2] text-gray-800 border-[#001580]">
                                 {tabData.tabName || 'N/A'}
                             </div>
                         </div>
@@ -157,7 +157,7 @@ const TabView = () => {
                         <div className="flex-1">
                             <span className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
                                 tabData.isEditable 
-                                    ? 'bg-blue-100 text-blue-800' 
+                                    ? 'bg-blue-100 text-[#001580]' 
                                     : 'bg-gray-100 text-gray-800'
                             }`}>
                                 {tabData.isEditable ? 'Yes' : 'No'}
@@ -174,14 +174,14 @@ const TabView = () => {
                                     {tabData.subTabNames.map((subTab, index) => (
                                         <div
                                             key={index}
-                                            className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300"
+                                            className="border rounded-lg px-4 py-3 bg-[#CED4F2] text-gray-800 border-[#001580]"
                                         >
                                             {subTab.name || subTab}
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-500 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#CED4F2] text-gray-500 border-[#001580]">
                                     No sub tabs available
                                 </div>
                             )}
@@ -193,7 +193,7 @@ const TabView = () => {
                         <div className="flex items-center gap-6">
                             <label className="w-1/4 font-medium text-gray-700">Created Date:</label>
                             <div className="flex-1">
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#CED4F2] text-gray-800 border-[#001580]">
                                     {new Date(tabData.createdAt).toLocaleString()}
                                 </div>
                             </div>
@@ -205,7 +205,7 @@ const TabView = () => {
                         <div className="flex items-center gap-6">
                             <label className="w-1/4 font-medium text-gray-700">Last Updated:</label>
                             <div className="flex-1">
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#CED4F2] text-gray-800 border-[#001580">
                                     {new Date(tabData.updatedAt).toLocaleString()}
                                 </div>
                             </div>
@@ -224,7 +224,7 @@ const TabView = () => {
                     {tabData.isEditable && (
                         <button
                             onClick={handleEdit}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            className="px-6 py-2 bg-[#001580] text-white rounded-lg "
                         >
                             Edit Tab
                         </button>

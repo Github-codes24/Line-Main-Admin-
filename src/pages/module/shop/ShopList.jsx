@@ -27,6 +27,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 function ShopList() {
     const navigate = useNavigate();
+
+    // State management
     const [searchText, setSearchText] = React.useState("");
     const [fetchData] = useFetch();
     const [shopData, setShopData] = React.useState([]);
@@ -323,7 +325,7 @@ function ShopList() {
                 title="Shop List"
                 searchValue={searchText}
                 setSearchValue={handleSearchChange}
-                buttonText="Add New Shop"
+                buttonText="+ Add New Shop"
                 btnpath="/admin/shopmanagement/add"
             />
 
@@ -344,31 +346,31 @@ function ShopList() {
                         <Table stickyHeader sx={{ borderRadius: 2 }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Sr.No.
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Shop Name
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Owner Name
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Email ID/Phone Number
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Shop Address
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Aadhaar
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         GSTIN
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Status
                                     </TableCell>
-                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}>
+                                    <TableCell sx={{ fontWeight: 600, textAlign: "center", background: "#E4E5EB" }}>
                                         Action
                                     </TableCell>
                                 </TableRow>

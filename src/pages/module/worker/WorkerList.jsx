@@ -1,4 +1,7 @@
-import React from "react";
+// WorkerList.jsx
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
 import {
     Box,
     Button,
@@ -20,65 +23,56 @@ import {
     Checkbox,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
-
-import {DeleteIcon, EditIcon, FilterIcon, ViewIcon} from "../../../assets/CommonAssets";
-import {useNavigate} from "react-router-dom";
+import { DeleteIcon, EditIcon, FilterIcon, ViewIcon } from "../../../assets/CommonAssets";
+import { useNavigate } from "react-router-dom";
 
 function WorkerList() {
     const navigate = useNavigate();
-    const [searchText, setSearchText] = React.useState("");
-    const [appliedFilters, setAppliedFilters] = React.useState([]);
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [searchText, setSearchText] = useState("");
+    const [appliedFilters, setAppliedFilters] = useState([]);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleAddworker = () => {
+        toast.success("Add worker clicked!");
+
+        navigate("/admin/workermanagement/add");
+
+    };
+
+    // 👇 API data state
+    const [workerData, setWorkerData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
-    const workerData = [
-        {
-            name: "Ravi Kumar",
-            expertise: "Electrician",
-            contact: "ravi.kumar@gmail.com / +91-9876543210",
-            address: "Banjara Hills, Hyderabad, Telangana",
-            status: "Active",
-            aadhaarNumber: "123456789101",
-            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Ravi",
-        },
-        {
-            name: "Anjali Mehta",
-            expertise: "Plumber",
-            contact: "anjali.mehta@yahoo.com / +91-9123456789",
-            address: "Sector 22, Noida, Uttar Pradesh",
-            status: "Active",
-            aadhaarNumber: "234567891012",
-            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Anjali",
-        },
-        {
-            name: "Sunil Sharma",
-            expertise: "Painter",
-            contact: "sunil.sharma@outlook.com / +91-9988776655",
-            address: "MG Road, Pune, Maharashtra",
-            status: "Active",
-            aadhaarNumber: "345678910123",
-            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Sunil",
-        },
-        {
-            name: "Preeti Verma",
-            expertise: "Electrician",
-            contact: "preeti.verma@gmail.com / +91-8765432109",
-            address: "Indiranagar, Bengaluru, Karnataka",
-            status: "Active",
-            aadhaarNumber: "456789101234",
-            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Preeti",
-        },
-        {
-            name: "Amit Das",
-            expertise: "AC & Refrigerator Mechanic",
-            contact: "amit.das@hotmail.com / +91-8899776655",
-            address: "Salt Lake, Kolkata, West Bengal",
-            status: "Inactive",
-            aadhaarNumber: "567891012345",
-            aadhaarImage: "https://via.placeholder.com/200x120?text=Aadhaar+Amit",
-        },
-    ];
+    // 👇 JWT Token
+    const token =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2ODFkZGI4YzdmOTU5MDA2ZjE0MGYiLCJlbWFpbCI6ImRpdnlhMTIzNEBnbWFpbC5jb20iLCJpYXQiOjE3NTY3OTE0NzQsImV4cCI6MTc1OTM4MzQ3NH0.b99vHox8Sjvc6KJHMwdlygK8zspf8-Hf50UVs5ntS4M";
+
+    // 👇 Fetch workers from API with token
+    useEffect(() => {
+        const fetchWorkers = async () => {
+            try {
+                const response = await axios.get(
+                    "https://linemen-be-1.onrender.com/admin/Worker/get-all-worker",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // ✅ attach token here
+                        },
+                    }
+                );
+                setWorkerData(response.data?.workers || []); // adjust if backend sends { workers: [] }
+            } catch (err) {
+                console.error("Error fetching workers:", err);
+                setError("Failed to load workers");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWorkers();
+    }, []);
 
     const handleFilterClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -89,7 +83,9 @@ function WorkerList() {
     };
 
     const handleCheckboxChange = (option) => {
-        setAppliedFilters((prev) => (prev.includes(option) ? prev.filter((f) => f !== option) : [...prev, option]));
+        setAppliedFilters((prev) =>
+            prev.includes(option) ? prev.filter((f) => f !== option) : [...prev, option]
+        );
     };
 
     const handleResetFilters = () => {
@@ -98,35 +94,42 @@ function WorkerList() {
 
     const open = Boolean(anchorEl);
 
+    // 👇 Filter workers with search + filters
     const filteredWorkers = workerData.filter((worker) => {
         const matchesSearch =
             searchText.trim() === "" ||
-            worker.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.expertise.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.contact.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.address.toLowerCase().includes(searchText.toLowerCase()) ||
-            worker.status.toLowerCase().includes(searchText.toLowerCase());
+            worker.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+            worker.expertise?.toLowerCase().includes(searchText.toLowerCase()) ||
+            worker.contact?.toLowerCase().includes(searchText.toLowerCase()) ||
+            worker.address?.toLowerCase().includes(searchText.toLowerCase()) ||
+            worker.status?.toLowerCase().includes(searchText.toLowerCase());
 
-        const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
+        const matchesFilter =
+            appliedFilters.length === 0 || appliedFilters.includes(worker.experties);
 
         return matchesSearch && matchesFilter;
     });
 
+    if (loading) return <p>Loading workers...</p>;
+    if (error) return <p>{error}</p>;
+
     return (
-        <Box sx={{width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px"}}>
+        <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px" }}>
             <Worker
+                onClick={handleAddworker}
                 title="Worker List"
                 searchValue={searchText}
                 setSearchValue={setSearchText}
                 buttonText="Add New Worker"
                 btnpath="/admin/workermanagement/add"
+               
             />
 
             <Card>
                 <CardHeader
-                    sx={{paddingX: 3}}
+                    sx={{ paddingX: 3 }}
                     title={
-                        <Box sx={{display: "flex", flexDirection: "row", alignItems: "center", gap: 2}}>
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
                             <Box
                                 sx={{
                                     background: "#E0E9E9",
@@ -142,14 +145,16 @@ function WorkerList() {
                                 <FilterIcon />
                             </Box>
 
-                            <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
+                            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                                 {appliedFilters.map((filter, index) => (
                                     <Chip
                                         key={index}
                                         label={filter}
                                         size="small"
-                                        onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filter))}
-                                        sx={{backgroundColor: "#F0F0F0"}}
+                                        onDelete={() =>
+                                            setAppliedFilters((prev) => prev.filter((f) => f !== filter))
+                                        }
+                                        sx={{ backgroundColor: "#F0F0F0" }}
                                     />
                                 ))}
                             </Box>
@@ -163,8 +168,8 @@ function WorkerList() {
                                     horizontal: "left",
                                 }}
                             >
-                                <Box sx={{p: 2, minWidth: 200}}>
-                                    <strong>Expertise</strong>
+                                <Box sx={{ p: 2, minWidth: 200 }}>
+                                    <strong>Experties</strong>
                                     <FormGroup>
                                         {expertiseOptions.map((option) => (
                                             <FormControlLabel
@@ -202,7 +207,7 @@ function WorkerList() {
                     }
                 />
 
-                <CardContent sx={{paddingTop: 0}}>
+                <CardContent sx={{ paddingTop: 0 }}>
                     <TableContainer
                         component={Paper}
                         elevation={0}
@@ -210,16 +215,16 @@ function WorkerList() {
                             border: "1px solid black",
                             maxHeight: 300,
                             overflowY: "scroll",
-                            "&::-webkit-scrollbar": {display: "none"},
+                            "&::-webkit-scrollbar": { display: "none" },
                         }}
                     >
-                        <Table stickyHeader sx={{borderRadius: 2}}>
+                        <Table stickyHeader sx={{ borderRadius: 2 }}>
                             <TableHead>
                                 <TableRow>
                                     {[
                                         "Sr.No.",
                                         "Worker Name",
-                                        "Expertise",
+                                        "experties",
                                         "Email ID/Phone Number",
                                         "Address",
                                         "Status",
@@ -227,7 +232,7 @@ function WorkerList() {
                                     ].map((head, i) => (
                                         <TableCell
                                             key={i}
-                                            sx={{fontWeight: 600, textAlign: "center", background: "#E0E9E9"}}
+                                            sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}
                                         >
                                             {head}
                                         </TableCell>
@@ -237,11 +242,11 @@ function WorkerList() {
                             <TableBody>
                                 {filteredWorkers.map((item, index) => (
                                     <TableRow hover key={index}>
-                                        <TableCell sx={{borderBottom: "none", py: 2}}>{index + 1}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.name}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.expertise}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.contact}</TableCell>
-                                        <TableCell sx={{borderBottom: "none"}}>{item.address}</TableCell>
+                                        <TableCell sx={{ borderBottom: "none", py: 2 }}>{index + 1}</TableCell>
+                                        <TableCell sx={{ borderBottom: "none" }}>{item.name}</TableCell>
+                                        <TableCell sx={{ borderBottom: "none" }}>{item.experties}</TableCell>
+                                        <TableCell sx={{ borderBottom: "none" }}>{item.contact}</TableCell>
+                                        <TableCell sx={{ borderBottom: "none" }}>{item.address}</TableCell>
                                         <TableCell
                                             sx={{
                                                 borderBottom: "none",
@@ -263,20 +268,20 @@ function WorkerList() {
                                             <IconButton
                                                 size="small"
                                                 onClick={() =>
-                                                    navigate(`/admin/workermanagement/view/${index + 1}`, {state: item})
-                                                }
+                                                    navigate(`/admin/workermanagement/workerview/${item._id}`)}
+                                                
                                             >
                                                 <ViewIcon />
                                             </IconButton>
 
+
                                             <IconButton
                                                 size="small"
-                                                onClick={() =>
-                                                    navigate(`/admin/workermanagement/edit/${index + 1}`, {state: item})
-                                                }
+                                                onClick={() => navigate(`/admin/workermanagement/workeredit/${item._id}`)}
                                             >
                                                 <EditIcon />
                                             </IconButton>
+
 
                                             <IconButton size="small">
                                                 <DeleteIcon />

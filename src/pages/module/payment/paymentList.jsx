@@ -1,85 +1,35 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Eye, Search} from "lucide-react";
 import {useNavigate} from "react-router-dom";
+import usePayment from "../../../hook/payment/usePayment";
 
 const PaymentList = () => {
     const navigate = useNavigate();
     const [searchText, setSearchText] = React.useState("");
     const [currentPage, setCurrentPage] = React.useState(1);
     const recordsPerPage = 5;
+    const {searchPayment, fetchPayment} = usePayment();
+    const [search, setSearch] = useState("");
+    const [page, setPage] = useState("");
+    const [limit, setLimit] = useState("");
+    console.log("payment", searchPayment);
+    useEffect(() => {
+        fetchPayment(search, page, limit);
+    }, [search, page, limit]);
 
-    const data = [
-        {
-            id: 1,
-            transactionId: "TRN64486644FHD6",
-            orderId: "OD54845478",
-            amount: -5894,
-            mode: "Online",
-            remarks: "Amount Refunded To Worker’s Wallet",
-        },
-        {
-            id: 2,
-            transactionId: "TRN64486644FHD6",
-            orderId: "OD54845478",
-            amount: 5894,
-            mode: "Wallet",
-            remarks: "Amount Deducted From Worker’s Wallet",
-        },
-        {
-            id: 3,
-            transactionId: "TRN64486644FHD6",
-            orderId: "OD54845478",
-            amount: -5894,
-            mode: "Online",
-            remarks: "Amount Refunded To Customer Account",
-        },
-        {
-            id: 4,
-            transactionId: "TRN64486644FHD6",
-            orderId: "OD54845478",
-            amount: 225894,
-            mode: "Online",
-            remarks: "Payment Received From Customer",
-        },
-        {
-            id: 5,
-            transactionId: "TRN64486644FHD6",
-            orderId: "OD54845478",
-            amount: 5894,
-            mode: "Online",
-            remarks: "Payment Received From Customer",
-        },
-        {
-            id: 6,
-            transactionId: "TRN7766558899",
-            orderId: "OD99887766",
-            amount: 12000,
-            mode: "Wallet",
-            remarks: "Payment Added To Worker’s Wallet",
-        },
-        {
-            id: 7,
-            transactionId: "TRN1122334455",
-            orderId: "OD11223344",
-            amount: -2500,
-            mode: "Online",
-            remarks: "Refund to Customer",
-        },
-    ];
+    const filteredData = searchPayment.filter((item) => item.bookingId?.toLowerCase().includes(search.toLowerCase()));
 
-    const filteredData = data.filter((item) => item.transactionId.toLowerCase().includes(searchText.toLowerCase()));
-
-    const totalPages = Math.ceil(filteredData.length / recordsPerPage);
+    const totalPages = Math.ceil(filteredData.length / recordsPerPage) || 1;
     const indexOfLastRecord = currentPage * recordsPerPage;
     const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
     const currentRecords = filteredData.slice(indexOfFirstRecord, indexOfLastRecord);
-
     const goToPage = (pg) => {
         if (pg >= 1 && pg <= totalPages) setCurrentPage(pg);
     };
 
     return (
-        <div className="">
+        <div>
+            {/* Header + Search */}
             <div className="bg-gray-100 p-3 rounded-lg shadow">
                 <div className="flex items-center justify-between flex-wrap gap-4 w-full">
                     <h2 className="text-xl font-semibold">Payment List</h2>
@@ -88,20 +38,21 @@ const PaymentList = () => {
                         <div className="relative w-full max-w-md">
                             <input
                                 type="text"
-                                value={searchText}
+                                value={search}
                                 onChange={(e) => {
-                                    setSearchText(e.target.value);
+                                    setSearch(e.target.value);
                                     setCurrentPage(1);
                                 }}
                                 placeholder="Search by Transaction Id..."
-                                className="w-full rounded-full border border-green-500 px-4 py-2 pl-10 focus:outline-none focus:ring focus:border-blue-300"
+                                className="w-full rounded-full border border-blue-500 px-4 py-2 pl-10 focus:outline-none focus:ring focus:border-blue-300"
                             />
-                            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 #0D2E28" />
+                            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* Table */}
             <div className="bg-gray-100 p-6 rounded-lg shadow mt-6">
                 <div className="overflow-x-auto border border-black rounded-lg">
                     <table className="min-w-full text-sm border-collapse mb-20">
@@ -109,19 +60,23 @@ const PaymentList = () => {
                             <tr>
                                 <th className="px-4 py-6">Sr.No.</th>
                                 <th className="px-4 py-6">Transaction ID</th>
+                                <th className="px-4 py-6">User ID</th>
                                 <th className="px-4 py-6">Order ID</th>
+                                <th className="px-4 py-6">Receipt</th>
                                 <th className="px-4 py-6">Amount</th>
-                                <th className="px-4 py-6">Transaction Mode</th>
-                                <th className="px-4 py-6">Remarks</th>
+                                <th className="px-4 py-6">Currency</th>
+                                <th className="px-4 py-6">Status</th>
                                 <th className="px-4 py-6">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {currentRecords.map((item, index) => (
-                                <tr key={item.id}>
+                                <tr key={item._id}>
                                     <td className="text-center px-2 py-5">{indexOfFirstRecord + index + 1}</td>
-                                    <td className="text-center px-2 py-5">{item.transactionId}</td>
+                                    <td className="text-center px-2 py-5">{item.bookingId}</td>
+                                    <td className="text-center px-2 py-5">{item.userId}</td>
                                     <td className="text-center px-2 py-5">{item.orderId}</td>
+                                    <td className="text-center px-2 py-5">{item.receipt}</td>
                                     <td
                                         className={`text-center px-2 py-5 font-semibold ${
                                             item.amount < 0 ? "text-red-500" : "text-green-600"
@@ -129,15 +84,11 @@ const PaymentList = () => {
                                     >
                                         {item.amount < 0 ? `-₹${Math.abs(item.amount)}` : `+₹${item.amount}`}
                                     </td>
-                                    <td className="text-center px-2 py-5">{item.mode}</td>
-                                    <td className="text-center px-2 py-5">{item.remarks}</td>
+                                    <td className="text-center px-2 py-5">{item.currency}</td>
+                                    <td className="text-center px-2 py-5">{item.status}</td>
                                     <td
                                         className="text-center px-10 py-5 text-red-500 cursor-pointer"
-                                        onClick={() =>
-                                            navigate(`/admin/payment/details/${item.id}`, {
-                                                state: {payment: item},
-                                            })
-                                        }
+                                        onClick={() => navigate(`/admin/payment/details/${item._id}`)}
                                     >
                                         <Eye size={18} />
                                     </td>
@@ -145,7 +96,7 @@ const PaymentList = () => {
                             ))}
                             {currentRecords.length === 0 && (
                                 <tr>
-                                    <td colSpan="7" className="text-center py-5 text-gray-500">
+                                    <td colSpan="9" className="text-center py-5 text-gray-500">
                                         No results found
                                     </td>
                                 </tr>
@@ -154,10 +105,11 @@ const PaymentList = () => {
                     </table>
                 </div>
 
+                {/* Pagination */}
                 <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
                     <p className="font-bold text-black">
-                        Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredData.length)} of{" "}
-                        {filteredData.length} Entries
+                        Showing {filteredData.length > 0 ? indexOfFirstRecord + 1 : 0} to{" "}
+                        {Math.min(indexOfLastRecord, filteredData.length)} of {filteredData.length} Entries
                     </p>
                     <div className="flex items-center space-x-2">
                         <button

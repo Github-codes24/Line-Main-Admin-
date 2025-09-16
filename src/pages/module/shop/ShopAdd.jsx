@@ -12,8 +12,8 @@ function ShopAdd() {
     const navigate = useNavigate();
     const [fetchData] = useFetch();
     const [isLoading, setIsLoading] = React.useState(false);
+    const [error, setError] = React.useState("");
 
-    // Form state
     const [formData, setFormData] = React.useState({
         shopName: "",
         name: "",
@@ -40,64 +40,41 @@ function ShopAdd() {
     const addShop = async (shopData) => {
         try {
             setIsLoading(true);
+            setError("");
 
-            // Prepare API data with exact field names the backend expects
-            const apiData = {
-                shopName: shopData.shopName || "",
-                ownerName: shopData.name || "", // Backend only accepts ownerName, not name
-                contact: shopData.contact || "",
-                address: shopData.address || ""
-            };
+            const formDataObj = new FormData();
+            formDataObj.append("shopName", shopData.shopName);
+            formDataObj.append("ownerName", shopData.name);
+            formDataObj.append("contact", shopData.contact);
+            formDataObj.append("address", shopData.address);
 
-            // Only add optional fields if they have values
-            if (shopData.aadhaarNumber) {
-                apiData.aadhaarNumber = shopData.aadhaarNumber;
-            }
-            if (shopData.gstinNumber) {
-                apiData.gstin = shopData.gstinNumber; // Backend uses gstin, not gstinNumber
-            }
-
-            console.log('Adding shop with data:', apiData);
-            console.log('API URL:', `${conf.apiBaseUrl}/admin/shop/add-shop`);
+            if (shopData.aadhaarNumber) formDataObj.append("aadhaarNumber", shopData.aadhaarNumber);
+            if (shopData.aadhaarImage) formDataObj.append("aadhaarImage", shopData.aadhaarImage);
+            if (shopData.gstinNumber) formDataObj.append("gstin", shopData.gstinNumber);
+            if (shopData.gstinImage) formDataObj.append("gstinImage", shopData.gstinImage);
 
             const result = await fetchData({
                 method: "POST",
                 url: `${conf.apiBaseUrl}/admin/shop/add-shop`,
-                data: apiData
+                data: formDataObj,
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            console.log('Add shop API response:', result);
-
-            if (result.success || result.status === 'success' || result.data) {
+            if (result.success || result.status === "success" || result.data) {
                 toast.success(result.message || "Shop added successfully!");
                 setTimeout(() => {
-                    navigate("/admin/shopmanagement"); // Navigate back to shop list
+                    navigate("/admin/shopmanagement");
                 }, 1500);
-                return { success: true, data: result };
             } else {
-                throw new Error(result.message || 'Failed to add shop');
+                throw new Error(result.message || "Failed to add shop");
             }
-        } catch (error) {
-            console.error('Error adding shop:', error);
-            console.error('Full error response:', error.response);
-            console.error('Error response data:', error.response?.data);
-
-            // Handle error messages
-            let errorMessage = 'Failed to add shop';
-            if (error.response?.data?.message) {
-                errorMessage = error.response.data.message;
-            } else if (error.response?.data?.error) {
-                errorMessage = error.response.data.error;
-            } else if (error.response?.data) {
-                errorMessage = typeof error.response.data === 'string'
-                    ? error.response.data
-                    : JSON.stringify(error.response.data);
-            } else if (error.message) {
-                errorMessage = error.message;
-            }
-
+        } catch (err) {
+            console.error("Error adding shop:", err);
+            let errorMessage = err.response?.data?.message || err.message || "Failed to add shop";
+            setError(errorMessage);
             toast.error(errorMessage);
-            return { success: false, error: errorMessage };
         } finally {
             setIsLoading(false);
         }
@@ -106,13 +83,11 @@ function ShopAdd() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Basic validation
         if (!formData.shopName || !formData.name || !formData.contact || !formData.address) {
             toast.error("Please fill in all required fields (Shop Name, Owner Name, Contact, Address)");
             return;
         }
 
-        console.log('Form data being submitted:', formData);
         await addShop(formData);
     };
 
@@ -144,314 +119,115 @@ function ShopAdd() {
                                 paddingBottom: 10,
                             }}
                         >
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Shop Name:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter Shop Name"
-                                        name="shopName"
-                                        value={formData.shopName}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Owner Name:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter Full Name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Email ID/Phone Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter Email ID/Phone Number"
-                                        name="contact"
-                                        value={formData.contact}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Address:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter Full Address"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Aadhaar Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter 12 digit Aadhaar number of shop owner"
-                                        name="aadhaarNumber"
-                                        value={formData.aadhaarNumber}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
-                                                },
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Aadhaar Card Image:</Typography>
-                                </Box>
+                            {/* Function to generate input rows */}
+                            {[
+                                { label: "Shop Name", name: "shopName", placeholder: "Enter Shop Name" },
+                                { label: "Owner Name", name: "name", placeholder: "Enter Full Name" },
+                                { label: "Email ID/Phone Number", name: "contact", placeholder: "Enter Email/Phone" },
+                                { label: "Address", name: "address", placeholder: "Enter Full Address" },
+                                { label: "Aadhaar Number", name: "aadhaarNumber", placeholder: "Enter 12-digit Aadhaar Number" },
+                                { label: "GSTIN Number", name: "gstinNumber", placeholder: "Enter GSTIN number" },
+                            ].map((field, idx) => (
                                 <Box
+                                    key={idx}
                                     sx={{
-                                        gridColumn: "span 2",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        border: "1px solid #A3AED0",
-                                        borderRadius: "3px",
-                                        background: "#CED4F2",
-                                        padding: "8px 8px",
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(3,1fr)",
+                                        gap: 2,
                                     }}
                                 >
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                        startIcon={<UploadIcon size={16} />}
-                                        sx={{
-                                            background: "#00158099",
-                                            textTransform: "none",
-                                            fontSize: "14px",
-                                            boxShadow: "none",
-                                            borderRadius: 2.5,
-                                            "&:hover": { background: "#3A57A6" },
-                                        }}
-                                    >
-                                        Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="aadhaarImage"
-                                            onChange={handleFileChange}
-                                        />
-                                    </Button>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            ml: 2,
-                                            color: "#1C1C1C",
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        {formData.aadhaarImage
-                                            ? formData.aadhaarImage.name || formData.aadhaarImage
-                                            : "Upload Aadhaar Card"}
-                                    </Typography>
-                                </Box>
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>GSTIN Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        variant="outlined"
-                                        placeholder="Enter GSTIN number"
-                                        name="gstinNumber"
-                                        value={formData.gstinNumber}
-                                        onChange={handleChange}
-                                        sx={{ background: "#CED4F2" }}
-                                        InputProps={{
-                                            sx: {
-                                                "& input::placeholder": {
-                                                    color: "black",
-                                                    opacity: 1,
+                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Typography sx={{ fontWeight: 500 }}>{field.label}:</Typography>
+                                    </Box>
+                                    <Box sx={{ gridColumn: "span 2" }}>
+                                        <TextField
+                                            fullWidth
+                                            type="text"
+                                            variant="outlined"
+                                            placeholder={field.placeholder}
+                                            name={field.name}
+                                            value={formData[field.name]}
+                                            onChange={handleChange}
+                                            sx={{ background: "#CED4F2" }}
+                                            InputProps={{
+                                                sx: {
+                                                    "& input::placeholder": { color: "black", opacity: 1 },
                                                 },
-                                            },
-                                        }}
-                                    />
+                                            }}
+                                        />
+                                    </Box>
                                 </Box>
-                            </Box>
+                            ))}
 
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "repeat(3,1fr)",
-                                    gap: 2,
-                                }}
-                            >
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>GSTIN Image:</Typography>
-                                </Box>
+                            {/* File upload fields */}
+                            {[
+                                { label: "Aadhaar Card Image", name: "aadhaarImage", text: "Upload Aadhaar Card" },
+                                { label: "GSTIN Image", name: "gstinImage", text: "Upload GSTIN Card" },
+                            ].map((fileField, idx) => (
                                 <Box
+                                    key={idx}
                                     sx={{
-                                        gridColumn: "span 2",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        border: "1px solid #A3AED0",
-                                        borderRadius: "3px",
-                                        background: "#CED4F2",
-                                        padding: "8px 8px",
+                                        display: "grid",
+                                        gridTemplateColumns: "repeat(3,1fr)",
+                                        gap: 2,
                                     }}
                                 >
-                                    <Button
-                                        variant="contained"
-                                        component="label"
-                                        startIcon={<UploadIcon size={16} />}
+                                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Typography sx={{ fontWeight: 500 }}>{fileField.label}:</Typography>
+                                    </Box>
+                                    <Box
                                         sx={{
-                                            background: "#00158099",
-                                            textTransform: "none",
-                                            fontSize: "14px",
-                                            boxShadow: "none",
-                                            borderRadius: 2.5,
-                                            "&:hover": { background: "#3A57A6" },
+                                            gridColumn: "span 2",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            border: "1px solid #A3AED0",
+                                            borderRadius: "3px",
+                                            background: "#CED4F2",
+                                            padding: "8px 8px",
                                         }}
                                     >
-                                        Upload Photo
-                                        <input
-                                            hidden
-                                            accept="image/*"
-                                            type="file"
-                                            name="gstinImage"
-                                            onChange={handleFileChange}
-                                        />
-                                    </Button>
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            ml: 2,
-                                            color: "#1C1C1C",
-                                            fontWeight: 500,
-                                        }}
-                                    >
-                                        {formData.gstinImage
-                                            ? formData.gstinImage.name || formData.gstinImage
-                                            : "Upload GSTIN Card"}
-                                    </Typography>
+                                        <Button
+                                            variant="contained"
+                                            component="label"
+                                            startIcon={<UploadIcon size={16} />}
+                                            sx={{
+                                                background: "#00158099",
+                                                textTransform: "none",
+                                                fontSize: "14px",
+                                                boxShadow: "none",
+                                                borderRadius: 2.5,
+                                                "&:hover": { background: "#3A57A6" },
+                                            }}
+                                        >
+                                            Upload Photo
+                                            <input
+                                                hidden
+                                                accept="image/*"
+                                                type="file"
+                                                name={fileField.name}
+                                                onChange={handleFileChange}
+                                            />
+                                        </Button>
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ ml: 2, color: "#1C1C1C", fontWeight: 500 }}
+                                        >
+                                            {formData[fileField.name]
+                                                ? formData[fileField.name].name || formData[fileField.name]
+                                                : fileField.text}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
+                            ))}
                         </Box>
+
+                        {error && (
+                            <Box sx={{ mb: 2, textAlign: "center" }}>
+                                <Typography color="error" variant="body2">
+                                    {error}
+                                </Typography>
+                            </Box>
+                        )}
 
                         <Box
                             sx={{
@@ -481,14 +257,18 @@ function ShopAdd() {
                                 variant="outlined"
                                 disabled={isLoading}
                                 sx={{
-                                    background: isLoading ? "#gray" : "#001580",
+                                    background: isLoading ? "gray" : "#001580",
                                     color: "#FFFFFF",
                                     paddingX: 4,
                                     paddingY: "2px",
                                     textTransform: "none",
+                                    "&:disabled": {
+                                        background: "#cccccc",
+                                        color: "#666666",
+                                    },
                                 }}
                             >
-                                {isLoading ? 'Adding...' : 'Add Shop'}
+                                {isLoading ? "Adding..." : "Add Shop"}
                             </Button>
                         </Box>
                     </form>

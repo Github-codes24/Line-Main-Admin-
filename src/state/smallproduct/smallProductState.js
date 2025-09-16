@@ -3,19 +3,31 @@ import {recoilPersist} from "recoil-persist";
 
 const {persistAtom} = recoilPersist();
 export const createSmallProductAtom = atom({
-    key: "smallProduct",
+    key: "createSmallProduct",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
 
-export const getSmallProductAtom = atom({
-    key: "smallProduct",
+export const getSmallProductListAtom = atom({
+    key: "getSmallProductList",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const getSmallProductByIdAtom = atom({
+    key: "getSmallProductById",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
 
 export const searchSmallProductAtom = atom({
-    key: "smallProduct",
+    key: "searchSmallProduct",
+    default: [],
+    effects_UNSTABLE: [persistAtom],
+});
+
+export const searchSmallProductByIdAtom = atom({
+    key: "searchSmallProductById",
     default: [],
     effects_UNSTABLE: [persistAtom],
 });
