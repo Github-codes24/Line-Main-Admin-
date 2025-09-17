@@ -104,7 +104,23 @@ function App() {
             </PublicRoute>
           }
         />
+         <Route
+    path="/admin/profile"
+    element={
+      <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+        <AdminProfile />
+      </AdminLayout>
+    }
+  />
 
+<Route
+  path="/admin/editadminprofile/:id"
+  element={
+    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      <AdminEditProfile />
+    </AdminLayout>
+  }
+/>
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           {/* Dashboard */}

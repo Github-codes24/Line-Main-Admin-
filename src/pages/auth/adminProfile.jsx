@@ -75,7 +75,7 @@ const AdminProfile = () => {
                         <div role="status">
                             <svg
                                 aria-hidden="true"
-                                class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-[#001580]"
                                 viewBox="0 0 100 101"
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -115,27 +115,27 @@ const AdminProfile = () => {
                                                     type="text"
                                                     value={adminProfile?.[field.key] || ""}
                                                     readOnly
-                                                    className="flex-1 border border-[#007E74] bg-[#E0E9E9] px-3 py-2 rounded-md outline-none"
+                                                    className="flex-1 border border-[#001580] bg-[#E4E5EB] px-3 py-2 rounded-md outline-none"
                                                 />
                                             </div>
                                         ))}
                                     </div>
 
-                                    {/* Right - Image */}
-                                    <div className="flex justify-center items-start w-full md:w-1/3">
-                                        <img
-                                            src={manimage}
-                                            alt="Admin"
-                                            className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border border-teal-500"
-                                        />
-                                    </div>
+                                   <div className="flex justify-center items-start w-full md:w-1/3">
+  <img
+    src={manimage}
+    alt="Admin"
+    className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border-2 border-[#001580]"
+  />
+</div>
+
                                 </div>
 
                                 {/* Bottom Section - Button */}
                                 <div className="mt-8 flex justify-center">
                                     <button
                                         type="button"
-                                        className="bg-[#007E74] text-white px-6 py-2 rounded-md hover:bg-teal-700 transition duration-200"
+                                        className="bg-[#001580] text-white px-6 py-2 rounded-md  transition duration-200"
                                         onClick={() => navigate(`/admin/editadminprofile/${userId}`)}
                                     >
                                         Edit Profile
