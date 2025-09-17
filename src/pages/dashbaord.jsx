@@ -137,6 +137,25 @@ const Dashboard = () => {
                         }
                     />
                 </div>
+
+                  <div className="mb-6">
+                    <DashboardTable
+                        title="Top Shops"
+                        actionLink="See All Shops"
+                        headers={["Sr.No.", "Shop Name", "Owner Name", "Email/Phone", "Total Orders"]}
+                        data={
+                            dashboardData.topWorkers && dashboardData.topWorkers.length > 0
+                                ? dashboardData.topWorkers.map((worker, idx) => [
+                                      idx + 1,
+                                      worker.name,
+                                      worker.expertise,
+                                      worker.contact,
+                                      worker.totalOrders,
+                                  ])
+                                : [["-", "-", "-", "-", "No Workers Found"]]
+                        }
+                    />
+                </div>
             </div>
         </div>
     );
