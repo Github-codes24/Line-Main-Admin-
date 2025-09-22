@@ -115,8 +115,8 @@ const useAuth = () => {
             });
 
             if (res) {
-                setAdminProfile(res?.data?.user);
-                sessionStorage.setItem("isAdminLogin", res?.data?.user?.isVerified ? "true" : "false");
+                setAdminProfile(res?.data);
+                sessionStorage.setItem("isAdminLogin", res?.data?.isVerified ? "true" : "false");
             }
 
             return res;
@@ -137,12 +137,12 @@ const useAuth = () => {
             });
 
             if (res) {
-                setAdminProfile(res?.data?.user);
+                setAdminProfile(res?.data);
                 toast.success("Admin updated");
-                navigate("/admin/adminprofile");
+                navigate("/admin-profile");
             }
         } catch (error) {
-            throw error.response?.data || {message: "Failed to fetch profile"};
+            throw error.response?.data || {message: "Failed to update profile"};
         } finally {
             setLoading(false);
         }
