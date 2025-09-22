@@ -6,7 +6,7 @@ const DashboardTable = ({ title, headers, data, actionLink }) => {
     <div className="bg-white shadow-md rounded-md p-4 w-full border border-[#616666] font-myfont">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-md font-bold">{title}</h3>
-        <a href="/" className="text-teal-600 text-sm hover:underline">
+        <a href="/" className="text-[#001580] text-semibold hover:underline">
           {actionLink || "See All"}
         </a>
       </div>
@@ -26,8 +26,8 @@ const DashboardTable = ({ title, headers, data, actionLink }) => {
                 {row.map((cell, i) => (
                   <td key={i} className="px-3 py-2">{cell}</td>
                 ))}
-                <td className="px-3 py-2">
-                  <FiEye className="text-teal-600 cursor-pointer" />
+                <td className="px-5 py-2">
+                  <FiEye size="18" className="text-[#001580] cursor-pointer" />
                 </td>
               </tr>
             ))}
