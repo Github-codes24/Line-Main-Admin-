@@ -112,46 +112,51 @@ const goToPage = (pg) => {
 
     return (
         <div className="p-8 bg-[#E0E9E9]">
-            <ToastContainer />
-<div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
-    {/* Heading */}
-    <h2 className="text-xl font-medium">Customer List</h2>
+              <ToastContainer />
+      {/* Header */}
+      <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
+        {/* Title on left */}
+        <h1 className="text-xl font-semibold ml-2 z-10">Customer List</h1>
 
-    {/* Search Input */}
-    <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
-        <input
+        {/* Search Bar centered */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-[400px]">
+          {/* Search Icon */}
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.5 13C4.68333 13 3.146 12.3707 1.888 11.112C0.63 9.85333 0.000667196 8.316 5.29101e-07 6.5C-0.000666138 4.684 0.628667 3.14667 1.888 1.888C3.14733 0.629333 4.68467 0 6.5 0C8.31533 0 9.853 0.629333 11.113 1.888C12.373 3.14667 13.002 4.684 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L17.3 15.9C17.4833 16.0833 17.575 16.3167 17.575 16.6C17.575 16.8833 17.4833 17.1167 17.3 17.3C17.1167 17.4833 16.8833 17.575 16.6 17.575C16.3167 17.575 16.0833 17.4833 15.9 17.3L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13ZM6.5 11C7.75 11 8.81267 10.5627 9.688 9.688C10.5633 8.81333 11.0007 7.75067 11 6.5C10.9993 5.24933 10.562 4.187 9.688 3.313C8.814 2.439 7.75133 2.00133 6.5 2C5.24867 1.99867 4.18633 2.43633 3.313 3.313C2.43967 4.18967 2.002 5.252 2 6.5C1.998 7.748 2.43567 8.81067 3.313 9.688C4.19033 10.5653 5.25267 11.0027 6.5 11Z"
+                fill="#0D2E28"
+              />
+            </svg>
+          </div>
+
+          {/* Input */}
+          <input
             type="text"
-            placeholder="Search by Name, Phone Number, Email..."
+            placeholder="Search by Name, Phone Number, Email...."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 bg-[#E4E5EB] text-[#0D2E28] font-medium placeholder-[#0D2E28] py-2 border-2 border-[#001580] rounded-full focus:outline-none"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
-        />
-        {/* Search Icon */}
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-        >
-            <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
-            />
-        </svg>
-    </div>
+            className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+          />
+        </div>
 
-    {/* Add Customer Button */}
-    <button
-        onClick={() => navigate("/admin/customermanagement/add")}
-        className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg"
-    >
-        + Add New Customer
-    </button>
-</div>
+        {/* Add Worker Button on right */}
+        <div className="ml-auto mr-2">
+          <button
+            onClick={() => navigate('/admin/workermanagement/add')}
+            className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors"
+          >
+            {/* <Plus size={18} /> */}
+           + Add New Customer
+          </button>
+        </div>
+      </div>
 
 
             {/* Main Content Box */}
@@ -260,7 +265,7 @@ const goToPage = (pg) => {
                 key={pg}
                 onClick={() => goToPage(pg)}
                 className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-                    pg === currentPage ? "bg-[#001580] text-white" : "bg-white text-black hover:bg-gray-100"
+                    pg === currentPage ? "bg-[#001580] text-white" : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
                 }`}
             >
                 {pg}

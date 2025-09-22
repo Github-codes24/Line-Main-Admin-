@@ -11,12 +11,14 @@ import {
 } from "@mui/material";
 import Worker from "../../../components/cards/worker.jsx";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 function WorkerEdit() {
   const navigate = useNavigate();
-  const { id } = useParams(); // worker id from route
+  const { id } = useParams();
+  const [fetchData] = useFetch();
   const [loading, setLoading] = useState(false);
 
   // form states
@@ -27,35 +29,36 @@ function WorkerEdit() {
     address: "",
   });
 
-  // 👇 JWT Token
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2ODFkZGI4YzdmOTU5MDA2ZjE0MGYiLCJlbWFpbCI6ImRpdnlhMTIzNEBnbWFpbC5jb20iLCJpYXQiOjE3NTY3OTE0NzQsImV4cCI6MTc1OTM4MzQ3NH0.b99vHox8Sjvc6KJHMwdlygK8zspf8-Hf50UVs5ntS4M";
-
   // fetch worker details for pre-fill
   useEffect(() => {
     const fetchWorker = async () => {
       try {
-        const res = await axios.get(
-          `https://linemen-be-1.onrender.com/admin/Worker/get-single-worker/${id}`,         {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = res.data.user;
-        setWorkerData({
-          name: data.name || "",
-          experties: data.experties || "",
-          contact: data.contact || "",
-          address: data.address || "",
+        const result = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/Worker/get-single-worker/${id}`,
         });
+
+        if (result.success) {
+          const data = result.user || result.worker || result.data;
+          setWorkerData({
+            name: data.name || "",
+            experties: data.experties || data.expertise || "",
+            contact: data.contact || data.phone || data.email || "",
+            address: data.address || "",
+          });
+        } else {
+          toast.error(result.message || "Failed to fetch worker details");
+        }
       } catch (err) {
         console.error("Error fetching worker:", err);
-        toast.error("Failed to fetch worker details");
+        toast.error(err.response?.data?.message || err.message || "Failed to fetch worker details");
       }
     };
-    fetchWorker();
-  }, [id]);
+
+    if (id) {
+      fetchWorker();
+    }
+  }, [id, fetchData]);
 
   const handleChange = (e) => {
     setWorkerData({
@@ -76,26 +79,21 @@ function WorkerEdit() {
     setLoading(true);
 
     try {
-      const res = await axios.put(
-        `https://linemen-be-1.onrender.com/admin/Worker/update-worker/${id}`,
-        workerData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const result = await fetchData({
+        method: "PUT",
+        url: `${conf.apiBaseUrl}/admin/Worker/update-worker/${id}`,
+        data: workerData,
+      });
 
-      if (res.data.success) {
-        toast.success("Worker updated successfully!");
+      if (result.success) {
+        toast.success(result.message || "Worker updated successfully!");
         navigate("/admin/workermanagement");
       } else {
-        toast.error(res.data.message || "Failed to update worker");
+        toast.error(result.message || "Failed to update worker");
       }
     } catch (err) {
-      console.error("Update error:", err.response?.data || err.message);
-      toast.error(err.response?.data?.message || "Failed to update worker");
+      console.error("Update error:", err);
+      toast.error(err.response?.data?.message || err.message || "Failed to update worker");
     } finally {
       setLoading(false);
     }

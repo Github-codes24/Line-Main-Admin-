@@ -104,7 +104,7 @@ const AdminEditProfile = () => {
                             <div role="status">
                                 <svg
                                     aria-hidden="true"
-                                    class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                    class="inline w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-[#001580]"
                                     viewBox="0 0 100 101"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ const AdminEditProfile = () => {
                                                     value={formik.values.fullName}
                                                     onChange={formik.handleChange}
                                                     onBlur={formik.handleBlur}
-                                                    className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none bg-[#F5FFFF]"
+                                                    className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
                                                 />
                                                 {formik.touched.fullName && formik.errors.fullName && (
                                                     <div className="text-red-500 text-sm">{formik.errors.fullName}</div>
@@ -155,7 +155,7 @@ const AdminEditProfile = () => {
                                                     value={formik.values.phone}
                                                     onChange={formik.handleChange}
                                                     onBlur={formik.handleBlur}
-                                                    className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none bg-[#F5FFFF]"
+                                                    className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
                                                 />
                                                 {formik.touched.phone && formik.errors.phone && (
                                                     <div className="text-red-500 text-sm">{formik.errors.phone}</div>
@@ -173,7 +173,7 @@ const AdminEditProfile = () => {
                                                     value={formik.values.email}
                                                     onChange={formik.handleChange}
                                                     onBlur={formik.handleBlur}
-                                                    className="w-full border border-[#0f9e9e] rounded-md px-3 py-2 focus:outline-none bg-[#F5FFFF]"
+                                                    className="w-full border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
                                                 />
                                                 {formik.touched.email && formik.errors.email && (
                                                     <div className="text-red-500 text-sm">{formik.errors.email}</div>
@@ -184,14 +184,14 @@ const AdminEditProfile = () => {
 
                                     {/* Right section */}
                                     <div className="flex flex-col items-center">
-                                        <div className="w-32 h-32 rounded-full border border-[#0f9e9e] overflow-hidden">
+                                        <div className="w-32 h-32 rounded-full border border-[#001580] overflow-hidden">
                                             <img
                                                 src={photoPreview || manimage}
                                                 alt="Profile"
                                                 className="w-full h-full object-cover"
                                             />
                                         </div>
-                                        <label className="mt-4 inline-flex items-center gap-2 bg-[#0f9e9e] text-white px-4 py-2 rounded-md cursor-pointer">
+                                        <label className="mt-4 inline-flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md cursor-pointer">
                                             <FiUpload />
                                             Upload Photo
                                             <input
@@ -215,13 +215,13 @@ const AdminEditProfile = () => {
                                         setPhotoPreview(null);
                                         navigate(-1);
                                     }}
-                                    className="border border-[#007E74] text-[#0f9e9e] px-10 py-2 rounded-md hover:bg-[#e0f7f7] bg-[#D9F1EB]"
+                                    className="border border-[#001580] text-[#001580] px-10 py-2 rounded-md  bg-[#CED4F2]"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="border-[#007E74] text-white px-6 py-2 rounded-md hover:bg-[#0c7d7d] bg-[#007E74]"
+                                    className="border-[#001580] text-white px-6 py-2 rounded-md bg-[#001580]"
                                 >
                                     Update Profile
                                 </button>

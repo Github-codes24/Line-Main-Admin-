@@ -4,7 +4,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { authAtom } from "../state/auth/authenticationState";
 import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useRecoilValue(authAtom);
   const setAuthState = useSetRecoilState(authAtom);
 
@@ -21,7 +21,7 @@ const ProtectedRoute = () => {
     return <Navigate to="/" replace />;
   }
 
-  return <Outlet />;
+  return children || <Outlet />;
 };
 
 export default ProtectedRoute;
