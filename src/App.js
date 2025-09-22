@@ -79,7 +79,9 @@ import SetLimitAmount2 from "./pages/module/set-limit-amount/set-limit-amount2";
 
 // Route guards
 import ProtectedRoute from "./route/protected";
-import PublicRoute from "./route/public"; // ✅ make sure you have this file
+import PublicRoute from "./route/public"; //  make sure you have this file
+
+// import OrderDetails from "./pages/OrderDetails"; // 
 
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
@@ -116,6 +118,25 @@ function App() {
               </AdminLayout>
             }
           />
+
+          {/* Admin Profile */}
+          <Route
+            path="/admin-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminProfile />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/edit-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminEditProfile />
+              </AdminLayout>
+            }
+          />
+
 
           {/* Customer */}
           <Route
@@ -471,6 +492,16 @@ function App() {
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <SetLimitAmount2 />
+              </AdminLayout>
+            }
+          />
+
+          {/* Order View */}
+          <Route
+            path="/orderview/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <PendingOrder />
               </AdminLayout>
             }
           />

@@ -1,55 +1,52 @@
 // WorkerList.jsx
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Chip,
-  Popover,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
-import Worker from "../../../components/cards/worker.jsx";
-import { DeleteIcon, EditIcon, FilterIcon, ViewIcon } from "../../../assets/CommonAssets";
+import { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Eye, Trash2, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
+import { IoClose } from "react-icons/io5";
 import conf from "../../../config";
 
-function WorkerList() {
+const WorkerList = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
-  const [searchText, setSearchText] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 3; // Show only 3 workers per page
 
-  const [workerData, setWorkerData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [workers, setWorkers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // Added error state
 
-  const expertiseOptions = ["Electrician", "Plumber", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
+  // Filter states
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [activeFilters, setActiveFilters] = useState([]);
+  const expertiseList = ["Plumber", "Electrician"];
 
-  // 👇 Fetch workers with custom hook
+  const toggleFilter = (filter) => {
+    if (activeFilters.includes(filter)) {
+      setActiveFilters(activeFilters.filter((f) => f !== filter));
+    } else {
+      setActiveFilters([...activeFilters, filter]);
+    }
+  };
+
+  const removeFilter = (filter) =>
+    setActiveFilters(activeFilters.filter((f) => f !== filter));
+
+  const resetFilters = () => setActiveFilters([]);
+
+  // Fetch all workers when component mounts
   useEffect(() => {
     fetchAllWorkers();
   }, []);
 
   const fetchAllWorkers = async () => {
     try {
-      setError("");
-      setLoading(true);
+      setError(""); // Reset error
+      setIsLoading(true);
 
       const result = await fetchData({
         method: "GET",
@@ -57,39 +54,41 @@ function WorkerList() {
       });
 
       if (result.success) {
-        const normalizedWorkers = (result.workers || []).map((worker) => ({
-          ...worker,
-          name: worker.name || "Unknown",
-          expertise: worker.experties || worker.expertise || "N/A",
-          contact: worker.contact || worker.phone || worker.email || "N/A",
-          address: worker.address || "N/A",
-          id: worker._id || worker.id,
-          status: worker.status || "Inactive",
-        })).filter((w) => w.name !== "Unknown");
+        const workerData = result.workers || result.users || [];
 
-        setWorkerData(normalizedWorkers);
+        const normalizedWorkers = workerData.map(worker => ({
+          ...worker,
+          name: worker.name || worker.workerName || worker.fullName || 'Unknown',
+          expertise: worker.experties || worker.expertise || worker.service || 'N/A',
+          contact: worker.contact || worker.phone || worker.email || 'N/A',
+          address: worker.address || worker.location || 'N/A',
+          status: worker.status || 'Active',
+          id: worker.id || worker._id
+        })).filter(worker => worker.name !== 'Unknown');
+
+        setWorkers(normalizedWorkers);
 
         if (normalizedWorkers.length === 0) {
-          toast.info("No workers found");
+          toast.info('No workers found');
         }
       } else {
-        setError(result.message || "Failed to fetch workers");
-        setWorkerData([]);
+        setError(result.message || 'Failed to fetch workers');
+        setWorkers([]);
       }
     } catch (err) {
-      console.error("Error fetching workers:", err);
-      setError(err.response?.data?.message || err.message || "Error fetching workers");
-      setWorkerData([]);
+      console.error('Error fetching workers:', err);
+      setError(err.response?.data?.message || err.message || 'Error fetching workers');
+      setWorkers([]);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const handleDelete = async (workerId) => {
-    if (!window.confirm("Are you sure you want to delete this worker?")) return;
+  const deleteWorker = async (workerId) => {
+    if (!window.confirm('Are you sure you want to delete this worker?')) return;
 
     try {
-      setLoading(true);
+      setIsLoading(true);
 
       const result = await fetchData({
         method: "DELETE",
@@ -97,208 +96,313 @@ function WorkerList() {
       });
 
       if (result.success) {
-        toast.success(result.message || "Worker deleted successfully");
-        fetchAllWorkers(); // refresh list
+        toast.success(result.message || 'Worker deleted successfully');
+        fetchAllWorkers(); // Refresh list
       } else {
-        toast.error(result.message || "Failed to delete worker");
+        toast.error(result.message || 'Failed to delete worker');
       }
     } catch (err) {
-      console.error("Delete error:", err);
-      toast.error(err.response?.data?.message || err.message || "Error deleting worker");
+      console.error('Delete error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Error deleting worker');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  // 👇 Filter workers
-  const filteredWorkers = workerData.filter((worker) => {
-    const searchLower = searchText.toLowerCase();
+  const filteredWorkers = workers.filter((worker) => {
+    if (!worker || !worker.name) return false;
 
-    const matchesSearch =
-      searchText.trim() === "" ||
-      worker.name?.toLowerCase().includes(searchLower) ||
-      worker.expertise?.toLowerCase().includes(searchLower) ||
-      worker.contact?.toLowerCase().includes(searchLower) ||
-      worker.address?.toLowerCase().includes(searchLower) ||
-      worker.status?.toLowerCase().includes(searchLower);
+    const searchLower = searchTerm.toLowerCase();
+    const matchesSearch = (
+      worker.name.toLowerCase().includes(searchLower) ||
+      (worker.contact && worker.contact.toLowerCase().includes(searchLower)) ||
+      (worker.address && worker.address.toLowerCase().includes(searchLower)) ||
+      (worker.expertise && worker.expertise.toLowerCase().includes(searchLower))
+    );
 
-    const matchesFilter = appliedFilters.length === 0 || appliedFilters.includes(worker.expertise);
+    const matchesFilter =
+      activeFilters.length === 0 || activeFilters.includes(worker.expertise);
 
     return matchesSearch && matchesFilter;
   });
 
-  if (loading) return <p>Loading workers...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
+  const totalPages = Math.ceil(filteredWorkers.length / recordsPerPage);
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = filteredWorkers.slice(indexOfFirstRecord, indexOfLastRecord);
+
+  const goToPage = (pg) => {
+    if (pg >= 1 && pg <= totalPages) setCurrentPage(pg);
+  };
+
 
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: "24px" }}>
-      <Worker
-        onClick={() => navigate("/admin/workermanagement/add")}
-        title="Worker List"
-        searchValue={searchText}
-        setSearchValue={setSearchText}
-        buttonText="Add New Worker"
-        btnpath="/admin/workermanagement/add"
-      />
+    <div className="p-8 bg-[#E0E9E9]">
+      <ToastContainer />
+      {/* Header */}
+      <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
+        {/* Title on left */}
+        <h1 className="text-xl font-semibold ml-2 z-10">Worker List</h1>
 
-      <Card>
-        <CardHeader
-          sx={{ paddingX: 3 }}
-          title={
-            <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 2 }}>
-              <Box
-                sx={{
-                  background: "#E0E9E9",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: "5px",
-                  borderRadius: 1,
-                  cursor: "pointer",
-                }}
-                onClick={(e) => setAnchorEl(e.currentTarget)}
-              >
-                <FilterIcon />
-              </Box>
+        {/* Search Bar centered */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 w-[400px]">
+          {/* Search Icon */}
+          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6.5 13C4.68333 13 3.146 12.3707 1.888 11.112C0.63 9.85333 0.000667196 8.316 5.29101e-07 6.5C-0.000666138 4.684 0.628667 3.14667 1.888 1.888C3.14733 0.629333 4.68467 0 6.5 0C8.31533 0 9.853 0.629333 11.113 1.888C12.373 3.14667 13.002 4.684 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L17.3 15.9C17.4833 16.0833 17.575 16.3167 17.575 16.6C17.575 16.8833 17.4833 17.1167 17.3 17.3C17.1167 17.4833 16.8833 17.575 16.6 17.575C16.3167 17.575 16.0833 17.4833 15.9 17.3L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13ZM6.5 11C7.75 11 8.81267 10.5627 9.688 9.688C10.5633 8.81333 11.0007 7.75067 11 6.5C10.9993 5.24933 10.562 4.187 9.688 3.313C8.814 2.439 7.75133 2.00133 6.5 2C5.24867 1.99867 4.18633 2.43633 3.313 3.313C2.43967 4.18967 2.002 5.252 2 6.5C1.998 7.748 2.43567 8.81067 3.313 9.688C4.19033 10.5653 5.25267 11.0027 6.5 11Z"
+                fill="#0D2E28"
+              />
+            </svg>
+          </div>
 
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                {appliedFilters.map((filter, index) => (
-                  <Chip
-                    key={index}
-                    label={filter}
-                    size="small"
-                    onDelete={() =>
-                      setAppliedFilters((prev) => prev.filter((f) => f !== filter))
-                    }
-                    sx={{ backgroundColor: "#F0F0F0" }}
-                  />
+          {/* Input */}
+          <input
+            type="text"
+            placeholder="Search by Name, Phone Number, Email, Expertise..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+          />
+        </div>
+
+        {/* Add Worker Button on right */}
+        <div className="ml-auto mr-2">
+          <button
+            onClick={() => navigate('/admin/workermanagement/add')}
+            className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors"
+          >
+            <Plus size={18} />
+            Add New Worker
+          </button>
+        </div>
+      </div>
+
+
+      {/* Workers Table */}
+      <div className="bg-white p-4 shadow rounded-md">
+        {/* Filter Section */}
+        <div className="relative flex flex-wrap gap-2 pb-4"> {/* added pb-4 for bottom padding */}
+          <svg
+            onClick={() => setShowFilterPanel(true)}
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            className="cursor-pointer"
+          >
+            <path
+              d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z"
+              fill="#E4E5EB"
+            />
+            <path
+              d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z"
+              stroke="#0D2E28"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+
+          {showFilterPanel && (
+            <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-70 border border-gray-300 z-50">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-[#0D2E28]">Expertise</h3>
+                <button
+                  onClick={() => setShowFilterPanel(false)}
+                  className="text-[#0D2E28] hover:text-[#0D2E28] text-2xl"
+                >
+                  <IoClose />
+                </button>
+              </div>
+              <div className="space-y-3">
+                {expertiseList.map((item) => (
+                  <label
+                    key={item}
+                    className="flex items-center space-x-2 cursor-pointer text-[#0D2E28]"
+                  >
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 text-[#0D2E28] border-gray-300 rounded"
+                      checked={activeFilters.includes(item)}
+                      onChange={() => toggleFilter(item)}
+                    />
+                    <span>{item}</span>
+                  </label>
                 ))}
-              </Box>
+              </div>
+            </div>
+          )}
 
-              <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
+          {/* Active Filters */}
+          {activeFilters.map((filter) => (
+            <span
+              key={filter}
+              className="px-3 py-1 bg-[#E4E5EB] text-[#0D2E28] font-medium rounded-full flex items-center gap-1"
+            >
+              {filter}
+              <button
+                onClick={() => removeFilter(filter)}
+                className="text-[#0D2E28] font-semibold ml-1"
               >
-                <Box sx={{ p: 2, minWidth: 200 }}>
-                  <strong>Expertise</strong>
-                  <FormGroup>
-                    {expertiseOptions.map((option) => (
-                      <FormControlLabel
-                        key={option}
-                        control={
-                          <Checkbox
-                            checked={appliedFilters.includes(option)}
-                            onChange={() =>
-                              setAppliedFilters((prev) =>
-                                prev.includes(option)
-                                  ? prev.filter((f) => f !== option)
-                                  : [...prev, option]
-                              )
-                            }
-                          />
-                        }
-                        label={option}
-                      />
-                    ))}
-                  </FormGroup>
-                </Box>
-              </Popover>
-            </Box>
-          }
-          action={
-            <Button
-              variant="outlined"
-              onClick={() => setAppliedFilters([])}
-              sx={{
-                marginTop: 1,
-                borderColor: "#001580",
-                color: "#001580",
-                background: "#CECEF2",
-                paddingX: 4,
-                paddingY: "2px",
-                textTransform: "none",
-              }}
+                <IoClose />
+              </button>
+            </span>
+          ))}
+
+          {activeFilters.length > 0 && (
+            <button
+              onClick={resetFilters}
+              className="w-[200px] ml-auto border border-[#0D2E28] bg-[#CECEF2] text-[#0D2E28] font-medium px-6 py-2 rounded-lg"
             >
               Reset Filter
-            </Button>
-          }
-        />
+            </button>
+          )}
+        </div>
 
-        <CardContent sx={{ paddingTop: 0 }}>
-          <TableContainer
-            component={Paper}
-            elevation={0}
-            sx={{
-              border: "1px solid black",
-              maxHeight: 300,
-              overflowY: "scroll",
-              "&::-webkit-scrollbar": { display: "none" },
-            }}
-          >
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  {["Sr.No.", "Worker Name", "Expertise", "Contact", "Address", "Status", "Action"].map(
-                    (head, i) => (
-                      <TableCell
-                        key={i}
-                        sx={{ fontWeight: 600, textAlign: "center", background: "#E0E9E9" }}
-                      >
-                        {head}
-                      </TableCell>
-                    )
-                  )}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredWorkers.map((item, index) => (
-                  <TableRow hover key={item.id || index}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.expertise}</TableCell>
-                    <TableCell>{item.contact}</TableCell>
-                    <TableCell>{item.address}</TableCell>
-                    <TableCell
-                      sx={{
-                        color: item.status === "Active" ? "#34C759" : "#FF383C",
-                        fontWeight: 500,
-                      }}
-                    >
-                      {item.status}
-                    </TableCell>
-                    <TableCell sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                      <IconButton
-                        size="small"
-                        onClick={() => navigate(`/admin/workermanagement/workerview/${item.id}`)}
-                      >
-                        <ViewIcon />
-                      </IconButton>
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+          {isLoading ? (
+            <div className="flex justify-center items-center h-[400px]">
+              <div className="text-lg">Loading customers...</div>
+            </div>
+          ) : error ? (
+            <div className="flex justify-center items-center h-[400px]">
+              <div className="text-lg text-red-500">{error}</div>
+            </div>
+          ) : (
+            <table className="w-full text-sm text-left text-gray-700">
+              <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
+                <tr>
+                  <th className="px-6 py-4">Sr.No.</th>
+                  <th className="px-6 py-4">Worker Name</th>
+                  <th className="px-6 py-4">Expertise</th>
+                  <th className="px-6 py-4">Email ID/Phone Number</th>
+                  <th className="px-6 py-4">Address</th>
+                  <th className="px-6 py-4">Status</th>
+                  <th className="px-6 py-4 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredWorkers.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="px-6 py-8 text-center">
+                      <div className="text-lg text-gray-500">No workers found</div>
+                    </td>
+                  </tr>
+                ) : (
+                  currentRecords.map((worker, index) => (
+                    <tr key={worker.id || worker._id}>
+                      <td className="px-6 py-4">{indexOfFirstRecord + index + 1}</td>
+                      <td className="px-6 py-4">{worker.name}</td>
+                      <td className="px-6 py-4">{worker.expertise}</td>
+                      <td className="px-6 py-4">{worker.contact}</td>
+                      <td className="px-6 py-4">{worker.address}</td>
+                      <td className="px-6 py-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${worker.status === 'Active'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                          }`}>
+                          {worker.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center space-x-4">
+                          <button
+                            onClick={() => navigate(`/admin/workermanagement/view/${worker.id || worker._id}`)}
+                            className="text-[#F15A29] hover:text-orange-700"
+                          >
+                            <Eye size={20} />
+                          </button>
+                          <button
+                            onClick={() => navigate(`/admin/workermanagement/edit/${worker.id || worker._id}`)}
+                            className="text-[#F15A29] hover:text-orange-700"
+                          >
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                                stroke="#EC2D01"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                                stroke="#EC2D01"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => deleteWorker(worker.id || worker._id)}
+                            className="text-[#F15A29] hover:text-orange-700"
+                            disabled={isLoading}
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          )}
+        </div>
 
-                      <IconButton
-                        size="small"
-                        onClick={() => navigate(`/admin/workermanagement/workeredit/${item.id}`)}
-                      >
-                        <EditIcon />
-                      </IconButton>
+        {/* Pagination */}
+        <div className="flex flex-col md:flex-row items-center justify-between bg-[#F5F5F5] mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+          <p className="font-bold text-black">
+            Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredWorkers.length)} of {filteredWorkers.length} Entries
+          </p>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-2 py-1 bg-white text-[#001580] border  rounded-md hover:bg-green-50 disabled:opacity-50"
+            >
+              &lt;
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+              <button
+                key={pg}
+                onClick={() => goToPage(pg)}
+                className={`w-8 h-8 border text-sm font-medium rounded-md transition ${pg === currentPage
+                  ? "bg-[#001580] text-white"
+                  : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
+                  }`}
+              >
+                {pg}
+              </button>
+            ))}
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 bg-white text-[#001580] border  rounded-md hover:bg-green-50 disabled:opacity-50"
+            >
+              &gt;
+            </button>
+          </div>
+        </div>
 
-                      <IconButton size="small" onClick={() => handleDelete(item.id)} disabled={loading}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </CardContent>
-      </Card>
-    </Box>
+
+      </div>
+    </div>
   );
-}
+};
 
 export default WorkerList;
