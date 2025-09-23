@@ -20,7 +20,7 @@ export default function CommissionList() {
         method: "GET",
         url: `${conf.apiBaseUrl}/admin/commissions/get-all-commission`,
       });
-      if(res?.data) setCommissions(res.data);
+      if (res?.commissions) setCommissions(res.commissions);
     } catch (err) {
       console.error(err);
       alert("Failed to fetch commissions!");
@@ -32,7 +32,7 @@ export default function CommissionList() {
   }, []);
 
   const handleDelete = async (id) => {
-    if(!window.confirm("Are you sure to delete this commission?")) return;
+    if (!window.confirm("Are you sure to delete this commission?")) return;
     try {
       await fetchData({
         method: "DELETE",
@@ -71,50 +71,48 @@ export default function CommissionList() {
 
         <div className="bg-white rounded-lg shadow-md pt-4 pl-4 pr-4 pb-4">
           <div className="border border-gray-400 rounded-lg">
-            <table className="w-full mb-60 h-full text-sm text-left">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-3 py-2 font-medium">Sr.No.</th>
-                  <th className="px-3 py-2 font-medium">Category</th>
-                  <th className="px-3 py-2 font-medium">Crud Operations</th>
-                  <th className="px-3 py-2 font-medium">Commission From Worker</th>
-                  <th className="px-3 py-2 font-medium">Commission From Shopkeeper</th>
-                  <th className="px-3 py-2 font-medium text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentRows.map((c, idx) => (
-                  <tr key={c._id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
-                    <td className="px-3 py-2">{c.category}</td>
-                    <td className="px-3 py-2">{c.operation}</td>
-                    <td className="px-3 py-2">{c.workerCommission} %</td>
-                    <td className="px-3 py-2">{c.shopkeeperCommission} %</td>
-                    <td className="px-3 py-2 text-center space-x-3 text-blue-600">
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/set-commission/view/${c._id}`)
-                        }
-                      >
-                        <FaEye />
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/set-commission/edit/${c._id}`)
-                        }
-                      >
-                        <FaEdit />
-                      </button>
-                      <button onClick={() => handleDelete(c._id)}>
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+           <div className="w-full overflow-x-auto">
+  <table className="w-full mb-60 h-full text-sm text-left border border-gray-200">
+    <thead>
+      <tr className="bg-gray-100 text-gray-700">
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Sr.No.</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Category</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Worker</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Shopkeeper</th>
+        <th className="px-3 py-2 font-medium text-center whitespace-nowrap">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentRows.map((c, idx) => (
+        <tr key={c._id} className="hover:bg-gray-50 transition-colors">
+          <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
+          <td className="px-3 py-2">{c.category}</td>
+          <td className="px-3 py-2">{c.workerPercentageCommission} %</td>
+          <td className="px-3 py-2">{c.shopkeeperPercentageCommission} %</td>
+          <td className="px-3 py-2 text-center space-x-3 text-blue-600">
+            <button
+              onClick={() => navigate(`/admin/set-commission/view/${c._id}`)}
+            >
+              <FaEye />
+            </button>
+            <button
+              onClick={() => navigate(`/admin/set-commission/edit/${c._id}`)}
+            >
+              <FaEdit />
+            </button>
+            <button onClick={() => handleDelete(c._id)}>
+              <FaTrash />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           </div>
 
+          {/* Pagination */}
           <div className="rounded-lg shadow-md px-4 py-3 flex justify-between items-center text-sm text-gray-600 bg-slate-200 mt-2">
             <span className="text-zinc-950">
               Showing {indexOfFirstRow + 1} to {Math.min(indexOfLastRow, commissions.length)} of {commissions.length} Entries
@@ -131,8 +129,8 @@ export default function CommissionList() {
                 <button
                   key={page}
                   onClick={() => handlePageChange(page + 1)}
-                  className={`px-3 py-1 border rounded-full ${
-                    currentPage === page + 1 ? "bg-blue-700 text-white" : "hover:bg-gray-200"
+                  className={`px-3 py-1 border rounded-lg ${
+                    currentPage === page + 1 ? "bg-blue-900 text-white" : "hover:bg-gray-200"
                   }`}
                 >
                   {page + 1}

@@ -79,17 +79,17 @@ import SetLimitAmount2 from "./pages/module/set-limit-amount/set-limit-amount2";
 
 // Route guards
 import ProtectedRoute from "./route/protected";
-import PublicRoute from "./route/public"; //  make sure you have this file
+import PublicRoute from "./route/public"; //  ✅ make sure you have this file
 
-// import OrderDetails from "./pages/OrderDetails"; // 
+
 
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
 
   return (
     <>
-      <Routes>
-        {/* Public Routes */}
+     <Routes>
+        {/* Default route → Login */}
         <Route
           path="/"
           element={
@@ -98,6 +98,8 @@ function App() {
             </PublicRoute>
           }
         />
+
+        {/* Verify OTP */}
         <Route
           path="/verifyotp"
           element={
@@ -107,9 +109,8 @@ function App() {
           }
         />
 
-        {/* Protected Routes */}
+        {/* Protected Routes → Only after login + OTP verification */}
         <Route element={<ProtectedRoute />}>
-          {/* Dashboard */}
           <Route
             path="/admin/dashboard"
             element={
