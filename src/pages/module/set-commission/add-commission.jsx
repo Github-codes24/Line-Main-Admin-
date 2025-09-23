@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";  // Import this hook
 
 
 
-export default function ViewCommission() {
+export default function AddLimitAmount() {
     const navigate = useNavigate(); 
   
   return (

@@ -1,46 +1,48 @@
 // src/routes/route.js
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Auth
-import AdminLogin from '../pages/auth/login';
-import AdminProfile from '../pages/auth/adminProfile';
-import AdminEditProfile from '../pages/auth/adminEditProfile';
+import AdminLogin from "../pages/auth/login";
+import AdminProfile from "../pages/auth/adminProfile";
+import AdminEditProfile from "../pages/auth/adminEditProfile";
 
 // Dashboard
-import Dashboard from '../pages/dashbaord';
+import Dashboard from "../pages/dashbaord";
 
 // Protected / Public wrappers
-import ProtectedRoute from './protected';
-import PublicRoute from './public';
+import ProtectedRoute from "./protected";
+import PublicRoute from "./public";
 
 // Customer
-import CustomerList from '../pages/module/customer/customer-list';
-import AddCustomer from '../pages/module/customer/customer-add';
-import ViewCustomer from '../pages/module/customer/customer-view';
-import EditCustomer from '../pages/module/customer/customer-edit';
+import CustomerList from "../pages/module/customer/customer-list";
+import AddCustomer from "../pages/module/customer/customer-add";
+import ViewCustomer from "../pages/module/customer/customer-view";
+import EditCustomer from "../pages/module/customer/customer-edit";
 
 // Commission
-import CommissionList from '../pages/module/set-commission/commmission-list';
-import AddCommission from '../pages/module/set-commission/add-commission';
-import EditCommission from '../pages/module/set-commission/edit-commission';
-import ViewCommission from '../pages/module/set-commission/view-commission';
+import CommissionList from "../pages/module/set-commission/commmission-list";
+import AddCommission from "../pages/module/set-commission/add-commission";
+import EditCommission from "../pages/module/set-commission/edit-commission";
+import ViewCommission from "../pages/module/set-commission/view-commission";
 
 // Charges of Worker
-import ChargesList from '../pages/module/set-charges-of-worker/charges-list';
-import AddCharges from '../pages/module/set-charges-of-worker/add-commission';
-import EditCharges from '../pages/module/set-charges-of-worker/edit-commission';
-import ViewCharges from '../pages/module/set-charges-of-worker/view-commission';
+import ChargesList from "../pages/module/set-charges-of-worker/charges-list";
+import AddCharges from "../pages/module/set-charges-of-worker/add-commission";
+import EditCharges from "../pages/module/set-charges-of-worker/edit-commission";
+import ViewCharges from "../pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount
-import SetLimitAmount from '../pages/module/set-limit-amount/set-limit-amount';
-import SetLimitAmount2 from '../pages/module/set-limit-amount/set-limit-amount2';
 
-import WorkerList from '../pages/module/worker/WorkerList';
-import WorkerAdd from '../pages/module/worker/WorkerAdd';
-import WorkerEdit from '../pages/module/worker/WorkerEdit';
-import WorkerView from '../pages/module/worker/WorkerView';
+import SetLimitAmount from "../pages/module/set-limit-amount/set-limit-amount";
+import AddLimitAmount from "../pages/module/set-limit-amount/add-limit-amount";
+import EditLimitAmount from "../pages/module/set-limit-amount/edit-limit-amount";
+import ViewLimitAmount from "../pages/module/set-limit-amount/view-limit-amount";
 
+import WorkerList from "../pages/module/worker/WorkerList";
+import WorkerAdd from "../pages/module/worker/WorkerAdd";
+import WorkerEdit from "../pages/module/worker/WorkerEdit";
+import WorkerView from "../pages/module/worker/WorkerView";
 
 const AppRoutes = () => {
   return (
@@ -186,25 +188,13 @@ const AppRoutes = () => {
       />
 
       {/* Set Limit Amount */}
-      <Route
-        path="/set-limit-amount"
-        element={
-          <ProtectedRoute>
-            <SetLimitAmount />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-limit-amount/alt"
-        element={
-          <ProtectedRoute>
-            <SetLimitAmount2 />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/admin/limit" element={<SetLimitAmount />} />
+      <Route path="/admin/limit/add" element={<AddLimitAmount />} />
+      <Route path="/admin/limit/edit/:id" element={<EditLimitAmount />} />
+      <Route path="/admin/limit/view/:id" element={<ViewLimitAmount />} />
 
       {/* Catch-all */}
-       <Route
+      <Route
         path="/admin/workermanagement"
         element={
           <ProtectedRoute>
@@ -221,7 +211,7 @@ const AppRoutes = () => {
         }
       />
       <Route
-       path="/admin/workermanagement/workeredit/:id"
+        path="/admin/workermanagement/workeredit/:id"
         element={
           <ProtectedRoute>
             <WorkerEdit />
@@ -230,7 +220,7 @@ const AppRoutes = () => {
       />
 
       <Route
-       path="/admin/workermanagement/workerview/:id"
+        path="/admin/workermanagement/workerview/:id"
         element={
           <ProtectedRoute>
             <WorkerView />
