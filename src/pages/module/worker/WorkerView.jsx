@@ -10,43 +10,54 @@ import {
 } from "@mui/material";
 import Worker from "../../../components/cards/worker";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 function WorkerView() {
   const navigate = useNavigate();
-  const { id } = useParams(); // ✅ worker id from URL
-  //console.log("Worker ID from URL:", id);
+  const { id } = useParams();
+  const [fetchData] = useFetch();
 
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OGI2ODFkZGI4YzdmOTU5MDA2ZjE0MGYiLCJlbWFpbCI6ImRpdnlhMTIzNEBnbWFpbC5jb20iLCJpYXQiOjE3NTY3OTE0NzQsImV4cCI6MTc1OTM4MzQ3NH0.b99vHox8Sjvc6KJHMwdlygK8zspf8-Hf50UVs5ntS4M";
-
-  // 🔹 Fetch worker by ID
+  // Fetch worker by ID
   useEffect(() => {
     const fetchWorker = async () => {
       try {
-        const res = await axios.get(
-          `https://linemen-be-1.onrender.com/admin/Worker/get-single-worker/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log("Raw API response:", res.data);  // 🔎 log full response
-        setWorker(res.data.user || res.data.worker || null);
+        setLoading(true);
+        setError("");
+
+        const result = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/Worker/get-single-worker/${id}`,
+        });
+
+        console.log("API Response:", result);
+
+        if (result.success) {
+          const workerData = result.user || result.worker || result.data;
+          setWorker(workerData);
+        } else {
+          setError(result.message || 'Failed to fetch worker details');
+          toast.error(result.message || 'Failed to fetch worker details');
+        }
       } catch (err) {
         console.error("Error fetching worker:", err);
-        toast.error("Failed to fetch worker details");
+        const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch worker details';
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }
     };
-    fetchWorker();
-  }, [id]);
+
+    if (id) {
+      fetchWorker();
+    }
+  }, [id, fetchData]);
 
   // 🔹 Loading state
   if (loading) {
@@ -58,12 +69,12 @@ function WorkerView() {
     );
   }
 
-  // 🔹 If worker not found
-  if (!worker) {
+  // If worker not found or error
+  if (!loading && (error || !worker)) {
     return (
       <Box sx={{ p: 3 }}>
         <Typography variant="h6" color="error">
-          Worker not found.
+          {error || "Worker not found."}
         </Typography>
         <Button
           variant="contained"
@@ -104,16 +115,19 @@ function WorkerView() {
             }}
           >
             {/* Worker Name */}
-            <Field label="Worker Name" value={worker.name} />
+            <Field label="Worker Name" value={worker.name || worker.workerName} />
 
             {/* Expertise */}
-            <Field label="Expertise" value={worker.experties} />
+            <Field label="Expertise" value={worker.experties || worker.expertise} />
 
             {/* Contact */}
-            <Field label="Email ID/Phone Number" value={worker.contact} />
+            <Field label="Email ID/Phone Number" value={worker.contact || worker.phone || worker.email} />
 
             {/* Address */}
             <Field label="Address" value={worker.address} />
+
+            {/* Status */}
+            <Field label="Status" value={worker.status || 'Active'} />
 
             {/* Aadhaar Image */}
             {/* <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
@@ -173,7 +187,7 @@ function WorkerView() {
               variant="outlined"
               sx={{ background: "#001580", color: "#FFFFFF", px: 4 }}
               onClick={() =>
-                navigate(`/admin/workermanagement/workeredit/${worker._id}`)
+                navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
               }
             >
               Edit

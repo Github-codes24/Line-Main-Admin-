@@ -30,6 +30,11 @@ const EditLimitAmount = () => {
   }, [id]);
 
   const handleSubmit = async () => {
+    if (!category || !limitAmount) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
       const res = await fetchData({
         method: "PUT",
@@ -39,9 +44,12 @@ const EditLimitAmount = () => {
       if (res.success) {
         alert("Updated successfully");
         navigate("/admin/set-limit-amount");
+      } else {
+        alert(res.message);
       }
     } catch (err) {
       console.error(err);
+      alert("Something went wrong!");
     }
   };
 

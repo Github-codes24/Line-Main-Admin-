@@ -10,6 +10,9 @@ import AdminEditProfile from "../pages/auth/adminEditProfile";
 // Dashboard
 import Dashboard from "../pages/dashbaord";
 
+// Order
+import PendingOrder from '../pages/module/order/pending-order';
+
 // Protected / Public wrappers
 import ProtectedRoute from "./protected";
 import PublicRoute from "./public";
@@ -224,6 +227,16 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <WorkerView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Order View */}
+      <Route
+        path="/orderview/:id"
+        element={
+          <ProtectedRoute>
+            <PendingOrder />
           </ProtectedRoute>
         }
       />

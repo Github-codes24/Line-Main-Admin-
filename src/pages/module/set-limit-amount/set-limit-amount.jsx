@@ -92,7 +92,7 @@ const SetLimitAmount = () => {
                   paginatedData.map((item, index) => (
                     <tr key={item._id} className="text-center h-14">
                       <td className="px-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td className="px-4">{item.category}</td>
+                      <td className="px-4">{item.category?.tabName || "N/A"}</td>
                       <td className="px-4">₹{item.charges}</td>
                       <td className="px-4">
                         <div className="flex items-center justify-center space-x-3">

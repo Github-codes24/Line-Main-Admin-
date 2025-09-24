@@ -1,131 +1,121 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
 import { Button } from "../../../components/ui/button";
-
-import { useNavigate } from "react-router-dom";  // Import this hook
-
+import { useNavigate } from "react-router-dom";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 export default function CommissionList() {
-  // Dummy commissions
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const [fetchData] = useFetch();
+  const [commissions, setCommissions] = useState([]);
   
-  
-  const commissions = [
-    {
-      id: 1,
-      category: "Electrician",
-      operation: "Board Fitting",
-      worker: "10 %",
-      shopkeeper: "10 %",
-    },
-    {
-      id: 2,
-      category: "Plumbing",
-      operation: "Plumber",
-      worker: "10 %",
-      shopkeeper: "10 %",
-    },
-    {
-      id: 3,
-      category: "Tiler",
-      operation: "Tile fitting",
-      worker: "10 %",
-      shopkeeper: "10 %",
-    },
-    {
-      id: 4,
-      category: "Painter",
-      operation: "Wall Painting",
-      worker: "10 %",
-      shopkeeper: "10 %",
-    },
-    {
-      id: 5,
-      category: "AC & Refrigerator Mechanic",
-      operation: "Refrigerator Repair",
-      worker: "10 %",
-      shopkeeper: "10 %",
-    },
-  
-  ];
-
-  // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
+  // Fetch all commissions
+  const getCommissions = async () => {
+    try {
+      const res = await fetchData({
+        method: "GET",
+        url: `${conf.apiBaseUrl}/admin/commissions/get-all-commission`,
+      });
+      if (res?.commissions) setCommissions(res.commissions);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch commissions!");
+    }
+  };
+
+  useEffect(() => {
+    getCommissions();
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure to delete this commission?")) return;
+    try {
+      await fetchData({
+        method: "DELETE",
+        url: `${conf.apiBaseUrl}/admin/commissions/delete-commission/${id}`,
+      });
+      alert("Commission deleted successfully!");
+      getCommissions();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete commission!");
+    }
+  };
+
+  // Pagination
   const totalPages = Math.ceil(commissions.length / rowsPerPage);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = commissions.slice(indexOfFirstRow, indexOfLastRow);
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
-  
 
   return (
     <div className="p-6 bg-gray-200 min-h-screen">
-      {" "}
-      {/* light cement background */}
       <div className="space-y-4">
-        {" "}
-        {/* spacing between sections */}
-        {/* Top Section */}
         <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Commission List</h2>
-          <Button className="px-4 py-2  text-white rounded hover:bg-blue-800"   onClick={() => navigate('/admin/set-commission/add')} >
+          <Button
+            className="px-4 py-2 text-white rounded hover:bg-blue-800"
+            onClick={() => navigate("/admin/set-commission/add")}
+          >
             Add Commission
           </Button>
         </div>
-        {/* Table Section */}
-        <div className="bg-white rounded-lg shadow-md pt-4 pl-4 pr-4 pb-4   ">
-          <div className="border  border-gray-400 rounded-lg  "> 
-            <table className="w-full mb-60  h-full text-sm text-left ">
-              <thead>
-                <tr className="bg-gray-100 text-gray-700">
-                  <th className="px-3 py-2 font-medium">Sr.No.</th>
-                  <th className="px-3 py-2 font-medium">Category</th>
-                  <th className="px-3 py-2 font-medium">Crud Operations</th>
-                  <th className="px-3 py-2 font-medium">
-                    Commission From Worker
-                  </th>
-                  <th className="px-3 py-2 font-medium">
-                    Commission From Shopkeeper
-                  </th>
-                  <th className="px-3 py-2 font-medium text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentRows.map((c, idx) => (
-                  <tr key={c.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
-                    <td className="px-3 py-2">{c.category}</td>
-                    <td className="px-3 py-2">{c.operation}</td>
-                    <td className="px-3 py-2">{c.worker}</td>
-                    <td className="px-3 py-2">{c.shopkeeper}</td>
-                    <td className="px-3 py-2 text-center space-x-3 text-blue-600" >
-                      <button className="text-red-600"  onClick={() => navigate(`/admin/set-commission/view/:id`)}>
-                        <FaEye  />
-                      </button>
-                      <button className="text-red-600"  onClick={() => navigate(`/admin/set-commission/edit/:id`)}>
-                        <FaEdit />
-                      </button>
-                      <button className="text-red-600">
-                        <FaTrash />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+
+        <div className="bg-white rounded-lg shadow-md pt-4 pl-4 pr-4 pb-4">
+          <div className="border border-gray-400 rounded-lg">
+           <div className="w-full overflow-x-auto">
+  <table className="w-full mb-60 h-full text-sm text-left border border-gray-200">
+    <thead>
+      <tr className="bg-gray-100 text-gray-700">
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Sr.No.</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Category</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Worker</th>
+        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Shopkeeper</th>
+        <th className="px-3 py-2 font-medium text-center whitespace-nowrap">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {currentRows.map((c, idx) => (
+        <tr key={c._id} className="hover:bg-gray-50 transition-colors">
+          <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
+          <td className="px-3 py-2">{c.category}</td>
+          <td className="px-3 py-2">{c.workerPercentageCommission} %</td>
+          <td className="px-3 py-2">{c.shopkeeperPercentageCommission} %</td>
+          <td className="px-3 py-2 text-center space-x-3 text-blue-600">
+            <button
+              onClick={() => navigate(`/admin/set-commission/view/${c._id}`)}
+            >
+              <FaEye />
+            </button>
+            <button
+              onClick={() => navigate(`/admin/set-commission/edit/${c._id}`)}
+            >
+              <FaEdit />
+            </button>
+            <button onClick={() => handleDelete(c._id)}>
+              <FaTrash />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
           </div>
-          <div className="  rounded-lg shadow-md px-4 py-3 flex justify-between items-center text-sm text-gray-600 bg-slate-200 mt-2">
+
+          {/* Pagination */}
+          <div className="rounded-lg shadow-md px-4 py-3 flex justify-between items-center text-sm text-gray-600 bg-slate-200 mt-2">
             <span className="text-zinc-950">
-              Showing {indexOfFirstRow + 1} to{" "}
-              {Math.min(indexOfLastRow, commissions.length)} of{" "}
-              {commissions.length} Entries
+              Showing {indexOfFirstRow + 1} to {Math.min(indexOfLastRow, commissions.length)} of {commissions.length} Entries
             </span>
             <div className="flex items-center space-x-1">
               <button
@@ -139,10 +129,8 @@ export default function CommissionList() {
                 <button
                   key={page}
                   onClick={() => handlePageChange(page + 1)}
-                  className={`px-3 py-1 border rounded-full ${
-                    currentPage === page + 1
-                      ? "bg-blue-700 text-white"
-                      : "hover:bg-gray-200"
+                  className={`px-3 py-1 border rounded-lg ${
+                    currentPage === page + 1 ? "bg-blue-900 text-white" : "hover:bg-gray-200"
                   }`}
                 >
                   {page + 1}
@@ -159,7 +147,6 @@ export default function CommissionList() {
           </div>
         </div>
       </div>
-         
     </div>
   );
 }

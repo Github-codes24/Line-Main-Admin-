@@ -81,15 +81,17 @@ import ViewLimitAmount from "./pages/module/set-limit-amount/view-limit-amount";
 
 // Route guards
 import ProtectedRoute from "./route/protected";
-import PublicRoute from "./route/public";
+import PublicRoute from "./route/public"; //  ✅ make sure you have this file
+
+
 
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
 
   return (
     <>
-      <Routes>
-        {/* Public Routes */}
+     <Routes>
+        {/* Default route → Login */}
         <Route
           path="/"
           element={
@@ -98,6 +100,8 @@ function App() {
             </PublicRoute>
           }
         />
+
+        {/* Verify OTP */}
         <Route
           path="/verifyotp"
           element={
@@ -106,26 +110,9 @@ function App() {
             </PublicRoute>
           }
         />
-        <Route
-          path="/admin/profile"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <AdminProfile />
-            </AdminLayout>
-          }
-        />
-        <Route
-          path="/admin/editadminprofile/:id"
-          element={
-            <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-              <AdminEditProfile />
-            </AdminLayout>
-          }
-        />
 
-        {/* Protected Routes */}
+        {/* Protected Routes → Only after login + OTP verification */}
         <Route element={<ProtectedRoute />}>
-          {/* Dashboard */}
           <Route
             path="/admin/dashboard"
             element={
@@ -134,6 +121,25 @@ function App() {
               </AdminLayout>
             }
           />
+
+          {/* Admin Profile */}
+          <Route
+            path="/admin-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminProfile />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/edit-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminEditProfile />
+              </AdminLayout>
+            }
+          />
+
 
           {/* Customer */}
           <Route
@@ -505,6 +511,16 @@ function App() {
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <EditLimitAmount />
+              </AdminLayout>
+            }
+          />
+
+          {/* Order View */}
+          <Route
+            path="/orderview/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <PendingOrder />
               </AdminLayout>
             }
           />

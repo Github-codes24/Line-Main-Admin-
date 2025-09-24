@@ -14,18 +14,27 @@ const AddLimitAmount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!category || !limitAmount) {
+      alert("Please fill all fields");
+      return;
+    }
+
     try {
       const res = await fetchData({
-        method: "PUT",
+        method: "PUT", // backend uses PUT to create if ID not provided
         url: `${conf.apiBaseUrl}/admin/limit-amount`,
         data: { category, charges: Number(limitAmount) },
       });
+
       if (res.success) {
         alert("Limit added successfully");
         navigate("/admin/set-limit-amount");
+      } else {
+        alert(res.message);
       }
     } catch (err) {
       console.error(err);
+      alert("Something went wrong!");
     }
   };
 
