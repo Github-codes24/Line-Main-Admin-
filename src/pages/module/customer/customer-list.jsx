@@ -111,10 +111,13 @@ const goToPage = (pg) => {
 
 
     return (
-        <div className="p-8 bg-[#E0E9E9]">
+        // <div className="p-8 bg-[#E0E9E9]">
+        // <div className="bg-[#E0E9E9] min-h-screen">
+        <div className="bg-[#E0E9E9] min-h-screen w-full">
               <ToastContainer />
       {/* Header */}
-      <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
+      {/* <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]"> */}
+       <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
         {/* Title on left */}
         <h1 className="text-xl font-semibold ml-2 z-10">Customer List</h1>
 
@@ -149,7 +152,7 @@ const goToPage = (pg) => {
         {/* Add Worker Button on right */}
         <div className="ml-auto mr-2">
           <button
-            onClick={() => navigate('/admin/workermanagement/add')}
+            onClick={() => navigate('/admin/customermanagement/add')}
             className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors"
           >
             {/* <Plus size={18} /> */}
@@ -162,6 +165,10 @@ const goToPage = (pg) => {
             {/* Main Content Box */}
             <div className="bg-white p-4 shadow rounded-md">
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+                  {/* <div className="bg-white p-4 shadow rounded-md border border-gray-400">
+    <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px]">
+    <div className="bg-white p-4 shadow rounded-md border border-gray-400">
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px]"> */}
                     {isLoading ? (
                         <div className="flex justify-center items-center h-[400px]">
                             <div className="text-lg">Loading customers...</div>
@@ -248,7 +255,8 @@ const goToPage = (pg) => {
                 </div>
 
                 {/* Pagination Box */} 
-              <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+              {/* <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6"> */}
+               <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
     <p className="font-bold text-black">
         Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredCustomers.length)} of {filteredCustomers.length} entries
     </p>

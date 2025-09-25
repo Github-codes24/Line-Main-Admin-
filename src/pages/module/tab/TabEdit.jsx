@@ -195,7 +195,9 @@ const TabEdit = () => {
     }
 
     return (
-        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] bg-[#E0E9E9]">
+  {/* <ToastContainer /> */}
             <ToastContainer />
             
             {/* Header */}

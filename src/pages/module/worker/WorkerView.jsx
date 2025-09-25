@@ -95,7 +95,7 @@ function WorkerView() {
         minHeight: "auto",
         display: "flex",
         flexDirection: "column",
-        gap: "24px",
+        gap: "18px",
       }}
     >
       <Worker back title="View Worker" />
@@ -107,6 +107,7 @@ function WorkerView() {
               flexDirection: "column",
               gap: 2,
               marginBottom: 2,
+              
               border: "1px solid black",
               borderRadius: 1,
               padding: 2,
@@ -211,7 +212,7 @@ const Field = ({ label, value }) => (
         type="text"
         value={value || ""}
         variant="outlined"
-        sx={{ background: "#CED4F2" }}
+        sx={{ background: "#E4E5EB" }}
         InputProps={{ readOnly: true }}
       />
     </Box>

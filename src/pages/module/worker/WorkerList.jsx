@@ -137,7 +137,9 @@ const WorkerList = () => {
 
 
   return (
-    <div className="p-8 bg-[#E0E9E9]">
+    // <div className="p-8 bg-[#E0E9E9]">
+    <div className="bg-[#E0E9E9] w-full min-h-screen overflow-auto">
+
       <ToastContainer />
       {/* Header */}
       <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">

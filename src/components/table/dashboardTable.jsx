@@ -192,7 +192,7 @@ const DashboardTable = ({
                 {showAction && (
                  <td className="px-3 py-2 flex justify-center items-center">
   <FiEye
-    size={24} // or use text-2xl
+    size={20} // or use text-2xl
     className="text-[#001580] cursor-pointer"
                       onClick={() => {
                         if (isOrderTable && orderData) {

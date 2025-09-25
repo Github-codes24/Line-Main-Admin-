@@ -314,12 +314,12 @@ function ShopList() {
   const displayData = shopData;
 
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
+    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 0 }}>
       <ToastContainer />
 
       {/* Header Layout */}
       {/* <div className="bg-white p-1 shadow-md mb-0 rounded-md relative flex items-center min-h-[65px]"> */}
-        <div className="bg-white p-1 shadow-md mb-0 rounded-md relative flex items-center min-h-[65px]">
+        <div className="bg-white p-2 shadow-md  mt-0 rounded-md relative flex items-center min-h-[65px] ">
         {/* Title on left */}
         <h1 className="text-xl font-semibold ml-2 z-10">Shop List</h1>
 
@@ -362,7 +362,7 @@ function ShopList() {
       </div>
 
       {/* Table */}
-      <Card>
+      <Card sx={{ mt: 2 }}>
         <CardHeader sx={{ px: 3 }} />
         <CardContent sx={{ pt: 0 }}>
           <TableContainer

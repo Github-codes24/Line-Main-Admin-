@@ -153,7 +153,8 @@ const TabList = () => {
   };
 
   return (
-    <div className="p-8 bg-[#E0E9E9]">
+    // <div className="p-8 bg-[#E0E9E9]">
+    <div className="bg-[#E0E9E9] min-h-screen">
       <ToastContainer />
       {/* Header */}
       <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
@@ -191,7 +192,7 @@ const TabList = () => {
         {/* Add Worker Button on right */}
         <div className="ml-auto mr-2">
           <button
-            onClick={() => navigate('/admin/workermanagement/add')}
+            onClick={() => navigate('/admin/tabmanagement/add')}
             className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors"
           >
             {/* <Plus size={18} /> */}

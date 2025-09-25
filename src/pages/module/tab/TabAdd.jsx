@@ -92,9 +92,10 @@ const TabAdd = () => {
         await addTab(tabData);
     };
     return (
-        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] ">
             <ToastContainer />
-            <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+            <div className="flex items-center bg-white border rounded-lg shadow p-4 mb-4">
                 <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
                 <h2 className="text-lg font-semibold">Add New Tab</h2>
             </div>

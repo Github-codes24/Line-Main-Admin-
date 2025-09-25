@@ -80,7 +80,7 @@ function ShopView() {
     };
 
     const ImagePreviewBox = ({ label, src, alt, fallback }) => (
-        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2, mb: 2 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 0, mb: 1 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
                 <Typography sx={{ fontWeight: 500 }}>{label}</Typography>
             </Box>
@@ -232,7 +232,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.shopName || ""}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -252,7 +252,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.ownerName || ""}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -272,7 +272,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.contact || ""}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -292,7 +292,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.address || ""}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -312,7 +312,7 @@ function ShopView() {
                                         type="text"
                                         value={shop.aadhaarNumber || ""}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -339,7 +339,8 @@ function ShopView() {
                                         type="text"
                                         value={shop.gstin || "N/A"}
                                         variant="outlined"
-                                        sx={{ background: "#CED4F2" }}
+                                        sx={{ background: "#E4E5EB" }}
+                                        // sx={{ border: "#001580" }}
                                         slotProps={{
                                             input: {
                                                 readOnly: true,
@@ -408,7 +409,7 @@ function ShopView() {
                                 Edit
                             </Button>
 
-                            <Button
+                            {/* <Button
                                 variant="outlined"
                                 sx={{
                                     background: "#dc3545",
@@ -422,7 +423,7 @@ function ShopView() {
                                 }}
                             >
                                 Delete
-                            </Button>
+                            </Button> */}
                         </Box>
                     </form>
                 </CardContent>
