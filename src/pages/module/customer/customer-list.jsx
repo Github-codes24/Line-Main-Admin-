@@ -117,49 +117,69 @@ const goToPage = (pg) => {
               <ToastContainer />
       {/* Header */}
       {/* <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]"> */}
-       <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]">
-        {/* Title on left */}
-        <h1 className="text-xl font-semibold ml-2 z-10">Customer List</h1>
+      {/* Header */}
+{/* Header */}
+<div className="bg-white p-3 shadow-md mb-4 rounded-md min-h-[65px]">
+  <div className="flex flex-col md:flex-row items-center md:justify-between gap-3 relative">
+    
+    {/* Title */}
+    <h1 className="text-xl font-semibold">Customer List</h1>
 
-        {/* Search Bar centered */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 w-[400px]">
-          {/* Search Icon */}
-          <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M6.5 13C4.68333 13 3.146 12.3707 1.888 11.112C0.63 9.85333 0.000667196 8.316 5.29101e-07 6.5C-0.000666138 4.684 0.628667 3.14667 1.888 1.888C3.14733 0.629333 4.68467 0 6.5 0C8.31533 0 9.853 0.629333 11.113 1.888C12.373 3.14667 13.002 4.684 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L17.3 15.9C17.4833 16.0833 17.575 16.3167 17.575 16.6C17.575 16.8833 17.4833 17.1167 17.3 17.3C17.1167 17.4833 16.8833 17.575 16.6 17.575C16.3167 17.575 16.0833 17.4833 15.9 17.3L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13ZM6.5 11C7.75 11 8.81267 10.5627 9.688 9.688C10.5633 8.81333 11.0007 7.75067 11 6.5C10.9993 5.24933 10.562 4.187 9.688 3.313C8.814 2.439 7.75133 2.00133 6.5 2C5.24867 1.99867 4.18633 2.43633 3.313 3.313C2.43967 4.18967 2.002 5.252 2 6.5C1.998 7.748 2.43567 8.81067 3.313 9.688C4.19033 10.5653 5.25267 11.0027 6.5 11Z"
-                fill="#0D2E28"
-              />
-            </svg>
-          </div>
-
-          {/* Input */}
-          <input
-            type="text"
-            placeholder="Search by Name, Phone Number, Email...."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
-          />
+    {/* Search Bar */}
+    {/* Desktop Centered */}
+    <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-[400px]">
+      <div className="relative">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+              d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+              fill="#0D2E28"
+            />
+          </svg>
         </div>
-
-        {/* Add Worker Button on right */}
-        <div className="ml-auto mr-2">
-          <button
-            onClick={() => navigate('/admin/customermanagement/add')}
-            className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors"
-          >
-            {/* <Plus size={18} /> */}
-           + Add New Customer
-          </button>
-        </div>
+        <input
+          type="text"
+          placeholder="Search by Name, Phone Number, Email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+        />
       </div>
+    </div>
+
+    {/* Mobile Full Width */}
+    <div className="block md:hidden w-full">
+      <div className="relative">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+              d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+              fill="#0D2E28"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full h-10 pl-12 pr-4 rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+        />
+      </div>
+    </div>
+
+    {/* Add Button */}
+    <div className="w-full md:w-auto">
+      <button
+        onClick={() => navigate('/admin/customermanagement/add')}
+        className="w-full md:w-auto flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors justify-center"
+      >
+        + Add New Customer
+      </button>
+    </div>
+  </div>
+</div>
+
 
 
             {/* Main Content Box */}
@@ -292,6 +312,8 @@ const goToPage = (pg) => {
               
             </div>
         </div>
+
+
     );
 };
 

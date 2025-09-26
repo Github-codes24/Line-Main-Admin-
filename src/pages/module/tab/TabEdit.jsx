@@ -196,110 +196,210 @@ const TabEdit = () => {
 
     return (
         // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
-        <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] bg-[#E0E9E9]">
-  {/* <ToastContainer /> */}
-            <ToastContainer />
+//         <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] bg-[#E0E9E9]">
+//   {/* <ToastContainer /> */}
+//             <ToastContainer />
             
-            {/* Header */}
-            <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
-                <button
-                    onClick={handleBack}
-                    className="mr-3 p-2 hover:bg-gray-100 rounded-full"
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <h2 className="text-lg font-semibold">Edit Tab</h2>
-            </div>
+//             {/* Header */}
+//             <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+//                 <button
+//                     onClick={handleBack}
+//                     className="mr-3 p-2 hover:bg-gray-100 rounded-full"
+//                 >
+//                     <ArrowLeft size={20} />
+//                 </button>
+//                 <h2 className="text-lg font-semibold">Edit Tab</h2>
+//             </div>
 
-            {/* Restriction Notice */}
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-                <div className="flex">
-                    <div className="text-yellow-800">
-                        <strong>Note:</strong> Editing of Plumbing, Painting, Electrician, TilesFitting, and AC & Refrigerator tabs is not allowed as per system requirements.
-                    </div>
-                </div>
-            </div>
+//             {/* Restriction Notice */}
+//             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+//                 <div className="flex">
+//                     <div className="text-yellow-800">
+//                         <strong>Note:</strong> Editing of Plumbing, Painting, Electrician, TilesFitting, and AC & Refrigerator tabs is not allowed as per system requirements.
+//                     </div>
+//                 </div>
+//             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-md h-screen">
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
-                >
-                    {/* Tab Name */}
-                    <div className="flex items-center gap-[24px]">
-                        <label className="w-1/4 font-medium">Tab Name:</label>
-                        <input
-                            type="text"
-                            value={tabName}
-                            onChange={(e) => setTabName(e.target.value)}
-                            placeholder="Enter Tab Name"
-                            className={`flex-1 border rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-black ${
-                                nonEditableTabs.includes(tabName) 
-                                    ? 'opacity-50 cursor-not-allowed' 
-                                    : ''
-                            }`}
-                            disabled={nonEditableTabs.includes(tabName)}
-                        />
-                    </div>
+//             <div className="bg-white p-4 rounded-lg shadow-md h-screen">
+//                 <form
+//                     onSubmit={handleSubmit}
+//                     className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
+//                 >
+//                     {/* Tab Name */}
+//                     <div className="flex items-center gap-[24px]">
+//                         <label className="w-1/4 font-medium">Tab Name:</label>
+//                         <input
+//                             type="text"
+//                             value={tabName}
+//                             onChange={(e) => setTabName(e.target.value)}
+//                             placeholder="Enter Tab Name"
+//                             className={`flex-1 border rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-black ${
+//                                 nonEditableTabs.includes(tabName) 
+//                                     ? 'opacity-50 cursor-not-allowed' 
+//                                     : ''
+//                             }`}
+//                             disabled={nonEditableTabs.includes(tabName)}
+//                         />
+//                     </div>
 
-                    {/* Sub Tabs */}
-                    {subTabs.map((sub, index) => (
-                        <div key={sub.id} className="flex items-center gap-[24px]">
-                            <label className="w-1/4 font-medium">
-                                {index === 0 ? "Sub Tab Name:" : ""}
-                            </label>
-                            <div className="relative flex-1">
-                                <input
-                                    type="text"
-                                    value={sub.name}
-                                    onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
-                                    placeholder="Enter Sub Tab Name"
-                                    className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-black"
-                                />
-                                {subTabs.length > 1 && (
-                                    <X
-                                        onClick={() => handleRemoveSubTab(sub.id)}
-                                        className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-black cursor-pointer hover:text-red-600"
-                                    />
-                                )}
-                            </div>
-                        </div>
-                    ))}
+//                     {/* Sub Tabs */}
+//                     {subTabs.map((sub, index) => (
+//                         <div key={sub.id} className="flex items-center gap-[24px]">
+//                             <label className="w-1/4 font-medium">
+//                                 {index === 0 ? "Sub Tab Name:" : ""}
+//                             </label>
+//                             <div className="relative flex-1">
+//                                 <input
+//                                     type="text"
+//                                     value={sub.name}
+//                                     onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
+//                                     placeholder="Enter Sub Tab Name"
+//                                     className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-black"
+//                                 />
+//                                 {subTabs.length > 1 && (
+//                                     <X
+//                                         onClick={() => handleRemoveSubTab(sub.id)}
+//                                         className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-black cursor-pointer hover:text-red-600"
+//                                     />
+//                                 )}
+//                             </div>
+//                         </div>
+//                     ))}
 
-                    {/* Add More Sub Tab Button */}
-                    <button
-                        type="button"
-                        onClick={handleAddSubTab}
-                        className="text-base text-[#001580] hover:underline ml-[82%]"
-                    >
-                        + Add More Sub Tab
-                    </button>
-                </form>
+//                     {/* Add More Sub Tab Button */}
+//                     <button
+//                         type="button"
+//                         onClick={handleAddSubTab}
+//                         className="text-base text-[#001580] hover:underline ml-[82%]"
+//                     >
+//                         + Add More Sub Tab
+//                     </button>
+//                 </form>
 
-                {/* Action Buttons */}
-                <div className="flex justify-center gap-4 pt-4">
-                    <button
-                        type="button"
-                        onClick={handleBack}
-                        className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        disabled={isLoading || nonEditableTabs.includes(tabName)}
-                        className={`w-[200px] px-6 py-2 rounded-lg text-white ${
-                            isLoading || nonEditableTabs.includes(tabName)
-                                ? 'bg-gray-400 cursor-not-allowed' 
-                                : 'bg-[#001580] hover:bg-[#001580]'
-                        }`}
-                        onClick={handleSubmit}
-                    >
-                        {isLoading ? 'Updating...' : 'Update Tab'}
-                    </button>
-                </div>
-            </div>
+//                 {/* Action Buttons */}
+//                 <div className="flex justify-center gap-4 pt-4">
+//                     <button
+//                         type="button"
+//                         onClick={handleBack}
+//                         className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
+//                     >
+//                         Cancel
+//                     </button>
+//                     <button
+//                         type="submit"
+//                         disabled={isLoading || nonEditableTabs.includes(tabName)}
+//                         className={`w-[200px] px-6 py-2 rounded-lg text-white ${
+//                             isLoading || nonEditableTabs.includes(tabName)
+//                                 ? 'bg-gray-400 cursor-not-allowed' 
+//                                 : 'bg-[#001580] hover:bg-[#001580]'
+//                         }`}
+//                         onClick={handleSubmit}
+//                     >
+//                         {isLoading ? 'Updating...' : 'Update Tab'}
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+<div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] bg-[#E0E9E9]">
+  <ToastContainer />
+
+  {/* Header */}
+  <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+    <button
+      onClick={handleBack}
+      className="mr-3 p-2 hover:bg-gray-100 rounded-full"
+    >
+      <ArrowLeft size={20} />
+    </button>
+    <h2 className="text-lg font-semibold">Edit Tab</h2>
+  </div>
+
+  {/* Restriction Notice */}
+  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+    <div className="flex">
+      <div className="text-yellow-800">
+        <strong>Note:</strong> Editing of Plumbing, Painting, Electrician, TilesFitting, and AC & Refrigerator tabs is not allowed as per system requirements.
+      </div>
+    </div>
+  </div>
+
+  <div className="bg-white p-4 rounded-lg shadow-md h-screen overflow-y-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
+    >
+      {/* Tab Name */}
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-[24px] w-full">
+        <label className="w-full md:w-1/4 font-medium">Tab Name:</label>
+        <input
+          type="text"
+          value={tabName}
+          onChange={(e) => setTabName(e.target.value)}
+          placeholder="Enter Tab Name"
+          className={`flex-1 w-full md:w-auto border rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-black ${
+            nonEditableTabs.includes(tabName) ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+          disabled={nonEditableTabs.includes(tabName)}
+        />
+      </div>
+
+      {/* Sub Tabs */}
+      {subTabs.map((sub, index) => (
+        <div key={sub.id} className="flex flex-col md:flex-row items-start md:items-center gap-[24px] w-full">
+          <label className="w-full md:w-1/4 font-medium">{index === 0 ? "Sub Tab Name:" : ""}</label>
+          <div className="relative flex-1 w-full">
+            <input
+              type="text"
+              value={sub.name}
+              onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
+              placeholder="Enter Sub Tab Name"
+              className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-black"
+            />
+            {subTabs.length > 1 && (
+              <X
+                onClick={() => handleRemoveSubTab(sub.id)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 text-black cursor-pointer hover:text-red-600"
+              />
+            )}
+          </div>
         </div>
+      ))}
+
+      {/* Add More Sub Tab Button */}
+      <button
+        type="button"
+        onClick={handleAddSubTab}
+        className="text-base text-[#001580] hover:underline ml-auto block"
+      >
+        + Add More Sub Tab
+      </button>
+    </form>
+
+    {/* Action Buttons */}
+    <div className="flex justify-center gap-4 pt-4 flex-wrap">
+      <button
+        type="button"
+        onClick={handleBack}
+        className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        disabled={isLoading || nonEditableTabs.includes(tabName)}
+        className={`w-[200px] px-6 py-2 rounded-lg text-white ${
+          isLoading || nonEditableTabs.includes(tabName)
+            ? 'bg-gray-400 cursor-not-allowed'
+            : 'bg-[#001580] hover:bg-[#001580]'
+        }`}
+        onClick={handleSubmit}
+      >
+        {isLoading ? 'Updating...' : 'Update Tab'}
+      </button>
+    </div>
+  </div>
+</div>
+
     );
 };
 
