@@ -98,12 +98,12 @@ function ShopAdd() {
                 minHeight: "auto",
                 display: "flex",
                 flexDirection: "column",
-                gap: "24px",
+                //  gap: 2,
             }}
         >
             <ToastContainer />
             <Worker back title="Add New Shop" />
-            <Card>
+            <Card sx={{ mt: 2 }}>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <Box
@@ -117,6 +117,8 @@ function ShopAdd() {
                                 padding: 2,
                                 boxSizing: "border-box",
                                 paddingBottom: 10,
+                            
+                            
                             }}
                         >
                             {/* Function to generate input rows */}

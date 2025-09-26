@@ -170,7 +170,8 @@ const DashboardTable = ({
 
       {/* Table Body */}
       <div className="overflow-x-auto border border-[#616666] rounded-md">
-        <table className="w-full text-sm text-left">
+        {/* <table className="w-full text-sm text-left"> */}
+          <table className="w-full text-sm text-center"> 
           <thead className="bg-[#E0E9E9]">
             <tr>
               {headers.map((head, idx) => (
@@ -189,9 +190,10 @@ const DashboardTable = ({
 
                 {/* Render Action cell only if showAction is true */}
                 {showAction && (
-                  <td className="px-3 py-2">
-                    <FiEye
-                    className="text-[#001580] cursor-pointer"
+                 <td className="px-3 py-2 flex justify-center items-center">
+  <FiEye
+    size={20} // or use text-2xl
+    className="text-[#001580] cursor-pointer"
                       onClick={() => {
                         if (isOrderTable && orderData) {
                           const actualId = orderData[idx]?._id || orderData[idx]?.id;

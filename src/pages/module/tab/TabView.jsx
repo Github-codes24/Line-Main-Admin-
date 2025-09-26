@@ -97,7 +97,8 @@ const TabView = () => {
     }
 
     return (
-        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] ">
             <ToastContainer />
 
             {/* Header */}
@@ -109,16 +110,16 @@ const TabView = () => {
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h2 className="text-lg font-semibold">View Tab Details</h2>
+                    <h2 className="text-lg font-semibold">View Tab</h2>
                 </div>
 
                 {tabData.isEditable && (
                     <button
                         onClick={handleEdit}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                        // className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
-                        <Edit size={16} />
-                        Edit Tab
+                        {/* <Edit size={16} /> */}
+                        {/* Edit Tab */}
                     </button>
                 )}
             </div>
@@ -131,7 +132,7 @@ const TabView = () => {
                     <div className="flex items-center gap-6">
                         <label className="w-1/4 font-medium text-gray-700">Tab Name:</label>
                         <div className="flex-1">
-                            <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                            <div className="border rounded-lg px-4 py-3 bg-[#E4E5EB] text-gray-800 border-[#001580]">
                                 {tabData.tabName || 'N/A'}
                             </div>
                         </div>
@@ -172,14 +173,14 @@ const TabView = () => {
                                     {tabData.subTabNames.map((subTab, index) => (
                                         <div
                                             key={index}
-                                            className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300"
+                                            className="border rounded-lg px-4 py-3 bg-[#E4E5EB] text-gray-800 border-[#001580]"
                                         >
                                             {subTab.name || subTab}
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-500 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#E4E5EB] text-gray-500 border-[#001580]">
                                     No sub tabs available
                                 </div>
                             )}
@@ -191,7 +192,7 @@ const TabView = () => {
                         <div className="flex items-center gap-6">
                             <label className="w-1/4 font-medium text-gray-700">Created Date:</label>
                             <div className="flex-1">
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#E4E5EB] text-gray-500 border-[#001580]">
                                     {new Date(tabData.createdAt).toLocaleString()}
                                 </div>
                             </div>
@@ -203,7 +204,7 @@ const TabView = () => {
                         <div className="flex items-center gap-6">
                             <label className="w-1/4 font-medium text-gray-700">Last Updated:</label>
                             <div className="flex-1">
-                                <div className="border rounded-lg px-4 py-3 bg-gray-50 text-gray-800 border-gray-300">
+                                <div className="border rounded-lg px-4 py-3 bg-[#E4E5EB] text-gray-500 border-[#001580]">
                                     {new Date(tabData.updatedAt).toLocaleString()}
                                 </div>
                             </div>
@@ -213,16 +214,16 @@ const TabView = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center gap-4 mt-6">
-                    <button
+                    {/* <button
                         onClick={handleBack}
                         className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
                     >
                         Back to List
-                    </button>
+                    </button> */}
                     {tabData.isEditable && (
                         <button
                             onClick={handleEdit}
-                            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                            className="px-6 py-2 bg-[#001580] text-white rounded-lg hover:bg-[#CED4F2]"
                         >
                             Edit Tab
                         </button>
