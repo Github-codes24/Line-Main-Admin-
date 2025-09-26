@@ -84,7 +84,7 @@ import PublicRoute from "./route/public"; //  ✅ make sure you have this file
 
 
 function App() {
-  const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
+  const [activeTab, setActiveTab] = React.useState("/admin");
 
   return (
     <>

@@ -10,9 +10,8 @@ export default function EditCommission() {
   const [fetchData] = useFetch();
   const [form, setForm] = useState({
     category: "",
-    operation: "",
-    workerCommission: "",
-    shopkeeperCommission: "",
+    workerPercentageCommission: "",
+    shopkeeperPercentageCommission: "",
   });
 
   const handleChange = (e) =>
@@ -25,7 +24,7 @@ export default function EditCommission() {
         method: "GET",
         url: `${conf.apiBaseUrl}/admin/commissions/get-single-commission/${id}`,
       });
-      if(res?.data) setForm(res.data);
+      if (res?.commission) setForm(res.commission); // ✅ corrected
     } catch (err) {
       console.error(err);
       alert("Failed to fetch commission!");
@@ -52,11 +51,12 @@ export default function EditCommission() {
   };
 
   return (
-    <div className="bg-gray-200 max-h-screen p-4">
-      <div className="bg-white rounded-lg border border-gray-300 mb-4">
-        <div className="flex items-center p-4 bg-white rounded-lg border-b border-gray-300">
+    <div className="bg-gray-200 min-h-screen p-2">
+      <div className="mx-auto">
+        {/* Top Navbar */}
+        <div className="flex items-center p-4 bg-white rounded-lg border border-gray-300 mb-3">
           <button
-            className="text-gray-600 hover:text-gray-800 mr-3"
+            className="text-black hover:text-gray-800 mr-3"
             onClick={() => navigate(-1)}
           >
             <IoArrowBackCircleOutline size={30} />
@@ -64,77 +64,76 @@ export default function EditCommission() {
           <h2 className="text-lg font-medium text-gray-800">Edit Commission</h2>
         </div>
 
-        <div className="border border-gray-300 rounded-lg px-6 py-12 mb-4 ml-4 mr-4 mt-4 space-y-6">
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Category:</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
+        {/* Outer Card */}
+        <div className="bg-white rounded-lg border border-gray-300 p-6">
+          {/* Inner Box */}
+          <div className="border border-gray-300 rounded-lg p-6 space-y-6">
+            {/* Category */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1">
+              <label className="sm:w-48 text-sm font-medium text-gray-700">
+                Category:
+              </label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="flex-1 border border-gray-300 rounded px-3 py-2"
+              >
+                <option value="">Select</option>
+                <option value="Electrician">Electrician</option>
+                <option value="Plumbing">Plumbing</option>
+                <option value="Tiler">Tiler</option>
+                <option value="Painter">Painter</option>
+                <option value="AC & Refrigerator Mechanic">
+                  AC & Refrigerator Mechanic
+                </option>
+              </select>
+            </div>
+
+            {/* Worker Commission */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label className="sm:w-48 text-sm font-medium text-gray-700">
+                Commission From Worker:
+              </label>
+              <input
+                type="number"
+                name="workerPercentageCommission"
+                value={form.workerPercentageCommission || ""}
+                onChange={handleChange}
+                className="flex-1 border border-gray-300 rounded px-3 py-2 bg-[#d6d9fd]"
+              />
+            </div>
+
+            {/* Shopkeeper Commission */}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label className="sm:w-48 text-sm font-medium text-gray-700">
+                Commission From Shopkeeper:
+              </label>
+              <input
+                type="number"
+                name="shopkeeperPercentageCommission"
+                value={form.shopkeeperPercentageCommission || ""}
+                onChange={handleChange}
+                className="flex-1 border border-gray-300 rounded px-3 py-2 bg-[#d6d9fd]"
+              />
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 pt-6">
+            <button
+              className="px-12 py-2 rounded border border-gray-300 bg-[#cecef2]"
+              onClick={() => navigate(-1)}
             >
-              <option>Select</option>
-              <option>Electrician</option>
-              <option>Plumbing</option>
-              <option>Tiler</option>
-              <option>Painter</option>
-              <option>AC & Refrigerator Mechanic</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Crud Operations:</label>
-            <select
-              name="operation"
-              value={form.operation}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
+              Cancel
+            </button>
+            <button
+              className="px-12 py-2 rounded bg-[#001580] text-white"
+              onClick={handleUpdate}
             >
-              <option>Select</option>
-              <option>Board Fitting</option>
-              <option>Plumber</option>
-              <option>Tile Fitting</option>
-              <option>Wall Painting</option>
-              <option>Refrigerator Repair</option>
-            </select>
+              Update
+            </button>
           </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Worker:</label>
-            <input
-              type="text"
-              name="workerCommission"
-              value={form.workerCommission}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Shopkeeper:</label>
-            <input
-              type="text"
-              name="shopkeeperCommission"
-              value={form.shopkeeperCommission}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center gap-4 px-6 pb-6">
-          <button
-            className="px-12 py-2 rounded border border-gray-300 bg-blue-100"
-            onClick={() => navigate(-1)}
-          >
-            Cancel
-          </button>
-          <button
-            className="px-12 py-2 rounded bg-blue-800 text-white"
-            onClick={handleUpdate}
-          >
-            Update
-          </button>
         </div>
       </div>
     </div>

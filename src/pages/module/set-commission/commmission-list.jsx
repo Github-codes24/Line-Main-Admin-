@@ -4,6 +4,7 @@ import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import { FiEye } from "react-icons/fi";
 
 export default function CommissionList() {
   const navigate = useNavigate();
@@ -57,12 +58,12 @@ export default function CommissionList() {
   };
 
   return (
-    <div className="p-6 bg-gray-200 min-h-screen">
+    <div className=" bg-gray-200 min-h-screen">
       <div className="space-y-4">
         <div className="bg-white rounded-lg shadow-md p-4 flex justify-between items-center">
           <h2 className="text-lg font-semibold">Commission List</h2>
           <Button
-            className="px-4 py-2 text-white rounded hover:bg-blue-800"
+            className="px-5 py-2 text-white rounded hover:bg-blue-800"
             onClick={() => navigate("/admin/set-commission/add")}
           >
             Add Commission
@@ -72,56 +73,79 @@ export default function CommissionList() {
         <div className="bg-white rounded-lg shadow-md pt-4 pl-4 pr-4 pb-4">
           <div className="border border-gray-400 rounded-lg">
            <div className="w-full overflow-x-auto">
-  <table className="w-full mb-60 h-full text-sm text-left border border-gray-200">
-    <thead>
-      <tr className="bg-gray-100 text-gray-700">
-        <th className="px-3 py-2 font-medium whitespace-nowrap">Sr.No.</th>
-        <th className="px-3 py-2 font-medium whitespace-nowrap">Category</th>
-        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Worker</th>
-        <th className="px-3 py-2 font-medium whitespace-nowrap">Commission From Shopkeeper</th>
-        <th className="px-3 py-2 font-medium text-center whitespace-nowrap">Action</th>
+ <table className="w-full border border-gray-200 rounded-lg overflow-hidden text-semibold">
+  <thead>
+    <tr className="bg-[#e3e5eb] text-gray-700 text-center">
+      <th className="px-4 py-3 font-semibold whitespace-nowrap border-b">
+        Sr.No.
+      </th>
+      <th className="px-4 py-3 font-semibold whitespace-nowrap border-b">
+        Category
+      </th>
+      <th className="px-4 py-3 font-semibold whitespace-nowrap border-b">
+        Commission From Worker
+      </th>
+      <th className="px-4 py-3 font-semibold whitespace-nowrap border-b">
+        Commission From Shopkeeper
+      </th>
+      <th className="px-4 py-3 font-semibold whitespace-nowrap border-b">
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody className="text-center text-gray-700">
+    {currentRows.map((c, idx) => (
+      <tr
+        key={c._id}
+        className="hover:bg-gray-50 transition-colors "
+      >
+        <td className="px-4 py-3 font-normal">{indexOfFirstRow + idx + 1}</td>
+        <td className="px-4 py-3 font-normal">{c.category}</td>
+        <td className="px-4 py-3 font-normal">
+          {c.workerPercentageCommission} %
+        </td>
+        <td className="px-4 py-3 font-normal">
+          {c.shopkeeperPercentageCommission} %
+        </td>
+        <td className="px-4 py-3 space-x-3 text-red-600 flex justify-center items-center">
+          <button
+            onClick={() => navigate(`/admin/set-commission/view/${c._id}`)}
+          
+          >
+          <FiEye size={17}/>
+          </button>
+          <button
+            onClick={() => navigate(`/admin/set-commission/edit/${c._id}`)}
+           
+          >
+            <FaEdit size={17}/>
+          </button>
+          <button
+            onClick={() => handleDelete(c._id)}
+            className="hover:text-red-600"
+          >
+            <FaTrash size={17}/>
+          </button>
+        </td>
       </tr>
-    </thead>
-    <tbody>
-      {currentRows.map((c, idx) => (
-        <tr key={c._id} className="hover:bg-gray-50 transition-colors">
-          <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
-          <td className="px-3 py-2">{c.category}</td>
-          <td className="px-3 py-2">{c.workerPercentageCommission} %</td>
-          <td className="px-3 py-2">{c.shopkeeperPercentageCommission} %</td>
-          <td className="px-3 py-2 text-center space-x-3 text-blue-600">
-            <button
-              onClick={() => navigate(`/admin/set-commission/view/${c._id}`)}
-            >
-              <FaEye />
-            </button>
-            <button
-              onClick={() => navigate(`/admin/set-commission/edit/${c._id}`)}
-            >
-              <FaEdit />
-            </button>
-            <button onClick={() => handleDelete(c._id)}>
-              <FaTrash />
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
+    ))}
+  </tbody>
+</table>
+
 </div>
 
           </div>
 
           {/* Pagination */}
-          <div className="rounded-lg shadow-md px-4 py-3 flex justify-between items-center text-sm text-gray-600 bg-slate-200 mt-2">
-            <span className="text-zinc-950">
+          <div className="rounded-lg shadow-md px-4 py-3 flex justify-between items-center text-sm mt-2 bg-[#f5f5f5]">
+            <span className="text-zinc-950 ">
               Showing {indexOfFirstRow + 1} to {Math.min(indexOfLastRow, commissions.length)} of {commissions.length} Entries
             </span>
             <div className="flex items-center space-x-1">
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="px-2 py-1 border rounded-full hover:bg-gray-200 disabled:opacity-50"
+                className="px-2 py-1 border text-blue-950 bg-white rounded-full hover:bg-gray-200 disabled:opacity-50"
               >
                 &lt;
               </button>
@@ -139,7 +163,7 @@ export default function CommissionList() {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="px-2 py-1 border rounded-full hover:bg-gray-200 disabled:opacity-50"
+                className="px-2 py-1 border text-blue-950 bg-white rounded-full hover:bg-gray-200 disabled:opacity-50"
               >
                 &gt;
               </button>
