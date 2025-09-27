@@ -137,7 +137,7 @@ const Dashboard = () => {
                 ? dashboardData.topWorkers.map((worker, idx) => [
                   idx + 1,
                   worker.name,
-                  worker.experties,   // ✅ corrected spelling
+                  worker.experties,   //  corrected spelling
                   worker.contact,
                   worker.totalOrders,
                 ])

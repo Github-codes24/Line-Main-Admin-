@@ -103,7 +103,7 @@ const PendingOrder = () => {
               <label className="col-span-1 font-medium">Customer Name :</label>
               <input
                 disabled
-                value={order.customer?.name || ""}
+                value={order.customer?.name || "N/A"}
                 className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
               />
             </div>
@@ -176,51 +176,47 @@ const PendingOrder = () => {
                 )}
               </div>
             </div>
-
             {/* Products Table */}
-            <div className="grid grid-cols-3 gap-4">
-              <label className="col-span-1 font-medium">Product List :</label>
-              <div className="col-span-3 overflow-x-auto">
-                <table className=" border border-black w-full">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="border-b border-black p-2">#</th>
-                      <th className="border-b border-black p-2">Products</th>
-                      <th className="border-b border-black p-2">Price</th>
-                      <th className="border-b border-black p-2">Qty</th>
-                      <th className="border-b border-black p-2">Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {order.products?.map((prod, idx) => (
-                      <tr key={prod._id}>
-                        <td className="p-2">{idx + 1}</td>
-                        <td className="p-2">{prod.productName}</td>
-                        <td className="p-2">{prod.priceAtPurchase}</td>
-                        <td className="p-2">{prod.quantity}</td>
-                        <td className="p-2">
-                          {prod.priceAtPurchase * prod.quantity}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="border-t border-black p-2 text-right font-semibold"
-                      >
-                        Final Amount
-                      </td>
-                      <td className="border-t border-black p-2 font-semibold">
-                        {order.finalAmount}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+            <div className="w-full max-w-[500px] border border-[#616666] rounded-md overflow-hidden">
+              {/* Header Row */}
+              <div className="w-full bg-gray-100 grid grid-cols-12 gap-1 items-center border-b border-[#0D2E28] text-[#0D2E28] font-medium text-[12px] py-2 px-2">
+                <span className="col-span-1 text-center">#</span>
+                <span className="col-span-5 text-left">Products</span>
+                <span className="col-span-2 text-right">Price</span>
+                <span className="col-span-2 text-center">Qty</span>
+                <span className="col-span-2 text-right">Amount</span>
+              </div>
+
+              {/* Data Rows from API */}
+              {order?.products && order.products.length > 0 ? (
+                order.products.map((prod, idx) => (
+                  <div
+                    key={prod._id || idx}
+                    className="w-full grid grid-cols-12 gap-1 items-center text-[#0D2E28] font-medium text-[12px] py-2 px-2 border-b border-gray-200 hover:bg-gray-50"
+                  >
+                    <span className="col-span-1 text-center">{idx + 1}</span>
+                    <span className="col-span-5 text-left truncate" title={prod.productName}>
+                      {prod.productName || 'N/A'}
+                    </span>
+                    <span className="col-span-2 text-right">₹{prod.priceAtPurchase || 0}</span>
+                    <span className="col-span-2 text-center">{prod.quantity || 0}</span>
+                    <span className="col-span-2 text-right">₹{(prod.priceAtPurchase || 0) * (prod.quantity || 0)}</span>
+                  </div>
+                ))
+              ) : (
+                <div className="w-full text-gray-500 text-[12px] p-4 text-center">
+                  No products found
+                </div>
+              )}
+
+              {/* Final Amount Row */}
+              <div className="w-full bg-gray-50 grid grid-cols-12 gap-1 items-center border-t border-[#0D2E28] text-[#0D2E28] font-semibold text-[12px] py-2 px-2">
+                <span className="col-span-10 text-left pr-2">Final Amount:</span>
+                <span className="col-span-2 text-right font-bold">₹{order?.finalAmount || 0}</span>
               </div>
             </div>
           </div>
+
 
           <hr className="my-6 w-8/12" />
 
@@ -265,13 +261,12 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.orderStatus || ""}
-                className={`col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] ${
-                  order.orderStatus === "Pending"
-                    ? "text-yellow-500"
-                    : order.orderStatus === "Completed"
+                className={`col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] ${order.orderStatus === "Pending"
+                  ? "text-yellow-500"
+                  : order.orderStatus === "Completed"
                     ? "text-green-600"
                     : "text-red-600"
-                }`}
+                  }`}
               />
             </div>
           </div>

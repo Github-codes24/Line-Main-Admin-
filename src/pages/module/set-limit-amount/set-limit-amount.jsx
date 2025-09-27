@@ -18,13 +18,15 @@ const SetLimitAmount = () => {
         method: "GET",
         url: `${conf.apiBaseUrl}/admin/limit-amount`,
       });
-      if (result.success) {
-        setData(result.data);
+      if (result?.success) {
+        setData(result.data || []);
       } else {
         setData([]);
+        console.error("Load data failed:", result?.message);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching limit amounts:", err);
+      setData([]);
     }
   };
 
@@ -43,12 +45,15 @@ const SetLimitAmount = () => {
         method: "DELETE",
         url: `${conf.apiBaseUrl}/admin/limit-amount/${id}`,
       });
-      if (res.success) {
+      if (res?.success) {
         alert("Deleted successfully");
         loadData();
+      } else {
+        alert(res?.message || "Delete failed");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting:", err);
+      alert("Something went wrong deleting");
     }
   };
 
@@ -65,36 +70,38 @@ const SetLimitAmount = () => {
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-4">
         <div className="flex justify-between items-center mb-4 bg-white px-4 py-3 rounded-lg shadow">
           <h1 className="text-xl font-medium">Limit Amount List</h1>
           <button
             onClick={handleAdd}
-            className="px-4 py-2 bg-[#001580] text-white rounded-lg"
+            className="w-[200px] bg-[#001580] text-white px-4 rounded-lg h-10"
           >
             + Add Limit Amount
           </button>
         </div>
 
-        <div className="bg-white p-4 rounded-lg shadow mb-4">
-          <div className="border border-[#616666] rounded-lg overflow-x-auto">
-            <table className="w-full text-left">
+        <div className="bg-white p-4 rounded-lg shadow mb-4 min-h-[830px]">
+          <div className="border border-[#616666] rounded-lg overflow-x-auto min-h-[742px]">
+            <table className="w-full text-left bg-white">
               <thead>
-                <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] font-medium">
-                  <th className="px-4 py-3">Sr.No.</th>
-                  <th className="px-4 py-3">Category</th>
-                  <th className="px-4 py-3">Charges</th>
-                  <th className="px-4 py-3">Action</th>
+                <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] font-poppins font-medium">
+                  <th className="px-4 py-4 font-medium">Sr.No.</th>
+                  <th className="px-4 py-4 font-medium">Category</th>
+                  <th className="px-4 py-4 font-medium">Charges</th>
+                  <th className="px-4 py-4 font-medium">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedData.length ? (
                   paginatedData.map((item, index) => (
-                    <tr key={item._id} className="text-center h-14">
-                      <td className="px-4">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                      <td className="px-4">{item.category?.tabName || "N/A"}</td>
-                      <td className="px-4">₹{item.charges}</td>
-                      <td className="px-4">
+                    <tr key={item._id} className="text-center h-20">
+                      <td className="px-4 font-normal">
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </td>
+                      <td className="px-4 font-normal">{item.category?.tabName || "N/A"}</td>
+                      <td className="px-4 font-normal">₹{item.nagativeLimit ?? "N/A"}</td>
+                      <td className="px-4 font-normal">
                         <div className="flex items-center justify-center space-x-3">
                           <Eye
                             className="w-5 h-5 text-red-600 cursor-pointer"
@@ -117,7 +124,7 @@ const SetLimitAmount = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="text-center py-4">
+                    <td colSpan="4" className="text-center py-6 text-[#001580]">
                       No data found
                     </td>
                   </tr>
@@ -126,11 +133,12 @@ const SetLimitAmount = () => {
             </table>
           </div>
 
-          {data.length > itemsPerPage && (
+          {data.length > 0 && (
             <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
               <span className="text-sm font-semibold">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} Entries
+                {Math.min(currentPage * itemsPerPage, data.length)} of{" "}
+                {data.length} Entries
               </span>
 
               <div className="flex items-center space-x-2">

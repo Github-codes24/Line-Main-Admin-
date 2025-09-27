@@ -291,8 +291,8 @@ const TabList = () => {
                         <button
                           onClick={() => deleteTab(tab.id, tab.name)}
                           className={`p-2 rounded-full ${["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "text-red-600 hover:bg-red-100"
+                            ? "text-gray-400 cursor-not-allowed"
+                            : "text-red-600 hover:bg-red-100"
                             }`}
                           title={
                             ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)

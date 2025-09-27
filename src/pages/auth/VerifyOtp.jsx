@@ -219,7 +219,7 @@ const VerifyOtp = () => {
         toast.success("OTP verified successfully!");
         navigate("/admin/dashboard");
       } else {
-        toast.error(response?.message || "Invalid OTP. Please try again.");
+        toast.error(response?.message );
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
