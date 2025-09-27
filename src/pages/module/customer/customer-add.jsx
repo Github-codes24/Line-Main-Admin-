@@ -33,12 +33,19 @@ const AddCustomer = () => {
                 data: customerData
             });
 
-            if (result.success) {
+            console.log('API Response:', result);
+            
+            // Check if customer was added successfully (API might return the customer data directly or with success field)
+            if (result && (result.success || result._id || result.id)) {
+                console.log('Customer added successfully:', result);
                 toast.success(result.message || "Customer added successfully!");
                 setTimeout(() => {
-                    navigate(-1); // Navigate back to customer list
-                }, 1500);
+                    console.log('Navigating to customer list...');
+                    navigate('/admin/customermanagement');
+                }, 1000);
                 return { success: true, data: result };
+
+
             } else {
                 throw new Error(result.message || 'Failed to add customer');
             }
@@ -51,150 +58,159 @@ const AddCustomer = () => {
         }
     };
     return (
-        <div className="p-4 bg-[#E0E9E9] min-h-screen">
-            <ToastContainer />
-            <div className="bg-white border rounded-md shadow mb-2">
-                <div className="flex items-center gap-2 p-2">
-                    <svg
-                        width="28"
-                        height="28"
-                        viewBox="0 0 40 40"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        onClick={handleBack}
-                        className="cursor-pointer"
-                    >
-                        <path
-                            d="M20.0007 36.6663C29.2054 36.6663 36.6673 29.2044 36.6673 19.9997C36.6673 10.7949 29.2054 3.33301 20.0007 3.33301C10.7959 3.33301 3.33398 10.7949 3.33398 19.9997C3.33398 29.2044 10.7959 36.6663 20.0007 36.6663Z"
-                            stroke="#0D2E28"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M20.0007 13.333L13.334 19.9997L20.0007 26.6663"
-                            stroke="#0D2E28"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M26.6673 20H13.334"
-                            stroke="#0D2E28"
-                            strokeWidth="3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
+    <div className="bg-[#E0E9E9] min-h-screen w-full rounded-md  loverflow-x-hidden">
+    {/* // <div className="bg-[#E0E9E9] min-h-screen w-full rounded-md overflow-x-hidden p-4"> */}
+{/* <div className="bg-[#E0E9E9] min-h-screen w-full rounded-md overflow-x-hidden p-4">  */}
+    {/* // <div className="bg-[#E0E9E9] min-h-screen w-full rounded-md overflow-x-hidden"> */}
+  <ToastContainer />
 
-                    <h2 className="text-lg font-semibold text-gray-800">Add New Customer</h2>
-                </div>
+  {/* Header */}
+  <div className="bg-white border shadow mb-2 w-full rounded-md">
+    <div className="flex items-center gap-2 p-4">
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        onClick={handleBack}
+        className="cursor-pointer"
+      >
+        <path
+          d="M20.0007 36.6663C29.2054 36.6663 36.6673 29.2044 36.6673 19.9997C36.6673 10.7949 29.2054 3.33301 20.0007 3.33301C10.7959 3.33301 3.33398 10.7949 3.33398 19.9997C3.33398 29.2044 10.7959 36.6663 20.0007 36.6663Z"
+          stroke="#0D2E28"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M20.0007 13.333L13.334 19.9997L20.0007 26.6663"
+          stroke="#0D2E28"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M26.6673 20H13.334"
+          stroke="#0D2E28"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+
+      <h2 className="text-lg font-semibold text-gray-800">Add New Customer</h2>
+    </div>
+  </div>
+
+  {/* Main Box */}
+  <div className="bg-white border shadow p-4 w-full rounded-md mt-4">
+    <Formik
+      initialValues={{ name: "", contact: "", address: "" }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { resetForm, setSubmitting }) => {
+        setSubmitting(true);
+        const result = await addCustomer(values);
+        if (result.success) {
+          resetForm();
+        }
+        setSubmitting(false);
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form>
+          <div className="border border-[#616666] rounded-md p-8 min-h-[400px] w-full">
+            {/* Customer Name */}
+            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                Customer Name:
+              </label>
+              <div className="w-full md:w-3/4">
+                <Field
+                  name="name"
+                  type="text"
+                  placeholder="Enter Full Name"
+                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+                />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
             </div>
 
-            <div className="bg-white border rounded-md shadow p-4">
-                <Formik
-                    initialValues={{ name: "", contact: "", address: "" }}
-                    validationSchema={validationSchema}
-                    onSubmit={async (values, { resetForm, setSubmitting }) => {
-                        setSubmitting(true);
-                        const result = await addCustomer(values);
-
-                        if (result.success) {
-                            resetForm();
-                        }
-                        setSubmitting(false);
-                    }}
-                >
-                    {({ isSubmitting }) => (
-                        <Form>
-                            <div className="border  border-[#616666] rounded-md p-8 min-h-[400px]">
-                                <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
-                                        Customer Name:
-                                    </label>
-                                    <div className="w-full md:w-3/4">
-                                        <Field
-                                            name="name"
-                                            type="text"
-                                            placeholder="Enter Full Name"
-                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
-                                        />
-                                        <ErrorMessage
-                                            name="name"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
-                                        Email ID/Phone Number:
-                                    </label>
-                                    <div className="w-full md:w-3/4">
-                                        <Field
-                                            name="contact"
-                                            type="text"
-                                            placeholder="Enter your Email ID/phone number"
-                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
-                                        />
-                                        <ErrorMessage
-                                            name="contact"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
-                                        Address:
-                                    </label>
-                                    <div className="w-full md:w-3/4">
-                                        <Field
-                                            name="address"
-                                            type="text"
-                                            placeholder="Enter Your Full Address"
-                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] "
-                                        />
-                                        <ErrorMessage
-                                            name="address"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-                            <div className="flex justify-center gap-6 mt-4">
-                                <button
-                                    type="reset"
-                                    className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
-                                >
-                                    Cancel
-                                </button>
-
-                                {/* Adding submit button for API  */}
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting || isLoading}
-                                    className={`w-32 h-10 text-white rounded-md text-sm ${isSubmitting || isLoading
-                                        ? 'bg-gray-400 cursor-not-allowed'
-                                        : 'bg-[#001580] hover:bg-[#CED4F2]'
-                                        }`}
-                                >
-                                    {isSubmitting || isLoading ? 'Adding...' : 'Add Customer'}
-                                </button>
-                            </div>
-                        </Form>
-                    )}
-                </Formik>
+            {/* Email / Phone */}
+            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                Email ID/Phone Number:
+              </label>
+              <div className="w-full md:w-3/4">
+                <Field
+                  name="contact"
+                  type="text"
+                  placeholder="Enter your Email ID/phone number"
+                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+                />
+                <ErrorMessage
+                  name="contact"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
             </div>
-        </div>
+
+            {/* Address */}
+            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                Address:
+              </label>
+              <div className="w-full md:w-3/4">
+                <Field
+                  name="address"
+                  type="text"
+                  placeholder="Enter Your Full Address"
+                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+                />
+                <ErrorMessage
+                  name="address"
+                  component="div"
+                  className="text-red-500 text-sm mt-1"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-6 mt-4">
+            <button
+              type="reset"
+              className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || isLoading}
+              className={`w-32 h-10 text-white rounded-md text-sm ${
+                isSubmitting || isLoading
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-[#001580] hover:bg-[#CED4F2]"
+              }`}
+            >
+              {isSubmitting || isLoading ? "Adding..." : "Add Customer"}
+            </button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  </div>
+</div>
+
+
     );
 };
+
 
 export default AddCustomer;

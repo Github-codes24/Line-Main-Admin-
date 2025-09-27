@@ -62,11 +62,14 @@ function ShopAdd() {
                 },
             });
 
-            if (result.success || result.status === "success" || result.data) {
+            console.log('Shop add API response:', result);
+            
+            if (result.success || result.status === "success" || result.data || result._id) {
                 toast.success(result.message || "Shop added successfully!");
                 setTimeout(() => {
+                    console.log('Navigating to shop list...');
                     navigate("/admin/shopmanagement");
-                }, 1500);
+                }, 1000);
             } else {
                 throw new Error(result.message || "Failed to add shop");
             }
@@ -98,12 +101,12 @@ function ShopAdd() {
                 minHeight: "auto",
                 display: "flex",
                 flexDirection: "column",
-                gap: "24px",
+                //  gap: 2,
             }}
         >
             <ToastContainer />
             <Worker back title="Add New Shop" />
-            <Card>
+            <Card sx={{ mt: 2 }}>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <Box
@@ -117,6 +120,8 @@ function ShopAdd() {
                                 padding: 2,
                                 boxSizing: "border-box",
                                 paddingBottom: 10,
+                            
+                            
                             }}
                         >
                             {/* Function to generate input rows */}

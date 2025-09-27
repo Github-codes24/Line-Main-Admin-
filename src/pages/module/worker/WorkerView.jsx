@@ -95,7 +95,7 @@ function WorkerView() {
         minHeight: "auto",
         display: "flex",
         flexDirection: "column",
-        gap: "24px",
+        gap: "18px",
       }}
     >
       <Worker back title="View Worker" />
@@ -107,6 +107,7 @@ function WorkerView() {
               flexDirection: "column",
               gap: 2,
               marginBottom: 2,
+              
               border: "1px solid black",
               borderRadius: 1,
               padding: 2,
@@ -167,10 +168,11 @@ function WorkerView() {
             <Button
               variant="contained"
               sx={{
-                background: worker.status === "Active" ? "#CECEF2" : "#D1F2CE",
-                color: worker.status === "Active" ? "#001580" : "#006400",
+                background: worker.status === "Active" ? "#CECEF2" : "#CECEF2",
+                color: worker.status === "Active" ? "#001580" : "#001580",
+                border:worker.status === "Active" ? "1px solid #001580" : "1px solid #001580",
                 paddingX: 4,
-                paddingY: "2px",
+                paddingY: "4px",
                 textTransform: "none",
               }}
               onClick={() => {
@@ -211,7 +213,7 @@ const Field = ({ label, value }) => (
         type="text"
         value={value || ""}
         variant="outlined"
-        sx={{ background: "#CED4F2" }}
+        sx={{ background: "#E4E5EB" }}
         InputProps={{ readOnly: true }}
       />
     </Box>

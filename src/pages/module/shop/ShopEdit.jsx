@@ -136,10 +136,10 @@ function ShopEdit() {
     };
 
     return (
-        <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column", gap: "24px" }}>
+        <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column",  }}>
             <ToastContainer />
             <Worker back title="Edit Shop" />
-            <Card>
+            <Card sx={{ mt: 2 }}>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 2, border: "1px solid black", borderRadius: 1, padding: 2, boxSizing: "border-box", paddingBottom: 10 }}>

@@ -70,7 +70,8 @@ const SetLimitAmount = () => {
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 p-4">
+      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+        {/* Header */}
         <div className="flex justify-between items-center mb-4 bg-white px-4 py-3 rounded-lg shadow">
           <h1 className="text-xl font-medium">Limit Amount List</h1>
           <button
@@ -81,7 +82,9 @@ const SetLimitAmount = () => {
           </button>
         </div>
 
+        {/* Main Container */}
         <div className="bg-white p-4 rounded-lg shadow mb-4 min-h-[830px]">
+          {/* Inner Border Container */}
           <div className="border border-[#616666] rounded-lg overflow-x-auto min-h-[742px]">
             <table className="w-full text-left bg-white">
               <thead>
@@ -133,12 +136,12 @@ const SetLimitAmount = () => {
             </table>
           </div>
 
+          {/* Pagination */}
           {data.length > 0 && (
             <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
               <span className="text-sm font-semibold">
                 Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(currentPage * itemsPerPage, data.length)} of{" "}
-                {data.length} Entries
+                {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} Entries
               </span>
 
               <div className="flex items-center space-x-2">
@@ -156,8 +159,7 @@ const SetLimitAmount = () => {
 
                 {[...Array(totalPages)].map((_, i) => {
                   const page = i + 1;
-                  if (page < currentPage - 1 || page > currentPage + 1)
-                    return null;
+                  if (page < currentPage - 1 || page > currentPage + 1) return null;
                   return (
                     <button
                       key={page}

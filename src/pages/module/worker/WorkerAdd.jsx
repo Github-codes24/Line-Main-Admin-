@@ -67,10 +67,12 @@ const AddWorker = () => {
     };
 
     return (
-        <div className="p-4 bg-[#E0E9E9] min-h-screen">
+        // <div className="p-4 bg-[#E0E9E9] min-h-screen">
+        <div className="bg-[#E0E9E9] w-full min-h-screen overflow-auto">
+
             <ToastContainer />
             <div className="bg-white border rounded-md shadow mb-2">
-                <div className="flex items-center gap-2 p-2">
+                <div className="flex items-center gap-2 p-4">
                     <svg
                         width="28"
                         height="28"
@@ -107,7 +109,7 @@ const AddWorker = () => {
                 </div>
             </div>
 
-            <div className="bg-white border rounded-md shadow p-4">
+            <div className="bg-white border rounded-md shadow p-4 mt-4">
                 <Formik
                     initialValues={{ 
                         name: "", 
@@ -202,17 +204,17 @@ const AddWorker = () => {
                                             as="textarea"
                                             name="address"
                                             rows="3"
-                                            placeholder="Enter complete address with street, area, city, state, and pincode (e.g., 123 Main Street, Downtown Area, Mumbai, Maharashtra, 400001)"
+                                            placeholder="Enter complete address with street, area, city, state, and pincode"
                                             className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] resize-none"
                                         />
-                                        <ErrorMessage
+                                        {/* <ErrorMessage
                                             name="address"
                                             component="div"
                                             className="text-red-500 text-sm mt-1"
-                                        />
-                                        <div className="text-xs text-gray-500 mt-1">
+                                        /> */}
+                                        {/* <div className="text-xs text-gray-500 mt-1">
                                             Please provide a complete address including street, area, city, state, and pincode for verification
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
 

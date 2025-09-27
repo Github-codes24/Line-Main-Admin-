@@ -79,7 +79,7 @@ const EditLimitAmount = () => {
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 p-4">
+      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
         {/* Header */}
         <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
           <img

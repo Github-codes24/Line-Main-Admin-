@@ -42,9 +42,12 @@ const PendingOrder = () => {
   }
 
   return (
-    <div className="p-2 font-[Poppins]">
+    // <div className="p-2 font-[Poppins]">
+    <div className="w-full min-h-screen font-[Poppins] ">
+    {/* <div className="w-full p-2 font-[Poppins]"> */}
       {/* Header */}
-      <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg border shadow">
+      {/* <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg border shadow"> */}
+       <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg border shadow w-full">
         <button
           onClick={() => navigate(-1)}
           className="text-xl text-black hover:text-gray-600"
@@ -79,71 +82,79 @@ const PendingOrder = () => {
             />
           </svg>
         </button>
-        <h1 className="text-xl font-semibold">View Order</h1>
+        <h1 className="text-xl font-semibold text-[#0D2E28]">View Order</h1>
       </div>
 
       {/* Main Content */}
-      <div className="bg-white p-4 rounded-lg border shadow-sm">
+      {/* <div className="bg-white p-4 rounded-lg border shadow-sm"> */}
+       <div className="bg-white p-4 rounded-lg border shadow-sm w-full">
         <div className="border border-[#616666] p-4 rounded-lg h-screen overflow-y-auto hide-scrollbar">
           {/* Order Number */}
           <div className="grid grid-cols-4 gap-4 mb-2 mt-4 ml-10">
-            <label className="col-span-1 text-black font-bold">Order Number :</label>
+            <label className="col-span-1 text-[#0D2E28] font-bold">Order Number :</label>
             <input
               disabled
               value={order.orderId || ""}
-              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#CED4F2] border border-[#001580]"
+              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#E0E9E9] border border-[#007E74] "
             />
           </div>
 
           {/* Customer Details */}
           <div className="mb-6 ml-10">
-            <h2 className="font-semibold text-lg mb-4">Customer Details</h2>
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Customer Details</h2>
 
             <div className="grid grid-cols-4 gap-4 mb-2">
-              <label className="col-span-1 font-medium">Customer Name :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Customer Name :</label>
               <input
                 disabled
                 value={order.customer?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
 
             <div className="grid grid-cols-4 gap-4 mb-2">
-              <label className="col-span-1 font-medium">Email/Phone Number :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Email/Phone Number :</label>
               <input
                 disabled
                 value={order.customer?.contact || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
 
             <div className="grid grid-cols-4 gap-4">
-              <label className="col-span-1 font-medium">Address :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Address :</label>
               <textarea
                 disabled
                 value={order.deliveryAddress?.fullAddress || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-3 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
           </div>
 
-          <hr className="my-6 w-8/12" />
+          {/* <hr className="my-6 w-8/12" /> */}
+          {/* <hr className="my-6 w-8/12 border-1 border-black" /> */}
+          <hr className="my-6 col-span-2 border-1 border-black ml-10" />
 
-          {/* Service Details */}
-          <div className="mb-6 ml-10">
-            <h2 className="font-semibold text-lg mb-4">Service Details</h2>
+
+
+          {/* Service Details */} 
+           <div className="mb-6 ml-10">
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Service Details</h2>
 
             <div className="grid grid-cols-4 gap-4 mb-2">
-              <label className="col-span-1 font-medium">Service Required :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Service Required :</label>
               <input
                 disabled
                 value={order.specificServiceName || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
+         
+
+
 
             <div className="grid grid-cols-4 gap-4 mb-2">
-              <label className="col-span-1 font-medium">Date :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Date :</label>
               <input
                 disabled
                 value={
@@ -151,12 +162,12 @@ const PendingOrder = () => {
                     ? new Date(order.serviceDate).toLocaleDateString()
                     : ""
                 }
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
 
             <div className="grid grid-cols-4 gap-4 mb-4">
-              <label className="col-span-1 font-medium">Photos :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Photos :</label>
               <div className="col-span-2 flex gap-2">
                 {order.initialRequestImages && order.initialRequestImages.length > 0 ? (
                   order.initialRequestImages.map((img, i) => (
@@ -218,18 +229,19 @@ const PendingOrder = () => {
           </div>
 
 
-          <hr className="my-6 w-8/12" />
+          {/* <hr className="my-6 w-8/12" /> */}
+           <hr className="my-6 col-span-2 border-1 border-black ml-10" />
 
           {/* Payment Details */}
           <div className="mb-6 ml-10">
-            <h2 className="font-semibold text-lg mb-4">Payment Details</h2>
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Payment Details</h2>
 
             <div className="grid grid-cols-4 gap-4 mb-2">
-              <label className="col-span-1 font-medium">Total Bill :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Total Bill :</label>
               <input
                 disabled
                 value={order.finalAmount || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
               />
             </div>
 
@@ -240,7 +252,7 @@ const PendingOrder = () => {
                 <input
                   disabled
                   value={order.paymentMethod}
-                  className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                  className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
                 />
               </div>
             )}
@@ -251,17 +263,17 @@ const PendingOrder = () => {
                 <input
                   disabled
                   value={order.transactionId}
-                  className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                  className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
                 />
               </div>
             )}
 
             <div className="grid grid-cols-4 gap-4">
-              <label className="col-span-1 font-medium">Order Status :</label>
+              <label className="col-span-1 font-medium text-[#0D2E28]">Order Status :</label>
               <input
                 disabled
                 value={order.orderStatus || ""}
-                className={`col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] ${order.orderStatus === "Pending"
+                className={`col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74] ${order.orderStatus === "Pending"
                   ? "text-yellow-500"
                   : order.orderStatus === "Completed"
                     ? "text-green-600"
@@ -272,8 +284,12 @@ const PendingOrder = () => {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+     
+    
+
+
   );
-};
+  };
 
 export default PendingOrder;
