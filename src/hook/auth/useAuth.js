@@ -162,6 +162,7 @@ const useAuth = () => {
         generateOtp,
         // regenerateOtp,
         verifyOtp,
+        
         getProfile,
         adminProfile,
         updateAdminProfile,

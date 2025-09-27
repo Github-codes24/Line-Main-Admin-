@@ -168,10 +168,11 @@ function WorkerView() {
             <Button
               variant="contained"
               sx={{
-                background: worker.status === "Active" ? "#CECEF2" : "#D1F2CE",
-                color: worker.status === "Active" ? "#001580" : "#006400",
+                background: worker.status === "Active" ? "#CECEF2" : "#CECEF2",
+                color: worker.status === "Active" ? "#001580" : "#001580",
+                border:worker.status === "Active" ? "1px solid #001580" : "1px solid #001580",
                 paddingX: 4,
-                paddingY: "2px",
+                paddingY: "4px",
                 textTransform: "none",
               }}
               onClick={() => {

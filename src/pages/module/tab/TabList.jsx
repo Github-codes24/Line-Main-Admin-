@@ -10,6 +10,11 @@ const TabList = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
+
+  // Delete modal state
+const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedWorker, setSelectedWorker] = useState(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [tabs, setTabs] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,9 +98,9 @@ const TabList = () => {
       return;
     }
 
-    if (!window.confirm(`Are you sure you want to delete "${tabName}"? This action cannot be undone.`)) {
-      return;
-    }
+    // if (!window.confirm(`Are you sure you want to delete "${tabName}"? This action cannot be undone.`)) {
+    //   return;
+    // }
 
     try {
       setIsLoading(true);
@@ -289,7 +294,7 @@ const TabList = () => {
                         </button>
 
                         {/* Delete Button */}
-                        <button
+                        {/* <button
                           onClick={() => deleteTab(tab.id, tab.name)}
                           className={`p-2 rounded-full ${["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
                             ? "text-gray-400 cursor-not-allowed"
@@ -306,7 +311,29 @@ const TabList = () => {
                           }
                         >
                           <Trash2 size={16} />
-                        </button>
+                        </button> */}
+                        {/* Delete Button */}
+<button
+  onClick={() => {
+    if (["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)) return;
+    setSelectedWorker(tab);
+    setDeleteModalOpen(true);
+  }}
+  className={`p-2 rounded-full ${
+    ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+      ? "text-gray-400 cursor-not-allowed"
+      : "text-red-600 hover:bg-red-100"
+  }`}
+  title={
+    ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+      ? "System tab cannot be deleted"
+      : "Delete Tab"
+  }
+  disabled={isLoading || ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)}
+>
+  <Trash2 size={16} />
+</button>
+
                       </div>
                     </td>
 
@@ -317,6 +344,37 @@ const TabList = () => {
             </tbody>
           </table>
         </div>
+
+{/* Delete Confirmation Modal */}
+{deleteModalOpen && selectedWorker && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+        Delete Tab
+      </h2>
+      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+        Are you sure you want to delete "{selectedWorker.name}"? This action cannot be undone.
+      </p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setDeleteModalOpen(false)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            deleteTab(selectedWorker.id, selectedWorker.name);
+            setDeleteModalOpen(false);
+          }}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* Pagination Controls - Same as Customer List */}
         <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">

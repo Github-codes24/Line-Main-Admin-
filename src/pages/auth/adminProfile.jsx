@@ -18,9 +18,10 @@ const AdminProfile = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#E0E9E9] p-4 md:p-6">
+    // <div className="flex flex-col min-h-screen bg-[#E0E9E9] p-4 md:p-6">
+    <div className="flex flex-col min-h-screen bg-[#E0E9E9] w-full">
       {/* Header Box */}
-      <div className="bg-[#FFFFFF] rounded-lg p-2 mb-2 shadow-md flex items-center space-x-2">
+      <div className="bg-[#FFFFFF] rounded-lg p-4 mb-4 shadow-md flex items-center space-x-2">
         <svg
           width="30"
           height="30"
@@ -57,7 +58,7 @@ const AdminProfile = () => {
       </div>
 
       {/* Profile Box */}
-      <div className="flex-grow bg-[#FFFFFF] rounded-md shadow-md p-4 md:p-4">
+      <div className="flex-grow bg-[#FFFFFF] rounded-md shadow-md p-6 md:p-4">
         {loading ? (
           <div className="text-center min-h-[400px] flex justify-center items-center">
             <svg
