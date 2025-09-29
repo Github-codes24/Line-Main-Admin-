@@ -1,7 +1,7 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./components/layout/AdminLayout";
-import React, { useEffect } from "react";
+import React from "react";
 import { ToastContainer } from "react-toastify";
 
 // Auth
@@ -75,19 +75,23 @@ import ViewCharges from "./pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount
 import SetLimitAmount from "./pages/module/set-limit-amount/set-limit-amount";
-import SetLimitAmount2 from "./pages/module/set-limit-amount/set-limit-amount2";
+import AddLimitAmount from "./pages/module/set-limit-amount/add-limit-amount";
+import EditLimitAmount from "./pages/module/set-limit-amount/edit-limit-amount";
+import ViewLimitAmount from "./pages/module/set-limit-amount/view-limit-amount";
 
 // Route guards
 import ProtectedRoute from "./route/protected";
-import PublicRoute from "./route/public"; // ✅ make sure you have this file
+import PublicRoute from "./route/public"; //  ✅ make sure you have this file
+
+
 
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
 
   return (
     <>
-      <Routes>
-        {/* Public Routes */}
+     <Routes>
+        {/* Default route → Login */}
         <Route
           path="/"
           element={
@@ -96,6 +100,8 @@ function App() {
             </PublicRoute>
           }
         />
+
+        {/* Verify OTP */}
         <Route
           path="/verifyotp"
           element={
@@ -105,9 +111,8 @@ function App() {
           }
         />
 
-        {/* Protected Routes */}
+        {/* Protected Routes → Only after login + OTP verification */}
         <Route element={<ProtectedRoute />}>
-          {/* Dashboard */}
           <Route
             path="/admin/dashboard"
             element={
@@ -116,6 +121,25 @@ function App() {
               </AdminLayout>
             }
           />
+
+          {/* Admin Profile */}
+          <Route
+            path="/admin-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminProfile />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/edit-profile"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <AdminEditProfile />
+              </AdminLayout>
+            }
+          />
+
 
           {/* Customer */}
           <Route
@@ -470,7 +494,33 @@ function App() {
             path="/admin/set-limit-amount/alt"
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-                <SetLimitAmount2 />
+                <AddLimitAmount />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/set-limit-amount/view/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <ViewLimitAmount />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/set-limit-amount/edit/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <EditLimitAmount />
+              </AdminLayout>
+            }
+          />
+
+          {/* Order View */}
+          <Route
+            path="/orderview/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <PendingOrder />
               </AdminLayout>
             }
           />

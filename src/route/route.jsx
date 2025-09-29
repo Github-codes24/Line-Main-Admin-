@@ -1,47 +1,51 @@
 // src/routes/route.js
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Auth
-import AdminLogin from '../pages/auth/login';
-import AdminProfile from '../pages/auth/adminProfile';
-import AdminEditProfile from '../pages/auth/adminEditProfile';
+import AdminLogin from "../pages/auth/login";
+import AdminProfile from "../pages/auth/adminProfile";
+import AdminEditProfile from "../pages/auth/adminEditProfile";
 
 // Dashboard
-import Dashboard from '../pages/dashbaord';
+import Dashboard from "../pages/dashbaord";
+
+// Order
+import PendingOrder from '../pages/module/order/pending-order';
 
 // Protected / Public wrappers
-import ProtectedRoute from './protected';
-import PublicRoute from './public';
+import ProtectedRoute from "./protected";
+import PublicRoute from "./public";
 
 // Customer
-import CustomerList from '../pages/module/customer/customer-list';
-import AddCustomer from '../pages/module/customer/customer-add';
-import ViewCustomer from '../pages/module/customer/customer-view';
-import EditCustomer from '../pages/module/customer/customer-edit';
+import CustomerList from "../pages/module/customer/customer-list";
+import AddCustomer from "../pages/module/customer/customer-add";
+import ViewCustomer from "../pages/module/customer/customer-view";
+import EditCustomer from "../pages/module/customer/customer-edit";
 
 // Commission
-import CommissionList from '../pages/module/set-commission/commmission-list';
-import AddCommission from '../pages/module/set-commission/add-commission';
-import EditCommission from '../pages/module/set-commission/edit-commission';
-import ViewCommission from '../pages/module/set-commission/view-commission';
+import CommissionList from "../pages/module/set-commission/commmission-list";
+import AddCommission from "../pages/module/set-commission/add-commission";
+import EditCommission from "../pages/module/set-commission/edit-commission";
+import ViewCommission from "../pages/module/set-commission/view-commission";
 
 // Charges of Worker
-import ChargesList from '../pages/module/set-charges-of-worker/charges-list';
-import AddCharges from '../pages/module/set-charges-of-worker/add-commission';
-import EditCharges from '../pages/module/set-charges-of-worker/edit-commission';
-import ViewCharges from '../pages/module/set-charges-of-worker/view-commission';
+import ChargesList from "../pages/module/set-charges-of-worker/charges-list";
+import AddCharges from "../pages/module/set-charges-of-worker/add-commission";
+import EditCharges from "../pages/module/set-charges-of-worker/edit-commission";
+import ViewCharges from "../pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount
-import SetLimitAmount from '../pages/module/set-limit-amount/set-limit-amount';
-import SetLimitAmount2 from '../pages/module/set-limit-amount/set-limit-amount2';
 
-// Worker Management
-import WorkerList from "../pages/module/workermanagement/WorkerList";
-import WorkerAdd from "../pages/module/workermanagement/WorkerAdd";
-import WorkerView from "../pages/module/workermanagement/WorkerView";
-import WorkerEdit from "../pages/module/workermanagement/WorkerEdit";
+import SetLimitAmount from "../pages/module/set-limit-amount/set-limit-amount";
+import AddLimitAmount from "../pages/module/set-limit-amount/add-limit-amount";
+import EditLimitAmount from "../pages/module/set-limit-amount/edit-limit-amount";
+import ViewLimitAmount from "../pages/module/set-limit-amount/view-limit-amount";
 
+import WorkerList from "../pages/module/worker/WorkerList";
+import WorkerAdd from "../pages/module/worker/WorkerAdd";
+import WorkerEdit from "../pages/module/worker/WorkerEdit";
+import WorkerView from "../pages/module/worker/WorkerView";
 
 const AppRoutes = () => {
   return (
@@ -103,16 +107,56 @@ const AppRoutes = () => {
       <Route path="/set-charges-of-worker/edit/:id" element={<ProtectedRoute><EditCharges /></ProtectedRoute>} />
 
       {/* Set Limit Amount */}
-      <Route path="/set-limit-amount" element={<ProtectedRoute><SetLimitAmount /></ProtectedRoute>} />
-      <Route path="/set-limit-amount/alt" element={<ProtectedRoute><SetLimitAmount2 /></ProtectedRoute>} />
+      <Route path="/admin/limit" element={<SetLimitAmount />} />
+      <Route path="/admin/limit/add" element={<AddLimitAmount />} />
+      <Route path="/admin/limit/edit/:id" element={<EditLimitAmount />} />
+      <Route path="/admin/limit/view/:id" element={<ViewLimitAmount />} />
 
-      {/* Worker Management */}
-      <Route path="/admin/workermanagement" element={<ProtectedRoute><WorkerList /></ProtectedRoute>} />
-      <Route path="/admin/workermanagement/add" element={<ProtectedRoute><WorkerAdd /></ProtectedRoute>} />
-      <Route path="/admin/workermanagement/view/:id" element={<ProtectedRoute><WorkerView /></ProtectedRoute>} />
-      <Route path="/admin/workermanagement/edit/:id" element={<ProtectedRoute><WorkerEdit /></ProtectedRoute>} />
+      {/* Catch-all */}
+      <Route
+        path="/admin/workermanagement"
+        element={
+          <ProtectedRoute>
+            <WorkerList />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/workermanagement/add"
+        element={
+          <ProtectedRoute>
+            <WorkerAdd />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/workermanagement/workeredit/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerEdit />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Fallback */}
+      <Route
+        path="/admin/workermanagement/workerview/:id"
+        element={
+          <ProtectedRoute>
+            <WorkerView />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Order View */}
+      <Route
+        path="/orderview/:id"
+        element={
+          <ProtectedRoute>
+            <PendingOrder />
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

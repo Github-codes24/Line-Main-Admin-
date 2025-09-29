@@ -44,6 +44,8 @@ const ProgressOrder = () => {
                             value="ORD8468163287164"
                             className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#CED4F2] border border-[#001580]"
                         />
+                   
+
                     </div>
 
                     <div className="mb-6 ml-10">

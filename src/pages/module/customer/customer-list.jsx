@@ -1,15 +1,21 @@
 // CustomerList.jsx
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import { useLocation } from 'react-router-dom';
+
+// const location = useLocation();
 
 const CustomerList = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // outside the component
+
     const [fetchData] = useFetch();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +26,15 @@ const recordsPerPage = 5; // you can adjust number of records per page
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(""); // Added error state
 
-    // Fetch all customers when component mounts
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+    // Fetch all customers when component mounts and when location changes
     useEffect(() => {
         fetchAllCustomers();
-    }, []);
+    }, [location.pathname, location.key]);
+
 
     const fetchAllCustomers = async () => {
         try {
@@ -32,24 +43,34 @@ const recordsPerPage = 5; // you can adjust number of records per page
 
             const result = await fetchData({
                 method: "GET",
-                url: `${conf.apiBaseUrl}/admin/customer/get-all-customer`,
+                url: `${conf.apiBaseUrl}/admin/Customer/get-all-customer`,
             });
 
             if (result.success) {
                 const customerData = result.users || [];
+                console.log('API Response:', result);
+                console.log('Raw customer data:', customerData);
 
                 const normalizedCustomers = customerData.map(customer => ({
                     ...customer,
-                    name: customer.name || customer.customerName || customer.fullName || 'Unknown',
-                    contact: customer.contact || customer.phone || customer.email || 'N/A',
-                    address: customer.address || customer.location || 'N/A',
+                    name: customer.name || customer.customerName || customer.fullName || 'N/A',
+                    contact: customer.contact || customer.email || customer.phone || 'N/A',
+                    address: customer.addresses && customer.addresses.length > 0 
+                        ? customer.addresses[0].fullAddress || customer.addresses[0].address || 'N/A'
+                        : customer.address || customer.location || 'N/A',
                     id: customer.id || customer._id
-                })).filter(customer => customer.name !== 'Unknown');
+                }));
 
                 setCustomers(normalizedCustomers);
+                
+                // Reset search when new data is loaded
+                setSearchTerm('');
+                setCurrentPage(1);
 
                 if (normalizedCustomers.length === 0) {
                     toast.info('No customers found');
+                } else {
+                    console.log('Fetched customers:', normalizedCustomers.length, 'customers');
                 }
             } else {
                 setError(result.message || 'Failed to fetch customers');
@@ -65,7 +86,7 @@ const recordsPerPage = 5; // you can adjust number of records per page
     };
 
     const deleteCustomer = async (customerId) => {
-        if (!window.confirm('Are you sure you want to delete this customer?')) return;
+        // if (!window.confirm('Are you sure you want to delete this customer?')) return;
 
         try {
             setIsLoading(true);
@@ -90,11 +111,11 @@ const recordsPerPage = 5; // you can adjust number of records per page
     };
 
    const filteredCustomers = customers.filter((customer) => {
-    if (!customer || !customer.name) return false;
+    if (!customer) return false;
 
     const searchLower = searchTerm.toLowerCase();
     return (
-        customer.name.toLowerCase().includes(searchLower) ||
+        (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
         (customer.contact && customer.contact.toLowerCase().includes(searchLower)) ||
         (customer.address && customer.address.toLowerCase().includes(searchLower))
     );
@@ -111,52 +132,86 @@ const goToPage = (pg) => {
 
 
     return (
-        <div className="p-8 bg-[#E0E9E9]">
-            <ToastContainer />
-<div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
-    {/* Heading */}
-    <h2 className="text-xl font-medium">Customer List</h2>
 
-    {/* Search Input */}
-    <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
-        <input
-            type="text"
-            placeholder="Search by Name, Phone Number, Email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 bg-[#E4E5EB] text-[#0D2E28] font-medium placeholder-[#0D2E28] py-2 border-2 border-[#001580] rounded-full focus:outline-none"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
-        />
-        {/* Search Icon */}
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-        >
+        
+        // <div className="p-8 bg-[#E0E9E9]">
+        // <div className="bg-[#E0E9E9] min-h-screen">
+        <div className="bg-[#E0E9E9] min-h-screen w-full">
+              <ToastContainer />
+      {/* Header */}
+      {/* <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]"> */}
+      {/* Header */}
+{/* Header */}
+<div className="bg-white p-3 shadow-md mb-4 rounded-md min-h-[65px]">
+  <div className="flex flex-col md:flex-row items-center md:justify-between gap-3 relative">
+    
+    {/* Title */}
+    <h1 className="text-xl font-semibold">Customer List</h1>
+
+    {/* Search Bar */}
+    {/* Desktop Centered */}
+    <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-[400px]">
+      <div className="relative">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
             <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z"
+              d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+              fill="#0D2E28"
             />
-        </svg>
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search by Name, Phone Number, Email..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+        />
+      </div>
     </div>
 
-    {/* Add Customer Button */}
-    <button
-        onClick={() => navigate("/admin/customermanagement/add")}
-        className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg"
-    >
+    {/* Mobile Full Width */}
+    <div className="block md:hidden w-full">
+      <div className="relative">
+        <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path
+              d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+              fill="#0D2E28"
+            />
+          </svg>
+        </div>
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full h-10 pl-12 pr-4 rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+        />
+      </div>
+    </div>
+
+    {/* Add Button */}
+    <div className="w-full md:w-auto">
+      <button
+        onClick={() => navigate('/admin/customermanagement/add')}
+        className="w-full md:w-auto flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors justify-center"
+      >
         + Add New Customer
-    </button>
+      </button>
+    </div>
+  </div>
 </div>
+
 
 
             {/* Main Content Box */}
             <div className="bg-white p-4 shadow rounded-md">
                 <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+                  {/* <div className="bg-white p-4 shadow rounded-md border border-gray-400">
+    <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px]">
+    <div className="bg-white p-4 shadow rounded-md border border-gray-400">
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px]"> */}
                     {isLoading ? (
                         <div className="flex justify-center items-center h-[400px]">
                             <div className="text-lg">Loading customers...</div>
@@ -225,13 +280,16 @@ const goToPage = (pg) => {
                                                             />
                                                         </svg>
                                                     </button>
-                                                    <button
-                                                        onClick={() => deleteCustomer(customer.id || customer._id)}
-                                                        className="text-[#F15A29] hover:text-orange-700"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <Trash2 size={20} />
-                                                    </button>
+                                                   <button
+  onClick={() => {
+    setSelectedCustomer(customer);
+    setDeleteModalOpen(true);
+  }}
+  className="text-[#F15A29] hover:text-orange-700"
+>
+  <Trash2 size={20} />
+</button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -241,9 +299,47 @@ const goToPage = (pg) => {
                         </table>
                     )}
                 </div>
+{deleteModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+      {/* Heading */}
+      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+        Delete Customer
+      </h2>
+
+      {/* Paragraph */}
+      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+        Are you sure you want to delete this customer? <br />
+        {/* This action cannot be undone. */}
+      </p>
+
+      {/* Buttons */}
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setDeleteModalOpen(false)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            deleteCustomer(selectedCustomer.id || selectedCustomer._id);
+            setDeleteModalOpen(false);
+          }}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
                 {/* Pagination Box */} 
-              <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+              {/* <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6"> */}
+               <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
     <p className="font-bold text-black">
         Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredCustomers.length)} of {filteredCustomers.length} entries
     </p>
@@ -260,7 +356,7 @@ const goToPage = (pg) => {
                 key={pg}
                 onClick={() => goToPage(pg)}
                 className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-                    pg === currentPage ? "bg-[#001580] text-white" : "bg-white text-black hover:bg-gray-100"
+                    pg === currentPage ? "bg-[#001580] text-white" : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
                 }`}
             >
                 {pg}
@@ -279,6 +375,8 @@ const goToPage = (pg) => {
               
             </div>
         </div>
+
+
     );
 };
 
