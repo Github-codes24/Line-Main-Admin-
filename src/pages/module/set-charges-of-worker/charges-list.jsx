@@ -42,8 +42,53 @@ api.interceptors.request.use((cfg) => {
   }
   return cfg;
 });
+// ChargesList.jsx
+import React, { useEffect, useState } from "react";
+import { FaEye, FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { Button } from "../../../components/ui/button";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import conf from "../../../config";
+
+/* --- Utility to find stored auth token --- */
+function getStoredToken() {
+  try {
+    const keys = ["token", "accessToken", "authToken", "access_token"];
+    for (const k of keys) {
+      const v = localStorage.getItem(k) || sessionStorage.getItem(k);
+      if (v) return v;
+    }
+    const cookies = document.cookie.split(";").map((c) => c.trim());
+    for (const c of cookies) {
+      if (c.startsWith("token=")) return decodeURIComponent(c.split("=")[1]);
+      if (c.startsWith("accessToken=")) return decodeURIComponent(c.split("=")[1]);
+      if (c.startsWith("access_token=")) return decodeURIComponent(c.split("=")[1]);
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
+}
+
+/* --- axios instance with automatic Authorization header --- */
+const base = conf?.apiBaseUrl || "https://linemen-be-1.onrender.com";
+const api = axios.create({ baseURL: base, timeout: 15000 });
+api.interceptors.request.use((cfg) => {
+  const token = getStoredToken();
+  if (token) {
+    cfg.headers = cfg.headers || {};
+    cfg.headers.Authorization = `Bearer ${token}`;
+  }
+  if (!cfg.headers?.["Content-Type"] && cfg.data) {
+    cfg.headers["Content-Type"] = "application/json";
+  }
+  return cfg;
+});
 
 export default function ChargesList() {
+  const navigate = useNavigate();
   const navigate = useNavigate();
 
   const [commissions, setCommissions] = useState([]);

@@ -48,6 +48,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
   // Fetch all workers when component mounts
   useEffect(() => {
     fetchAllWorkers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchAllWorkers = async () => {

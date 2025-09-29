@@ -47,13 +47,21 @@ export default function AddCommission() {
 
   // controlled form state
   const [category, setCategory] = useState("");
+<<<<<<< HEAD
   const [operation, setOperation] = useState(""); // kept for UI only (not sent)
+=======
+  const [operation, setOperation] = useState(""); // optional, kept for UI compatibility
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
   const [charges, setCharges] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const categories = [
     "Electrician",
+<<<<<<< HEAD
     "Plumber",
+=======
+    "Plumbing",
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
     "Tiler",
     "Painter",
     "AC & Refrigerator Mechanic",
@@ -80,10 +88,18 @@ export default function AddCommission() {
       return;
     }
 
+<<<<<<< HEAD
     // NOTE: backend rejects 'operation' field. Send only the allowed fields.
     const payload = {
       category,
       charges: Number(charges),
+=======
+    const payload = {
+      category,
+      charges: Number(charges),
+      // if backend expects operation field, include it; remove if not needed
+      operation: operation || undefined,
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
     };
 
     try {
@@ -96,6 +112,7 @@ export default function AddCommission() {
         // navigate back to charges list after brief pause so user sees toast
         setTimeout(() => navigate("/admin/set-charges-of-worker"), 800);
       } else if (data && data.success === false) {
+<<<<<<< HEAD
         const msg = data.message || "Failed to add charges";
         // show backend validation/message
         toast.error(msg);
@@ -109,10 +126,29 @@ export default function AddCommission() {
       } else {
         // unexpected shape: show something helpful
         toast.success("Charges added (unexpected response).");
+=======
+        // handle access denied or validation errors from server
+        const msg = data.message || "Failed to add charges";
+        if (msg.toLowerCase().includes("access denied") || res.status === 401) {
+          const stored = getStoredToken();
+          if (!stored) {
+            toast.error("Authentication required — please login.");
+            setTimeout(() => navigate("/login"), 800);
+            return;
+          }
+          toast.error(msg);
+        } else {
+          toast.error(msg);
+        }
+      } else {
+        // unexpected shape
+        toast.success("Charges added (response shape unexpected).");
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
         setTimeout(() => navigate("/admin/set-charges-of-worker"), 800);
       }
     } catch (err) {
       console.error("Add charges error:", err);
+<<<<<<< HEAD
       // try to get validation details from server
       const serverData = err?.response?.data;
       const serverMsg =
@@ -137,11 +173,26 @@ export default function AddCommission() {
           setTimeout(() => navigate("/login"), 800);
         } else {
           // maybe token expired — clear and redirect
+=======
+      const serverMsg = err?.response?.data?.message || err?.message || "Failed to add charges";
+      if (serverMsg.toLowerCase().includes("access denied")) {
+        const stored = getStoredToken();
+        if (!stored) {
+          toast.error("Authentication required — please login.");
+          setTimeout(() => navigate("/login"), 800);
+        } else {
+          toast.error("Session expired or invalid. Please login again.");
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
           localStorage.removeItem("token");
           localStorage.removeItem("accessToken");
           sessionStorage.removeItem("token");
           setTimeout(() => navigate("/login"), 800);
         }
+<<<<<<< HEAD
+=======
+      } else {
+        toast.error(serverMsg);
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
       }
     } finally {
       setIsLoading(false);
@@ -190,7 +241,11 @@ export default function AddCommission() {
                 </select>
               </div>
 
+<<<<<<< HEAD
               {/* Crud Operations (optional UI only) */}
+=======
+              {/* Crud Operations (optional) */}
+>>>>>>> 179679471ee7d3345454f6f4a43fb75684672a8c
               <div className="flex items-center">
                 <label className="w-48 text-sm font-medium text-gray-700">Crud Operations :</label>
                 <select
