@@ -46,24 +46,20 @@ api.interceptors.request.use((cfg) => {
 export default function ChargesList() {
   const navigate = useNavigate();
 
-  const [commissions, setCommissions] = useState([]); // normalized items
+  const [commissions, setCommissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Client-side pagination
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
 
-  // Fetch data from API (handles token / access denied)
   const fetchCharges = async (attempt = 1) => {
     try {
       setIsLoading(true);
       setError("");
       const res = await api.get("/admin/worker-charges/get-all-worker-charges");
-
       const payload = res?.data;
 
-      // handle server-side access-denied wrapper
       if (payload && payload.success === false) {
         const msg = payload.message || "Failed to load charges";
         if (msg.toLowerCase().includes("access denied") || res.status === 401) {
@@ -90,11 +86,9 @@ export default function ChargesList() {
         }
       }
 
-      // API returns workerCharges array and pagination object (per example)
       const workerCharges = Array.isArray(payload?.workerCharges) ? payload.workerCharges : [];
-      // Normalize items to the shape we display
       const normalized = (workerCharges || []).map((r) => ({
-        id: r._id || r.id || r._doc?.id || Math.random().toString(36).slice(2),
+        id: r._id || r.id || Math.random().toString(36).slice(2),
         category: r.category || "Unknown",
         charges: typeof r.charges === "number" ? r.charges : Number(r.charges) || 0,
         createdAt: r.createdAt,
@@ -132,10 +126,8 @@ export default function ChargesList() {
 
   useEffect(() => {
     fetchCharges();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Client-side pagination computations
   const totalPages = Math.max(1, Math.ceil(commissions.length / rowsPerPage));
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -145,23 +137,35 @@ export default function ChargesList() {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  // Local delete placeholder (replace with API delete if available)
-  const deleteChargeLocal = (id) => {
-    if (!window.confirm("Delete this charge?")) return;
-    setCommissions((prev) => prev.filter((x) => x.id !== id));
-    toast.success("Deleted locally (implement server delete if needed)");
+  // DELETE API integration
+  const deleteCharge = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this charge?")) return;
+
+    try {
+      setIsLoading(true);
+      const res = await api.delete(`/admin/worker-charges/delete-worker-charges/${encodeURIComponent(id)}`);
+      if (res.data?.success) {
+        setCommissions((prev) => prev.filter((x) => x.id !== id));
+        toast.success(res.data.message || "Charge deleted successfully!");
+      } else {
+        toast.error(res.data?.message || "Failed to delete charge.");
+      }
+    } catch (err) {
+      const msg = err?.response?.data?.message || err?.message || "Error deleting charge.";
+      toast.error(msg);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Navigate to view page — also pass the item via state to avoid refetching in ViewCommission
   const goToView = (item) => {
     const path = `/admin/set-charges-of-worker/view/${encodeURIComponent(item.id)}`;
-    navigate(path, { state: { item } }); // ViewCommission can read location.state.item
+    navigate(path, { state: { item } });
   };
 
-  // Navigate to edit page
   const goToEdit = (item) => {
     const path = `/admin/set-charges-of-worker/edit/${encodeURIComponent(item.id)}`;
-    navigate(path, { state: { item } }); // pass item for prefill if desired
+    navigate(path, { state: { item } });
   };
 
   return (
@@ -234,7 +238,7 @@ export default function ChargesList() {
                         </button>
                         <button
                           className="text-red-600 mx-1"
-                          onClick={() => deleteChargeLocal(c.id)}
+                          onClick={() => deleteCharge(c.id)}
                           title="Delete"
                         >
                           <FaTrash />
