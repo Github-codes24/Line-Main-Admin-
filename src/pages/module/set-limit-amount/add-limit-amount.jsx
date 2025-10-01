@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
+import { CircularProgress, Typography } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
@@ -11,9 +14,11 @@ const AddLimitAmount = () => {
   const [category, setCategory] = useState("");
   const [limitAmount, setLimitAmount] = useState("");
   const [tabs, setTabs] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadTabs = async () => {
+      setLoading(true);
       try {
         const res = await fetchData({
           method: "GET",
@@ -22,6 +27,9 @@ const AddLimitAmount = () => {
         if (res?.success) setTabs(res.data || []);
       } catch (err) {
         console.error("Error loading tabs:", err);
+        toast.error("Failed to load tabs");
+      } finally {
+        setLoading(false);
       }
     };
     loadTabs();
@@ -32,16 +40,12 @@ const AddLimitAmount = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!category || !limitAmount) {
-      alert("Please fill all fields");
+      toast.warning("Please fill all fields");
       return;
     }
 
     try {
-      const payload = {
-        categoryId: category,
-        nagativeLimit: Number(limitAmount),
-      };
-
+      const payload = { categoryId: category, nagativeLimit: Number(limitAmount) };
       const res = await fetchData({
         method: "PUT",
         url: `${conf.apiBaseUrl}/admin/limit-amount`,
@@ -49,16 +53,24 @@ const AddLimitAmount = () => {
       });
 
       if (res?.success) {
-        alert("Limit added successfully");
-        navigate("/admin/set-limit-amount");
+        toast.success("Limit added successfully");
+        setTimeout(() => navigate("/admin/set-limit-amount"), 1500);
       } else {
-        alert(res?.message || "Failed to add limit");
+        toast.error(res?.message || "Failed to add limit");
       }
     } catch (err) {
       console.error("Add error:", err);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
     }
   };
+
+  if (loading)
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <CircularProgress size={40} />
+        <Typography sx={{ mt: 1 }}>Loading tabs...</Typography>
+      </div>
+    );
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
@@ -71,19 +83,12 @@ const AddLimitAmount = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">
-            Add Limit Amount
-          </h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Limit Amount</h2>
         </div>
 
-        {/* Main Container */}
+        {/* Form */}
         <div className="bg-white p-4 rounded-lg shadow min-h-[830px]">
-          {/* Inner Border Form */}
-          <form
-            onSubmit={handleSubmit}
-            className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-[742px]"
-          >
-            {/* Category */}
+          <form onSubmit={handleSubmit} className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-[742px]">
             <div className="flex items-center gap-[70px]">
               <label className="w-1/4 font-medium">Category:</label>
               <div className="relative flex-1">
@@ -94,20 +99,15 @@ const AddLimitAmount = () => {
                 >
                   <option value="">Select</option>
                   {tabs.map((tab) => (
-                    <option key={tab._id} value={tab._id}>
-                      {tab.tabName}
-                    </option>
+                    <option key={tab._id} value={tab._id}>{tab.tabName}</option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
               </div>
             </div>
 
-            {/* Limit Input */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium">
-                Wallet Balance Negative Limit:
-              </label>
+              <label className="w-1/4 font-medium">Wallet Balance Negative Limit:</label>
               <input
                 type="number"
                 value={limitAmount}
@@ -118,7 +118,6 @@ const AddLimitAmount = () => {
             </div>
           </form>
 
-          {/* Buttons Outside Border */}
           <div className="flex justify-center gap-4 pt-6">
             <button
               type="button"
@@ -137,6 +136,7 @@ const AddLimitAmount = () => {
           </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };
