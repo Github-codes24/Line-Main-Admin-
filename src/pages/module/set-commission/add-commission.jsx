@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+// src/pages/module/set-commission/EditCommission.jsx
+import React, { useState, useEffect } from "react";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import conf from "../../../config";
 import useFetch from "../../../hook/useFetch";
 
-export default function AddCommission() {
+export default function EditCommission() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [fetchData] = useFetch();
+
   const [form, setForm] = useState({
     category: "",
-    operation: "",
     workerCommission: "",
     shopkeeperCommission: "",
   });
@@ -17,107 +19,123 @@ export default function AddCommission() {
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async () => {
+  // Fetch single commission
+  const getCommission = async () => {
+    try {
+      const res = await fetchData({
+        method: "GET",
+        url: `${conf.apiBaseUrl}/admin/commissions/get-single-commission/${id}`,
+      });
+      if (res?.commission) {
+        setForm({
+          category: res.commission.category || "",
+          workerCommission: res.commission.workerPercentageCommission || "",
+          shopkeeperCommission: res.commission.shopkeeperPercentageCommission || "",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to fetch commission!");
+    }
+  };
+
+  useEffect(() => {
+    getCommission();
+  }, [id]);
+
+  const handleUpdate = async () => {
     try {
       await fetchData({
-        method: "POST",
-        url: `${conf.apiBaseUrl}/admin/commissions/add-commission`,
-        data: form,
+        method: "PUT",
+        url: `${conf.apiBaseUrl}/admin/commissions/update-commission/${id}`,
+        data: {
+          category: form.category,
+          workerPercentageCommission: form.workerCommission,
+          shopkeeperPercentageCommission: form.shopkeeperCommission,
+        },
       });
-      alert("Commission added successfully!");
+      alert("Commission updated successfully!");
       navigate("/admin/set-commission");
     } catch (err) {
       console.error(err);
-      alert("Failed to add commission!");
+      alert("Failed to update commission!");
     }
   };
 
   return (
-    <div className="bg-gray-200 max-h-screen p-4">
-      <div className="bg-white rounded-lg border border-gray-300 mb-4">
-        <div className="flex items-center p-4 bg-white rounded-lg border-b border-gray-300">
-          <button
-            className="text-gray-600 hover:text-gray-800 mr-3"
-            onClick={() => navigate(-1)}
-          >
-            <IoArrowBackCircleOutline size={30} />
-          </button>
-          <h2 className="text-lg font-medium text-gray-800">Add Commission</h2>
+    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
+      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+        {/* Header */}
+        <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
+          <IoArrowBackCircleOutline
+            size={30}
+            className="mr-3 cursor-pointer text-[#001580]"
+            onClick={() => navigate("/admin/set-commission")}
+          />
+          <h2 className="text-lg font-medium text-[#0D2E28]">Edit Commission</h2>
         </div>
 
-        <div className="border border-gray-300 rounded-lg px-6 py-12 mb-4 ml-4 mr-4 mt-4 space-y-6">
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Category:</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
+        {/* Main Container */}
+        <div className="bg-white p-4 rounded-lg shadow min-h-[600px]">
+          <div className="border border-[#616666] rounded-lg p-6 min-h-[500px] space-y-6">
+            {/* Category */}
+            <div className="flex items-center gap-[70px] whitespace-nowrap">
+              <label className="w-1/4 font-medium">Category:</label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#E4E5EB] text-[#0D2E28] outline-none"
+              >
+                <option value="">Select</option>
+                <option>Electrician</option>
+                <option>Plumbing</option>
+                <option>Tiler</option>
+                <option>Painter</option>
+                <option>AC & Refrigerator Mechanic</option>
+              </select>
+            </div>
+
+            {/* Commission From Worker */}
+            <div className="flex items-center gap-[70px] whitespace-nowrap">
+              <label className="w-1/4 font-medium">Commission From Worker:</label>
+              <input
+                type="text"
+                name="workerCommission"
+                value={form.workerCommission}
+                onChange={handleChange}
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#E4E5EB] text-[#0D2E28] outline-none"
+              />
+            </div>
+
+            {/* Commission From Shopkeeper */}
+            <div className="flex items-center gap-[70px] whitespace-nowrap">
+              <label className="w-1/4 font-medium">Commission From Shopkeeper:</label>
+              <input
+                type="text"
+                name="shopkeeperCommission"
+                value={form.shopkeeperCommission}
+                onChange={handleChange}
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#E4E5EB] text-[#0D2E28] outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 pt-6">
+            <button
+              className="px-12 py-2 rounded border border-[#001580] bg-white text-[#001580]"
+              onClick={() => navigate("/admin/set-commission")}
             >
-              <option>Select</option>
-              <option>Electrician</option>
-              <option>Plumbing</option>
-              <option>Tiler</option>
-              <option>Painter</option>
-              <option>AC & Refrigerator Mechanic</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Crud Operations:</label>
-            <select
-              name="operation"
-              value={form.operation}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
+              Cancel
+            </button>
+            <button
+              className="px-12 py-2 rounded bg-[#001580] text-white"
+              onClick={handleUpdate}
             >
-              <option>Select</option>
-              <option>Board Fitting</option>
-              <option>Plumber</option>
-              <option>Tile Fitting</option>
-              <option>Wall Painting</option>
-              <option>Refrigerator Repair</option>
-            </select>
+              Update
+            </button>
           </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Work        er:</label>
-            <input
-              type="text"
-              name="workerCommission"
-              value={form.workerCommission}
-              onChange={handleChange}
-              placeholder="Enter Commission (%)"
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Shopkeeper:</label>
-            <input
-              type="text"
-              name="shopkeeperCommission"
-              value={form.shopkeeperCommission}
-              onChange={handleChange}
-              placeholder="Enter Commission (%)"
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center gap-4 px-6 pb-6">
-          <button
-            className="px-12 py-2 rounded border border-gray-300 bg-blue-100"
-            onClick={() => navigate(-1)}
-          >
-            Cancel
-          </button>
-          <button
-            className="px-12 py-2 rounded bg-blue-800 text-white"
-            onClick={handleSubmit}
-          >
-            Add
-          </button>
         </div>
       </div>
     </div>
