@@ -62,11 +62,14 @@ function ShopAdd() {
                 },
             });
 
-            if (result.success || result.status === "success" || result.data) {
+            console.log('Shop add API response:', result);
+            
+            if (result.success || result.status === "success" || result.data || result._id) {
                 toast.success(result.message || "Shop added successfully!");
                 setTimeout(() => {
+                    console.log('Navigating to shop list...');
                     navigate("/admin/shopmanagement");
-                }, 1500);
+                }, 1000);
             } else {
                 throw new Error(result.message || "Failed to add shop");
             }

@@ -12,6 +12,11 @@ const WorkerList = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
+
+  // Delete modal state
+const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedWorker, setSelectedWorker] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 3; // Show only 3 workers per page
 
@@ -23,7 +28,9 @@ const WorkerList = () => {
   // Filter states
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
-  const expertiseList = ["Plumber", "Electrician"];
+  // const expertiseList = ["Plumber", "Electrician"];
+  const expertiseList = ["Plumber", "Electrician", "Tiler", "Painter", "AC & Refrigerator"];
+
 
   const toggleFilter = (filter) => {
     if (activeFilters.includes(filter)) {
@@ -85,7 +92,7 @@ const WorkerList = () => {
   };
 
   const deleteWorker = async (workerId) => {
-    if (!window.confirm('Are you sure you want to delete this worker?')) return;
+    // if (!window.confirm('Are you sure you want to delete this worker?')) return;
 
     try {
       setIsLoading(true);
@@ -401,13 +408,16 @@ const WorkerList = () => {
                               />
                             </svg>
                           </button>
-                          <button
-                            onClick={() => deleteWorker(worker.id || worker._id)}
-                            className="text-[#F15A29] hover:text-orange-700"
-                            disabled={isLoading}
-                          >
-                            <Trash2 size={20} />
-                          </button>
+                         <button
+  onClick={() => {
+    setSelectedWorker(worker); // store which worker to delete
+    setDeleteModalOpen(true);  // open modal
+  }}
+  className="text-[#F15A29] hover:text-orange-700"
+>
+  <Trash2 size={20} />
+</button>
+
                         </div>
                       </td>
                     </tr>
@@ -417,6 +427,35 @@ const WorkerList = () => {
             </table>
           )}
         </div>
+{deleteModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+        Delete Worker
+      </h2>
+      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+        Are you sure you want to delete this worker?
+      </p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setDeleteModalOpen(false)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            deleteWorker(selectedWorker.id); // call your delete API
+            setDeleteModalOpen(false);
+          }}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* Pagination */}
         <div className="flex flex-col md:flex-row items-center justify-between bg-[#F5F5F5] mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">

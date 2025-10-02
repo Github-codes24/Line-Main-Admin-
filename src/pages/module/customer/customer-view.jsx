@@ -51,7 +51,9 @@ const ViewCustomer = () => {
                 setCustomerData({
                     name: customerInfo.name || customerInfo.customerName || "",
                     contact: customerInfo.contact || customerInfo.phone || customerInfo.email || "",
-                    address: customerInfo.address || customerInfo.customerAddress || "",
+                    address: customerInfo.addresses && customerInfo.addresses.length > 0 
+                        ? customerInfo.addresses[0].fullAddress || customerInfo.addresses[0].address || ""
+                        : customerInfo.address || customerInfo.customerAddress || "",
                 });
             } else {
                 console.error('API response not successful:', result);

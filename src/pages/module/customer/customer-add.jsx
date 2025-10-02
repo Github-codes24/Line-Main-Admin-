@@ -33,12 +33,19 @@ const AddCustomer = () => {
                 data: customerData
             });
 
-            if (result.success) {
+            console.log('API Response:', result);
+            
+            // Check if customer was added successfully (API might return the customer data directly or with success field)
+            if (result && (result.success || result._id || result.id)) {
+                console.log('Customer added successfully:', result);
                 toast.success(result.message || "Customer added successfully!");
                 setTimeout(() => {
-                    navigate(-1); // Navigate back to customer list
-                }, 1500);
+                    console.log('Navigating to customer list...');
+                    navigate('/admin/customermanagement');
+                }, 1000);
                 return { success: true, data: result };
+
+
             } else {
                 throw new Error(result.message || 'Failed to add customer');
             }

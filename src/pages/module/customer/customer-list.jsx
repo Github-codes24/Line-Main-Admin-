@@ -1,15 +1,21 @@
 // CustomerList.jsx
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
+
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import { useLocation } from 'react-router-dom';
+
+// const location = useLocation();
 
 const CustomerList = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // outside the component
+
     const [fetchData] = useFetch();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -20,10 +26,15 @@ const recordsPerPage = 5; // you can adjust number of records per page
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(""); // Added error state
 
-    // Fetch all customers when component mounts
+
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedCustomer, setSelectedCustomer] = useState(null);
+
+    // Fetch all customers when component mounts and when location changes
     useEffect(() => {
         fetchAllCustomers();
-    }, []);
+    }, [location.pathname, location.key]);
+
 
     const fetchAllCustomers = async () => {
         try {
@@ -32,24 +43,34 @@ const recordsPerPage = 5; // you can adjust number of records per page
 
             const result = await fetchData({
                 method: "GET",
-                url: `${conf.apiBaseUrl}/admin/customer/get-all-customer`,
+                url: `${conf.apiBaseUrl}/admin/Customer/get-all-customer`,
             });
 
             if (result.success) {
                 const customerData = result.users || [];
+                console.log('API Response:', result);
+                console.log('Raw customer data:', customerData);
 
                 const normalizedCustomers = customerData.map(customer => ({
                     ...customer,
-                    name: customer.name || customer.customerName || customer.fullName || 'Unknown',
-                    contact: customer.contact || customer.phone || customer.email || 'N/A',
-                    address: customer.address || customer.location || 'N/A',
+                    name: customer.name || customer.customerName || customer.fullName || 'N/A',
+                    contact: customer.contact || customer.email || customer.phone || 'N/A',
+                    address: customer.addresses && customer.addresses.length > 0 
+                        ? customer.addresses[0].fullAddress || customer.addresses[0].address || 'N/A'
+                        : customer.address || customer.location || 'N/A',
                     id: customer.id || customer._id
-                })).filter(customer => customer.name !== 'Unknown');
+                }));
 
                 setCustomers(normalizedCustomers);
+                
+                // Reset search when new data is loaded
+                setSearchTerm('');
+                setCurrentPage(1);
 
                 if (normalizedCustomers.length === 0) {
                     toast.info('No customers found');
+                } else {
+                    console.log('Fetched customers:', normalizedCustomers.length, 'customers');
                 }
             } else {
                 setError(result.message || 'Failed to fetch customers');
@@ -65,7 +86,7 @@ const recordsPerPage = 5; // you can adjust number of records per page
     };
 
     const deleteCustomer = async (customerId) => {
-        if (!window.confirm('Are you sure you want to delete this customer?')) return;
+        // if (!window.confirm('Are you sure you want to delete this customer?')) return;
 
         try {
             setIsLoading(true);
@@ -90,11 +111,11 @@ const recordsPerPage = 5; // you can adjust number of records per page
     };
 
    const filteredCustomers = customers.filter((customer) => {
-    if (!customer || !customer.name) return false;
+    if (!customer) return false;
 
     const searchLower = searchTerm.toLowerCase();
     return (
-        customer.name.toLowerCase().includes(searchLower) ||
+        (customer.name && customer.name.toLowerCase().includes(searchLower)) ||
         (customer.contact && customer.contact.toLowerCase().includes(searchLower)) ||
         (customer.address && customer.address.toLowerCase().includes(searchLower))
     );
@@ -111,6 +132,8 @@ const goToPage = (pg) => {
 
 
     return (
+
+        
         // <div className="p-8 bg-[#E0E9E9]">
         // <div className="bg-[#E0E9E9] min-h-screen">
         <div className="bg-[#E0E9E9] min-h-screen w-full">
@@ -257,13 +280,16 @@ const goToPage = (pg) => {
                                                             />
                                                         </svg>
                                                     </button>
-                                                    <button
-                                                        onClick={() => deleteCustomer(customer.id || customer._id)}
-                                                        className="text-[#F15A29] hover:text-orange-700"
-                                                        disabled={isLoading}
-                                                    >
-                                                        <Trash2 size={20} />
-                                                    </button>
+                                                   <button
+  onClick={() => {
+    setSelectedCustomer(customer);
+    setDeleteModalOpen(true);
+  }}
+  className="text-[#F15A29] hover:text-orange-700"
+>
+  <Trash2 size={20} />
+</button>
+
                                                 </div>
                                             </td>
                                         </tr>
@@ -273,6 +299,43 @@ const goToPage = (pg) => {
                         </table>
                     )}
                 </div>
+{deleteModalOpen && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+      {/* Heading */}
+      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+        Delete Customer
+      </h2>
+
+      {/* Paragraph */}
+      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+        Are you sure you want to delete this customer? <br />
+        {/* This action cannot be undone. */}
+      </p>
+
+      {/* Buttons */}
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setDeleteModalOpen(false)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            deleteCustomer(selectedCustomer.id || selectedCustomer._id);
+            setDeleteModalOpen(false);
+          }}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
 
                 {/* Pagination Box */} 
               {/* <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6"> */}

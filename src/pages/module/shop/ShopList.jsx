@@ -18,7 +18,7 @@ import {
 import Worker from "../../../components/cards/worker.jsx";
 
 import { DeleteIcon, EditIcon, ViewIcon } from "../../../assets/CommonAssets";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 import { toast, ToastContainer } from "react-toastify";
@@ -27,6 +27,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 function ShopList() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  
+// Delete modal state
+const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+const [selectedShop, setSelectedShop] = useState(null);
 
   // State management
   const [searchText, setSearchText] = React.useState("");
@@ -37,276 +43,220 @@ function ShopList() {
     currentPage: 1,
     totalPages: 1,
     totalShops: 0,
-    limit: 4  // Show 4 shops per page
+    limit: 5  // Show 5 shops per page
   });
+
 
   // Fetch shops from API with pagination and search
   React.useEffect(() => {
     fetchShops(1, searchText); // Reset to page 1 when search changes
   }, [searchText]);
 
-  // Fetch shops when component mounts
-  React.useEffect(() => {
-    fetchShops(1, "");
-  }, []);
-
-  const fetchShops = async (page = 1, search = "") => {
+  // Function to get total count of shops
+  const getTotalShopsCount = async () => {
     try {
-      setIsLoading(true);
-      console.log(`Fetching shops - Page: ${page}, Search: "${search}", Limit: 4`);
-
-      // Build query parameters
-      const params = {
-        page: page,
-        limit: 4  // Always use 4 items per page
-      };
-
-      // Add search parameter if provided
-      if (search && search.trim()) {
-        params.search = search.trim();
-      }
-
-      console.log('API Params:', params);
-      console.log('API URL:', `${conf.apiBaseUrl}/admin/shop/get-all-shop`);
-
-      const result = await fetchData({
+      const countResult = await fetchData({
         method: "GET",
-        url: `${conf.apiBaseUrl}/admin/shop/get-all-shop`,
-        params: params
+        url: `${conf.apiBaseUrl}/admin/Shop/get-all-shop`,
+        params: { page: 1, limit: 1 } // Just get 1 item to check total
       });
-
-      console.log('Fetch shops API response:', result);
-      console.log('Full API response structure:', JSON.stringify(result, null, 2));
-
-      if (result && (result.success || result.data)) {
-        // Handle different possible response structures
-        let responseData = result.data || result;
-        let shops = [];
-
-        console.log('Response data:', responseData);
-
-        // Try different possible data structures
-        if (Array.isArray(responseData)) {
-          // Direct array of shops
-          shops = responseData;
-        } else if (responseData.shops && Array.isArray(responseData.shops)) {
-          // { shops: [...] }
-          shops = responseData.shops;
-        } else if (responseData.data && Array.isArray(responseData.data)) {
-          // { data: [...] }
-          shops = responseData.data;
-        } else if (responseData.results && Array.isArray(responseData.results)) {
-          // { results: [...] }
-          shops = responseData.results;
-        } else {
-          console.log('Unknown response structure, trying to extract shops...');
-          // Try to find any array in the response
-          for (const key in responseData) {
-            if (Array.isArray(responseData[key])) {
-              shops = responseData[key];
-              console.log(`Found shops array in key: ${key}`);
-              break;
-            }
-          }
-        }
-
-        console.log('Extracted shops array:', shops);
-        console.log('Number of shops found:', shops.length);
-
-        if (shops.length > 0) {
-          // Normalize shop data structure
-          const normalizedShops = shops.map(shop => {
-            console.log('Processing shop:', shop);
-            return {
-              ...shop,
-              id: shop._id || shop.id,
-              name: shop.name || shop.ownerName || "",
-              aadhaar: shop.aadhaar || shop.aadhaarNumber || "",
-              gstin: shop.gstin || shop.gstinNumber || "",
-              status: shop.isActive ? "Active" : "Inactive"
-            };
-          });
-
-          console.log('Normalized shops:', normalizedShops);
-          setShopData(normalizedShops);
-
-          // Update pagination info
-          const paginationInfo = {
-            currentPage: responseData.currentPage || responseData.page || page,
-            totalPages: responseData.totalPages || responseData.pages || Math.ceil((responseData.total || shops.length) / 4),
-            totalShops: responseData.totalShops || responseData.total || responseData.count || shops.length,
-            limit: 4  // Always use 4 items per page
-          };
-
-          setPagination(paginationInfo);
-
-          console.log('Loaded shops:', normalizedShops);
-          console.log('Pagination info:', paginationInfo);
-        } else {
-          console.log('No shops found in response');
-          setShopData([]);
-          setPagination({
-            currentPage: 1,
-            totalPages: 1,
-            totalShops: 0,
-            limit: 4
-          });
-        }
-
-      } else {
-        console.log('No shop data found, using fallback data');
-        // Fallback to dummy data - using the real shop you just created
-        setShopData([
-          {
-            _id: "68b93d7c02ce241f203f6f49",
-            id: "68b93d7c02ce241f203f6f49",
-            name: "shivamsharma101",
-            ownerName: "shivamsharma101",
-            shopName: "shivamshop111",
-            contact: "7764991710",
-            address: "local address",
-            status: "Active",
-            aadhaar: "271121185371",
-            aadhaarNumber: "271121185371",
-            gstin: "10FPVTT9859K5Z2",
-            gstinNumber: "10FPVTT9859K5Z2",
-            isActive: true
-          }
-        ]);
-        setPagination({
-          currentPage: 1,
-          totalPages: 1,
-          totalShops: 1,
-          limit: 4
-        });
-      }
+      
+      console.log('Count API response:', countResult);
+      return countResult.totalShops || countResult.total || countResult.count || countResult.totalCount || 0;
     } catch (error) {
-      console.error('Error fetching shops:', error);
-      console.error('Full error response:', error.response);
-      toast.error('Error loading shops: ' + (error.response?.data?.message || error.message));
-
-      // Fallback to dummy data with the real shop you just created
-      setShopData([
-        {
-          _id: "68b93d7c02ce241f203f6f49",
-          id: "68b93d7c02ce241f203f6f49",
-          name: "shivamsharma101",
-          ownerName: "shivamsharma101",
-          shopName: "shivamshop111",
-          contact: "7764991710",
-          address: "local address",
-          status: "Active",
-          aadhaar: "271121185371",
-          aadhaarNumber: "271121185371",
-          gstin: "10FPVTT9859K5Z2",
-          gstinNumber: "10FPVTT9859K5Z2",
-          isActive: true
-        }
-      ]);
-      setPagination({
-        currentPage: 1,
-        totalPages: 1,
-        totalShops: 1,
-        limit: 4
-      });
-    } finally {
-      setIsLoading(false);
+      console.error('Error getting total count:', error);
+      return 0;
     }
   };
+
+  // Fetch shops when component mounts and when location changes
+ React.useEffect(() => {
+  fetchShops(1, searchText);
+}, [searchText, location.pathname, location.key]);
+
+
+const fetchShops = async (page = 1, search = "") => {
+  try {
+    setIsLoading(true);
+
+    const params = {
+      page: page, // IMPORTANT: use the page param here
+      limit: pagination.limit, // 5 per page
+    };
+
+    if (search && search.trim()) params.search = search.trim();
+
+    const result = await fetchData({
+      method: "GET",
+      url: `${conf.apiBaseUrl}/admin/shop/get-all-shop`,
+      params: params,
+    });
+
+    if (!result.data) throw new Error("Invalid API response");
+
+    const shops = Array.isArray(result.data)
+      ? result.data
+      : Array.isArray(result.data.shops)
+      ? result.data.shops
+      : [];
+
+    setShopData(shops);
+    // Get total shops count from API
+    const totalShops =
+      result.data.totalShops ||
+      result.data.total ||
+      result.totalShops ||
+      shops.length;
+
+    // Normalize shops
+    const normalizedShops = shops.map((shop) => ({
+      ...shop,
+      id: shop._id || shop.id,
+      name: shop.ownerName || shop.name || "",
+      shopName: shop.shopName || "",
+      contact: shop.contact || "",
+      address: shop.address || "",
+      aadhaar: shop.aadhaarNumber || shop.aadhaar || "",
+      gstin: shop.gstin || shop.gstinNumber || "",
+      status: shop.isActive ? "Active" : "Inactive",
+    }));
+
+    setShopData(normalizedShops);
+
+    // Update pagination info
+     setPagination({
+      currentPage: result.pagination?.currentPage || page,
+      totalPages: result.pagination?.totalPages || 1,
+      totalShops: result.pagination?.totalUsers || shops.length,
+      limit: result.pagination?.usersPerPage || pagination.limit,
+    });
+
+  } catch (err) {
+    console.error(err);
+    setShopData([]);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Handle page change
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= pagination.totalPages) {
-      fetchShops(newPage, searchText);
-    }
-  };
+  if (newPage >= 1 && newPage <= pagination.totalPages) {
+    fetchShops(newPage, searchText);
+  }
+};
+
+
 
   // Handle search with debouncing
   const handleSearchChange = (value) => {
-    setSearchText(value);
-    // The useEffect will trigger fetchShops when searchText changes
-  };
+  setSearchText(value);
+  fetchShops(1, value); // always start from page 1
+};
+
 
   // Delete shop function
-  const deleteShop = async (shopId, shopName) => {
-    try {
-      // Show confirmation dialog
-      const confirmed = window.confirm(
-        `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
-      );
+  // const deleteShop = async (shopId, shopName) => {
+  //   try {
+  //     // Show confirmation dialog
+  //     const confirmed = window.confirm(
+  //       `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
+  //     );
 
-      if (!confirmed) {
-        return;
-      }
+  //     if (!confirmed) {
+  //       return;
+  //     }
 
-      setIsLoading(true);
-      console.log('Deleting shop with ID:', shopId);
+  //     setIsLoading(true);
+  //     console.log('Deleting shop with ID:', shopId);
 
-      // Try different possible delete endpoints
-      const possibleEndpoints = [
-        `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`,
-        `${conf.apiBaseUrl}/admin/shop/get-shop/${shopId}`, // Your provided endpoint
-        `${conf.apiBaseUrl}/admin/shop/remove-shop/${shopId}`,
-        `${conf.apiBaseUrl}/admin/shop/${shopId}`,
-      ];
+  //     // Try different possible delete endpoints
+  //     const possibleEndpoints = [
+  //       `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`,
+  //       `${conf.apiBaseUrl}/admin/shop/get-shop/${shopId}`, // Your provided endpoint
+  //       `${conf.apiBaseUrl}/admin/shop/remove-shop/${shopId}`,
+  //       `${conf.apiBaseUrl}/admin/shop/${shopId}`,
+  //     ];
 
-      let result = null;
-      let lastError = null;
+  //     let result = null;
+  //     let lastError = null;
 
-      for (const endpoint of possibleEndpoints) {
-        try {
-          console.log('Trying DELETE endpoint:', endpoint);
-          result = await fetchData({
-            method: "DELETE",
-            url: endpoint,
-          });
-          console.log('Success with DELETE endpoint:', endpoint);
-          break;
-        } catch (error) {
-          console.log('Failed with DELETE endpoint:', endpoint, error.response?.data?.message);
-          lastError = error;
-          continue;
-        }
-      }
+  //     for (const endpoint of possibleEndpoints) {
+  //       try {
+  //         console.log('Trying DELETE endpoint:', endpoint);
+  //         result = await fetchData({
+  //           method: "DELETE",
+  //           url: endpoint,
+  //         });
+  //         console.log('Success with DELETE endpoint:', endpoint);
+  //         break;
+  //       } catch (error) {
+  //         console.log('Failed with DELETE endpoint:', endpoint, error.response?.data?.message);
+  //         lastError = error;
+  //         continue;
+  //       }
+  //     }
 
-      if (!result) {
-        throw lastError || new Error('All DELETE endpoints failed');
-      }
+  //     if (!result) {
+  //       throw lastError || new Error('All DELETE endpoints failed');
+  //     }
 
-      console.log('Delete shop API response:', result);
+  //     console.log('Delete shop API response:', result);
 
-      if (result.success || result.status === 'success') {
-        toast.success(result.message || `Shop "${shopName}" deleted successfully!`);
+  //     if (result.success || result.status === 'success') {
+  //       toast.success(result.message || `Shop "${shopName}" deleted successfully!`);
 
-        // Refresh the shop list
-        fetchShops(pagination.currentPage, searchText);
-      } else {
-        throw new Error(result.message || 'Failed to delete shop');
-      }
+  //       // Refresh the shop list
+  //       fetchShops(pagination.currentPage, searchText);
+  //     } else {
+  //       throw new Error(result.message || 'Failed to delete shop');
+  //     }
 
-    } catch (error) {
-      console.error('Error deleting shop:', error);
-      console.error('Full error response:', error.response);
+  //   } catch (error) {
+  //     console.error('Error deleting shop:', error);
+  //     console.error('Full error response:', error.response);
 
-      let errorMessage = 'Failed to delete shop';
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      } else if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error.response?.data) {
-        errorMessage = typeof error.response.data === 'string'
-          ? error.response.data
-          : JSON.stringify(error.response.data);
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
+  //     let errorMessage = 'Failed to delete shop';
+  //     if (error.response?.data?.message) {
+  //       errorMessage = error.response.data.message;
+  //     } else if (error.response?.data?.error) {
+  //       errorMessage = error.response.data.error;
+  //     } else if (error.response?.data) {
+  //       errorMessage = typeof error.response.data === 'string'
+  //         ? error.response.data
+  //         : JSON.stringify(error.response.data);
+  //     } else if (error.message) {
+  //       errorMessage = error.message;
+  //     }
 
-      toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
+  //     toast.error(errorMessage);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+const deleteShop = async (shopId) => {
+  try {
+    setIsLoading(true);
+    const result = await fetchData({
+      method: "DELETE",
+      url: `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`, // use your proper endpoint
+    });
+
+    if (result.success || result.status === 'success') {
+      toast.success(result.message || `Shop deleted successfully!`);
+      fetchShops(pagination.currentPage, searchText);
+    } else {
+      throw new Error(result.message || 'Failed to delete shop');
     }
-  };
-
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message || 'Failed to delete shop');
+  } finally {
+    setIsLoading(false);
+    setDeleteModalOpen(false); // close modal
+  }
+};
 
 
 
@@ -441,9 +391,21 @@ function ShopList() {
                         >
                           <EditIcon />
                         </IconButton>
-                        <IconButton size="small" onClick={() => deleteShop(item._id || item.id, item.shopName)} disabled={isLoading}>
+                        {/* <IconButton size="small" onClick={() => deleteShop(item._id || item.id, item.shopName)} disabled={isLoading}>
                           <DeleteIcon />
-                        </IconButton>
+                        </IconButton> */}
+                       <IconButton
+  size="small"
+  onClick={() => {
+    setSelectedShop(item);  // store which shop to delete
+    setDeleteModalOpen(true); // open modal
+  }}
+  disabled={isLoading}
+>
+  <DeleteIcon />
+</IconButton>
+
+
                       </TableCell>
                     </TableRow>
                   ))
@@ -452,12 +414,40 @@ function ShopList() {
             </Table>
           </TableContainer>
 
+{deleteModalOpen && selectedShop && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+        Delete Shop
+      </h2>
+      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+        Are you sure you want to delete "{selectedShop.shopName}"?
+      </p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setDeleteModalOpen(false)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => deleteShop(selectedShop._id || selectedShop.id)}
+          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
           {/* Pagination */}
-          {pagination && pagination.totalShops > 0 && (
+          {pagination && pagination.totalShops > 0 && pagination.totalPages > 0 && (
             <div className="flex flex-col md:flex-row items-center justify-between bg-[#F5F5F5] mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
               <p className="font-bold text-black">
                 Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
                 {Math.min(pagination.currentPage * pagination.limit, pagination.totalShops)} of {pagination.totalShops} Entries
+                {/* {pagination.totalPages > 1 && ` (Page ${pagination.currentPage} of ${pagination.totalPages})`} */}
               </p>
 
               <div className="flex items-center space-x-2">
@@ -469,23 +459,27 @@ function ShopList() {
                   &lt;
                 </button>
 
-                {Array.from({ length: Math.ceil(pagination.totalShops / pagination.limit) }, (_, i) => i + 1).map((pg) => (
-                  <button
-                    key={pg}
-                    onClick={() => handlePageChange(pg)}
-                    className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-                      pg === pagination.currentPage
-                        ? "bg-[#001580] text-white"
-                        : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                    }`}
-                  >
-                    {pg}
-                  </button>
-                ))}
+                {console.log('Rendering pagination - totalPages:', pagination.totalPages, 'currentPage:', pagination.currentPage)}
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pg) => {
+                  console.log('Rendering page button:', pg);
+                  return (
+                    <button
+                      key={pg}
+                      onClick={() => handlePageChange(pg)}
+                      className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
+                        pg === pagination.currentPage
+                          ? "bg-[#001580] text-white"
+                          : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
+                      }`}
+                    >
+                      {pg}
+                    </button>
+                  );
+                })}
 
                 <button
                   onClick={() => handlePageChange(pagination.currentPage + 1)}
-                  disabled={pagination.currentPage === Math.ceil(pagination.totalShops / pagination.limit)}
+                  disabled={pagination.currentPage === pagination.totalPages}
                   className="px-2 py-1 bg-white text-[#001580] border rounded-md hover:bg-green-50 disabled:opacity-50"
                 >
                   &gt;
