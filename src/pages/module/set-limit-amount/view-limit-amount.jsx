@@ -1,6 +1,7 @@
 // src/pages/module/set-limit-amount/ViewLimitAmount.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { CircularProgress, Typography } from "@mui/material";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
@@ -10,9 +11,11 @@ const ViewLimitAmount = () => {
   const [fetchData] = useFetch();
   const [category, setCategory] = useState("");
   const [limitAmount, setLimitAmount] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
+      setLoading(true);
       try {
         const res = await fetchData({
           method: "GET",
@@ -24,6 +27,8 @@ const ViewLimitAmount = () => {
         }
       } catch (err) {
         console.error("Error loading data:", err);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
@@ -31,6 +36,15 @@ const ViewLimitAmount = () => {
 
   const handleBack = () => navigate("/admin/set-limit-amount");
   const handleEdit = () => navigate(`/admin/set-limit-amount/edit/${id}`);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading limit data...</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
@@ -43,16 +57,12 @@ const ViewLimitAmount = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">
-            View Limit Amount
-          </h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">View Limit Amount</h2>
         </div>
 
         {/* Main Container */}
         <div className="bg-white p-4 rounded-lg shadow min-h-[830px]">
-          {/* Inner Border Form */}
           <div className="border border-[#616666] rounded-lg p-6 min-h-[742px] space-y-6">
-            {/* Category */}
             <div className="flex items-center gap-[70px]">
               <label className="w-1/4 font-medium">Category:</label>
               <input
@@ -63,11 +73,8 @@ const ViewLimitAmount = () => {
               />
             </div>
 
-            {/* Limit Input */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium">
-                Wallet Balance Negative Limit:
-              </label>
+              <label className="w-1/4 font-medium">Wallet Balance Negative Limit:</label>
               <input
                 type="number"
                 value={limitAmount}
@@ -77,7 +84,6 @@ const ViewLimitAmount = () => {
             </div>
           </div>
 
-          {/* Buttons Outside Border */}
           <div className="flex justify-center gap-4 pt-6">
             <button
               type="button"

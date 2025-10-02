@@ -44,9 +44,17 @@ const Dashboard = () => {
     getDashboardData();
   }, [fetchData]);
 
+  // if (isLoading) {
+  //   return <div className="p-6">Loading dashboard...</div>;
+  // }
   if (isLoading) {
-    return <div className="p-6">Loading dashboard...</div>;
-  }
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="w-16 h-16 border-4 border-t-[#001580] border-blue-200 rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
 
   if (!dashboardData) {
     return <div className="p-6 text-red-500">Failed to load dashboard data</div>;
@@ -76,7 +84,8 @@ const Dashboard = () => {
           {/* Recent Orders */}
           <DashboardTable
             title="Recent Orders"
-            actionLink="See All Order"
+            actionText="See All Orders"
+             actionLink="/admin/order/list" 
             headers={["Order No.", "Service Required", "Status"]}
             isOrderTable={true}
             orderData={dashboardData.recentOrders || []}
@@ -105,8 +114,9 @@ const Dashboard = () => {
           <DashboardTable
             title="Top Selling Products"
             actionLink="See All Product"
+            actionText="See All Product"
             headers={["Product", "Name", "Category"]}
-            showAction={false} // 👈 hides Action column
+            showAction={false} //  hides Action column
             data={
               topProducts && topProducts.length > 0
                 ? topProducts.map((product) => [
@@ -128,7 +138,8 @@ const Dashboard = () => {
         <div className="mb-6">
           <DashboardTable
             title="Top Workers"
-            actionLink="See All Worker"
+             actionText="See All Workers"
+            actionLink="/admin/workermanagement"
             headers={["Sr.No.", "Worker Name", "Expertise", "Email/Phone", "Total Orders"]}
             isWorkerTable={true}
             workerData={dashboardData.topWorkers || []}
@@ -150,7 +161,8 @@ const Dashboard = () => {
         <div className="mb-6">
           <DashboardTable
             title="Top Shops"
-            actionLink="See All Shops"
+            actionText="See All Shops"
+            actionLink="/admin/shopmanagement"
             headers={["Sr.No.", "Shop Name", "Owner Name", "Email/Phone", "Total Orders"]}
             isShopTable={true}
             shopData={dashboardData.topShops || []}
