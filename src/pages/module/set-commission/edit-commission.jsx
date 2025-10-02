@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from "react";
 import { IoArrowBackCircleOutline } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
+import { CircularProgress, Typography } from "@mui/material";
 import conf from "../../../config";
 import useFetch from "../../../hook/useFetch";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function EditCommission() {
   const navigate = useNavigate();
@@ -16,11 +19,14 @@ export default function EditCommission() {
     shopkeeperCommission: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Fetch single commission
   const getCommission = async () => {
+    setLoading(true);
     try {
       const res = await fetchData({
         method: "GET",
@@ -30,12 +36,15 @@ export default function EditCommission() {
         setForm({
           category: res.commission.category || "",
           workerCommission: res.commission.workerPercentageCommission || "",
-          shopkeeperCommission: res.commission.shopkeeperPercentageCommission || "",
+          shopkeeperCommission:
+            res.commission.shopkeeperPercentageCommission || "",
         });
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch commission!");
+      toast.error("Failed to fetch commission");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,8 +53,14 @@ export default function EditCommission() {
   }, [id]);
 
   const handleUpdate = async () => {
+    if (!form.category || !form.workerCommission || !form.shopkeeperCommission) {
+      toast.warning("Please fill all fields");
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      await fetchData({
+      const res = await fetchData({
         method: "PUT",
         url: `${conf.apiBaseUrl}/admin/commissions/update-commission/${id}`,
         data: {
@@ -54,13 +69,28 @@ export default function EditCommission() {
           shopkeeperPercentageCommission: form.shopkeeperCommission,
         },
       });
-      alert("Commission updated successfully!");
-      navigate("/admin/set-commission");
+      if (res?.success) {
+        toast.success("Commission updated successfully");
+        setTimeout(() => navigate("/admin/set-commission"), 1500);
+      } else {
+        toast.error(res?.message || "Failed to update commission");
+      }
     } catch (err) {
       console.error(err);
-      alert("Failed to update commission!");
+      toast.error("Something went wrong");
+    } finally {
+      setSubmitting(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen">
+        <CircularProgress />
+        <Typography sx={{ mt: 2 }}>Loading commission...</Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
@@ -72,10 +102,12 @@ export default function EditCommission() {
             className="mr-3 cursor-pointer text-[#001580]"
             onClick={() => navigate("/admin/set-commission")}
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">Edit Commission</h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">
+            Edit Commission
+          </h2>
         </div>
 
-        {/* Main Container */}
+        {/* Form Container */}
         <div className="bg-white p-4 rounded-lg shadow min-h-[600px]">
           <div className="border border-[#616666] rounded-lg p-6 min-h-[500px] space-y-6">
             {/* Category */}
@@ -85,7 +117,7 @@ export default function EditCommission() {
                 name="category"
                 value={form.category}
                 onChange={handleChange}
-                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#E4E5EB] text-[#0D2E28] outline-none"
+                className="flex-1 border font-medium rounded-lg px-3 py-3 pr-10 border-[#001580] bg-[#E4E5EB] text-[#0D2E28] outline-none appearance-none"
               >
                 <option value="">Select</option>
                 <option>Electrician</option>
@@ -98,7 +130,9 @@ export default function EditCommission() {
 
             {/* Commission From Worker */}
             <div className="flex items-center gap-[70px] whitespace-nowrap">
-              <label className="w-1/4 font-medium">Commission From Worker:</label>
+              <label className="w-1/4 font-medium">
+                Commission From Worker:
+              </label>
               <input
                 type="text"
                 name="workerCommission"
@@ -110,7 +144,9 @@ export default function EditCommission() {
 
             {/* Commission From Shopkeeper */}
             <div className="flex items-center gap-[70px] whitespace-nowrap">
-              <label className="w-1/4 font-medium">Commission From Shopkeeper:</label>
+              <label className="w-1/4 font-medium">
+                Commission From Shopkeeper:
+              </label>
               <input
                 type="text"
                 name="shopkeeperCommission"
@@ -132,12 +168,14 @@ export default function EditCommission() {
             <button
               className="px-12 py-2 rounded bg-[#001580] text-white"
               onClick={handleUpdate}
+              disabled={submitting}
             >
-              Update
+              {submitting ? "Updating..." : "Update"}
             </button>
           </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 }
