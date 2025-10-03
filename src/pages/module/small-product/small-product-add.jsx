@@ -6,15 +6,18 @@ import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 import {useFormik} from "formik";
 import * as Yup from "yup";
 import useDropdown from "../../../hook/dropdown/useDropdown";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SmallProductAdd = () => {
-    const {createSmallProducts} = useSmallProduct();
+    const {createSmallProducts, loading} = useSmallProduct();
     const {productCategory, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory} =
         useDropdown();
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const [productImage, setProductImage] = useState("");
     const [imageFile, setImageFile] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     console.log("Product category", productCategory);
 
     const handleImageChange = (e) => {
@@ -36,24 +39,74 @@ const SmallProductAdd = () => {
         validationSchema: Yup.object({
             productName: Yup.string().required("Product name is required"),
             productCategory: Yup.string().required("Category is required"),
-            productSubCategory: Yup.string().required("Sub-category is required"),
-            productPrice: Yup.number().typeError("Price must be a number").required("Price is required"),
+            productSubCategory: Yup.string().when('productCategory', {
+                is: (val) => val && productSubCategory.length > 0,
+                then: () => Yup.string().required("Sub-category is required"),
+                otherwise: () => Yup.string()
+            }),
+            productPrice: Yup.number().typeError("Price must be a number").positive("Price must be positive").required("Price is required"),
             productDescription: Yup.string().required("Description is required"),
         }),
-        onSubmit: (values) => {
-            const formData = new FormData();
+        onSubmit: async (values, { resetForm, setSubmitting }) => {
+            try {
+                setIsSubmitting(true);
+                setSubmitting(true);
 
-            formData.append("productName", values.productName);
-            formData.append("productCategory", values.productCategory);
-            formData.append("productPrice", values.productPrice);
-            formData.append("productDescription", values.productDescription);
-            formData.append("productSubCategory", values.productSubCategory);
+                // Validate that category exists in admin-tab-management
+                const selectedCategory = productCategory.find(cat => cat._id === values.productCategory);
+                if (!selectedCategory) {
+                    toast.error("Selected category is not valid. Please select a valid category from admin-tab-management.");
+                    return;
+                }
 
-            if (imageFile) {
-                formData.append("productImage", imageFile);
+                // Get shopkeeperId from sessionStorage (logged-in admin ID)
+                const shopkeeperId = sessionStorage.getItem("userID") || sessionStorage.getItem("Id");
+                
+                if (!shopkeeperId) {
+                    toast.error("User session expired. Please login again.");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("productName", values.productName);
+                formData.append("productCategory", values.productCategory);
+                formData.append("productPrice", values.productPrice);
+                formData.append("productDescription", values.productDescription);
+                formData.append("shopkeeperId", shopkeeperId); // Add required shopkeeperId
+                
+                // Only append sub-category if it exists and is selected
+                if (values.productSubCategory) {
+                    formData.append("productSubCategory", values.productSubCategory);
+                }
+
+                if (imageFile) {
+                    formData.append("productImage", imageFile);
+                }
+
+                console.log('Submitting small product with data:', {
+                    productName: values.productName,
+                    productCategory: selectedCategory.tabName,
+                    productSubCategory: values.productSubCategory,
+                    productPrice: values.productPrice,
+                    productDescription: values.productDescription,
+                    shopkeeperId: shopkeeperId,
+                    hasImage: !!imageFile
+                });
+
+                await createSmallProducts(formData);
+                
+                // Reset form on success
+                resetForm();
+                setProductImage("");
+                setImageFile(null);
+                
+            } catch (error) {
+                console.error('Error submitting small product:', error);
+                toast.error(error.message || 'Failed to add small product');
+            } finally {
+                setIsSubmitting(false);
+                setSubmitting(false);
             }
-
-            createSmallProducts(formData);
         },
     });
 
@@ -62,7 +115,9 @@ const SmallProductAdd = () => {
     }, []);
 
     return (
-        <div className="p-2 font-[Poppins]">
+        // <div className="p-2 font-[Poppins]">
+        <div className="bg-[#E0E9E9] min-h-screen w-full">
+            <ToastContainer />
             <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
                 <div className="flex items-center">
                     <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
@@ -98,7 +153,7 @@ const SmallProductAdd = () => {
                 <div className="border rounded-lg p-4 shadow bg-white">
                     <div className="border border-black p-4 rounded-lg">
                         <div className="flex gap-4 mb-6">
-                            <label className="w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                            <label className="w-[240px] font-medium text-lg text-[#0D2E28]">Product Image</label>
                             <div className="rounded-lg p-0 w-[240px] h-[240px] flex flex-col items-center justify-center relative">
                                 <img
                                     src={productImage || BG}
@@ -128,92 +183,137 @@ const SmallProductAdd = () => {
 
                         <div className="space-y-4">
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                    Product Name:
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                    Product Name
                                 </label>
-                                <input
-                                    type="text"
-                                    name="productName"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={formik.values.productName}
-                                    onChange={formik.handleChange}
-                                />
+                                <div className="w-full">
+                                    <input
+                                        type="text"
+                                        name="productName"
+                                        placeholder="Enter product name"
+                                        className="bg-[#CED4F2] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                        value={formik.values.productName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.productName && formik.errors.productName && (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.productName}</div>
+                                    )}
+                                </div>
                             </div>
                             {/* Product Category */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                    Product Category:
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                    Product Category
                                 </label>
-                                <select
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    name="productCategory"
-                                    value={formik.values.productCategory}
-                                    onChange={async (e) => {
-                                        const categoryId = e.target.value;
-                                        formik.setFieldValue("productCategory", categoryId);
-                                        formik.setFieldValue("productSubCategory", "");
+                                <div className="w-full">
+                                    <select
+                                        className="bg-[#CED4F2] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                        name="productCategory"
+                                        value={formik.values.productCategory}
+                                        onChange={async (e) => {
+                                            const categoryId = e.target.value;
+                                            formik.setFieldValue("productCategory", categoryId);
+                                            formik.setFieldValue("productSubCategory", "");
 
-                                        // Clear old options first
-                                        setProductSubCategory([]);
+                                            // Clear old options first
+                                            setProductSubCategory([]);
 
-                                        if (categoryId) {
-                                            await fetchProductSubCategory(categoryId);
-                                        }
-                                    }}
-                                >
-                                    <option value="">-- Select Category --</option>
-                                    {productCategory.map((category) => (
-                                        <option key={category._id} value={category._id}>
-                                            {category.tabName}
-                                        </option>
-                                    ))}
-                                </select>
+                                            if (categoryId) {
+                                                await fetchProductSubCategory(categoryId);
+                                            }
+                                        }}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value=""> Select</option>
+                                        {productCategory.map((category) => (
+                                            <option key={category._id} value={category._id}>
+                                                {category.tabName}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {formik.touched.productCategory && formik.errors.productCategory && (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.productCategory}</div>
+                                    )}
+                                    {productCategory.length === 0 && (
+                                        <div className="text-orange-500 text-sm mt-1">
+                                            Note: Categories must exist in admin-tab-management to add products
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Product Sub-Category */}
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                    Product Sub-Category:
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                    Product Sub-Category
                                 </label>
-                                <select
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    name="productSubCategory"
-                                    value={formik.values.productSubCategory}
-                                    onChange={formik.handleChange}
-                                    disabled={!productSubCategory.length}
-                                >
-                                    <option value="">-- Select Sub-Category --</option>
-                                    {productSubCategory.map((sub) => (
-                                        <option key={sub._id} value={sub.name}>
-                                            {sub.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div className="w-full">
+                                    <select
+                                        className="bg-[#CED4F2] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                        name="productSubCategory"
+                                        value={formik.values.productSubCategory}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        disabled={!productSubCategory.length}
+                                    >
+                                        <option value="">Select</option>
+                                        {productSubCategory.map((sub) => (
+                                            <option key={sub._id} value={sub.name}>
+                                                {sub.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {formik.touched.productSubCategory && formik.errors.productSubCategory && (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.productSubCategory}</div>
+                                    )}
+                                    {formik.values.productCategory && productSubCategory.length === 0 && (
+                                        <div className="text-gray-500 text-sm mt-1">
+                                            No sub-categories available for selected category
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                    Product Price:
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                    Product Price
                                 </label>
-                                <input
-                                    type="text"
-                                    name="productPrice"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
-                                    value={formik.values.productPrice}
-                                    onChange={formik.handleChange}
-                                />
+                                <div className="w-full">
+                                    <input
+                                        type="number"
+                                        name="productPrice"
+                                        placeholder="Enter product price"
+                                        className="bg-[#CED4F2] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none"
+                                        value={formik.values.productPrice}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        min="0"
+                                        step="0.01"
+                                    />
+                                    {formik.touched.productPrice && formik.errors.productPrice && (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.productPrice}</div>
+                                    )}
+                                </div>
                             </div>
                             <div className="flex items-start gap-4">
-                                <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                    Product Description:
+                                <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                    Product Description
                                 </label>
-                                <textarea
-                                    rows="5"
-                                    name="productDescription"
-                                    className="bg-[#CED4F2] border border-[#001580] text-[#001580] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
-                                    value={formik.values.productDescription}
-                                    onChange={formik.handleChange}
-                                />
+                                <div className="w-full">
+                                    <textarea
+                                        rows="5"
+                                        name="productDescription"
+                                        placeholder="Enter product description"
+                                        className="bg-[#CED4F2] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-lg px-4 py-2 w-full outline-none resize-none"
+                                        value={formik.values.productDescription}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.productDescription && formik.errors.productDescription && (
+                                        <div className="text-red-500 text-sm mt-1">{formik.errors.productDescription}</div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -221,15 +321,21 @@ const SmallProductAdd = () => {
                         <button
                             type="button"
                             onClick={() => navigate(-1)}
-                            className="w-[200px] bg-[#CECEF2] text-[#001580] border border-[#001580] font-medium px-10 py-2 rounded-lg"
+                            className="w-[200px] bg-[#CECEF2] text-[#001580] border border-[#001580] font-medium px-10 py-2 rounded-lg hover:bg-gray-100"
+                            disabled={isSubmitting || loading}
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="w-[200px] bg-[#001580] text-white font-medium px-10 py-2 rounded-lg"
+                            disabled={isSubmitting || loading || !formik.isValid}
+                            className={`w-[200px] font-medium px-10 py-2 rounded-lg ${
+                                isSubmitting || loading || !formik.isValid
+                                    ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                                    : "bg-[#001580] text-white hover:bg-bg[#CECEF2]"
+                            }`}
                         >
-                            Add Product
+                            {isSubmitting || loading ? "Adding..." : "Add Product"}
                         </button>
                     </div>
                 </div>

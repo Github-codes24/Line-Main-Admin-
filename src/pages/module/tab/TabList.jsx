@@ -188,7 +188,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
         {/* Input */}
         <input
           type="text"
-          placeholder="Search by Name, Phone Number, Email...."
+          placeholder="Search by Tab Name Sub Tab Name...."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
@@ -207,19 +207,19 @@ const [selectedWorker, setSelectedWorker] = useState(null);
     </div>
   </div>
       {/* Main Content Box */}
-      <div className="bg-white p-4 shadow rounded-md">
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
-          <table className="w-full text-sm text-left text-gray-700">
-            <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
-              <tr>
-                <th className="px-6 py-4">Sr.No.</th>
-                <th className="px-6 py-4">Tab Name</th>
-                <th className="px-6 py-4">Sub Tabs</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Created Date</th>
-                <th className="px-6 py-4 text-center">Action</th>
-              </tr>
-            </thead>
+     <div className="bg-white p-4 shadow rounded-md">
+  <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+    <table className="w-full text-sm text-left text-gray-700">
+     <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
+  <tr>
+    <th className="px-6 py-4">Sr.No.</th>
+    <th className="px-6 py-4">Tab Name</th>
+    <th className="px-6 py-4">Sub Tabs</th>
+    {/* <th className="px-6 py-4">Status</th> */}
+    {/* <th className="px-6 py-4">Created Date</th> */}
+    <th className="px-6 py-4 text-center">Action</th>
+  </tr>
+</thead>
             <tbody>
               {isLoading ? (
                 <tr>
@@ -237,9 +237,9 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                 </tr>
               ) : (
                 currentRecords.map((tab, index) => (
-                  <tr key={tab.id} className="border-b hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium">{indexOfFirstRecord + index + 1}</td>
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                  <tr key={tab.id} className="">
+                    <td className="px-6 py-4 font-thick">{indexOfFirstRecord + index + 1}</td>
+                    <td className="px-6 py-4 font-thick text-gray-900">
                       {tab.name}
                     </td>
                     <td className="px-6 py-4">
@@ -248,9 +248,10 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                           tab.subTabs.map((subTab, subIndex) => (
                             <span
                               key={subTab.id || subIndex}
-                              className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+                              className="inline-block  text-black font-thick px-2 py-1 rounded-full"
                             >
                               {subTab.name}
+                                   {subIndex < tab.subTabs.length - 1 ? ', ' : ''}
                             </span>
                           ))
                         ) : (
@@ -258,7 +259,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    {/* <td className="px-6 py-4">
                       <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${tab.isActive
                         ? 'bg-green-100 text-green-800'
                         : 'bg-red-100 text-red-800'
@@ -268,7 +269,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                     </td>
                     <td className="px-6 py-4 text-gray-500">
                       {tab.createdAt ? new Date(tab.createdAt).toLocaleDateString() : 'N/A'}
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4">
                       <div className="flex justify-center space-x-2">
                         {/* View Button */}
@@ -276,10 +277,10 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                           onClick={() =>
                             navigate(`/admin/tabmanagement/view/${tab.id}`, { state: { tab } })
                           }
-                          className="p-2 text-red-600 hover:bg-red-100 rounded-full"
+                          className="p-2 text-red-600  rounded-full"
                           title="View Tab"
                         >
-                          <Eye size={16} />
+                          <Eye size={20} />
                         </button>
 
                         {/* Edit Button */}
@@ -287,10 +288,10 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                           onClick={() =>
                             navigate(`/admin/tabmanagement/edit/${tab.id}`, { state: { tab } })
                           }
-                          className="p-2 text-red-600 hover:bg-red-100 rounded-full"
+                          className="p-2 text-red-600  rounded-full"
                           title="Edit Tab"
                         >
-                          <Edit size={16} />
+                          <Edit size={20} />
                         </button>
 
                         {/* Delete Button */}
@@ -314,24 +315,31 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                         </button> */}
                         {/* Delete Button */}
 <button
+  // onClick={() => {
+  //   if (["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)) return;
+  //   setSelectedWorker(tab);
+  //   setDeleteModalOpen(true);
+  // }}
+  // className={`p-2 rounded-full ${
+  //   ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+  //     ? "text-gray-400 cursor-not-allowed"
+  //     : "text-red-600 hover:bg-red-100"
+  // }`}
+  // title={
+  //   ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
+  //     ? "System tab cannot be deleted"
+  //     : "Delete Tab"
+  // }
   onClick={() => {
-    if (["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)) return;
-    setSelectedWorker(tab);
-    setDeleteModalOpen(true);
-  }}
-  className={`p-2 rounded-full ${
-    ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
-      ? "text-gray-400 cursor-not-allowed"
-      : "text-red-600 hover:bg-red-100"
-  }`}
-  title={
-    ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)
-      ? "System tab cannot be deleted"
-      : "Delete Tab"
-  }
-  disabled={isLoading || ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)}
+  setSelectedWorker(tab);
+  setDeleteModalOpen(true);
+}}
+className="p-2 rounded-full text-red-600 "
+title="Delete Tab"
+
+  // disabled={isLoading || ["Plumbing", "Painting", "Electrician", "TilesFitting", "AC & Refrigerator"].includes(tab.name)}
 >
-  <Trash2 size={16} />
+  <Trash2 size={20} />
 </button>
 
                       </div>

@@ -113,7 +113,7 @@ const Dashboard = () => {
           {/* Top Products */}
           <DashboardTable
             title="Top Selling Products"
-            actionLink="See All Product"
+            actionLink="/admin/smallproduct"
             actionText="See All Product"
             headers={["Product", "Name", "Category"]}
             showAction={false} //  hides Action column
