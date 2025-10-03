@@ -13,7 +13,7 @@ const EditLimitAmount = () => {
   const { id } = useParams();
   const [fetchData] = useFetch();
   const [category, setCategory] = useState("");
-  const [limitAmount, setLimitAmount] = useState("");
+  const [limitAmount, setLimitAmount] = useState(""); 
   const [tabs, setTabs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
