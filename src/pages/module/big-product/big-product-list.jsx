@@ -516,7 +516,7 @@ export default function BigProductList() {
                             <th className="p-3">Product Name</th>
                             <th className="p-3 leading-none">Product Category</th>
                             <th className="p-3 leading-none">Product Price</th>
-                            <th className="p-3 leading-none">Status</th>
+                            <th className="p-3 leading-none">Approval Status</th>
                             <th className="p-3">Action</th>
                         </tr>
                     </thead>
