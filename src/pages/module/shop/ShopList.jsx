@@ -43,7 +43,7 @@ const [selectedShop, setSelectedShop] = useState(null);
     currentPage: 1,
     totalPages: 1,
     totalShops: 0,
-    limit: 5  // Show 5 shops per page
+    limit: 3,  // Show 5 shops per page
   });
 
 
@@ -323,10 +323,18 @@ const deleteShop = async (shopId) => {
             component={Paper}
             elevation={0}
             sx={{
-              border: "1px solid black",
-              maxHeight: 500,
-              overflowY: "scroll",
-              scrollbarWidth: "thin",
+              border: "1px solid #bbb"
+
+              // border: "2px solid #ccc"
+              // border: "1px solid #ddd"
+              // border: "1px solid #e0e0e0"
+
+
+
+              // border: "1px solid black",
+              // maxHeight: 500,
+              // overflowY: "scroll",
+              // scrollbarWidth: "thin",
             }}
           >
             <Table stickyHeader sx={{ borderRadius: 2 }}>
@@ -346,10 +354,10 @@ const deleteShop = async (shopId) => {
               <TableBody>
                 {isLoading ? (
                   <TableRow>
-                    <TableCell colSpan={9} sx={{ textAlign: "center", py: 2 }}>
-                      <CircularProgress size={24} />
-                      <Typography sx={{ mt: 1 }}>Loading shops...</Typography>
-                    </TableCell>
+                  <TableCell colSpan={9} sx={{ textAlign: "center", py: 2 }}>
+  <CircularProgress size={24} sx={{ color: "#001580" }} /> 
+</TableCell>
+
                   </TableRow>
                 ) : shopData.length === 0 ? (
                   <TableRow>
@@ -360,55 +368,56 @@ const deleteShop = async (shopId) => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  shopData.map((item, index) => (
-                    <TableRow hover key={item._id || item.id || index}>
-                      <TableCell>{(pagination.currentPage - 1) * pagination.limit + index + 1}</TableCell>
-                      <TableCell>{item.shopName}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.contact}</TableCell>
-                      <TableCell>{item.address}</TableCell>
-                      <TableCell>{item.aadhaar}</TableCell>
-                      <TableCell>{item.gstin}</TableCell>
-                      <TableCell sx={{ color: item.status === "Active" ? "green" : "red" }}>
-                        {item.status}
-                      </TableCell>
-                      <TableCell sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            navigate(`/admin/shopmanagement/view/${item._id || item.id}`, { state: { shop: item } })
-                          }
-                        >
-                          <ViewIcon />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            navigate(`/admin/shopmanagement/edit/${item._id || item.id}`, {
-                              state: { shop: { ...item, aadhaarNumber: item.aadhaar, gstinNumber: item.gstin } },
-                            })
-                          }
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        {/* <IconButton size="small" onClick={() => deleteShop(item._id || item.id, item.shopName)} disabled={isLoading}>
-                          <DeleteIcon />
-                        </IconButton> */}
-                       <IconButton
-  size="small"
-  onClick={() => {
-    setSelectedShop(item);  // store which shop to delete
-    setDeleteModalOpen(true); // open modal
-  }}
-  disabled={isLoading}
->
-  <DeleteIcon />
-</IconButton>
+               shopData.map((item, index) => (
+  <TableRow hover key={item._id || item.id || index}>
+    <TableCell sx={{ borderBottom: 'none' }}>
+      {(pagination.currentPage - 1) * pagination.limit + index + 1}
+    </TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.shopName}</TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.name}</TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.contact}</TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.address}</TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.aadhaar}</TableCell>
+    <TableCell sx={{ borderBottom: 'none' }}>{item.gstin}</TableCell>
+    <TableCell
+      sx={{ borderBottom: 'none', color: item.status === "Active" ? "green" : "red" }}
+    >
+      {item.status}
+    </TableCell>
+    <TableCell sx={{ borderBottom: 'none', display: "flex", justifyContent: "center", gap: 1 }}>
+      <IconButton
+        size="small"
+        onClick={() =>
+          navigate(`/admin/shopmanagement/view/${item._id || item.id}`, { state: { shop: item } })
+        }
+      >
+        <ViewIcon />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={() =>
+          navigate(`/admin/shopmanagement/edit/${item._id || item.id}`, {
+            state: { shop: { ...item, aadhaarNumber: item.aadhaar, gstinNumber: item.gstin } },
+          })
+        }
+      >
+        <EditIcon />
+      </IconButton>
+      <IconButton
+        size="small"
+        onClick={() => {
+          setSelectedShop(item);
+          setDeleteModalOpen(true);
+        }}
+        disabled={isLoading}
+      >
+        <DeleteIcon />
+      </IconButton>
+    </TableCell>
+  </TableRow>
+))
 
-
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  
                 )}
               </TableBody>
             </Table>

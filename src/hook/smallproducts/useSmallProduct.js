@@ -32,13 +32,25 @@ const useSmallProduct = () => {
                 url: `${conf.apiBaseUrl}/admin/small-products`,
                 data,
             });
-            if (res?.data) {
-                setAddSmallProduct(res.data);
-                toast.success(res?.message);
-                navigate("/admin/smallproduct");
+            
+            console.log('API Response:', res);
+            
+            // Check if product was added successfully
+            if (res && (res.success || res.data || res._id)) {
+                setAddSmallProduct(res.data || res);
+                toast.success(res?.message || "Small product added successfully!");
+                setTimeout(() => {
+                    navigate("/admin/smallproduct");
+                }, 1000);
+                return { success: true, data: res };
+            } else {
+                throw new Error(res?.message || 'Failed to add small product');
             }
         } catch (error) {
-            console.log("Error while creating small product:", error);
+            console.error("Error while creating small product:", error);
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to add small product';
+            toast.error(errorMessage);
+            throw error; // Re-throw to handle in component
         } finally {
             setLoading(false);
         }
@@ -90,12 +102,24 @@ const useSmallProduct = () => {
                 url: `${conf.apiBaseUrl}/admin/small-products/${id}`,
                 data: formData,
             });
-            if (res) {
-                toast.success(res?.message);
-                navigate("/admin/smallproduct");
+            
+            console.log('Update API Response:', res);
+            
+            // Check if product was updated successfully
+            if (res && (res.success || res.data || res._id)) {
+                toast.success(res?.message || "Small product updated successfully!");
+                setTimeout(() => {
+                    navigate("/admin/smallproduct");
+                }, 1000);
+                return { success: true, data: res };
+            } else {
+                throw new Error(res?.message || 'Failed to update small product');
             }
         } catch (error) {
-            console.log("Error while updating small product", error);
+            console.error("Error while updating small product:", error);
+            const errorMessage = error.response?.data?.message || error.message || 'Failed to update small product';
+            toast.error(errorMessage);
+            throw error; // Re-throw to handle in component
         } finally {
             setLoading(false);
         }

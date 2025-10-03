@@ -367,7 +367,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
                       <td className="px-6 py-4">{worker.address}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${worker.status === 'Active'
-                          ? 'bg-green-100 text-green-800'
+                          ? ' text-[#34C759]'
                           : 'bg-red-100 text-red-800'
                           }`}>
                           {worker.status}

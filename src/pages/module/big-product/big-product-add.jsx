@@ -65,12 +65,21 @@ const BigProductAdd = () => {
         try {
             setIsLoading(true);
 
+            // Get shopkeeperId from sessionStorage (logged-in admin ID)
+            const shopkeeperId = sessionStorage.getItem("userID") || sessionStorage.getItem("Id");
+            
+            if (!shopkeeperId) {
+                toast.error("User session expired. Please login again.");
+                return;
+            }
+
             // Prepare form data for API
             const submitData = new FormData();
             submitData.append("productName", formData.productName.trim());
             submitData.append("productCategory", formData.productCategory.trim());
             submitData.append("productPrice", formData.productPrice.trim());
             submitData.append("productDescription", formData.productDescription.trim());
+            submitData.append("shopkeeperId", shopkeeperId); // Add required shopkeeperId
 
             if (formData.productImage) {
                 submitData.append("productImage", formData.productImage);
