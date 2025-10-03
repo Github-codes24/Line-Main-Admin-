@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress, Typography } from "@mui/material";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
@@ -9,10 +10,12 @@ const SetLimitAmount = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   const loadData = async () => {
+    setLoading(true);
     try {
       const result = await fetchData({
         method: "GET",
@@ -27,6 +30,8 @@ const SetLimitAmount = () => {
     } catch (err) {
       console.error("Error fetching limit amounts:", err);
       setData([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -69,125 +74,126 @@ const SetLimitAmount = () => {
     currentPage < totalPages && setCurrentPage(currentPage + 1);
 
   return (
-    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+    <div className="bg-[#E0E9E9] min-h-screen font-[Poppins]">
+      {/* Outer Container */}
+      <div className="w-full px-3 md:px-4 py-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-4 bg-white px-4 py-3 rounded-lg shadow">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-white px-3 md:px-4 py-3 rounded-md shadow">
           <h1 className="text-xl font-medium">Limit Amount List</h1>
           <button
             onClick={handleAdd}
-            className="w-[200px] bg-[#001580] text-white px-4 rounded-lg h-10"
+            className="w-full md:w-[200px] bg-[#001580] text-white px-4 py-2 rounded-md mt-2 md:mt-0"
           >
             + Add Limit Amount
           </button>
         </div>
 
         {/* Main Container */}
-        <div className="bg-white p-4 rounded-lg shadow mb-4 min-h-[830px]">
-          {/* Inner Border Container */}
-          <div className="border border-[#616666] rounded-lg overflow-x-auto min-h-[742px]">
-            <table className="w-full text-left bg-white">
-              <thead>
-                <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] font-poppins font-medium">
-                  <th className="px-4 py-4 font-medium">Sr.No.</th>
-                  <th className="px-4 py-4 font-medium">Category</th>
-                  <th className="px-4 py-4 font-medium">Charges</th>
-                  <th className="px-4 py-4 font-medium">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.length ? (
-                  paginatedData.map((item, index) => (
-                    <tr key={item._id} className="text-center h-20">
-                      <td className="px-4 font-normal">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </td>
-                      <td className="px-4 font-normal">{item.category?.tabName || "N/A"}</td>
-                      <td className="px-4 font-normal">₹{item.nagativeLimit ?? "N/A"}</td>
-                      <td className="px-4 font-normal">
-                        <div className="flex items-center justify-center space-x-3">
-                          <Eye
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleView(item._id)}
-                            title="View"
-                          />
-                          <Edit
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleEdit(item._id)}
-                            title="Edit"
-                          />
-                          <Trash2
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleDelete(item._id)}
-                            title="Delete"
-                          />
-                        </div>
-                      </td>
+        <div className="bg-white p-3 md:p-4 rounded-md shadow mb-4 min-h-[830px]">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center min-h-[742px]">
+              <CircularProgress />
+              <Typography sx={{ mt: 2 }}>Loading limits...</Typography>
+            </div>
+          ) : (
+            <>
+              {/* Table Container */}
+              <div className="border border-[#616666] rounded-md overflow-x-auto min-h-[742px]">
+                <table className="w-full text-left bg-white">
+                  <thead>
+                    <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] font-medium">
+                      <th className="px-3 py-2 font-medium">Sr.No.</th>
+                      <th className="px-3 py-2 font-medium">Category</th>
+                      <th className="px-3 py-2 font-medium">Charges</th>
+                      <th className="px-3 py-2 font-medium">Action</th>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center py-6 text-[#001580]">
-                      No data found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody>
+                    {paginatedData.length ? (
+                      paginatedData.map((item, index) => (
+                        <tr key={item._id} className="text-center h-16">
+                          <td className="px-3">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                          <td className="px-3">{item.category?.tabName || "N/A"}</td>
+                          <td className="px-3">₹{item.nagativeLimit ?? "N/A"}</td>
+                          <td className="px-3">
+                            <div className="flex items-center justify-center space-x-2">
+                              <Eye
+                                className="w-5 h-5 text-red-600 cursor-pointer"
+                                onClick={() => handleView(item._id)}
+                                title="View"
+                              />
+                              <Edit
+                                className="w-5 h-5 text-red-600 cursor-pointer"
+                                onClick={() => handleEdit(item._id)}
+                                title="Edit"
+                              />
+                              <Trash2
+                                className="w-5 h-5 text-red-600 cursor-pointer"
+                                onClick={() => handleDelete(item._id)}
+                                title="Delete"
+                              />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="4" className="text-center py-6 text-[#001580]">
+                          No data found
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-          {/* Pagination */}
-          {data.length > 0 && (
-            <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
-              <span className="text-sm font-semibold">
-                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} Entries
-              </span>
-
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handlePrev}
-                  disabled={currentPage === 1}
-                  className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-[#001580]"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
-                >
-                  &lt;
-                </button>
-
-                {[...Array(totalPages)].map((_, i) => {
-                  const page = i + 1;
-                  if (page < currentPage - 1 || page > currentPage + 1) return null;
-                  return (
+              {/* Pagination */}
+              {data.length > 0 && (
+                <div className="flex flex-col md:flex-row justify-between items-center mt-3 bg-[#F5F5F5] rounded-md py-2 px-3 md:px-4">
+                  <span className="text-sm font-semibold">
+                    Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                    {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} Entries
+                  </span>
+                  <div className="flex items-center space-x-2 mt-2 md:mt-0">
                     <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
-                        page === currentPage
-                          ? "bg-[#001580] text-white"
-                          : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
+                      onClick={handlePrev}
+                      disabled={currentPage === 1}
+                      className={`w-8 h-8 flex items-center justify-center rounded-xl ${
+                        currentPage === 1 ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
                       }`}
                     >
-                      {page}
+                      &lt;
                     </button>
-                  );
-                })}
-
-                <button
-                  onClick={handleNext}
-                  disabled={currentPage === totalPages}
-                  className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                    currentPage === totalPages
-                      ? "bg-gray-200 text-[#001580]"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
-                >
-                  &gt;
-                </button>
-              </div>
-            </div>
+                    {[...Array(totalPages)].map((_, i) => {
+                      const page = i + 1;
+                      if (page < currentPage - 1 || page > currentPage + 1) return null;
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
+                            page === currentPage
+                              ? "bg-[#001580] text-white"
+                              : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    })}
+                    <button
+                      onClick={handleNext}
+                      disabled={currentPage === totalPages}
+                      className={`w-8 h-8 flex items-center justify-center rounded-xl ${
+                        currentPage === totalPages ? "bg-gray-200 text-[#001580]" : "bg-white hover:bg-gray-100"
+                      }`}
+                    >
+                      &gt;
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
