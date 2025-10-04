@@ -169,7 +169,7 @@ export default function ChargesList() {
   };
 
   return (
-    <div className="p-6 bg-gray-200 min-h-screen">
+    <div className=" bg-gray-200 min-h-screen">
       <ToastContainer />
       <div className="space-y-4">
         {/* Top Section */}

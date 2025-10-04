@@ -115,7 +115,7 @@ const AdminProfile = () => {
                   {/* Right - Image */}
                   <div className="flex justify-center items-start w-full md:w-1/3">
                     <img
-                      src={manimage}
+                      src={adminProfile?.profileImage || manimage}
                       alt="Admin"
                       className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border-0 border-[#001580]"
                     />

@@ -80,7 +80,7 @@ const CommissionList = () => {
   };
 
   return (
-    <div className="bg-[#E0E9E9] min-h-screen w-full p-2 sm:p-4 md:p-6">
+    <div className="bg-[#E0E9E9] min-h-screen w-full sm:p-4 ">
       <ToastContainer />
 
       {/* Header */}
