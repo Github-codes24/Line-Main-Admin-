@@ -117,7 +117,7 @@ const AdminProfile = () => {
                     <img
                       src={manimage}
                       alt="Admin"
-                      className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border-2 border-[#001580]"
+                      className="w-36 h-36 md:w-40 md:h-40 object-cover rounded-full border-0 border-[#001580]"
                     />
                   </div>
                 </div>

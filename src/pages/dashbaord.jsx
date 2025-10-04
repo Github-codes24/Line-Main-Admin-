@@ -95,7 +95,7 @@ const Dashboard = () => {
                   order.orderId, // Display ID for the table
                   order.specificServiceName,
                   <span
-                    className={`font-semibold ${order.orderStatus === "Pending"
+                    className={`font-extrasemibold ${order.orderStatus === "Pending"
                       ? "text-yellow-500"
                       : order.orderStatus === "Assigned"
                         ? "text-green-500"

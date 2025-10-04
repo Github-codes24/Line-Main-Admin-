@@ -15,7 +15,7 @@ const DashboardTable = ({
   shopData,
   isWorkerTable,
   workerData,
-  showAction = true, // ✅ new prop to control Action column
+  showAction = true, // new prop to control Action column
 }) => {
   const navigate = useNavigate();
 
@@ -23,7 +23,7 @@ const DashboardTable = ({
     <div className="bg-white shadow-md rounded-md p-4 w-full border border-[#616666] font-myfont">
       {/* Table Header */}
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-md font-bold">{title}</h3>
+        <h3 className="text-md font-bold text-[#0D2E28]">{title}</h3>
         {/* <a href="/" className="text-[#001580] text-sm hover:underline">
           {actionLink || "See All"}
         </a> */}
@@ -32,7 +32,7 @@ const DashboardTable = ({
       onClick={() => navigate(actionLink)}
       className="text-[#001580] text-sm font-bold hover:underline cursor-pointer"
     >
-      {actionText || "See All"} {/* ✅ dynamic text */}
+      {actionText || "See All"} {/*  dynamic text */}
     </span>
   )}
       </div>
@@ -41,7 +41,7 @@ const DashboardTable = ({
       <div className="overflow-x-auto border border-[#616666] rounded-md">
         {/* <table className="w-full text-sm text-left"> */}
           <table className="w-full text-sm text-center"> 
-          <thead className="bg-[#E0E9E9]">
+          <thead className="bg-[#E4E5EB] text-[#0D2E28]">
             <tr>
               {headers.map((head, idx) => (
                 <th key={idx} className="px-3 py-2">{head}</th>
@@ -50,7 +50,7 @@ const DashboardTable = ({
               {showAction && <th className="px-3 py-2">Action</th>}
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-[#0D2E28]">
             {data.map((row, idx) => (
               <tr key={idx}>
                 {row.map((cell, i) => (
@@ -59,10 +59,11 @@ const DashboardTable = ({
 
                 {/* Render Action cell only if showAction is true */}
                 {showAction && (
-                 <td className="px-3 py-2 flex justify-center items-center">
+                //  <td className="px-3 py-2 flex justify-center items-middle">
+                  <td className="px-3 py-2 text-center align-middle">
   <FiEye
-    size={20} // or use text-2xl
-    className="text-[#001580] cursor-pointer"
+    size={18} // or use text-2xl
+    className="text-[#001580] cursor-pointer inline-block"
                       onClick={() => {
                         if (isOrderTable && orderData) {
                           const actualId = orderData[idx]?._id || orderData[idx]?.id;
