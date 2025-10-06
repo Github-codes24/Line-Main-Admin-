@@ -113,7 +113,7 @@ const AdminLogin = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         type="submit"
-        className="bg-[#001580] text-white py-2 rounded-md shadow-md hover:bg-[#CED4F2] transition w-[300px] sm:w-[80%] mt-2"
+        className="bg-[#001580] text-white py-2 rounded-md shadow-md hover:bg-[#041880] transition w-[300px] sm:w-[80%] mt-2"
       >
         Log In
       </motion.button>
