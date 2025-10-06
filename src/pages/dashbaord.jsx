@@ -63,7 +63,7 @@ const Dashboard = () => {
   
 
   return (
-    <div className="bg-[#E0E9E9] min-h-screen p-0">
+    <div className="bg-[#E0E9E9] min-h-screen p-0 font-myfont">
       <div className="bg-[#FFFFFF] p-2 rounded-md ">
         {/* Cards Section */}
         <div className="mb-6">
@@ -80,7 +80,7 @@ const Dashboard = () => {
         </div>
 
         {/* Orders + Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 font-myfont">
           {/* Recent Orders */}
           <DashboardTable
             title="Recent Orders"
@@ -115,7 +115,7 @@ const Dashboard = () => {
             title="Top Selling Products"
             actionLink="/admin/smallproduct"
             actionText="See All Product"
-            headers={["Product", "Name", "Category"]}
+            headers={["Product Image", "Product Name", "Product Category"]}
             showAction={false} //  hides Action column
             data={
               topProducts && topProducts.length > 0
@@ -123,7 +123,7 @@ const Dashboard = () => {
                   <img
                     src={product.productImageUrl}
                     alt={product.productName}
-                    className="w-8 h-8 rounded"
+                    className="w-8 h-8 rounded text-center"
                   />,
                   product.productName,
                   product.productCategory,
