@@ -136,7 +136,7 @@ const goToPage = (pg) => {
         
         // <div className="p-8 bg-[#E0E9E9]">
         // <div className="bg-[#E0E9E9] min-h-screen">
-        <div className="bg-[#E0E9E9] min-h-screen w-full">
+        <div className="bg-[#E0E9E9] min-h-screen w-full font-myfont">
               <ToastContainer />
       {/* Header */}
       {/* <div className="bg-white p-1 shadow-md mb-4 rounded-md relative flex items-center min-h-[65px]"> */}
