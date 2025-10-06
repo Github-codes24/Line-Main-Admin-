@@ -230,7 +230,7 @@ const EditCustomer = () => {
   <ToastContainer />
 
   {/* Top Header Box */}
-  <div className="w-full bg-white rounded-md shadow-md p-4 text-xl font-semibold flex items-center gap-2 mb-4">
+  <div className="w-full text-[#0D2E28] bg-white rounded-md shadow-md p-4 text-xl font-semibold flex items-center gap-2 mb-4">
     <svg
       width="28"
       height="28"
@@ -279,13 +279,13 @@ const EditCustomer = () => {
           <div className="border border-[#001580] rounded-lg p-4 min-h-[400px] space-y-4 w-full">
             
             {/* Customer Name */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full text-[#0D2E28]">
               <label className="w-full md:w-40 font-medium">Customer Name:</label>
               <Field
                 type="text"
                 name="name"
                 placeholder="Enter Full Name"
-                className="flex-1 border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
+                className="flex-1 border border-[#001580] text-[#0D2E28] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
               />
               <ErrorMessage
                 name="name"
@@ -295,13 +295,13 @@ const EditCustomer = () => {
             </div>
 
             {/* Contact */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full text-[#0D2E28]">
               <label className="w-full md:w-40 font-medium">Email ID/Phone Number:</label>
               <Field
                 type="text"
                 name="contact"
                 placeholder="Enter Email ID/Phone Number"
-                className="flex-1 border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
+                className="flex-1 border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2] text-[#0D2E28]"
               />
               <ErrorMessage
                 name="contact"
@@ -311,13 +311,13 @@ const EditCustomer = () => {
             </div>
 
             {/* Address */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full">
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 w-full text-[#0D2E28]">
               <label className="w-full md:w-40 font-medium">Address:</label>
               <Field
                 type="text"
                 name="address"
                 placeholder="Enter Full Address"
-                className="flex-1 border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2]"
+                className="flex-1 border border-[#001580] rounded-md px-3 py-2 focus:outline-none bg-[#CED4F2] text-[#0D2E28]"
               />
               <ErrorMessage
                 name="address"
@@ -345,7 +345,7 @@ const EditCustomer = () => {
                   : "bg-[#001580] hover:bg-[#CED4F2]"
               }`}
             >
-              {isSubmitting || isLoading ? "Updating..." : "Update Customer"}
+              {isSubmitting || isLoading ? "Updating..." : "Update"}
             </button>
           </div>
         </Form>

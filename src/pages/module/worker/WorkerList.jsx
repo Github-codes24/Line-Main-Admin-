@@ -227,7 +227,7 @@ const [selectedWorker, setSelectedWorker] = useState(null);
           placeholder="Search by Name, Phone Number, Email, Expertise..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+          className="w-full h-10 pl-12 pr-4 placeholder:font-semibold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
         />
       </div>
     </div>
@@ -331,15 +331,34 @@ const [selectedWorker, setSelectedWorker] = useState(null);
         <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
           {isLoading ? (
             <div className="flex justify-center items-center h-[400px]">
-              <div className="text-lg">Loading customers...</div>
+              {/* <div className="text-lg">Loading customers...</div> */}
+               <svg
+  className="animate-spin h-10 w-10 text-[#001580]"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+>
+  <circle
+    className="opacity-100"
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeDasharray="60"
+    strokeDashoffset="20"
+  ></circle>
+</svg>
+
             </div>
           ) : error ? (
             <div className="flex justify-center items-center h-[400px]">
               <div className="text-lg text-red-500">{error}</div>
             </div>
           ) : (
-            <table className="w-full text-sm text-left text-gray-700">
-              <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
+            <table className="w-full text-sm text-left  text-[#0D2E28]">
+              <thead className="bg-[#E4E5EB]   font-thin text-[#0D2E28]">
                 <tr>
                   <th className="px-6 py-4">Sr.No.</th>
                   <th className="px-6 py-4">Worker Name</th>

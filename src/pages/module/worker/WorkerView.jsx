@@ -62,10 +62,38 @@ function WorkerView() {
   // 🔹 Loading state
   if (loading) {
     return (
-      <Box sx={{ p: 3, textAlign: "center" }}>
-        <CircularProgress />
-        <Typography sx={{ mt: 2 }}>Loading worker details...</Typography>
-      </Box>
+   <Box
+  sx={{
+    height: "100vh", // or "100%" if inside a fixed-height container
+    display: "flex",
+    alignItems: "center", // vertical center
+    justifyContent: "center", // horizontal center
+    flexDirection: "column",
+  }}
+>
+  <svg
+    className="animate-spin h-10 w-10 text-[#001580]"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-100"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeDasharray="60"
+      strokeDashoffset="20"
+    ></circle>
+  </svg>
+
+  {/* Optional text */}
+  {/* <Typography sx={{ mt: 2 }}>Loading worker details...</Typography> */}
+</Box>
+
     );
   }
 
@@ -89,16 +117,20 @@ function WorkerView() {
 
   // 🔹 Worker details UI
   return (
-    <Box
+     <Box
       sx={{
         width: "100%",
         minHeight: "auto",
         display: "flex",
         flexDirection: "column",
         gap: "18px",
+        color: "#0D2E28", // 🔹 all text color
       }}
     >
+      {/* Header */}
       <Worker back title="View Worker" />
+
+      {/* Worker Details Card */}
       <Card>
         <CardContent>
           <Box
@@ -107,12 +139,12 @@ function WorkerView() {
               flexDirection: "column",
               gap: 2,
               marginBottom: 2,
-              
               border: "1px solid black",
               borderRadius: 1,
               padding: 2,
               boxSizing: "border-box",
               paddingBottom: 10,
+              color: "#0D2E28", // ensure all text inside is greenish
             }}
           >
             {/* Worker Name */}
@@ -122,36 +154,16 @@ function WorkerView() {
             <Field label="Expertise" value={worker.experties || worker.expertise} />
 
             {/* Contact */}
-            <Field label="Email ID/Phone Number" value={worker.contact || worker.phone || worker.email} />
+            <Field
+              label="Email ID/Phone Number"
+              value={worker.contact || worker.phone || worker.email}
+            />
 
             {/* Address */}
             <Field label="Address" value={worker.address} />
 
             {/* Status */}
-            <Field label="Status" value={worker.status || 'Active'} />
-
-            {/* Aadhaar Image */}
-            {/* <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography sx={{ fontWeight: 500 }}>Aadhaar Card Image:</Typography>
-              </Box>
-              <Box sx={{ gridColumn: "span 2" }}>
-                {worker.aadhaarImage ? (
-                  <img
-                    src={worker.aadhaarImage}
-                    alt="Aadhaar Card"
-                    style={{
-                      width: "200px",
-                      height: "120px",
-                      borderRadius: "8px",
-                      border: "1px solid #ccc",
-                    }}
-                  />
-                ) : (
-                  <Typography>No Aadhaar image available</Typography>
-                )}
-              </Box>
-            </Box> */}
+            <Field label="Status" value={worker.status || "Active"} />
           </Box>
 
           {/* Action Buttons */}
@@ -168,15 +180,16 @@ function WorkerView() {
             <Button
               variant="contained"
               sx={{
-                background: worker.status === "Active" ? "#CECEF2" : "#CECEF2",
-                color: worker.status === "Active" ? "#001580" : "#001580",
-                border:worker.status === "Active" ? "1px solid #001580" : "1px solid #001580",
+                background: "#CECEF2",
+                color: "#001580",
+                border: "1px solid #001580",
                 paddingX: 4,
                 paddingY: "4px",
                 textTransform: "none",
               }}
               onClick={() => {
-                const newStatus = worker.status === "Active" ? "Inactive" : "Active";
+                const newStatus =
+                  worker.status === "Active" ? "Inactive" : "Active";
                 toast.success(`Worker marked as ${newStatus}`);
                 // TODO: API call for status update
               }}
@@ -187,7 +200,12 @@ function WorkerView() {
             {/* Edit */}
             <Button
               variant="outlined"
-              sx={{ background: "#001580", color: "#FFFFFF", px: 4 }}
+              sx={{
+                background: "#001580",
+                color: "#FFFFFF",
+                px: 4,
+                border: "1px solid #001580",
+              }}
               onClick={() =>
                 navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
               }
@@ -199,13 +217,13 @@ function WorkerView() {
       </Card>
     </Box>
   );
-}
+};
 
 // 🔹 Reusable Field component
 const Field = ({ label, value }) => (
   <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Typography sx={{ fontWeight: 500 }}>{label}:</Typography>
+      <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>{label}:</Typography>
     </Box>
     <Box sx={{ gridColumn: "span 2" }}>
       <TextField
@@ -213,7 +231,22 @@ const Field = ({ label, value }) => (
         type="text"
         value={value || ""}
         variant="outlined"
-        sx={{ background: "#E4E5EB" }}
+        sx={{
+          background: "#E4E5EB",
+          "& .MuiOutlinedInput-root": {
+            "& fieldset": {
+              borderColor: "#001580", // 🔵 border color
+            },
+            "&:hover fieldset": {
+              borderColor: "#001580", // hover border color
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#001580", // focus border color
+            },
+          },
+          input: { color: "#0D2E28" },
+        
+        }}
         InputProps={{ readOnly: true }}
       />
     </Box>

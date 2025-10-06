@@ -99,7 +99,7 @@ const AddCustomer = () => {
         />
       </svg>
 
-      <h2 className="text-lg font-semibold text-gray-800">Add New Customer</h2>
+      <h2 className="text-lg font-semibold text-[#0D2E28]">Add New Customer</h2>
     </div>
   </div>
 
@@ -122,7 +122,7 @@ const AddCustomer = () => {
           <div className="border border-[#616666] rounded-md p-8 min-h-[400px] w-full">
             {/* Customer Name */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Customer Name:
               </label>
               <div className="w-full md:w-3/4">
@@ -142,7 +142,7 @@ const AddCustomer = () => {
 
             {/* Email / Phone */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Email ID/Phone Number:
               </label>
               <div className="w-full md:w-3/4">
@@ -162,7 +162,7 @@ const AddCustomer = () => {
 
             {/* Address */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Address:
               </label>
               <div className="w-full md:w-3/4">

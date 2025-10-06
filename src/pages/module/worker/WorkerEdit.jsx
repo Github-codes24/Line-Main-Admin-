@@ -100,16 +100,18 @@ function WorkerEdit() {
   };
 
   return (
-    <Box
+   <Box
       sx={{
         width: "100%",
         minHeight: "auto",
         display: "flex",
         flexDirection: "column",
         gap: "24px",
+        color: "#0D2E28", // 🔹 all text color
       }}
     >
       <Worker back title="Edit Worker" />
+
       <Card>
         <CardContent>
           <form onSubmit={handleUpdate}>
@@ -129,7 +131,7 @@ function WorkerEdit() {
               {/* Worker Name */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ fontWeight: 500 }}>Worker Name:</Typography>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Worker Name:</Typography>
                 </Box>
                 <Box sx={{ gridColumn: "span 2" }}>
                   <TextField
@@ -140,7 +142,15 @@ function WorkerEdit() {
                     placeholder="Enter Full Name"
                     value={workerData.name}
                     onChange={handleChange}
-                    sx={{ background: "#CED4F2" }}
+                    sx={{
+                      background: "#CED4F2",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#001580" },
+                        "&:hover fieldset": { borderColor: "#001580" },
+                        "&.Mui-focused fieldset": { borderColor: "#001580" },
+                      },
+                      input: { color: "#0D2E28" },
+                    }}
                   />
                 </Box>
               </Box>
@@ -148,7 +158,7 @@ function WorkerEdit() {
               {/* Expertise (Dropdown) */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ fontWeight: 500 }}>Expertise:</Typography>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Expertise:</Typography>
                 </Box>
                 <Box sx={{ gridColumn: "span 2" }}>
                   <Select
@@ -158,7 +168,13 @@ function WorkerEdit() {
                     name="experties"
                     value={workerData.experties}
                     onChange={handleChange}
-                    sx={{ background: "#CED4F2" }}
+                    sx={{
+                      background: "#CED4F2",
+                      color: "#0D2E28",
+                      "& .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                    }}
                   >
                     <MenuItem value="" disabled hidden>
                       Select Expertise
@@ -177,7 +193,7 @@ function WorkerEdit() {
               {/* Contact */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ fontWeight: 500 }}>Email ID/Phone Number:</Typography>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Email ID/Phone Number:</Typography>
                 </Box>
                 <Box sx={{ gridColumn: "span 2" }}>
                   <TextField
@@ -188,7 +204,15 @@ function WorkerEdit() {
                     placeholder="Enter Email ID/Phone Number"
                     value={workerData.contact}
                     onChange={handleChange}
-                    sx={{ background: "#CED4F2" }}
+                    sx={{
+                      background: "#CED4F2",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#001580" },
+                        "&:hover fieldset": { borderColor: "#001580" },
+                        "&.Mui-focused fieldset": { borderColor: "#001580" },
+                      },
+                      input: { color: "#0D2E28" },
+                    }}
                   />
                 </Box>
               </Box>
@@ -196,7 +220,7 @@ function WorkerEdit() {
               {/* Address */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ fontWeight: 500 }}>Address:</Typography>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Address:</Typography>
                 </Box>
                 <Box sx={{ gridColumn: "span 2" }}>
                   <TextField
@@ -207,7 +231,15 @@ function WorkerEdit() {
                     placeholder="Enter Full Address"
                     value={workerData.address}
                     onChange={handleChange}
-                    sx={{ background: "#CED4F2" }}
+                    sx={{
+                      background: "#CED4F2",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#001580" },
+                        "&:hover fieldset": { borderColor: "#001580" },
+                        "&.Mui-focused fieldset": { borderColor: "#001580" },
+                      },
+                      input: { color: "#0D2E28" },
+                    }}
                   />
                 </Box>
               </Box>
@@ -257,6 +289,6 @@ function WorkerEdit() {
       </Card>
     </Box>
   );
-}
+};
 
 export default WorkerEdit;

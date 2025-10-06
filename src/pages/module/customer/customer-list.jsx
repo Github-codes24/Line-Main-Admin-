@@ -214,7 +214,28 @@ const goToPage = (pg) => {
       <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px]"> */}
                     {isLoading ? (
                         <div className="flex justify-center items-center h-[400px]">
-                            <div className="text-lg">Loading customers...</div>
+                            {/* <div className="text-lg">Loading customers...</div> */}
+                         <svg
+  className="animate-spin h-10 w-10 text-[#001580]"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+>
+  <circle
+    className="opacity-100"
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeDasharray="60"
+    strokeDashoffset="20"
+  ></circle>
+</svg>
+
+
+
                         </div>
                     ) : error ? (
                         <div className="flex justify-center items-center h-[400px]">
@@ -222,7 +243,9 @@ const goToPage = (pg) => {
                         </div>
                     ) : (
                         <table className="w-full text-sm text-left text-[#0D2E28]">
-                            <thead className="bg-[#E4E5EB] text-[#333333] text-base font-regular">
+                            {/* <thead className="bg-[#E4E5EB] text-[#333333] text-base font-semibold"> */}
+                            <thead className="bg-[#E4E5EB] text-[#0D2E28]  font-regular font-poppins  ">
+
                                 <tr>
                                     <th className="px-6 py-4">Sr.No.</th>
                                     <th className="px-6 py-4">Customer Name</th>

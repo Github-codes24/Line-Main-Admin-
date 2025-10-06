@@ -1,7 +1,7 @@
 
 
 // export default Navbar;
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowDropDown } from "@mui/icons-material";
 import {
   Avatar,
@@ -16,13 +16,40 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import profileImage from "../../assets/images/profileImage.jpg";
+import useAuth from "../../hook/auth/useAuth";
+import conf from "../../config";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const { getProfile, adminProfile } = useAuth();
+  
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  // Listen for profile updates (when user navigates back from edit profile)
+  useEffect(() => {
+    const handleFocus = () => {
+      // Refresh profile when window regains focus (user might have updated profile)
+      getProfile();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
+  // Refresh profile when navigating to profile-related pages
+  useEffect(() => {
+    if (location.pathname === '/admin-profile' || location.pathname === '/admin/edit-profile') {
+      console.log("Navigated to profile page, refreshing profile data...");
+      getProfile();
+    }
+  }, [location.pathname]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -85,8 +112,16 @@ navigate("/");
       </Typography>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-        <Avatar src={profileImage} alt="profile">
-          GS
+        <Avatar 
+          key={adminProfile?.profileImage || 'default'} // Force re-render when photo changes
+          src={adminProfile?.profileImage || profileImage} 
+          alt="profile"
+          onError={(e) => {
+            console.log("Navbar avatar image load error, falling back to default");
+            e.target.src = profileImage;
+          }}
+        >
+          {adminProfile?.name ? adminProfile.name.charAt(0) : "A"}
         </Avatar>
         <IconButton size="small" sx={{ p: 0 }} onClick={handleMenuOpen}>
           <ArrowDropDown />
