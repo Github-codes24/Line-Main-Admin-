@@ -68,7 +68,7 @@ navigate("/");
       sx={{
         minWidth: "100vw",
         paddingY: "8px",
-        paddingX: "18px",
+        paddingX: "48px",
         boxSizing: "border-box",
         display: "flex",
         justifyContent: "space-between",
@@ -80,7 +80,7 @@ navigate("/");
         zIndex: 10,
       }}
     >
-      <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
+      <Typography color="#001580" fontWeight={700} fontSize={"28px"} >
         LineMan Logo
       </Typography>
 

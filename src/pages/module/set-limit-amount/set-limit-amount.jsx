@@ -76,7 +76,7 @@ const SetLimitAmount = () => {
   return (
     <div className="bg-[#E0E9E9] min-h-screen font-[Poppins]">
       {/* Outer Container */}
-      <div className="w-full px-3 md:px-4 py-6">
+      <div className="w-full  md:px-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-4 bg-white px-3 md:px-4 py-3 rounded-md shadow">
           <h1 className="text-xl font-medium">Limit Amount List</h1>

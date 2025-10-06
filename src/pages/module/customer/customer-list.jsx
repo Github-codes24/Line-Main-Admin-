@@ -146,7 +146,7 @@ const goToPage = (pg) => {
   <div className="flex flex-col md:flex-row items-center md:justify-between gap-3 relative">
     
     {/* Title */}
-    <h1 className="text-xl font-semibold">Customer List</h1>
+    <h1 className="text-xl text-[#333333] font-semibold">Customer List</h1>
 
     {/* Search Bar */}
     {/* Desktop Centered */}
@@ -165,7 +165,7 @@ const goToPage = (pg) => {
           placeholder="Search by Name, Phone Number, Email..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+          className="w-full h-10 pl-12 pr-4 placeholder:font-semibold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
         />
       </div>
     </div>
@@ -221,8 +221,8 @@ const goToPage = (pg) => {
                             <div className="text-lg text-red-500">{error}</div>
                         </div>
                     ) : (
-                        <table className="w-full text-sm text-left text-gray-700">
-                            <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
+                        <table className="w-full text-sm text-left text-[#0D2E28]">
+                            <thead className="bg-[#E4E5EB] text-[#333333] text-base font-regular">
                                 <tr>
                                     <th className="px-6 py-4">Sr.No.</th>
                                     <th className="px-6 py-4">Customer Name</th>

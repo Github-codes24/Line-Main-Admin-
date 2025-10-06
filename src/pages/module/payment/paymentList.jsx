@@ -32,7 +32,7 @@ const PaymentList = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="">
       {/* Header + Search */}
       <div className="bg-white p-3 rounded-lg shadow">
         <div className="flex items-center justify-between flex-wrap gap-4 w-full">

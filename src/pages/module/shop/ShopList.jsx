@@ -155,85 +155,6 @@ const fetchShops = async (page = 1, search = "") => {
 };
 
 
-  // Delete shop function
-  // const deleteShop = async (shopId, shopName) => {
-  //   try {
-  //     // Show confirmation dialog
-  //     const confirmed = window.confirm(
-  //       `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
-  //     );
-
-  //     if (!confirmed) {
-  //       return;
-  //     }
-
-  //     setIsLoading(true);
-  //     console.log('Deleting shop with ID:', shopId);
-
-  //     // Try different possible delete endpoints
-  //     const possibleEndpoints = [
-  //       `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`,
-  //       `${conf.apiBaseUrl}/admin/shop/get-shop/${shopId}`, // Your provided endpoint
-  //       `${conf.apiBaseUrl}/admin/shop/remove-shop/${shopId}`,
-  //       `${conf.apiBaseUrl}/admin/shop/${shopId}`,
-  //     ];
-
-  //     let result = null;
-  //     let lastError = null;
-
-  //     for (const endpoint of possibleEndpoints) {
-  //       try {
-  //         console.log('Trying DELETE endpoint:', endpoint);
-  //         result = await fetchData({
-  //           method: "DELETE",
-  //           url: endpoint,
-  //         });
-  //         console.log('Success with DELETE endpoint:', endpoint);
-  //         break;
-  //       } catch (error) {
-  //         console.log('Failed with DELETE endpoint:', endpoint, error.response?.data?.message);
-  //         lastError = error;
-  //         continue;
-  //       }
-  //     }
-
-  //     if (!result) {
-  //       throw lastError || new Error('All DELETE endpoints failed');
-  //     }
-
-  //     console.log('Delete shop API response:', result);
-
-  //     if (result.success || result.status === 'success') {
-  //       toast.success(result.message || `Shop "${shopName}" deleted successfully!`);
-
-  //       // Refresh the shop list
-  //       fetchShops(pagination.currentPage, searchText);
-  //     } else {
-  //       throw new Error(result.message || 'Failed to delete shop');
-  //     }
-
-  //   } catch (error) {
-  //     console.error('Error deleting shop:', error);
-  //     console.error('Full error response:', error.response);
-
-  //     let errorMessage = 'Failed to delete shop';
-  //     if (error.response?.data?.message) {
-  //       errorMessage = error.response.data.message;
-  //     } else if (error.response?.data?.error) {
-  //       errorMessage = error.response.data.error;
-  //     } else if (error.response?.data) {
-  //       errorMessage = typeof error.response.data === 'string'
-  //         ? error.response.data
-  //         : JSON.stringify(error.response.data);
-  //     } else if (error.message) {
-  //       errorMessage = error.message;
-  //     }
-
-  //     toast.error(errorMessage);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
 const deleteShop = async (shopId) => {
   try {
@@ -325,16 +246,7 @@ const deleteShop = async (shopId) => {
             sx={{
               border: "1px solid #bbb"
 
-              // border: "2px solid #ccc"
-              // border: "1px solid #ddd"
-              // border: "1px solid #e0e0e0"
-
-
-
-              // border: "1px solid black",
-              // maxHeight: 500,
-              // overflowY: "scroll",
-              // scrollbarWidth: "thin",
+              
             }}
           >
             <Table stickyHeader sx={{ borderRadius: 2 }}>
@@ -379,41 +291,50 @@ const deleteShop = async (shopId) => {
     <TableCell sx={{ borderBottom: 'none' }}>{item.address}</TableCell>
     <TableCell sx={{ borderBottom: 'none' }}>{item.aadhaar}</TableCell>
     <TableCell sx={{ borderBottom: 'none' }}>{item.gstin}</TableCell>
-    <TableCell
-      sx={{ borderBottom: 'none', color: item.status === "Active" ? "green" : "red" }}
+<TableCell
+  sx={{
+    borderBottom: "none",
+    color: item.status === "Active" ? "green" : "red",
+  }}
+>
+  {item.status}
+</TableCell>
+
+<TableCell sx={{ borderBottom: "none" }}>
+  <span style={{ display: "inline-flex", gap: "4px", verticalAlign: "middle" }}>
+    <IconButton
+      size="small"
+      onClick={() =>
+        navigate(`/admin/shopmanagement/view/${item._id || item.id}`, {
+          state: { shop: item },
+        })
+      }
     >
-      {item.status}
-    </TableCell>
-    <TableCell sx={{ borderBottom: 'none', display: "flex", justifyContent: "center", gap: 1 }}>
-      <IconButton
-        size="small"
-        onClick={() =>
-          navigate(`/admin/shopmanagement/view/${item._id || item.id}`, { state: { shop: item } })
-        }
-      >
-        <ViewIcon />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={() =>
-          navigate(`/admin/shopmanagement/edit/${item._id || item.id}`, {
-            state: { shop: { ...item, aadhaarNumber: item.aadhaar, gstinNumber: item.gstin } },
-          })
-        }
-      >
-        <EditIcon />
-      </IconButton>
-      <IconButton
-        size="small"
-        onClick={() => {
-          setSelectedShop(item);
-          setDeleteModalOpen(true);
-        }}
-        disabled={isLoading}
-      >
-        <DeleteIcon />
-      </IconButton>
-    </TableCell>
+      <ViewIcon />
+    </IconButton>
+    <IconButton
+      size="small"
+      onClick={() =>
+        navigate(`/admin/shopmanagement/edit/${item._id || item.id}`, {
+          state: { shop: { ...item, aadhaarNumber: item.aadhaar, gstinNumber: item.gstin } },
+        })
+      }
+    >
+      <EditIcon />
+    </IconButton>
+    <IconButton
+      size="small"
+      onClick={() => {
+        setSelectedShop(item);
+        setDeleteModalOpen(true);
+      }}
+      disabled={isLoading}
+    >
+      <DeleteIcon />
+    </IconButton>
+  </span>
+</TableCell>
+
   </TableRow>
 ))
 

@@ -1,9 +1,10 @@
-import React, {useState, useRef} from "react";
-import {useNavigate} from "react-router-dom";
-import {toast, ToastContainer} from "react-toastify";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import addImage from "../../../assets/images/addImage.png";
 import useFetch from "../../../hook/useFetch";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 import conf from "../../../config";
 
 const BigProductAdd = () => {
@@ -11,23 +12,47 @@ const BigProductAdd = () => {
     const fileInputRef = useRef(null);
     const [fetchData] = useFetch();
     const [isLoading, setIsLoading] = useState(false);
+    const { productCategory, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory } = useDropdown();
 
     // Form state
     const [formData, setFormData] = useState({
         productName: "",
         productCategory: "",
+        productSubCategory: "",
         productPrice: "",
         productDescription: "",
         productImage: null,
     });
+
     const [imagePreview, setImagePreview] = useState(null);
 
+    // Fetch categories on component mount
+    useEffect(() => {
+        fetchProductCategory();
+    }, []);
+
     const handleInputChange = (e) => {
-        const {name, value} = e.target;
+        const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
             [name]: value,
         }));
+    };
+
+    const handleCategoryChange = async (e) => {
+        const categoryId = e.target.value;
+        setFormData((prev) => ({
+            ...prev,
+            productCategory: categoryId,
+            productSubCategory: "", // Reset subcategory when category changes
+        }));
+
+        // Clear old subcategory options first
+        setProductSubCategory([]);
+
+        if (categoryId) {
+            await fetchProductSubCategory(categoryId);
+        }
     };
 
     const handleImageChange = (e) => {
@@ -49,7 +74,7 @@ const BigProductAdd = () => {
             toast.error("Product name is required");
             return;
         }
-        if (!formData.productCategory.trim()) {
+        if (!formData.productCategory) {
             toast.error("Product category is required");
             return;
         }
@@ -62,12 +87,19 @@ const BigProductAdd = () => {
             return;
         }
 
+        // Validate that category exists in admin-tab-management
+        const selectedCategory = productCategory.find(cat => cat._id === formData.productCategory);
+        if (!selectedCategory) {
+            toast.error("Selected category is not valid. Please select a valid category from admin-tab-management.");
+            return;
+        }
+
         try {
             setIsLoading(true);
 
             // Get shopkeeperId from sessionStorage (logged-in admin ID)
             const shopkeeperId = sessionStorage.getItem("userID") || sessionStorage.getItem("Id");
-            
+
             if (!shopkeeperId) {
                 toast.error("User session expired. Please login again.");
                 return;
@@ -76,14 +108,29 @@ const BigProductAdd = () => {
             // Prepare form data for API
             const submitData = new FormData();
             submitData.append("productName", formData.productName.trim());
-            submitData.append("productCategory", formData.productCategory.trim());
+            submitData.append("productCategory", formData.productCategory); // Send category ID
             submitData.append("productPrice", formData.productPrice.trim());
             submitData.append("productDescription", formData.productDescription.trim());
             submitData.append("shopkeeperId", shopkeeperId); // Add required shopkeeperId
 
+            // Only append sub-category if it exists and is selected
+            if (formData.productSubCategory) {
+                submitData.append("productSubCategory", formData.productSubCategory);
+            }
+
             if (formData.productImage) {
                 submitData.append("productImage", formData.productImage);
             }
+
+            console.log('Submitting big product with data:', {
+                productName: formData.productName,
+                productCategory: selectedCategory.tabName,
+                productSubCategory: formData.productSubCategory,
+                productPrice: formData.productPrice,
+                productDescription: formData.productDescription,
+                shopkeeperId: shopkeeperId,
+                hasImage: !!formData.productImage
+            });
 
             const result = await fetchData({
                 method: "POST",
@@ -190,36 +237,63 @@ const BigProductAdd = () => {
 
                     <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Category:</label>
-                        <input
-                            type="text"
-                            name="productCategory"
-                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
-                            value={formData.productCategory}
-                            onChange={handleInputChange}
-                            placeholder="Enter product category"
-                        />
+                        <div className="w-full">
+                            <select
+                                name="productCategory"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
+                                value={formData.productCategory}
+                                onChange={handleCategoryChange}
+                            >
+                                <option value="">Select Category</option>
+                                {productCategory.map((category) => (
+                                    <option key={category._id} value={category._id}>
+                                        {category.tabName}
+                                    </option>
+                                ))}
+                            </select>
+                            {productCategory.length === 0 && (
+                                <div className="text-orange-500 text-sm mt-1">
+                                    Note: Categories must exist in admin-tab-management to add products
+                                </div>
+                            )}
+                        </div>
                     </div>
-                     <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Sub Category:</label>
-                        <input
-                            type="text"
-                            name="productCategory"
-                            className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
-                            value={formData.productCategory}
-                            onChange={handleInputChange}
-                            placeholder="Enter product category"
-                        />
+                        <div className="w-full">
+                            <select
+                                name="productSubCategory"
+                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
+                                value={formData.productSubCategory}
+                                onChange={handleInputChange}
+                                disabled={!productSubCategory.length}
+                            >
+                                <option value="">Select Sub-Category  </option>
+                                {productSubCategory.map((sub) => (
+                                    <option key={sub._id} value={sub.name}>
+                                        {sub.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {formData.productCategory && productSubCategory.length === 0 && (
+                                <div className="text-gray-500 text-sm mt-1">
+                                    No sub-categories available for selected category
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <div className="flex items-start gap-4">
                         <label className="min-w-[160px] font-semibold pt-2">Product Price:</label>
                         <input
-                            type="text"
+                            type="number"
                             name="productPrice"
                             className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
                             value={formData.productPrice}
                             onChange={handleInputChange}
-                            placeholder="Enter product price (e.g., ₹499)"
+                            placeholder="Enter product price"
+                            min="0"
+                            step="0.01"
                         />
                     </div>
 
