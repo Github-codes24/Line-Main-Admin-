@@ -246,44 +246,46 @@ function WorkerEdit() {
             </Box>
 
             {/* Buttons */}
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <Button
-                variant="outlined"
-                sx={{
-                  borderColor: "#001580",
-                  color: "#001580",
-                  background: "#CECEF2",
-                  paddingX: 4,
-                  paddingY: "2px",
-                  textTransform: "none",
-                }}
-                onClick={() => navigate(-1)}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="outlined"
-                disabled={loading}
-                sx={{
-                  background: "#001580",
-                  color: "#FFFFFF",
-                  paddingX: 4,
-                  paddingY: "2px",
-                  textTransform: "none",
-                }}
-              >
-                {loading ? "Updating..." : "Update"}
-              </Button>
-            </Box>
+        <Box
+  sx={{
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "10px",
+  }}
+>
+  <Button
+    variant="outlined"
+    sx={{
+      width: "200px",
+      height: "40px",
+      borderColor: "#001580",
+      color: "#001580",
+      background: "#CECEF2",
+      textTransform: "none",
+    }}
+    onClick={() => navigate(-1)}
+  >
+    Cancel
+  </Button>
+
+  <Button
+    type="submit"
+    variant="outlined"
+    disabled={loading}
+    sx={{
+      width: "200px",
+      height: "40px",
+      background: "#001580",
+      color: "#FFFFFF",
+      textTransform: "none",
+    }}
+  >
+    {loading ? "Updating..." : "Update"}
+  </Button>
+</Box>
+
           </form>
         </CardContent>
       </Card>

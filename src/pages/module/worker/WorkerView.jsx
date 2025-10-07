@@ -177,41 +177,43 @@ function WorkerView() {
             }}
           >
             {/* Toggle Status */}
-            <Button
-              variant="contained"
-              sx={{
-                background: "#CECEF2",
-                color: "#001580",
-                border: "1px solid #001580",
-                paddingX: 4,
-                paddingY: "4px",
-                textTransform: "none",
-              }}
-              onClick={() => {
-                const newStatus =
-                  worker.status === "Active" ? "Inactive" : "Active";
-                toast.success(`Worker marked as ${newStatus}`);
-                // TODO: API call for status update
-              }}
-            >
-              {worker.status === "Active" ? "Inactive" : "Active"}
-            </Button>
+       <Button
+  variant="contained"
+  sx={{
+    background: "#CECEF2",
+    color: "#001580",
+    border: "1px solid #001580",
+    width: "200px",   // ✅ set fixed width
+    height: "40px",   // ✅ set fixed height
+    textTransform: "none",
+  }}
+  onClick={() => {
+    const newStatus =
+      worker.status === "Active" ? "Inactive" : "Active";
+    toast.success(`Worker marked as ${newStatus}`);
+    // TODO: API call for status update
+  }}
+>
+  {worker.status === "Active" ? "Inactive" : "Active"}
+</Button>
 
-            {/* Edit */}
-            <Button
-              variant="outlined"
-              sx={{
-                background: "#001580",
-                color: "#FFFFFF",
-                px: 4,
-                border: "1px solid #001580",
-              }}
-              onClick={() =>
-                navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
-              }
-            >
-              Edit
-            </Button>
+<Button
+  variant="outlined"
+  sx={{
+    background: "#001580",
+    color: "#FFFFFF",
+    width: "200px",   // ✅ fixed width
+    height: "40px",   // ✅ fixed height
+    border: "1px solid #001580",
+    textTransform: "none",
+  }}
+  onClick={() =>
+    navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
+  }
+>
+  Edit
+</Button>
+
           </Box>
         </CardContent>
       </Card>
@@ -235,7 +237,7 @@ const Field = ({ label, value }) => (
           background: "#E4E5EB",
           "& .MuiOutlinedInput-root": {
             "& fieldset": {
-              borderColor: "#001580", // 🔵 border color
+              borderColor: "#001580", //  border color
             },
             "&:hover fieldset": {
               borderColor: "#001580", // hover border color
@@ -245,6 +247,7 @@ const Field = ({ label, value }) => (
             },
           },
           input: { color: "#0D2E28" },
+          // height: "40px"
         
         }}
         InputProps={{ readOnly: true }}

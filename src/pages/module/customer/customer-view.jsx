@@ -77,7 +77,10 @@ const ViewCustomer = () => {
     };
 
     return (
-       <div className="w-full min-h-screen bg-[#E0E9E9] overflow-x-hidden">
+       <div className="w-full  bg-[#E0E9E9] overflow-x-hidden overflow-y-hidden">
+      {/* <div className="w-full  bg-[#E0E9E9] overflow-x-hidden overflow-y-hidden"> */}
+
+      {/* <div className="w-full h-screen bg-[#E0E9E9] overflow-x-hidden flex flex-col"> */}
   <ToastContainer />
 
   {/* Header */}
@@ -189,19 +192,26 @@ const ViewCustomer = () => {
     )}
 
     <div className="flex justify-center mt-8">
-      <button
-        type="button"
-        className={`px-24 py-3 rounded-md text-white ${
-          isLoading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#001580] hover:bg-[#CED4F2]"
-        }`}
-        onClick={handleEditClick}
-        disabled={isLoading}
-      >
-        {isLoading ? "Loading..." : "Edit"}
-      </button>
-    </div>
+  <button
+    type="button"
+    onClick={handleEditClick}
+    disabled={isLoading}
+    className={`text-white rounded-md ${
+      isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#001580] hover:bg-[#CED4F2]"
+    }`}
+    style={{
+      width: "200px",
+      height: "40px",
+      borderRadius: "8px",
+      opacity: 1,
+      transform: "rotate(0deg)",
+      transitionDuration: "0ms", // instant animation
+    }}
+  >
+    {isLoading ? "Loading..." : "Edit"}
+  </button>
+</div>
+
   </div>
 </div>
 

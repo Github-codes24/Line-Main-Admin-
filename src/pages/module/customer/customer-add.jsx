@@ -171,6 +171,8 @@ const AddCustomer = () => {
                   type="text"
                   placeholder="Enter Your Full Address"
                   className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+                  //  className="w-[644px] h-[50px] border border-[#001580] rounded-[8px] px-4 py-4 bg-[#CED4F2] placeholder-[#0D2E28] text-[#0D2E28] font-poppins font-medium text-[20px] leading-[100%]"
+                    // className="w-[54%] ml-auto border border-[#001580] text-[#0D2E28] rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
                 />
                 <ErrorMessage
                   name="address"
@@ -182,26 +184,27 @@ const AddCustomer = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center gap-6 mt-4">
-            <button
-              type="reset"
-              className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
-            >
-              Cancel
-            </button>
+        <div className="flex justify-center gap-6 mt-4">
+  <button
+    type="reset"
+    className="w-[200px] h-[40px] border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
+  >
+    Cancel
+  </button>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || isLoading}
-              className={`w-32 h-10 text-white rounded-md text-sm ${
-                isSubmitting || isLoading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#001580] hover:bg-[#CED4F2]"
-              }`}
-            >
-              {isSubmitting || isLoading ? "Adding..." : "Add Customer"}
-            </button>
-          </div>
+  <button
+    type="submit"
+    disabled={isSubmitting || isLoading}
+    className={`w-[200px] h-[40px] text-white rounded-md text-sm ${
+      isSubmitting || isLoading
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-[#001580] hover:bg-[#CED4F2]"
+    }`}
+  >
+    {isSubmitting || isLoading ? "Adding..." : "Add Customer"}
+  </button>
+</div>
+
         </Form>
       )}
     </Formik>

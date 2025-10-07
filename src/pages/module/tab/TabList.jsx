@@ -5,6 +5,7 @@ import { Eye, Trash2, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import Pagination from "../../../components/ui/Pagination";
 
 const TabList = () => {
   const navigate = useNavigate();
@@ -385,7 +386,7 @@ title="Delete Tab"
 )}
 
         {/* Pagination Controls - Same as Customer List */}
-        <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
+        {/* <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
           <p className="font-bold text-black">
             Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredTabs.length)} of {filteredTabs.length} entries
           </p>
@@ -415,7 +416,15 @@ title="Delete Tab"
               &gt;
             </button>
           </div>
-        </div>
+        </div> */}
+        <Pagination
+  currentPage={currentPage}
+  totalRecords={filteredTabs.length}
+  recordsPerPage={recordsPerPage}
+  goToPage={goToPage}
+  label="tabs"
+/>
+
       </div>
     </div>
   );
