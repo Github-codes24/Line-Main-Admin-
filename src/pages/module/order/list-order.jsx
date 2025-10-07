@@ -19,7 +19,7 @@ const OrderList = () => {
   const [error, setError] = useState("");
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // only 5 rows per page
+  const itemsPerPage = 10; // only 5 rows per page
 
   // Filter states
   const [showFilterPanel, setShowFilterPanel] = useState(false);
@@ -159,7 +159,7 @@ const OrderList = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white p-4 shadow rounded-md w-full max-w-full overflow-x-auto">
+      <div className="bg-white p-8 shadow rounded-md w-full max-w-full overflow-x-auto">
 
         {/* Filter Section */}
         <div className="relative flex flex-wrap gap-2 pb-4">
