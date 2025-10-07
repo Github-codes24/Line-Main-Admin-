@@ -38,7 +38,7 @@ const Pagination = ({
         <button
           onClick={() => goToPage(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-2 py-1 bg-white text-black border border-gray-300 rounded-md disabled:opacity-50"
+          className="px-2 py-1 bg-white text-[#0D2E28] border border-gray-300 rounded-md disabled:opacity-50"
         >
           &lt;
         </button>
