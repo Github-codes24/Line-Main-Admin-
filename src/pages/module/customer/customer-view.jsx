@@ -146,7 +146,7 @@ const ViewCustomer = () => {
         
       </div>
     ) : (
-      <div className="space-y-4 border text-[#0D2E28] border-[#616666] rounded-lg p-4 min-h-[400px]">
+      <div className="space-y-4 border text-[#0D2E28] border-[#616666] rounded-lg p-4 min-h-[420px]">
         <div className="flex items-center">
           <label htmlFor="name" className="w-48 font-medium">
             Customer Name:

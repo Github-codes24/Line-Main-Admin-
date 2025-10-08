@@ -3,7 +3,7 @@ import { Eye, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
-import Pagination from "../../../components/ui/Pagination"; // ✅ import your pagination
+import Pagination from "../../../components/ui/Pagination";
 
 const expertiseList = ["Electrician", "Plumber", "Tiler", "Painter"];
 
@@ -27,12 +27,10 @@ export default function SmallProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
 
-  // Fetch small products
   useEffect(() => {
     getSmallProductList();
   }, []);
 
-  // Filtered data
   const filteredData = (getSmallProduct?.data ?? []).filter((p) => {
     const matchesFilter =
       activeFilters.length === 0 ||
@@ -45,7 +43,6 @@ export default function SmallProductList() {
     return matchesFilter && matchesSearch && matchesCategoryId;
   });
 
-  // Pagination
   const totalPages = Math.ceil(filteredData.length / recordsPerPage);
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
@@ -54,12 +51,10 @@ export default function SmallProductList() {
     indexOfLastRecord
   );
 
-  // Reset page when search/filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, activeFilters]);
 
-  // Handlers
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
@@ -105,9 +100,9 @@ export default function SmallProductList() {
     <div className="bg-[#E0E9E9] min-h-screen w-full font-[Poppins]">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4 bg-white px-4 py-3 rounded-lg shadow">
-        <h2 className="text-xl text-[#0D2E28] font-medium">Small Product List</h2>
-
-        {/* Search */}
+        <h2 className="text-xl text-[#0D2E28] font-medium">
+          Small Product List
+        </h2>
         <div className="relative w-full max-w-xs flex-grow md:flex-grow-0">
           <input
             type="text"
@@ -131,7 +126,6 @@ export default function SmallProductList() {
             />
           </svg>
         </div>
-
         <button
           onClick={() => navigate("/admin/smallproduct/add")}
           className="w-[200px] bg-[#001580] text-white font-medium px-4 py-2 rounded-lg"
@@ -167,9 +161,8 @@ export default function SmallProductList() {
 
           {showFilterPanel && (
             <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-[300px] border border-gray-300 z-50">
-              {/* ✅ width fixed to 300px */}
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#0D2E28]">
+                <h3 className="text-lg font-semibold text-[#0D2E28]"> 
                   Expertise
                 </h3>
                 <button
@@ -226,37 +219,52 @@ export default function SmallProductList() {
         {/* Table */}
         <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
           <table className="min-w-full table-fixed bg-white shadow rounded-lg">
-            <thead className="bg-[#E4E5EB] text-black text-base font-medium font-[Poppins]">
+            <thead className="bg-[#E4E5EB] text-[#0D2E28] font-[Poppins] text-[16px] font-medium leading-[100%] text-center align-middle">
               <tr>
-                <th className="px-2 py-3 w-16">Sr.No.</th>
-                <th className="px-2 py-3 w-28">Product Image</th>
-                <th className="px-2 py-3 w-52">Product Name</th>
-                <th className="px-2 py-3 w-40">Product Category</th>
-                <th className="px-2 py-3 w-44">Product Sub Category</th>
-                <th className="px-2 py-3 w-28">Product Price</th>
-                <th className="px-2 py-3 w-32">Action</th>
+                <th className="px-4 py-4 w-[80px]">
+                  Sr.No.
+                </th>
+                <th className="px-4 py-4 w-[140px]">
+                  Product Image
+                </th>
+                <th className="px-4 py-4 w-[256px]">
+                  Product Name
+                </th>
+                <th className="px-4 py-4 w-[160px]">
+                  Product Category
+                </th>
+                <th className="px-4 py-4 w-[160px]">
+                  Product Sub Category
+                </th>
+                <th className="px-4 py-4 w-[140px]">
+                  Product Price
+                </th>
+                <th className="px-4 py-4 w-[140px]">
+                  Action
+                </th>
               </tr>
             </thead>
-            <tbody className="text-center text-[black] text-sm font-regular">
+
+            <tbody className="text-center text-[#0D2E28] text-[14px] font-normal">
               {paginatedData.map((product, idx) => (
-                <tr key={product._id}>
-                  <td className="p-3">{indexOfFirstRecord + idx + 1}</td>
-                  <td className="p-3 flex justify-center">
+                <tr key={product._id} className="border-b">
+                  <td className="px-4 py-3">{indexOfFirstRecord + idx + 1}</td>
+                  <td className="px-4 py-3 flex justify-center">
                     <img
                       src={product.productImageUrl}
                       alt="Product"
                       className="w-14 h-14 rounded border p-0.5"
                     />
                   </td>
-                  <td className="p-3 truncate">{product.productName}</td>
-                  <td className="p-3">
+                  <td className="px-4 py-3 truncate">{product.productName}</td>
+                  <td className="px-4 py-3">
                     {product?.productCategory?.tabName || "-"}
                   </td>
-                  <td className="p-3">
+                  <td className="px-4 py-3">
                     {product?.productSubCategory || "-"}
                   </td>
-                  <td className="p-3">{product.productPrice}</td>
-                  <td className="p-3">
+                  <td className="px-4 py-3">{product.productPrice}</td>
+                  <td className="px-4 py-3">
                     <div className="flex justify-center items-center gap-3">
                       <button
                         onClick={() =>
@@ -278,14 +286,14 @@ export default function SmallProductList() {
                           fill="none"
                         >
                           <path
-                            d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                            d="M11 4H4C3.47 4 2.96 4.21 2.59 4.59C2.21 4.96 2 5.47 2 6V20C2 20.53 2.21 21.04 2.59 21.41C2.96 21.79 3.47 22 4 22H18C18.53 22 19.04 21.79 19.41 21.41C19.79 21.04 20 20.53 20 20V13"
                             stroke="#EC2D01"
                             strokeWidth="2"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                           />
                           <path
-                            d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                            d="M18.5 2.5C18.9 2.1 19.44 1.88 20 1.88C20.56 1.88 21.1 2.1 21.5 2.5C21.9 2.9 22.12 3.44 22.12 4C22.12 4.56 21.9 5.1 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
                             stroke="#EC2D01"
                             strokeWidth="2"
                             strokeLinecap="round"
@@ -341,7 +349,6 @@ export default function SmallProductList() {
           </div>
         )}
 
-        {/* ✅ Replaced with common Pagination */}
         <Pagination
           currentPage={currentPage}
           totalRecords={filteredData.length}

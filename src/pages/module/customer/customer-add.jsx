@@ -104,7 +104,9 @@ const AddCustomer = () => {
   </div>
 
   {/* Main Box */}
-  <div className="bg-white border shadow p-4 w-full rounded-md mt-4">
+  {/* <div className="bg-white border shadow p-4 w-full  rounded-md mt-4"> */}
+  <div className="bg-white border shadow p-4 w-full h-screen rounded-md mt-4">
+
     <Formik
       initialValues={{ name: "", contact: "", address: "" }}
       validationSchema={validationSchema}
@@ -119,7 +121,7 @@ const AddCustomer = () => {
     >
       {({ isSubmitting }) => (
         <Form>
-          <div className="border border-[#616666] rounded-md p-8 min-h-[400px] w-full">
+          <div className="border border-[#616666] rounded-md p-8 min-h-[440px] w-full">
             {/* Customer Name */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
               <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">

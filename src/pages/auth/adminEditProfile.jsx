@@ -324,48 +324,49 @@ const AdminEditProfile = () => {
   </div>
 
   {/* Upload Button */}
-  <label className="mt-4 flex items-center justify-center gap-2 bg-[#001580] text-white px-5 py-2 rounded-md cursor-pointer">
-    <FiUpload />
-    Upload Photo
-    <input
-      type="file"
-      accept="image/*"
-      onChange={handlePhotoChange}
-      className="hidden"
-    />
-  </label>
+  <label className="mt-4 flex items-center justify-center gap-2 bg-[#001580] text-white rounded-md cursor-pointer w-[200px] h-[40px]">
+  <FiUpload />
+  Upload Photo
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handlePhotoChange}
+    className="hidden"
+  />
+</label>
+
 </div>
 </div>
 
         {/* Buttons */}
         <div className="mt-8 flex justify-center gap-4 flex-wrap">
-          <button
-            type="button"
-            onClick={() => {
-              formik.resetForm();
-              setPhoto(null);
-              if (photoPreview) {
-                URL.revokeObjectURL(photoPreview);
-              }
-              setPhotoPreview(null);
-              navigate(-1);
-            }}
-            disabled={formik.isSubmitting || loading}
-            className="border border-[#001580] text-[#001580] bg-[#CED4F2] px-6 py-2 rounded-md w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={formik.isSubmitting || loading}
-            className={`px-6 py-2 rounded-md w-full md:w-auto ${
-              formik.isSubmitting || loading
-                ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                : "bg-[#001580] text-white hover:bg-blue-700"
-            }`}
-          >
-            {formik.isSubmitting || loading ? "Updating..." : "Update Profile"}
-          </button>
+         <button
+  type="button"
+  onClick={() => {
+    formik.resetForm();
+    setPhoto(null);
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+    navigate(-1);
+  }}
+  disabled={formik.isSubmitting || loading}
+  className="border border-[#001580] text-[#001580] bg-[#CED4F2] rounded-md w-[200px] h-[40px] disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  Cancel
+</button>
+
+        <button
+  type="submit"
+  disabled={formik.isSubmitting || loading}
+  className={`rounded-md w-[200px] h-[40px] ${
+    formik.isSubmitting || loading
+      ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+      : "bg-[#001580] text-white hover:bg-blue-700"
+  }`}
+>
+  {formik.isSubmitting || loading ? "Updating..." : "Update Profile"}
+</button>
+
         </div>
       </form>
     )}

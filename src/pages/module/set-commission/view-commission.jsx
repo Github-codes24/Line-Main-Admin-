@@ -35,6 +35,7 @@ export default function ViewCommission() {
   }, [id]);
 
   const handleEdit = () => navigate(`/admin/set-commission/edit/${id}`);
+  const handleBack = () => navigate("/admin/set-commission");
 
   if (loading) {
     return (
@@ -46,23 +47,26 @@ export default function ViewCommission() {
   }
 
   return (
-    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+    <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
+      <div className="flex-1 px-4 md:px-0 mx-auto">
         {/* Header */}
         <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
           <IoArrowBackCircleOutline
             size={30}
             className="mr-3 cursor-pointer text-[#0D2E28]"
-            onClick={() => navigate("/admin/set-commission")}
+            onClick={handleBack}
           />
           <h2 className="text-lg font-medium text-[#0D2E28]">View Commission</h2>
         </div>
 
-        {/* Content */}
-        <div className="bg-white p-4 rounded-lg shadow min-h-[600px]">
-          <div className="border border-[#616666] rounded-lg p-6 min-h-[500px] flex flex-col space-y-6">
-            <div className="flex items-center gap-[70px] whitespace-nowrap">
-              <label className="w-1/4 font-medium">Category:</label>
+        {/* Main Container */}
+        <div className="bg-white p-4 rounded-lg shadow min-h-[830px]">
+          <div className="border border-[#616666] rounded-lg p-6 min-h-[742px] space-y-6">
+            {/* Category */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-[70px] gap-3">
+              <label className="md:w-1/4 font-medium text-[#0D2E28]">
+                Category:
+              </label>
               <input
                 type="text"
                 value={commission.category || ""}
@@ -71,8 +75,11 @@ export default function ViewCommission() {
               />
             </div>
 
-            <div className="flex items-center gap-[70px] whitespace-nowrap">
-              <label className="w-1/4 font-medium">Commission From Worker:</label>
+            {/* Worker Commission */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-[70px] gap-3">
+              <label className="md:w-1/4 font-medium text-[#0D2E28]">
+                Commission From Worker:
+              </label>
               <input
                 type="text"
                 value={`${commission.workerPercentageCommission ?? ""} %`}
@@ -81,8 +88,11 @@ export default function ViewCommission() {
               />
             </div>
 
-            <div className="flex items-center gap-[70px] whitespace-nowrap">
-              <label className="w-1/4 font-medium">Commission From Shopkeeper:</label>
+            {/* Shopkeeper Commission */}
+            <div className="flex flex-col md:flex-row md:items-center md:gap-[70px] gap-3">
+              <label className="md:w-1/4 font-medium text-[#0D2E28]">
+                Commission From Shopkeeper:
+              </label>
               <input
                 type="text"
                 value={`${commission.shopkeeperPercentageCommission ?? ""} %`}
@@ -92,7 +102,7 @@ export default function ViewCommission() {
             </div>
           </div>
 
-          {/* Edit Button */}
+          {/* Button Section */}
           <div className="flex justify-center gap-4 pt-6">
             <button
               type="button"
