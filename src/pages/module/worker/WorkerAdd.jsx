@@ -67,9 +67,9 @@ const AddWorker = () => {
     };
 
     return (
-        // <div className="p-4 bg-[#E0E9E9] min-h-screen">
-        <div className="bg-[#E0E9E9] w-full min-h-screen overflow-auto">
-
+       
+        <div className="bg-[#E0E9E9] w-full h-screen overflow-hidden">
+       
             <ToastContainer />
             <div className="bg-white border rounded-md shadow mb-2">
                 <div className="flex items-center gap-2 p-4">
@@ -109,7 +109,7 @@ const AddWorker = () => {
                 </div>
             </div>
 
-            <div className="bg-white border rounded-md shadow p-4 mt-4">
+            <div className="bg-white border h-screen rounded-md shadow p-4 mt-4">
                 <Formik
                     initialValues={{ 
                         name: "", 
@@ -132,7 +132,7 @@ const AddWorker = () => {
                 >
                     {({ isSubmitting }) => (
                         <Form>
-                            <div className="border border-[#616666] rounded-md p-8 min-h-[400px]">
+                            <div className="border border-[#616666] rounded-md p-8 min-h-[440px]">
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
                                     <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Worker Name:

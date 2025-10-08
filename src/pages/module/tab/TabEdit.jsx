@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { X, ArrowLeft } from "lucide-react";
+import { X } from "lucide-react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
@@ -200,13 +200,8 @@ const TabEdit = () => {
   <ToastContainer />
 
   {/* Header */}
-  <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
-    <button
-      onClick={handleBack}
-      className="mr-3 p-2 hover:bg-gray-100 rounded-full"
-    >
-      <ArrowLeft size={20} />
-    </button>
+  <div className="flex items-center bg-white border rounded-lg shadow p-4 mb-4">
+    <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
     <h2 className="text-lg font-semibold">Edit Tab</h2>
   </div>
 
@@ -290,7 +285,7 @@ const TabEdit = () => {
         }`}
         onClick={handleSubmit}
       >
-        {isLoading ? 'Updating...' : 'Update Tab'}
+        {isLoading ? 'Updating...' : 'Update'}
       </button>
     </div>
   </div>

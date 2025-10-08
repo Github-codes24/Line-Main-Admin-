@@ -116,21 +116,33 @@ const AdminProfile = () => {
                     ))}
                   </div>
 
-                  {/* Right - Image */}
-                  <div className="flex justify-center items-start w-full md:w-1/3">
-
+                  {/*  Right - Profile Image */}
+                  <div className="flex flex-col items-center justify-start w-full md:w-1/3 mt-6 md:mt-0">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-2 border-[#001580] overflow-hidden">
+                      <img
+                        src={adminProfile?.profileImage || manimage}
+                        alt="Admin"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = manimage;
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
 
                 {/* Bottom Section - Button */}
                 <div className="mt-8 flex justify-center">
-                  <button
-                    type="button"
-                    className="bg-[#001580] text-white px-6 py-2 rounded-md transition duration-200"
-                    onClick={() => navigate("/admin/edit-profile")}
-                  >
-                    Edit Profile
-                  </button>
+                 <div className="mt-2 flex justify-center">
+  <button
+    type="button"
+    className="bg-[#001580] text-white rounded-md w-[200px] h-[40px] hover:bg-blue-700 transition duration-200"
+    onClick={() => navigate("/admin/edit-profile")}
+  >
+    Edit Profile
+  </button>
+</div>
+
                 </div>
               </Form>
             )}
