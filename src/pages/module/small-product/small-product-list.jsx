@@ -25,7 +25,7 @@ export default function SmallProductList() {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [recordsPerPage] = useState(5);
+  const [recordsPerPage] = useState(10);
 
   // Fetch small products
   useEffect(() => {

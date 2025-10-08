@@ -63,13 +63,14 @@ const OrderList = () => {
       });
 
       if (result.success) {
-        const normalizedOrders = (result.orders || []).map((order) => ({
-          id: order.id || order._id,
-          orderId: order.orderId || order.orderID || "N/A",
-          customer: order.customer?.name || "Unknown",
-          service: order.specificServiceName || order.service || "N/A",
-          status: order.orderStatus || "Pending",
-        }));
+       const normalizedOrders = (result.orders || []).map((order) => ({
+    id: order._id, // <-- Use _id
+    orderId: order.orderId || "N/A",
+    customer: order.customer?.name || "Unknown",
+    service: order.specificServiceName || order.service || "N/A",
+    status: order.orderStatus || "Pending",
+}));
+
         setOrders(normalizedOrders);
 
         if (normalizedOrders.length === 0) toast.info("No orders found");
@@ -111,10 +112,10 @@ const OrderList = () => {
       case "Pending":
         navigate(`/admin/order/pending/${id}`);
         break;
-      case "Work In Progress":
+      case "WorkInProgress":
         navigate(`/admin/order/progress/${id}`);
         break;
-      case "Completed":
+      case "Accepted":
         navigate(`/admin/order/complete/${id}`);
         break;
       case "Rejected":
@@ -159,155 +160,156 @@ const OrderList = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white p-8 shadow rounded-md w-full max-w-full overflow-x-auto">
+      <div className="bg-white p-2 shadow rounded-md w-full max-w-full overflow-x-auto font-[Poppins]">
 
-        {/* Filter Section */}
-        <div className="relative flex flex-wrap gap-2 pb-4">
-          <svg
-            onClick={() => setShowFilterPanel(true)}
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 40 40"
-            fill="none"
-            className="cursor-pointer"
+  {/* Filter Section */}
+  <div className="relative flex flex-wrap gap-2 pb-4">
+    <svg
+      onClick={() => setShowFilterPanel(true)}
+      xmlns="http://www.w3.org/2000/svg"
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      className="cursor-pointer"
+    >
+      <path
+        d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z"
+        fill="#E4E5EB"
+      />
+      <path
+        d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z"
+        stroke="#0D2E28"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+
+    {showFilterPanel && (
+      <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-[280px] max-w-full border border-gray-300 z-50">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-[#0D2E28]">Expertise</h3>
+          <button
+            onClick={() => setShowFilterPanel(false)}
+            className="text-[#0D2E28] hover:text-[#0D2E28] text-2xl"
           >
-            <path
-              d="M0 10C0 4.47715 4.47715 0 10 0H30C35.5228 0 40 4.47715 40 10V30C40 35.5228 35.5228 40 30 40H10C4.47715 40 0 35.5228 0 30V10Z"
-              fill="#E4E5EB"
-            />
-            <path
-              d="M16.8571 20.506C14.3701 18.646 12.5961 16.6 11.6271 15.45C11.3271 15.094 11.2291 14.833 11.1701 14.374C10.9681 12.802 10.8671 12.016 11.3281 11.508C11.7891 11 12.6041 11 14.2341 11H25.7661C27.3961 11 28.2111 11 28.6721 11.507C29.1331 12.015 29.0321 12.801 28.8301 14.373C28.7701 14.832 28.6721 15.093 28.3731 15.449C27.4031 16.601 25.6261 18.651 23.1331 20.514C23.0178 20.6037 22.9225 20.7165 22.8533 20.8451C22.7841 20.9737 22.7425 21.1154 22.7311 21.261C22.4841 23.992 22.2561 25.488 22.1141 26.244C21.8851 27.466 20.1541 28.201 19.2261 28.856C18.6741 29.246 18.0041 28.782 17.9331 28.178C17.6676 25.8765 17.4429 23.5705 17.2591 21.261C17.2488 21.114 17.2077 20.9708 17.1385 20.8407C17.0692 20.7106 16.9733 20.5966 16.8571 20.506Z"
-              stroke="#0D2E28"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-
-          {showFilterPanel && (
-            <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-[280px] max-w-full border border-gray-300 z-50">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#0D2E28]">Expertise</h3>
-                <button
-                  onClick={() => setShowFilterPanel(false)}
-                  className="text-[#0D2E28] hover:text-[#0D2E28] text-2xl"
-                >
-                  <IoClose />
-                </button>
-              </div>
-              <div className="space-y-3">
-                {expertiseList.map((item) => (
-                  <label
-                    key={item}
-                    className="flex items-center space-x-2 cursor-pointer text-[#0D2E28]"
-                  >
-                    <input
-                      type="checkbox"
-                      className="w-4 h-4 text-[#0D2E28] border-gray-300 rounded"
-                      checked={activeFilters.includes(item)}
-                      onChange={() => toggleFilter(item)}
-                    />
-                    <span>{item}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Active Filters */}
-          {activeFilters.map((filter) => (
-            <span
-              key={filter}
-              className="px-3 py-1 bg-[#E4E5EB] text-[#0D2E28] font-medium rounded-full flex items-center gap-1"
+            <IoClose />
+          </button>
+        </div>
+        <div className="space-y-3">
+          {expertiseList.map((item) => (
+            <label
+              key={item}
+              className="flex items-center space-x-2 cursor-pointer text-[#0D2E28]"
             >
-              {filter}
-              <button
-                onClick={() => removeFilter(filter)}
-                className="text-[#0D2E28] font-semibold ml-1"
-              >
-                <IoClose />
-              </button>
-            </span>
+              <input
+                type="checkbox"
+                className="w-4 h-4 text-[#0D2E28] border-gray-300 rounded"
+                checked={activeFilters.includes(item)}
+                onChange={() => toggleFilter(item)}
+              />
+              <span>{item}</span>
+            </label>
           ))}
-
-          {activeFilters.length > 0 && (
-            <button
-              onClick={resetFilters}
-              className="w-[200px] ml-auto border border-[#0D2E28] bg-[#CECEF2] text-[#0D2E28] font-medium px-6 py-2 rounded-lg"
-            >
-              Reset Filter
-            </button>
-          )}
         </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto w-full bg-white shadow-md rounded-lg border border-gray-400">
-          {isLoading ? (
-            <div className="flex justify-center items-center h-[400px]">
-              <div className="text-lg">Loading orders...</div>
-            </div>
-          ) : error ? (
-            <div className="flex justify-center items-center h-[400px]">
-              <div className="text-lg text-red-500">{error}</div>
-            </div>
-          ) : (
-            <table className="min-w-full w-full text-sm text-left text-gray-700">
-              <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
-                <tr>
-                  <th className="px-6 py-4">Sr.No.</th>
-                  <th className="px-6 py-4">Order Id</th>
-                  <th className="px-6 py-4">Customer Name</th>
-                  <th className="px-6 py-4">Service Booked</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="px-6 py-8 text-center">
-                      <div className="text-lg text-gray-500">No orders found</div>
-                    </td>
-                  </tr>
-                ) : (
-                  paginatedData.map((order, index) => (
-                    <tr key={order.id}>
-                      <td className="px-6 py-4">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </td>
-                      <td className="px-6 py-4">{order.orderId}</td>
-                      <td className="px-6 py-4">{order.customer}</td>
-                      <td className="px-6 py-4">{order.service}</td>
-                      <td
-                        className={`px-6 py-4 font-medium ${statusColor[order.status]}`}
-                      >
-                        {order.status}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => handleView(order.status, order.id)}
-                          className="text-[#F15A29] hover:text-orange-700"
-                        >
-                          <Eye size={20} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalRecords={filteredOrders.length}
-          recordsPerPage={itemsPerPage}
-          goToPage={(page) => setCurrentPage(page)}
-        />
       </div>
+    )}
+
+    {/* Active Filters */}
+    {activeFilters.map((filter) => (
+      <span
+        key={filter}
+        className="px-3 py-1 bg-[#E4E5EB] text-[#0D2E28] font-medium rounded-full flex items-center gap-1"
+      >
+        {filter}
+        <button
+          onClick={() => removeFilter(filter)}
+          className="text-[#0D2E28] font-semibold ml-1"
+        >
+          <IoClose />
+        </button>
+      </span>
+    ))}
+
+    {activeFilters.length > 0 && (
+      <button
+        onClick={resetFilters}
+        className="w-[200px] ml-auto border border-[#0D2E28] bg-[#CECEF2] text-[#0D2E28] font-medium px-6 py-2 rounded-lg"
+      >
+        Reset Filter
+      </button>
+    )}
+  </div>
+
+  {/* Table */}
+  <div className="overflow-x-auto w-full bg-white shadow-md rounded-lg border border-gray-400">
+    {isLoading ? (
+      <div className="flex justify-center items-center h-[400px]">
+        <div className="text-lg">Loading orders...</div>
+      </div>
+    ) : error ? (
+      <div className="flex justify-center items-center h-[400px]">
+        <div className="text-lg text-red-500">{error}</div>
+      </div>
+    ) : (
+      <table className="min-w-full w-full text-sm text-gray-700 text-center">
+        <thead className="bg-[#E4E5EB] text-black text-base font-semibold">
+          <tr>
+            <th className="px-6 py-4">Sr.No.</th>
+            <th className="px-6 py-4">Order Id</th>
+            <th className="px-6 py-4">Customer Name</th>
+            <th className="px-6 py-4">Service Booked</th>
+            <th className="px-6 py-4">Status</th>
+            <th className="px-6 py-4">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {paginatedData.length === 0 ? (
+            <tr>
+              <td colSpan="6" className="px-6 py-8 text-center">
+                <div className="text-lg text-gray-500">No orders found</div>
+              </td>
+            </tr>
+          ) : (
+            paginatedData.map((order, index) => (
+              <tr key={order.id} className="border-t text-center">
+                <td className="px-6 py-4">
+                  {(currentPage - 1) * itemsPerPage + index + 1}
+                </td>
+                <td className="px-6 py-4">{order.orderId}</td>
+                <td className="px-6 py-4">{order.customer}</td>
+                <td className="px-6 py-4">{order.service}</td>
+                <td
+                  className={`px-6 py-4 font-medium ${statusColor[order.status]}`}
+                >
+                  {order.status}
+                </td>
+                <td className="px-6 py-4">
+                  <button
+  onClick={() => handleView(order.status, order.id)} // now id is _id
+  className="text-[#F15A29] hover:text-orange-700"
+>
+  <Eye size={20} />
+</button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
+    )}
+  </div>
+
+  {/* Pagination */}
+  <Pagination
+    currentPage={currentPage}
+    totalRecords={filteredOrders.length}
+    recordsPerPage={itemsPerPage}
+    goToPage={(page) => setCurrentPage(page)}
+  />
+</div>
+
     </div>
   );
 };
