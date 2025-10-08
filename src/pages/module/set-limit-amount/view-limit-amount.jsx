@@ -47,8 +47,8 @@ const ViewLimitAmount = () => {
   }
 
   return (
-    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+    <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
+      <div className="flex-1 px-4 md:px-0 m mx-auto">
         {/* Header */}
         <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
           <img

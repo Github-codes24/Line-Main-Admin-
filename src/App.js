@@ -491,7 +491,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/set-limit-amount/alt"
+            path="/admin/set-limit-amount/add"
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <AddLimitAmount />

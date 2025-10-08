@@ -15,6 +15,7 @@ const AddLimitAmount = () => {
   const [limitAmount, setLimitAmount] = useState("");
   const [tabs, setTabs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadTabs = async () => {
@@ -43,15 +44,17 @@ const AddLimitAmount = () => {
       toast.warning("Please fill all fields");
       return;
     }
-
+    setSubmitting(true);
     try {
-      const payload = { categoryId: category, nagativeLimit: Number(limitAmount) };
+      const payload = {
+        categoryId: category,
+        nagativeLimit: Number(limitAmount),
+      };
       const res = await fetchData({
         method: "PUT",
         url: `${conf.apiBaseUrl}/admin/limit-amount`,
         data: payload,
       });
-
       if (res?.success) {
         toast.success("Limit added successfully");
         setTimeout(() => navigate("/admin/set-limit-amount"), 1500);
@@ -61,20 +64,23 @@ const AddLimitAmount = () => {
     } catch (err) {
       console.error("Add error:", err);
       toast.error("Something went wrong!");
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <CircularProgress size={40} />
-        <Typography sx={{ mt: 1 }}>Loading tabs...</Typography>
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
       </div>
     );
+  }
 
   return (
-    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
+    <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
+      <div className="flex-1 px-4 md:px-0 mx-auto">
         {/* Header */}
         <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
           <img
@@ -83,31 +89,42 @@ const AddLimitAmount = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">Add Limit Amount</h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">
+            Add Limit Amount
+          </h2>
         </div>
 
-        {/* Form */}
-        <div className="bg-white p-4 rounded-lg shadow min-h-[830px]">
-          <form onSubmit={handleSubmit} className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-[742px]">
+        {/* Form Container */}
+        <div className="bg-white p-4 rounded-lg shadow min-h-screen">
+          <form
+            onSubmit={handleSubmit}
+            className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
+          >
+            {/* Category */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium">Category:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
               <div className="relative flex-1">
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="appearance-none w-full h-[48px] font-medium px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
+                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
                 >
                   <option value="">Select</option>
                   {tabs.map((tab) => (
-                    <option key={tab._id} value={tab._id}>{tab.tabName}</option>
+                    <option key={tab._id} value={tab._id}>
+                      {tab.tabName}
+                    </option>
                   ))}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
               </div>
             </div>
 
+            {/* Wallet Balance Negative Limit */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium">Wallet Balance Negative Limit:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">
+                Wallet Balance Negative Limit:
+              </label>
               <input
                 type="number"
                 value={limitAmount}
@@ -118,20 +135,22 @@ const AddLimitAmount = () => {
             </div>
           </form>
 
+          {/* Buttons */}
           <div className="flex justify-center gap-4 pt-6">
             <button
               type="button"
               onClick={handleBack}
-              className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
+              className="w-[200px] bg-[#CECEF2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
             >
               Cancel
             </button>
             <button
               type="submit"
               onClick={handleSubmit}
+              disabled={submitting}
               className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580]"
             >
-              Add
+              {submitting ? "Adding..." : "Add"}
             </button>
           </div>
         </div>
