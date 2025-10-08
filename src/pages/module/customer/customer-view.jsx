@@ -77,7 +77,10 @@ const ViewCustomer = () => {
     };
 
     return (
-       <div className="w-full min-h-screen bg-[#E0E9E9] overflow-x-hidden">
+       <div className="w-full  bg-[#E0E9E9] overflow-x-hidden overflow-y-hidden">
+      {/* <div className="w-full  bg-[#E0E9E9] overflow-x-hidden overflow-y-hidden"> */}
+
+      {/* <div className="w-full h-screen bg-[#E0E9E9] overflow-x-hidden flex flex-col"> */}
   <ToastContainer />
 
   {/* Header */}
@@ -113,17 +116,37 @@ const ViewCustomer = () => {
         strokeLinejoin="round"
       />
     </svg>
-    <h2 className="text-xl font-semibold">View Customer</h2>
+    <h2 className="text-xl text-[#0D2E28] font-semibold">View Customer</h2>
   </div>
 
   {/* Content */}
   <div className="bg-white shadow-md w-full rounded-md border-t p-4 mt-4">
     {isLoading ? (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="text-lg">Loading customer data...</div>
+        {/* <div className="text-lg">Loading customer data...</div> */}
+        <svg
+  className="animate-spin h-10 w-10 text-[#001580]"
+  xmlns="http://www.w3.org/2000/svg"
+  fill="none"
+  viewBox="0 0 24 24"
+>
+  <circle
+    className="opacity-100"
+    cx="12"
+    cy="12"
+    r="10"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeDasharray="60"
+    strokeDashoffset="20"
+  ></circle>
+</svg>
+
+        
       </div>
     ) : (
-      <div className="space-y-4 border border-[#616666] rounded-lg p-4 min-h-[400px]">
+      <div className="space-y-4 border text-[#0D2E28] border-[#616666] rounded-lg p-4 min-h-[400px]">
         <div className="flex items-center">
           <label htmlFor="name" className="w-48 font-medium">
             Customer Name:
@@ -132,13 +155,13 @@ const ViewCustomer = () => {
             id="name"
             name="name"
             value={customerData.name}
-            className="w-[54%] ml-auto border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
+            className="w-[54%] ml-auto border border-[#001580] text-[#0D2E28] rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
             disabled
             readOnly
           />
         </div>
 
-        <div className="flex items-center">
+        <div className="flex items-center text-[#0D2E28]">
           <label htmlFor="contact" className="w-48 font-medium">
             Email ID/Phone Number:
           </label>
@@ -146,13 +169,13 @@ const ViewCustomer = () => {
             id="contact"
             name="contact"
             value={customerData.contact}
-            className="w-[54%] ml-auto border border-[#001580] text-black rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
+            className="w-[54%] ml-auto border border-[#001580] text-[#0D2E28] rounded-md px-2 py-2 focus:outline-none bg-[#E4E5EB]"
             disabled
             readOnly
           />
         </div>
 
-        <div className="flex items-center">
+          <div className="flex items-center text-[#0D2E28]">
           <label htmlFor="address" className="w-48 font-medium">
             Address:
           </label>
@@ -169,19 +192,26 @@ const ViewCustomer = () => {
     )}
 
     <div className="flex justify-center mt-8">
-      <button
-        type="button"
-        className={`px-24 py-3 rounded-md text-white ${
-          isLoading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-[#001580] hover:bg-[#CED4F2]"
-        }`}
-        onClick={handleEditClick}
-        disabled={isLoading}
-      >
-        {isLoading ? "Loading..." : "Edit"}
-      </button>
-    </div>
+  <button
+    type="button"
+    onClick={handleEditClick}
+    disabled={isLoading}
+    className={`text-white rounded-md ${
+      isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[#001580] hover:bg-[#CED4F2]"
+    }`}
+    style={{
+      width: "200px",
+      height: "40px",
+      borderRadius: "8px",
+      opacity: 1,
+      transform: "rotate(0deg)",
+      transitionDuration: "0ms", // instant animation
+    }}
+  >
+    {isLoading ? "Loading..." : "Edit"}
+  </button>
+</div>
+
   </div>
 </div>
 

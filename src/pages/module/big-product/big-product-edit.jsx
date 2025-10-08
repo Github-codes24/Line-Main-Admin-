@@ -13,7 +13,7 @@ const BigProductEdit = () => {
     const location = useLocation();
     const fileInputRef = useRef(null);
     const [fetchData] = useFetch();
-    const {productCategory: categories, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory} = useDropdown();
+    const { productCategory: categories, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory } = useDropdown();
 
     // State management
     const [isLoading, setIsLoading] = useState(false);
@@ -195,7 +195,7 @@ const BigProductEdit = () => {
 
         // Get shopkeeperId from sessionStorage (logged-in admin ID)
         const shopkeeperId = sessionStorage.getItem("userID") || sessionStorage.getItem("Id");
-        
+
         if (!shopkeeperId) {
             toast.error("User session expired. Please login again.");
             return;
@@ -208,7 +208,7 @@ const BigProductEdit = () => {
         formData.append('productPrice', productPrice.trim());
         formData.append('productDescription', productDescription.trim());
         formData.append('shopkeeperId', shopkeeperId); // Add required shopkeeperId
-        
+
         // Only append sub-category if it exists and is selected
         if (productSubCategoryValue) {
             formData.append('productSubCategory', productSubCategoryValue);

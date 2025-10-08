@@ -17,6 +17,12 @@ function ShopEdit() {
     const [error, setError] = React.useState("");
     const shop = location.state?.shop;
 
+    // Debug the received data
+    console.log('ShopEdit - URL ID:', id);
+    console.log('ShopEdit - Shop from state:', shop);
+    console.log('ShopEdit - Shop ID from state:', shop?.id);
+    console.log('ShopEdit - Shop _id from state:', shop?._id);
+
     const [formData, setFormData] = React.useState({
         shopName: shop?.shopName || "",
         name: shop?.name || "",
@@ -108,11 +114,57 @@ function ShopEdit() {
             if (shopData.aadhaarNumber) apiData.aadhaarNumber = shopData.aadhaarNumber;
             if (shopData.gstinNumber) apiData.gstin = shopData.gstinNumber;
 
-            const result = await fetchData({
-                method: "PUT",
-                url: `${conf.apiBaseUrl}/admin/shop/update-shop/${shopId}`,
-                data: apiData,
-            });
+            console.log('Update API URL:', `${conf.apiBaseUrl}/admin/shop/update-shop/${shopId}`);
+            console.log('Update API Data:', apiData);
+
+            // Try different URL formats since update-shop is giving 404
+            const updateEndpoints = [
+                `${conf.apiBaseUrl}/admin/shop/update-shop/${shopId}`,
+                `${conf.apiBaseUrl}/admin/Shop/update-shop/${shopId}`, // Try capital S like delete
+                `${conf.apiBaseUrl}/admin/shop/edit-shop/${shopId}`,
+                `${conf.apiBaseUrl}/admin/Shop/edit-shop/${shopId}`,
+                `${conf.apiBaseUrl}/admin/shop/${shopId}`, // RESTful format
+                `${conf.apiBaseUrl}/admin/Shop/${shopId}`, // RESTful with capital S
+            ];
+
+            let result;
+            let lastError;
+
+            for (let i = 0; i < updateEndpoints.length; i++) {
+                try {
+                    console.log(`Trying endpoint ${i + 1}/${updateEndpoints.length}:`, updateEndpoints[i]);
+
+                    // Try both PUT and PATCH methods
+                    try {
+                        result = await fetchData({
+                            method: "PUT",
+                            url: updateEndpoints[i],
+                            data: apiData,
+                        });
+                    } catch (putError) {
+                        console.log(`PUT failed for ${updateEndpoints[i]}, trying PATCH:`, putError.message);
+                        result = await fetchData({
+                            method: "PATCH",
+                            url: updateEndpoints[i],
+                            data: apiData,
+                        });
+                    }
+
+                    console.log(`Success with endpoint:`, updateEndpoints[i]);
+                    break; // Success, exit loop
+
+                } catch (error) {
+                    console.log(`Endpoint ${i + 1} failed:`, error.message || error);
+                    lastError = error;
+
+                    // If this is the last endpoint, throw the error
+                    if (i === updateEndpoints.length - 1) {
+                        throw lastError;
+                    }
+                }
+            }
+
+            console.log('Update API Response:', result);
 
             if (result.success || result.status === "success" || result.data) {
                 toast.success(result.message || "Shop updated successfully!");
@@ -136,108 +188,302 @@ function ShopEdit() {
     };
 
     return (
-        <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column",  }}>
-            <ToastContainer />
-            <Worker back title="Edit Shop" />
-            <Card sx={{ mt: 2 }}>
-                <CardContent>
-                    <form onSubmit={handleSubmit}>
-                        <Box sx={{ display: "flex", flexDirection: "column", gap: 2, marginBottom: 2, border: "1px solid black", borderRadius: 1, padding: 2, boxSizing: "border-box", paddingBottom: 10 }}>
-                            {/* Shop Name */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Shop Name:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter Shop Name" name="shopName" value={formData.shopName} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+       <Box sx={{ width: "100%", minHeight: "auto", display: "flex", flexDirection: "column" }}>
+  <ToastContainer />
+  <Worker back title="Edit Shop" />
+  <Card sx={{ mt: 2 }}>
+    <CardContent>
+      <form onSubmit={handleSubmit}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            marginBottom: 2,
+            border: "1px solid black",
+            borderRadius: 1,
+            padding: 2,
+            boxSizing: "border-box",
+            paddingBottom: 10,
+          }}
+        >
+          {/* Shop Name */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Shop Name:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter Shop Name"
+                name="shopName"
+                value={formData.shopName}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* Owner Name */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Owner Name:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter Owner Name" name="name" value={formData.name} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+          {/* Owner Name */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Owner Name:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter Owner Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* Contact */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Email ID/Phone Number:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter Email ID/Phone Number" name="contact" value={formData.contact} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+          {/* Contact */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Email ID/Phone Number:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter Email ID/Phone Number"
+                name="contact"
+                value={formData.contact}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* Address */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Address:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter Full Address" name="address" value={formData.address} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+          {/* Address */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Address:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter Full Address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* Aadhaar Number */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Aadhaar Number:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter Aadhaar Number" name="aadhaarNumber" value={formData.aadhaarNumber} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+          {/* Aadhaar Number */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Aadhaar Number:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter Aadhaar Number"
+                name="aadhaarNumber"
+                value={formData.aadhaarNumber}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* Aadhaar Image */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>Aadhaar Card Image:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2", display: "flex", alignItems: "center", border: "1px solid #A3AED0", borderRadius: "3px", background: "#CED4F2", padding: "8px 8px" }}>
-                                    <Button variant="contained" component="label" startIcon={<UploadIcon size={16} />} sx={{ background: "#00158099", textTransform: "none", fontSize: "14px", boxShadow: "none", borderRadius: 2.5, "&:hover": { background: "#3A57A6" } }}>
-                                        Upload Photo
-                                        <input hidden accept="image/*" type="file" name="aadhaarImage" onChange={handleFileChange} />
-                                    </Button>
-                                    <Typography variant="body2" sx={{ ml: 2, color: "#1C1C1C", fontWeight: 500 }}>
-                                        {formData.aadhaarImage ? formData.aadhaarImage.name : "Upload Aadhaar Card"}
-                                    </Typography>
-                                </Box>
-                            </Box>
+          {/* Aadhaar Image */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Aadhaar Card Image:</Typography>
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 2",
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid #001580",
+                borderRadius: "3px",
+                background: "#CED4F2",
+                padding: "8px 8px",
+              }}
+            >
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<UploadIcon size={16} />}
+                sx={{
+                  background: "#00158099",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  boxShadow: "none",
+                  borderRadius: 2.5,
+                  "&:hover": { background: "#3A57A6" },
+                }}
+              >
+                Upload Photo
+                <input hidden accept="image/*" type="file" name="aadhaarImage" onChange={handleFileChange} />
+              </Button>
+              <Typography variant="body2" sx={{ ml: 2, color: "#0D2E28", fontWeight: 500 }}>
+                {formData.aadhaarImage ? formData.aadhaarImage.name : "Upload Aadhaar Card"}
+              </Typography>
+            </Box>
+          </Box>
 
-                            {/* GSTIN Number */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>GSTIN Number:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField fullWidth type="text" placeholder="Enter GSTIN Number" name="gstinNumber" value={formData.gstinNumber} onChange={handleChange} sx={{ background: "#CED4F2" }} />
-                                </Box>
-                            </Box>
+          {/* GSTIN Number */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>GSTIN Number:</Typography>
+            </Box>
+            <Box sx={{ gridColumn: "span 2" }}>
+              <TextField
+                fullWidth
+                type="text"
+                placeholder="Enter GSTIN Number"
+                name="gstinNumber"
+                value={formData.gstinNumber}
+                onChange={handleChange}
+                sx={{
+                  background: "#CED4F2",
+                  "& .MuiInputBase-input": { color: "#0D2E28" },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#001580" },
+                    "&:hover fieldset": { borderColor: "#001580" },
+                    "&.Mui-focused fieldset": { borderColor: "#001580" },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
 
-                            {/* GSTIN Image */}
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}><Typography sx={{ fontWeight: 500 }}>GSTIN Image:</Typography></Box>
-                                <Box sx={{ gridColumn: "span 2", display: "flex", alignItems: "center", border: "1px solid #A3AED0", borderRadius: "3px", background: "#CED4F2", padding: "8px 8px" }}>
-                                    <Button variant="contained" component="label" startIcon={<UploadIcon size={16} />} sx={{ background: "#00158099", textTransform: "none", fontSize: "14px", boxShadow: "none", borderRadius: 2.5, "&:hover": { background: "#3A57A6" } }}>
-                                        Upload Photo
-                                        <input hidden accept="image/*" type="file" name="gstinImage" onChange={handleFileChange} />
-                                    </Button>
-                                    <Typography variant="body2" sx={{ ml: 2, color: "#1C1C1C", fontWeight: 500 }}>
-                                        {formData.gstinImage ? formData.gstinImage.name : "Upload GSTIN Card"}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-
-                        {error && (
-                            <Box sx={{ mb: 2, textAlign: "center" }}>
-                                <Typography color="error" variant="body2">{error}</Typography>
-                            </Box>
-                        )}
-
-                        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: "10px" }}>
-                            <Button variant="outlined" sx={{ borderColor: "#001580", color: "#001580", background: "#CECEF2", px: 4, textTransform: "none" }} onClick={() => navigate(-1)}>
-                                Cancel
-                            </Button>
-                            <Button type="submit" variant="outlined" disabled={isLoading} sx={{ background: isLoading ? "gray" : "#001580", color: "#FFFFFF", px: 4, textTransform: "none", "&:disabled": { background: "#cccccc", color: "#666666" } }}>
-                                {isLoading ? "Updating..." : "Update"}
-                            </Button>
-                        </Box>
-                    </form>
-                </CardContent>
-            </Card>
+          {/* GSTIN Image */}
+          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>GSTIN Image:</Typography>
+            </Box>
+            <Box
+              sx={{
+                gridColumn: "span 2",
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid #001580",
+                borderRadius: "3px",
+                background: "#CED4F2",
+                padding: "8px 8px",
+              }}
+            >
+              <Button
+                variant="contained"
+                component="label"
+                startIcon={<UploadIcon size={16} />}
+                sx={{
+                  background: "#00158099",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  boxShadow: "none",
+                  borderRadius: 2.5,
+                  "&:hover": { background: "#3A57A6" },
+                }}
+              >
+                Upload Photo
+                <input hidden accept="image/*" type="file" name="gstinImage" onChange={handleFileChange} />
+              </Button>
+              <Typography variant="body2" sx={{ ml: 2, color: "#0D2E28", fontWeight: 500 }}>
+                {formData.gstinImage ? formData.gstinImage.name : "Upload GSTIN Card"}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
+
+        {error && (
+          <Box sx={{ mb: 2, textAlign: "center" }}>
+            <Typography color="error" variant="body2">{error}</Typography>
+          </Box>
+        )}
+
+      <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: "10px" }}>
+  <Button
+    variant="outlined"
+    sx={{
+      width: "200px",
+      height: "40px",
+      borderColor: "#001580",
+      color: "#001580",
+      background: "#CECEF2",
+      textTransform: "none",
+    }}
+    onClick={() => navigate(-1)}
+  >
+    Cancel
+  </Button>
+  
+  <Button
+    type="submit"
+    variant="outlined"
+    disabled={isLoading}
+    sx={{
+      width: "200px",
+      height: "40px",
+      background: isLoading ? "gray" : "#001580",
+      color: "#FFFFFF",
+      textTransform: "none",
+      "&:disabled": { background: "#cccccc", color: "#666666" },
+    }}
+  >
+    {isLoading ? "Updating..." : "Update"}
+  </Button>
+</Box>
+
+      </form>
+    </CardContent>
+  </Card>
+</Box>
+
     );
 }
 

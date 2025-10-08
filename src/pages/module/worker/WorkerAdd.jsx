@@ -105,7 +105,7 @@ const AddWorker = () => {
                         />
                     </svg>
 
-                    <h2 className="text-lg font-semibold text-gray-800">Add New Worker</h2>
+                    <h2 className="text-lg font-semibold text-[#0D2E28]">Add New Worker</h2>
                 </div>
             </div>
 
@@ -134,7 +134,7 @@ const AddWorker = () => {
                         <Form>
                             <div className="border border-[#616666] rounded-md p-8 min-h-[400px]">
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                                    <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Worker Name:
                                     </label>
                                     <div className="w-full md:w-3/4">
@@ -153,7 +153,7 @@ const AddWorker = () => {
                                 </div>
 
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                                    <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Expertise:
                                     </label>
                                     <div className="w-full md:w-3/4">
@@ -177,7 +177,7 @@ const AddWorker = () => {
                                 </div>
 
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                                    <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Email ID/Phone Number:
                                     </label>
                                     <div className="w-full md:w-3/4">
@@ -196,51 +196,43 @@ const AddWorker = () => {
                                 </div>
 
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-                                    <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+                                    <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Address:
                                     </label>
                                     <div className="w-full md:w-3/4">
                                         <Field
-                                            as="textarea"
                                             name="address"
-                                            rows="3"
+                                            type="text"
                                             placeholder="Enter complete address with street, area, city, state, and pincode"
                                             className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28] resize-none"
                                         />
-                                        {/* <ErrorMessage
-                                            name="address"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        /> */}
-                                        {/* <div className="text-xs text-gray-500 mt-1">
-                                            Please provide a complete address including street, area, city, state, and pincode for verification
-                                        </div> */}
+                                        
                                     </div>
                                 </div>
 
-
                             </div>
 
-                            <div className="flex justify-center gap-6 mt-4">
-                                <button
-                                    type="reset"
-                                    className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
-                                >
-                                    Cancel
-                                </button>
+                          <div className="flex justify-center gap-6 mt-4">
+  <button
+    type="reset"
+    className="w-[200px] h-[40px] border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
+  >
+    Cancel
+  </button>
 
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting || isLoading}
-                                    className={`w-32 h-10 text-white rounded-md text-sm ${
-                                        isSubmitting || isLoading
-                                            ? 'bg-gray-400 cursor-not-allowed'
-                                            : 'bg-[#001580] hover:bg-[#CED4F2]'
-                                    }`}
-                                >
-                                    {isSubmitting || isLoading ? 'Adding...' : 'Add Worker'}
-                                </button>
-                            </div>
+  <button
+    type="submit"
+    disabled={isSubmitting || isLoading}
+    className={`w-[200px] h-[40px] text-white rounded-md text-sm ${
+      isSubmitting || isLoading
+        ? 'bg-gray-400 cursor-not-allowed'
+        : 'bg-[#001580] hover:bg-[#CED4F2]'
+    }`}
+  >
+    {isSubmitting || isLoading ? 'Adding...' : 'Add Worker'}
+  </button>
+</div>
+
                         </Form>
                     )}
                 </Formik>
