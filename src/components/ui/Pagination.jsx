@@ -15,9 +15,28 @@ const Pagination = ({
   if (totalRecords === 0) return null; // hide pagination if no data
 
   // Determine which page numbers to show
-  const maxVisiblePages = 3; // show only 3 pages at a time
-  let startPage = Math.floor((currentPage - 1) / maxVisiblePages) * maxVisiblePages + 1;
-  let endPage = Math.min(startPage + maxVisiblePages - 1, totalPages);
+  const maxVisiblePages = 5; // show up to 5 pages at a time
+  let startPage, endPage;
+
+  if (totalPages <= maxVisiblePages) {
+    // If total pages is less than max visible, show all pages
+    startPage = 1;
+    endPage = totalPages;
+  } else {
+    // Calculate start and end pages based on current page
+    const halfVisible = Math.floor(maxVisiblePages / 2);
+
+    if (currentPage <= halfVisible) {
+      startPage = 1;
+      endPage = maxVisiblePages;
+    } else if (currentPage + halfVisible >= totalPages) {
+      startPage = totalPages - maxVisiblePages + 1;
+      endPage = totalPages;
+    } else {
+      startPage = currentPage - halfVisible;
+      endPage = currentPage + halfVisible;
+    }
+  }
 
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) {
@@ -43,32 +62,46 @@ const Pagination = ({
           &lt;
         </button>
 
+        {/* Show first page and ellipsis if needed */}
+        {startPage > 1 && (
+          <>
+            <button
+              onClick={() => goToPage(1)}
+              className={`w-8 h-8 border text-sm font-medium rounded-md transition ${currentPage === 1
+                ? "bg-[#001580] text-white"
+                : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
+                }`}
+            >
+              1
+            </button>
+            {startPage > 2 && <span className="px-2">...</span>}
+          </>
+        )}
+
         {/* Page Numbers */}
         {pageNumbers.map((pg) => (
           <button
             key={pg}
             onClick={() => goToPage(pg)}
-            className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-              pg === currentPage
-                ? "bg-[#001580] text-white"
-                : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
-            }`}
+            className={`w-8 h-8 border text-sm font-medium rounded-md transition ${pg === currentPage
+              ? "bg-[#001580] text-white"
+              : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
+              }`}
           >
             {pg}
           </button>
         ))}
 
-        {/* Ellipsis & Last Page */}
+        {/* Show ellipsis and last page if needed */}
         {endPage < totalPages && (
           <>
-            <span className="px-2">...</span>
+            {endPage < totalPages - 1 && <span className="px-2">...</span>}
             <button
               onClick={() => goToPage(totalPages)}
-              className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-                currentPage === totalPages
-                  ? "bg-[#001580] text-white"
-                  : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
-              }`}
+              className={`w-8 h-8 border text-sm font-medium rounded-md transition ${currentPage === totalPages
+                ? "bg-[#001580] text-white"
+                : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
+                }`}
             >
               {totalPages}
             </button>

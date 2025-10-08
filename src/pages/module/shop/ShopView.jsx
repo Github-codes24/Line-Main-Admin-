@@ -123,26 +123,40 @@ function ShopView() {
     );
 
     // Show loading state
-    if (loading) {
-        return (
-            <Box
-                sx={{
-                    width: "100%",
-                    minHeight: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "24px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 4,
-                }}
-            >
-                <CircularProgress />
-                <Typography>Loading shop data...</Typography>
-            </Box>
-        );
-    }
+  if (loading) {
+  return (
+    <Box
+      sx={{
+        width: "100%",
+        height: "100vh",        // Full viewport height to center vertically
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <svg
+        className="animate-spin h-10 w-10 text-[#001580]"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-100"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeDasharray="60"
+          strokeDashoffset="20"
+        ></circle>
+      </svg>
+    </Box>
+  );
+}
 
+        
     // Show error state
     if (error) {
         return (
@@ -196,239 +210,141 @@ function ShopView() {
     }
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                minHeight: "auto",
-                display: "flex",
-                flexDirection: "column",
-                gap: "24px",
-            }}
-        >
-            <Worker back title="View Shop" />
-            <Card>
-                <CardContent>
-                    <form>
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                gap: 2,
-                                marginBottom: 2,
-                                border: "1px solid black",
-                                borderRadius: 1,
-                                padding: 2,
-                                boxSizing: "border-box",
-                                paddingBottom: 10,
-                            }}
-                        >
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Shop Name:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.shopName || ""}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
+     <Box
+    sx={{
+        width: "100%",
+        minHeight: "auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+    }}
+>
+    <Worker back title="View Shop" />
+    <Card>
+        <CardContent>
+            <form>
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 2,
+                        marginBottom: 2,
+                        border: "1px solid black",
+                        borderRadius: 1,
+                        padding: 2,
+                        boxSizing: "border-box",
+                        paddingBottom: 10,
+                    }}
+                >
+                    {[
+                        { label: "Shop Name", value: shop.shopName || "" },
+                        { label: "Owner Name", value: shop.ownerName || "" },
+                        { label: "Email ID/Phone Number", value: shop.contact || "" },
+                        { label: "Address", value: shop.address || "" },
+                        { label: "Aadhaar Number", value: shop.aadhaarNumber || "" },
+                        { label: "GSTIN Number", value: shop.gstin || "N/A" },
+                    ].map((field, idx) => (
+                        <Box key={idx} sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                            <Box sx={{ display: "flex", alignItems: "center" }}>
+                                <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>
+                                    {field.label}:
+                                </Typography>
                             </Box>
-
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Owner Name:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.ownerName || ""}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Email ID/Phone Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.contact || ""}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Address:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.address || ""}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>Aadhaar Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.aadhaarNumber || ""}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <ImagePreviewBox
-                                label="Aadhaar Card Image:"
-                                src={shop.aadhaarImage}
-                                alt={`Aadhaar Card of ${shop.ownerName || shop.shopName}`}
-                                fallback="No Aadhaar image available"
-                            />
-
-                            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
-                                <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: 500 }}>GSTIN Number:</Typography>
-                                </Box>
-                                <Box sx={{ gridColumn: "span 2" }}>
-                                    <TextField
-                                        fullWidth
-                                        type="text"
-                                        value={shop.gstin || "N/A"}
-                                        variant="outlined"
-                                        sx={{ background: "#E4E5EB" }}
-                                        // sx={{ border: "#001580" }}
-                                        slotProps={{
-                                            input: {
-                                                readOnly: true,
-                                            },
-                                        }}
-                                    />
-                                </Box>
-                            </Box>
-
-                            <ImagePreviewBox
-                                label="GSTIN Image:"
-                                src={shop.gstinImage}
-                                alt={`GSTIN Certificate of ${shop.shopName}`}
-                                fallback="No GSTIN image available"
-                            />
-                        </Box>
-
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "10px",
-                            }}
-                        >
-                            <Button
-                                variant="contained"
-                                sx={{
-                                    background: shop.status === "Active" ? "#CECEF2" : "#D1F2CE",
-                                    color: shop.status === "Active" ? "#001580" : "#006400",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                }}
-                                onClick={() => {
-                                    const newStatus = shop.status === "Active" ? "Inactive" : "Active";
-                                    alert(`Shop marked as ${newStatus}`);
-                                }}
-                            >
-                                {shop.status === "Active" ? "Inactive" : "Active"}
-                            </Button>
-
-                            <Button
-                                variant="outlined"
-                                sx={{
-                                    background: "#001580",
-                                    color: "#FFFFFF",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                }}
-                                onClick={() =>
-                                    navigate(`/admin/shopmanagement/edit/${shop.id}`, {
-                                        state: {
-                                            shop: {
-                                                ...shop,
-                                                // Ensure field mapping consistency for edit form
-                                                name: shop.ownerName,
-                                                gstinNumber: shop.gstin,
-                                            },
+                            <Box sx={{ gridColumn: "span 2" }}>
+                                <TextField
+                                    fullWidth
+                                    type="text"
+                                    value={field.value}
+                                    variant="outlined"
+                                    sx={{
+                                        background: "#E4E5EB",
+                                        "& .MuiOutlinedInput-root": {
+                                            "& fieldset": { borderColor: "#001580" },
+                                            "&:hover fieldset": { borderColor: "#001580" },
+                                            "&.Mui-focused fieldset": { borderColor: "#001580" },
                                         },
-                                    })
-                                }
-                            >
-                                Edit
-                            </Button>
-
-                            {/* <Button
-                                variant="outlined"
-                                sx={{
-                                    background: "#dc3545",
-                                    color: "#FFFFFF",
-                                    paddingX: 4,
-                                    paddingY: "2px",
-                                    textTransform: "none",
-                                    "&:hover": {
-                                        background: "#c82333",
-                                    },
-                                }}
-                            >
-                                Delete
-                            </Button> */}
+                                        "& input": { color: "#0D2E28" },
+                                    }}
+                                    slotProps={{
+                                        input: {
+                                            readOnly: true,
+                                        },
+                                    }}
+                                />
+                            </Box>
                         </Box>
-                    </form>
-                </CardContent>
-            </Card>
-        </Box>
+                    ))}
+
+                    <ImagePreviewBox
+                        label="Aadhaar Card Image:"
+                        src={shop.aadhaarImage}
+                        alt={`Aadhaar Card of ${shop.ownerName || shop.shopName}`}
+                        fallback="No Aadhaar image available"
+                    />
+
+                    <ImagePreviewBox
+                        label="GSTIN Image:"
+                        src={shop.gstinImage}
+                        alt={`GSTIN Certificate of ${shop.shopName}`}
+                        fallback="No GSTIN image available"
+                    />
+                </Box>
+
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "10px",
+                    }}
+                >
+                    <Button
+                        variant="contained"
+                        sx={{
+                            width: "200px",
+                            height: "40px",
+                            background: shop.status === "Active" ? "#CECEF2" : "#CECEF2",
+                            color: shop.status === "Active" ? "#001580" : "#006400",
+                            textTransform: "none",
+                        }}
+                        onClick={() => {
+                            const newStatus = shop.status === "Active" ? "Inactive" : "Active";
+                            alert(`Shop marked as ${newStatus}`);
+                        }}
+                    >
+                        {shop.status === "Active" ? "Inactive" : "Active"}
+                    </Button>
+
+                    <Button
+                        variant="outlined"
+                        sx={{
+                            width: "200px",
+                            height: "40px",
+                            background: "#001580",
+                            color: "#FFFFFF",
+                            textTransform: "none",
+                        }}
+                        onClick={() =>
+                            navigate(`/admin/shopmanagement/edit/${shop.id}`, {
+                                state: {
+                                    shop: {
+                                        ...shop,
+                                        name: shop.ownerName,
+                                        gstinNumber: shop.gstin,
+                                    },
+                                },
+                            })
+                        }
+                    >
+                        Edit
+                    </Button>
+                </Box>
+            </form>
+        </CardContent>
+    </Card>
+</Box>
+
     );
 }
 
