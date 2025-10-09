@@ -202,6 +202,7 @@ export default function BigProductList() {
                         id: product.id || product._id,
                         name: product.productName || product.name || 'Unknown Product',
                         category: product.productCategory || product.category || 'Unknown Category',
+                        subCategory: product.productSubCategory || product.subCategory || 'N/A',
                         price: product.productPrice || product.price || 'N/A',
                         status: rawStatus,
                         image: product.productImage || product.image || pvc,
@@ -361,7 +362,7 @@ export default function BigProductList() {
                         placeholder="Search by Product Name..."
                         value={searchTerm}
                         onChange={handleSearch}
-                        className="w-full pl-10 pr-4 py-2 text-sm text-gray-700 placeholder:font-bold bg-[#E4E5EB] border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#0D2E28]"
+                        className="w-full pl-10 pr-4 py-2 text-sm text-black placeholder:text-black placeholder:font-bold bg-[#E4E5EB] border border-blue-800 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-800"
                     />
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -378,6 +379,8 @@ export default function BigProductList() {
                         />
                     </svg>
                 </div>
+
+
 
                 <Button
                     onClick={() => navigate("/admin/bigproduct/add")}
@@ -401,10 +404,10 @@ export default function BigProductList() {
                     onClick={handleFilterClick}
                 >
                     <FilterIcon />
-       
+
                 </Box>
-                  
-    
+
+
 
 
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -438,7 +441,7 @@ export default function BigProductList() {
                     )}
                 </Box>
 
-                {/* Approval Status Filter */}
+                {/* Approval Status Filter
                 <select
                     value={approvalStatusFilter}
                     onChange={(e) => {
@@ -451,10 +454,10 @@ export default function BigProductList() {
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
                     <option value="Rejected">Rejected</option>
-                </select>
+                </select> */}
 
                 {/* Sub-Category Filter - Only show when a category is selected */}
-                {appliedFilters.length > 0 && (
+                {/* {appliedFilters.length > 0 && (
                     <select
                         value={subCategoryFilter}
                         onChange={(e) => {
@@ -471,12 +474,12 @@ export default function BigProductList() {
                             </option>
                         ))}
                     </select>
-                )}
+                )} */}
 
                 <button
                     onClick={handleResetFilters}
                     // className="px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
-                     className="ml-auto px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
+                    className="ml-auto px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
                 >
                     Reset Filter
                 </button>
@@ -515,8 +518,9 @@ export default function BigProductList() {
                             <th className="p-3 leading-none">Product Image</th>
                             <th className="p-3">Product Name</th>
                             <th className="p-3 leading-none">Product Category</th>
+                            <th className="p-3 leading-none">Product Sub-Category</th>
                             <th className="p-3 leading-none">Product Price</th>
-                            <th className="p-3 leading-none">Status</th>
+                            <th className="p-3 leading-none">Approval Status</th>
                             <th className="p-3">Action</th>
                         </tr>
                     </thead>
@@ -543,16 +547,19 @@ export default function BigProductList() {
                                         <img
                                             src={product.image || pvc}
                                             alt="Product"
-                                            className="w-12 h-12 rounded-full border object-cover"
+                                            className="w-12 h-12 border-2 border-blue-500 rounded-lg object-cover"
                                             onError={(e) => {
                                                 e.target.src = pvc;
                                             }}
                                         />
                                     </td>
+
+
                                     <td className="p-3 max-w-xs truncate" title={product.name}>
                                         {String(product.name || 'Unknown')}
                                     </td>
                                     <td className="p-3">{String(product.category || 'Unknown')}</td>
+                                    <td className="p-3">{String(product.subCategory || 'N/A')}</td>
                                     <td className="p-3">{String(product.price || 'N/A')}</td>
                                     <td className="p-3">
                                         <div className="flex flex-col gap-1">
