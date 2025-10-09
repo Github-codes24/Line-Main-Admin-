@@ -163,11 +163,12 @@ export default function ViewCommission() {
             <button
               className="text-gray-600 hover:text-gray-800 mr-3"
               onClick={() => navigate(-1)}
-              title="Back"
             >
               <IoArrowBackCircleOutline size={30} />
             </button>
-            <h2 className="text-lg font-medium text-gray-800">View Commission Details</h2>
+            <h2 className="text-lg font-medium text-gray-800">
+              View Commission Details
+            </h2>
           </div>
         </div>
 
@@ -234,12 +235,12 @@ export default function ViewCommission() {
               Back
             </button>
             <button
-              className="px-12 py-2 rounded bg-blue-800 text-white hover:bg-blue-900 transition-colors"
-              onClick={() => navigate(`/admin/set-charges-of-worker/edit/${encodeURIComponent(item?.id)}`)}
-              disabled={!item}
-            >
-              Edit
-            </button>
+  className="px-12 py-2 rounded bg-blue-800 text-white hover:bg-blue-900 transition-colors"
+  onClick={() => navigate(`/admin/set-charges-of-worker/edit/${encodeURIComponent(item?.id)}`)}
+  disabled={!item}
+>
+  Edit
+</button>
           </div>
         </div>
       </div>

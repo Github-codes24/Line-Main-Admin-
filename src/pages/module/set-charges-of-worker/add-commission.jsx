@@ -47,7 +47,7 @@ export default function AddCommission() {
 
   // controlled form state
   const [category, setCategory] = useState("");
-  const [operation, setOperation] = useState(""); // kept for UI only (not sent)
+  const [operation, setOperation] = useState(""); // optional, kept for UI compatibility
   const [charges, setCharges] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 

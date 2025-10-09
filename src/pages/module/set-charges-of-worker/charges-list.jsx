@@ -45,6 +45,7 @@ api.interceptors.request.use((cfg) => {
 
 export default function ChargesList() {
   const navigate = useNavigate();
+  
 
   const [commissions, setCommissions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -192,7 +193,7 @@ export default function ChargesList() {
                   <th className="px-3 py-2 font-medium">Sr.No.</th>
                   <th className="px-3 py-2 font-medium">Category</th>
                   <th className="px-3 py-2 font-medium">Charges</th>
-                  <th className="px-3 py-2 font-medium">Created</th>
+                  {/* <th className="px-3 py-2 font-medium">Created</th> */}
                   <th className="px-3 py-2 font-medium text-center">Action</th>
                 </tr>
               </thead>
@@ -218,19 +219,19 @@ export default function ChargesList() {
                       <td className="px-3 py-2">{indexOfFirstRow + idx + 1}</td>
                       <td className="px-3 py-2">{c.category}</td>
                       <td className="px-3 py-2">₹ {c.charges}</td>
-                      <td className="px-3 py-2">
+                      {/* <td className="px-3 py-2">
                         {c.createdAt ? new Date(c.createdAt).toLocaleString() : "-"}
-                      </td>
+                      </td> */}
                       <td className="px-3 py-2 text-center space-x-3 text-blue-600">
                         <button
-                          className="text-blue-600 mx-1"
+                           className="text-red-600" size={18} 
                           onClick={() => goToView(c)}
                           title="View"
                         >
                           <FaEye />
                         </button>
                         <button
-                          className="text-green-600 mx-1"
+                          className="text-red-600" size={18}
                           onClick={() => goToEdit(c)}
                           title="Edit"
                         >
