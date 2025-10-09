@@ -1,125 +1,174 @@
-import React, { useState } from "react";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+// src/pages/module/set-commission/AddCommission.jsx
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import conf from "../../../config";
+import { CircularProgress, Typography } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
+import { ChevronDown } from "lucide-react";
 
-export default function AddCommission() {
+const AddCommission = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
-  const [form, setForm] = useState({
-    category: "",
-    operation: "",
-    workerCommission: "",
-    shopkeeperCommission: "",
-  });
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [category, setCategory] = useState("");
+  const [workerCommission, setWorkerCommission] = useState("");
+  const [shopkeeperCommission, setShopkeeperCommission] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    const loadCategories = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/tabs/experties`,
+        });
+        if (res?.success) setCategories(res.data || []);
+      } catch (err) {
+        console.error("Error loading categories:", err);
+        toast.error("Failed to load categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadCategories();
+  }, [fetchData]);
+
+  const handleBack = () => navigate("/admin/set-commission");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!category || !workerCommission || !shopkeeperCommission) {
+      toast.warning("Please fill all fields");
+      return;
+    }
+    setSubmitting(true);
     try {
-      await fetchData({
+      const payload = {
+        category: category,
+        workerPercentageCommission: Number(workerCommission),
+        shopkeeperPercentageCommission: Number(shopkeeperCommission),
+      };
+      const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}/admin/commissions/add-commission`,
-        data: form,
+        data: payload,
       });
-      alert("Commission added successfully!");
-      navigate("/admin/set-commission");
+      if (res?.success) {
+        toast.success("Commission added successfully!");
+        setTimeout(() => navigate("/admin/set-commission"), 1500);
+      } else {
+        toast.error(res?.message || "Failed to add commission");
+      }
     } catch (err) {
       console.error(err);
-      alert("Failed to add commission!");
+      toast.error("Something went wrong!");
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-200 max-h-screen p-4">
-      <div className="bg-white rounded-lg border border-gray-300 mb-4">
-        <div className="flex items-center p-4 bg-white rounded-lg border-b border-gray-300">
-          <button
-            className="text-gray-600 hover:text-gray-800 mr-3"
-            onClick={() => navigate(-1)}
-          >
-            <IoArrowBackCircleOutline size={30} />
-          </button>
-          <h2 className="text-lg font-medium text-gray-800">Add Commission</h2>
+    <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
+      <div className="flex-1 px-4 md:px-0 mx-auto">
+        {/* Header */}
+        <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
+          <img
+            src="/Back Button (1).png"
+            onClick={handleBack}
+            className="mr-3 cursor-pointer w-8"
+            alt="Back"
+          />
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Commission</h2>
         </div>
 
-        <div className="border border-gray-300 rounded-lg px-6 py-12 mb-4 ml-4 mr-4 mt-4 space-y-6">
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Category:</label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            >
-              <option>Select</option>
-              <option>Electrician</option>
-              <option>Plumbing</option>
-              <option>Tiler</option>
-              <option>Painter</option>
-              <option>AC & Refrigerator Mechanic</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Crud Operations:</label>
-            <select
-              name="operation"
-              value={form.operation}
-              onChange={handleChange}
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            >
-              <option>Select</option>
-              <option>Board Fitting</option>
-              <option>Plumber</option>
-              <option>Tile Fitting</option>
-              <option>Wall Painting</option>
-              <option>Refrigerator Repair</option>
-            </select>
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Work        er:</label>
-            <input
-              type="text"
-              name="workerCommission"
-              value={form.workerCommission}
-              onChange={handleChange}
-              placeholder="Enter Commission (%)"
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-
-          <div className="flex items-center">
-            <label className="w-48 text-sm font-medium text-gray-700">Commission From Shopkeeper:</label>
-            <input
-              type="text"
-              name="shopkeeperCommission"
-              value={form.shopkeeperCommission}
-              onChange={handleChange}
-              placeholder="Enter Commission (%)"
-              className="flex-1 border border-gray-300 rounded px-3 py-2"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-center gap-4 px-6 pb-6">
-          <button
-            className="px-12 py-2 rounded border border-gray-300 bg-blue-100"
-            onClick={() => navigate(-1)}
+        {/* Form Container */}
+        <div className="bg-white p-4 rounded-lg shadow min-h-screen">
+          <form
+            onSubmit={handleSubmit}
+            className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
           >
-            Cancel
-          </button>
-          <button
-            className="px-12 py-2 rounded bg-blue-800 text-white"
-            onClick={handleSubmit}
-          >
-            Add
-          </button>
+            {/* Category */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
+              <div className="relative flex-1">
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
+                >
+                  <option value="">Select</option>
+                  {categories.map((cat) => (
+                    <option key={cat.tabName} value={cat.tabName}>
+                      {cat.tabName}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
+              </div>
+            </div>
+
+            {/* Worker Commission */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Commission From Worker:</label>
+              <input
+                type="number"
+                value={workerCommission}
+                onChange={(e) => setWorkerCommission(e.target.value)}
+                placeholder="Enter Commission (%)"
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-[#0D2E28] outline-none"
+              />
+            </div>
+
+            {/* Shopkeeper Commission */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Commission From Shopkeeper:</label>
+              <input
+                type="number"
+                value={shopkeeperCommission}
+                onChange={(e) => setShopkeeperCommission(e.target.value)}
+                placeholder="Enter Commission (%)"
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-[#0D2E28] outline-none"
+              />
+            </div>
+          </form>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 pt-6">
+            <button
+              type="button"
+              onClick={handleBack}
+              className="w-[200px] bg-[#CED4F2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580]"
+            >
+              {submitting ? "Adding..." : "Add"}
+            </button>
+          </div>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
-}
+};
+
+export default AddCommission;

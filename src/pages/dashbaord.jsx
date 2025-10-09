@@ -44,9 +44,17 @@ const Dashboard = () => {
     getDashboardData();
   }, [fetchData]);
 
+  // if (isLoading) {
+  //   return <div className="p-6">Loading dashboard...</div>;
+  // }
   if (isLoading) {
-    return <div className="p-6">Loading dashboard...</div>;
-  }
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <div className="w-16 h-16 border-4 border-t-[#001580] border-blue-200 rounded-full animate-spin"></div>
+    </div>
+  );
+}
+
 
   if (!dashboardData) {
     return <div className="p-6 text-red-500">Failed to load dashboard data</div>;
@@ -55,7 +63,7 @@ const Dashboard = () => {
   
 
   return (
-    <div className="bg-[#E0E9E9] min-h-screen p-0">
+    <div className="bg-[#E0E9E9] min-h-screen p-0 font-myfont">
       <div className="bg-[#FFFFFF] p-2 rounded-md ">
         {/* Cards Section */}
         <div className="mb-6">
@@ -72,11 +80,12 @@ const Dashboard = () => {
         </div>
 
         {/* Orders + Products */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6 font-myfont">
           {/* Recent Orders */}
           <DashboardTable
             title="Recent Orders"
-            actionLink="See All Order"
+            actionText="See All Orders"
+             actionLink="/admin/order/list" 
             headers={["Order No.", "Service Required", "Status"]}
             isOrderTable={true}
             orderData={dashboardData.recentOrders || []}
@@ -86,7 +95,7 @@ const Dashboard = () => {
                   order.orderId, // Display ID for the table
                   order.specificServiceName,
                   <span
-                    className={`font-semibold ${order.orderStatus === "Pending"
+                    className={`font-extrasemibold ${order.orderStatus === "Pending"
                       ? "text-yellow-500"
                       : order.orderStatus === "Assigned"
                         ? "text-green-500"
@@ -104,16 +113,17 @@ const Dashboard = () => {
           {/* Top Products */}
           <DashboardTable
             title="Top Selling Products"
-            actionLink="See All Product"
-            headers={["Product", "Name", "Category"]}
-            showAction={false} // 👈 hides Action column
+            actionLink="/admin/smallproduct"
+            actionText="See All Product"
+            headers={["Product Image", "Product Name", "Product Category"]}
+            showAction={false} //  hides Action column
             data={
               topProducts && topProducts.length > 0
                 ? topProducts.map((product) => [
                   <img
                     src={product.productImageUrl}
                     alt={product.productName}
-                    className="w-8 h-8 rounded"
+                    className="w-8 h-8 rounded text-center"
                   />,
                   product.productName,
                   product.productCategory,
@@ -128,7 +138,8 @@ const Dashboard = () => {
         <div className="mb-6">
           <DashboardTable
             title="Top Workers"
-            actionLink="See All Worker"
+             actionText="See All Workers"
+            actionLink="/admin/workermanagement"
             headers={["Sr.No.", "Worker Name", "Expertise", "Email/Phone", "Total Orders"]}
             isWorkerTable={true}
             workerData={dashboardData.topWorkers || []}
@@ -150,7 +161,8 @@ const Dashboard = () => {
         <div className="mb-6">
           <DashboardTable
             title="Top Shops"
-            actionLink="See All Shops"
+            actionText="See All Shops"
+            actionLink="/admin/shopmanagement"
             headers={["Sr.No.", "Shop Name", "Owner Name", "Email/Phone", "Total Orders"]}
             isShopTable={true}
             shopData={dashboardData.topShops || []}

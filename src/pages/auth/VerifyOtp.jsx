@@ -105,8 +105,8 @@ const VerifyOtp = () => {
     transition={{ duration: 0.5 }}
     className="bg-gradient-to-b from-white to-teal-50 p-6 sm:p-8 rounded-2xl shadow-lg text-center w-full max-w-md"
   >
-    <h2 className="text-2xl sm:text-3xl font-bold text-[#0D2E28] mt-2">Verify Code</h2>
-    <p className="text-gray-500 text-sm sm:text-base mb-2">
+    <h2 className="text-2xl sm:text-3xl font-bold text-[#0D2E28] mt-2 font-myfont">Verify Code</h2>
+    <p className="text-gray-500 text-sm sm:text-base mb-2 font-myfont">
       Enter the 6-digit OTP sent to your {contact.includes("@") ? "email" : "mobile number"}
     </p>
 
@@ -151,7 +151,7 @@ const VerifyOtp = () => {
       <button
         onClick={handleVerify}
         disabled={loading}
-        className="flex-1 py-3 rounded-lg bg-[#001580] text-white hover:bg-[#CECEF2] border-[#001580] transition disabled:opacity-50"
+        className="flex-1 py-3 rounded-lg bg-[#001580] text-white hover:bg-[#041880] border-[#001580] transition disabled:opacity-50"
       >
         {loading ? "Verifying..." : "Verify"}
       </button>

@@ -1,496 +1,503 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  CircularProgress,
-} from "@mui/material";
-import Worker from "../../../components/cards/worker.jsx";
-
-import { DeleteIcon, EditIcon, ViewIcon } from "../../../assets/CommonAssets";
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Eye, Trash2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
-import { toast, ToastContainer } from "react-toastify";
+import Pagination from "../../../components/ui/Pagination.jsx";
 
-import "react-toastify/dist/ReactToastify.css";
-
-function ShopList() {
+const ShopList = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  
-// Delete modal state
-const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-const [selectedShop, setSelectedShop] = useState(null);
-
-  // State management
-  const [searchText, setSearchText] = React.useState("");
   const [fetchData] = useFetch();
-  const [shopData, setShopData] = React.useState([]);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [pagination, setPagination] = React.useState({
-    currentPage: 1,
-    totalPages: 1,
-    totalShops: 0,
-    limit: 5  // Show 5 shops per page
-  });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 10;
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [shops, setShops] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedShop, setSelectedShop] = useState(null);
 
 
-  // Fetch shops from API with pagination and search
-  React.useEffect(() => {
-    fetchShops(1, searchText); // Reset to page 1 when search changes
-  }, [searchText]);
+  // Fetch all shops when component mounts and when location changes
+  useEffect(() => {
+    fetchAllShops();
+  }, [location.pathname, location.key]);
 
-  // Function to get total count of shops
-  const getTotalShopsCount = async () => {
+  // Fetch shops when page changes
+  useEffect(() => {
+    fetchAllShops(currentPage);
+  }, [currentPage]);
+
+
+  const fetchAllShops = async (page = currentPage) => {
     try {
-      const countResult = await fetchData({
-        method: "GET",
-        url: `${conf.apiBaseUrl}/admin/Shop/get-all-shop`,
-        params: { page: 1, limit: 1 } // Just get 1 item to check total
-      });
-      
-      console.log('Count API response:', countResult);
-      return countResult.totalShops || countResult.total || countResult.count || countResult.totalCount || 0;
-    } catch (error) {
-      console.error('Error getting total count:', error);
-      return 0;
+      setError("");
+      setIsLoading(true);
+
+      // Try with pagination first, fallback to without pagination
+      let result;
+      try {
+        result = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/shop/get-all-shop?page=${page}&limit=${recordsPerPage}`,
+        });
+      } catch (paginationError) {
+        console.log('Pagination API failed, trying without pagination:', paginationError);
+        result = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/shop/get-all-shop`,
+        });
+      }
+
+      console.log('Full API Response:', result);
+
+      // More flexible success condition
+      if (result.success || result.data || result.shops || result.users) {
+        // Try different possible data structures
+        let shopData = [];
+
+        if (result.shops) {
+          shopData = result.shops;
+        } else if (result.users) {
+          shopData = result.users;
+        } else if (result.data?.shops) {
+          shopData = result.data.shops;
+        } else if (Array.isArray(result.data)) {
+          shopData = result.data;
+        } else if (result.data) {
+          shopData = [result.data];
+        }
+
+        console.log('Extracted shop data:', shopData);
+        
+        // Debug each shop's ID fields
+        shopData.forEach((shop, index) => {
+          console.log(`Shop ${index}:`, {
+            originalId: shop.id,
+            originalMongoId: shop._id,
+            shopName: shop.shopName,
+            hasId: !!shop.id,
+            hasMongoId: !!shop._id
+          });
+        });
+
+        const normalizedShops = shopData.map((shop, index) => {
+          const normalizedShop = {
+            ...shop,
+            name: shop.ownerName || shop.name || 'N/A',
+            shopName: shop.shopName || 'N/A',
+            contact: shop.contact || shop.phone || shop.email || 'N/A',
+            address: shop.address || shop.location || 'N/A',
+            aadhaar: shop.aadhaarNumber || shop.aadhaar || 'N/A',
+            gstin: shop.gstin || shop.gstinNumber || 'N/A',
+            status: shop.isActive ? "Active" : "Inactive",
+            id: shop.id || shop._id || `temp-id-${index}` // Fallback ID
+          };
+          
+          console.log(`Normalized shop ${index}:`, {
+            finalId: normalizedShop.id,
+            shopName: normalizedShop.shopName
+          });
+          
+          return normalizedShop;
+        });
+
+        setShops(normalizedShops);
+
+        // Use API pagination data if available
+        if (result.pagination) {
+          setTotalRecords(result.pagination.totalShops || result.pagination.totalUsers || result.pagination.total || 0);
+          setTotalPages(result.pagination.totalPages || 1);
+        } else {
+          // Fallback: use client-side pagination
+          setTotalRecords(shopData.length);
+          setTotalPages(Math.ceil(shopData.length / recordsPerPage));
+        }
+
+        if (normalizedShops.length === 0) {
+          toast.info('No shops found');
+        } else {
+          console.log('Fetched shops:', normalizedShops.length, 'shops');
+        }
+      } else {
+        console.log('API call failed or no data:', result);
+        setError(result.message || 'Failed to fetch shops');
+        setShops([]);
+      }
+    } catch (err) {
+      console.error('Error fetching shops:', err);
+      setError(err.response?.data?.message || err.message || 'Error fetching shops');
+      setShops([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Fetch shops when component mounts and when location changes
- React.useEffect(() => {
-  fetchShops(1, searchText);
-}, [searchText, location.pathname, location.key]);
-
-
-const fetchShops = async (page = 1, search = "") => {
-  try {
-    setIsLoading(true);
-
-    const params = {
-      page: page, // IMPORTANT: use the page param here
-      limit: pagination.limit, // 5 per page
-    };
-
-    if (search && search.trim()) params.search = search.trim();
-
-    const result = await fetchData({
-      method: "GET",
-      url: `${conf.apiBaseUrl}/admin/shop/get-all-shop`,
-      params: params,
-    });
-
-    if (!result.data) throw new Error("Invalid API response");
-
-    const shops = Array.isArray(result.data)
-      ? result.data
-      : Array.isArray(result.data.shops)
-      ? result.data.shops
-      : [];
-
-    setShopData(shops);
-    // Get total shops count from API
-    const totalShops =
-      result.data.totalShops ||
-      result.data.total ||
-      result.totalShops ||
-      shops.length;
-
-    // Normalize shops
-    const normalizedShops = shops.map((shop) => ({
-      ...shop,
-      id: shop._id || shop.id,
-      name: shop.ownerName || shop.name || "",
-      shopName: shop.shopName || "",
-      contact: shop.contact || "",
-      address: shop.address || "",
-      aadhaar: shop.aadhaarNumber || shop.aadhaar || "",
-      gstin: shop.gstin || shop.gstinNumber || "",
-      status: shop.isActive ? "Active" : "Inactive",
-    }));
-
-    setShopData(normalizedShops);
-
-    // Update pagination info
-     setPagination({
-      currentPage: result.pagination?.currentPage || page,
-      totalPages: result.pagination?.totalPages || 1,
-      totalShops: result.pagination?.totalUsers || shops.length,
-      limit: result.pagination?.usersPerPage || pagination.limit,
-    });
-
-  } catch (err) {
-    console.error(err);
-    setShopData([]);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-  // Handle page change
-  const handlePageChange = (newPage) => {
-  if (newPage >= 1 && newPage <= pagination.totalPages) {
-    fetchShops(newPage, searchText);
-  }
-};
 
 
 
-  // Handle search with debouncing
-  const handleSearchChange = (value) => {
-  setSearchText(value);
-  fetchShops(1, value); // always start from page 1
-};
 
+  const deleteShop = async (shopId) => {
+    try {
+      setIsLoading(true);
 
-  // Delete shop function
-  // const deleteShop = async (shopId, shopName) => {
-  //   try {
-  //     // Show confirmation dialog
-  //     const confirmed = window.confirm(
-  //       `Are you sure you want to delete "${shopName}"? This action cannot be undone.`
-  //     );
+      const result = await fetchData({
+        method: "DELETE",
+        url: `${conf.apiBaseUrl}/admin/Shop/delete-shop/${shopId}`,
+      });
 
-  //     if (!confirmed) {
-  //       return;
-  //     }
-
-  //     setIsLoading(true);
-  //     console.log('Deleting shop with ID:', shopId);
-
-  //     // Try different possible delete endpoints
-  //     const possibleEndpoints = [
-  //       `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`,
-  //       `${conf.apiBaseUrl}/admin/shop/get-shop/${shopId}`, // Your provided endpoint
-  //       `${conf.apiBaseUrl}/admin/shop/remove-shop/${shopId}`,
-  //       `${conf.apiBaseUrl}/admin/shop/${shopId}`,
-  //     ];
-
-  //     let result = null;
-  //     let lastError = null;
-
-  //     for (const endpoint of possibleEndpoints) {
-  //       try {
-  //         console.log('Trying DELETE endpoint:', endpoint);
-  //         result = await fetchData({
-  //           method: "DELETE",
-  //           url: endpoint,
-  //         });
-  //         console.log('Success with DELETE endpoint:', endpoint);
-  //         break;
-  //       } catch (error) {
-  //         console.log('Failed with DELETE endpoint:', endpoint, error.response?.data?.message);
-  //         lastError = error;
-  //         continue;
-  //       }
-  //     }
-
-  //     if (!result) {
-  //       throw lastError || new Error('All DELETE endpoints failed');
-  //     }
-
-  //     console.log('Delete shop API response:', result);
-
-  //     if (result.success || result.status === 'success') {
-  //       toast.success(result.message || `Shop "${shopName}" deleted successfully!`);
-
-  //       // Refresh the shop list
-  //       fetchShops(pagination.currentPage, searchText);
-  //     } else {
-  //       throw new Error(result.message || 'Failed to delete shop');
-  //     }
-
-  //   } catch (error) {
-  //     console.error('Error deleting shop:', error);
-  //     console.error('Full error response:', error.response);
-
-  //     let errorMessage = 'Failed to delete shop';
-  //     if (error.response?.data?.message) {
-  //       errorMessage = error.response.data.message;
-  //     } else if (error.response?.data?.error) {
-  //       errorMessage = error.response.data.error;
-  //     } else if (error.response?.data) {
-  //       errorMessage = typeof error.response.data === 'string'
-  //         ? error.response.data
-  //         : JSON.stringify(error.response.data);
-  //     } else if (error.message) {
-  //       errorMessage = error.message;
-  //     }
-
-  //     toast.error(errorMessage);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-const deleteShop = async (shopId) => {
-  try {
-    setIsLoading(true);
-    const result = await fetchData({
-      method: "DELETE",
-      url: `${conf.apiBaseUrl}/admin/shop/delete-shop/${shopId}`, // use your proper endpoint
-    });
-
-    if (result.success || result.status === 'success') {
-      toast.success(result.message || `Shop deleted successfully!`);
-      fetchShops(pagination.currentPage, searchText);
-    } else {
-      throw new Error(result.message || 'Failed to delete shop');
+      if (result.success) {
+        toast.success(result.message || 'Shop deleted successfully');
+        fetchAllShops(); // Refresh list
+      } else {
+        toast.error(result.message || 'Failed to delete shop');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+      toast.error(err.response?.data?.message || err.message || 'Error deleting shop');
+    } finally {
+      setIsLoading(false);
     }
-  } catch (error) {
-    console.error(error);
-    toast.error(error.message || 'Failed to delete shop');
-  } finally {
-    setIsLoading(false);
-    setDeleteModalOpen(false); // close modal
-  }
-};
+  };
 
+  // For search, we'll filter client-side for now
+  const filteredShops = shops.filter((shop) => {
+    if (!shop) return false;
 
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      (shop.name && shop.name.toLowerCase().includes(searchLower)) ||
+      (shop.shopName && shop.shopName.toLowerCase().includes(searchLower)) ||
+      (shop.contact && shop.contact.toLowerCase().includes(searchLower)) ||
+      (shop.address && shop.address.toLowerCase().includes(searchLower))
+    );
+  });
 
-  // Since we're using server-side search and pagination, we don't need client-side filtering
-  const displayData = shopData;
+  // Use API pagination data instead of calculating client-side
+  const currentRecords = searchTerm ? filteredShops : shops;
+  const displayTotalPages = searchTerm ? Math.ceil(filteredShops.length / recordsPerPage) : totalPages;
+  const displayTotalRecords = searchTerm ? filteredShops.length : totalRecords;
+  const indexOfFirstRecord = searchTerm ? 0 : (currentPage - 1) * recordsPerPage;
+
+  const goToPage = (pg) => {
+    if (pg >= 1 && pg <= displayTotalPages) {
+      setCurrentPage(pg);
+      if (!searchTerm) {
+        // Only fetch new data if not searching (since search is client-side for now)
+        fetchAllShops(pg);
+      }
+    }
+  };
 
   return (
-    <Box sx={{ width: "100%", display: "flex", flexDirection: "column", gap: 0 }}>
+    <div className="bg-[#E0E9E9] min-h-screen w-full font-myfont">
       <ToastContainer />
 
-      {/* Header Layout */}
-      {/* <div className="bg-white p-1 shadow-md mb-0 rounded-md relative flex items-center min-h-[65px]"> */}
-      <div className="bg-white p-2 shadow-md mt-0 rounded-md flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-0 relative min-h-[65px]">
-  {/* Title on left */}
-  <h1 className="text-xl font-semibold ml-2 z-10">Shop List</h1>
+      {/* Header */}
+      <div className="bg-white p-3 shadow-md mb-4 rounded-md min-h-[65px]">
+        <div className="flex flex-col md:flex-row items-center md:justify-between gap-3 relative">
 
-  {/* Search Bar */}
-  <div className="w-full sm:w-[400px] mx-auto sm:mx-0 sm:absolute sm:left-1/2 sm:transform sm:-translate-x-1/2">
-    <div className="relative">
-      {/* Search Icon */}
-      <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 18 18"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M6.5 13C4.68333 13 3.146 12.3707 1.888 11.112C0.63 9.85333 0.000667196 8.316 5.29101e-07 6.5C-0.000666138 4.684 0.628667 3.14667 1.888 1.888C3.14733 0.629333 4.68467 0 6.5 0C8.31533 0 9.853 0.629333 11.113 1.888C12.373 3.14667 13.002 4.684 13 6.5C13 7.23333 12.8833 7.925 12.65 8.575C12.4167 9.225 12.1 9.8 11.7 10.3L17.3 15.9C17.4833 16.0833 17.575 16.3167 17.575 16.6C17.575 16.8833 17.4833 17.1167 17.3 17.3C17.1167 17.4833 16.8833 17.575 16.6 17.575C16.3167 17.575 16.0833 17.4833 15.9 17.3L10.3 11.7C9.8 12.1 9.225 12.4167 8.575 12.65C7.925 12.8833 7.23333 13 6.5 13ZM6.5 11C7.75 11 8.81267 10.5627 9.688 9.688C10.5633 8.81333 11.0007 7.75067 11 6.5C10.9993 5.24933 10.562 4.187 9.688 3.313C8.814 2.439 7.75133 2.00133 6.5 2C5.24867 1.99867 4.18633 2.43633 3.313 3.313C2.43967 4.18967 2.002 5.252 2 6.5C1.998 7.748 2.43567 8.81067 3.313 9.688C4.19033 10.5653 5.25267 11.0027 6.5 11Z"
-            fill="#0D2E28"
-          />
-        </svg>
+          {/* Title */}
+          <h1 className="text-xl text-[#333333] font-semibold">Shop List</h1>
+
+          {/* Search Bar */}
+          {/* Desktop Centered */}
+          <div className="hidden md:block absolute left-1/2 transform -translate-x-1/2 w-[400px]">
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path
+                    d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+                    fill="#0D2E28"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search by Name, Phone Number, Email, Shop..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-10 pl-12 pr-4 placeholder:font-semibold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Mobile Full Width */}
+          <div className="block md:hidden w-full">
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                  <path
+                    d="M6.5 13C4.68 13 3.15 12.37 1.89 11.11C0.63 9.85 0 8.32 0 6.5C0 4.68 0.63 3.15 1.89 1.89C3.15 0.63 4.68 0 6.5 0C8.32 0 9.85 0.63 11.11 1.89C12.37 3.15 13 4.68 13 6.5C13 7.23 12.88 7.93 12.65 8.58C12.42 9.23 12.1 9.8 11.7 10.3L17.3 15.9C17.48 16.08 17.58 16.32 17.58 16.6C17.58 16.88 17.48 17.12 17.3 17.3C17.12 17.48 16.88 17.58 16.6 17.58C16.32 17.58 16.08 17.48 15.9 17.3L10.3 11.7C9.8 12.1 9.23 12.42 8.58 12.65C7.93 12.88 7.23 13 6.5 13ZM6.5 11C7.75 11 8.81 10.56 9.69 9.69C10.56 8.81 11 7.75 11 6.5C11 5.25 10.56 4.19 9.69 3.31C8.81 2.44 7.75 2 6.5 2C5.25 2 4.19 2.44 3.31 3.31C2.44 4.19 2 5.25 2 6.5C2 7.75 2.44 8.81 3.31 9.69C4.19 10.56 5.25 11 6.5 11Z"
+                    fill="#0D2E28"
+                  />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full h-10 pl-12 pr-4 rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Add Button */}
+          <div className="w-full md:w-auto">
+            <button
+              onClick={() => navigate('/admin/shopmanagement/add')}
+              className="w-full md:w-auto flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors justify-center"
+            >
+              + Add New Shop
+            </button>
+          </div>
+        </div>
       </div>
 
-      {/* Input */}
-      <input
-        type="text"
-        placeholder="Search by Name, Phone Number, Email, Shop....."
-        value={searchText}
-        onChange={(e) => handleSearchChange(e.target.value)}
-        className="w-full h-10 pl-12 pr-4 placeholder:font-bold placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
-      />
-    </div>
-  </div>
 
-  {/* Add Shop Button */}
-  <div className="sm:ml-auto sm:mr-2 w-full sm:w-auto flex justify-center sm:justify-end">
-    <button
-      onClick={() => navigate('/admin/shopmanagement/add')}
-      className="flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors w-full sm:w-auto justify-center"
-    >
-      + Add New Shop
-    </button>
-  </div>
-</div>
+      {/* Main Content Box */}
+      <div className="bg-white p-4 shadow rounded-md">
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
 
+          {isLoading ? (
+            <div className="flex justify-center items-center h-[400px]">
+              <svg
+                className="animate-spin h-10 w-10 text-[#001580]"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-100"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray="60"
+                  strokeDashoffset="20"
+                ></circle>
+              </svg>
+            </div>
+          ) : error ? (
+            <div className="flex justify-center items-center h-[400px]">
+              <div className="text-lg text-red-500">{error}</div>
+            </div>
+          ) : (
+            <table className="w-full text-center text-sm text-[#0D2E28]">
 
-      {/* Table */}
-      <Card sx={{ mt: 2 }}>
-        <CardHeader sx={{ px: 3 }} />
-        <CardContent sx={{ pt: 0 }}>
-          <TableContainer
-            component={Paper}
-            elevation={0}
-            sx={{
-              border: "1px solid black",
-              maxHeight: 500,
-              overflowY: "scroll",
-              scrollbarWidth: "thin",
-            }}
-          >
-            <Table stickyHeader sx={{ borderRadius: 2 }}>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "" }}>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Sr.No.</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black" , backgroundColor: "#E4E5EB"}}>Shop Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Owner Name</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Contact</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Address</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Aadhaar</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>GSTIN</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", backgroundColor: "#E4E5EB" }}>Status</TableCell>
-                  <TableCell sx={{ fontWeight: "bold", color: "black", textAlign: "center" , backgroundColor: "#E4E5EB"}}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={9} sx={{ textAlign: "center", py: 2 }}>
-                      <CircularProgress size={24} />
-                      <Typography sx={{ mt: 1 }}>Loading shops...</Typography>
-                    </TableCell>
-                  </TableRow>
-                ) : shopData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={9} sx={{ textAlign: "center", py: 4 }}>
-                      <Typography color="textSecondary">
-                        {searchText ? `No shops found for "${searchText}"` : "No shops found"}
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
+              <thead className="bg-[#E4E5EB]">
+                <tr className="h-14">
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Sr.No.
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Shop Name
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Owner Name
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Contact
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Address
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Status
+                  </th>
+                  <th
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    style={{ opacity: 1 }}
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentRecords.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" className="px-6 py-8 text-center text-lg text-gray-500">
+                      No shops found
+                    </td>
+                  </tr>
                 ) : (
-                  shopData.map((item, index) => (
-                    <TableRow hover key={item._id || item.id || index}>
-                      <TableCell>{(pagination.currentPage - 1) * pagination.limit + index + 1}</TableCell>
-                      <TableCell>{item.shopName}</TableCell>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.contact}</TableCell>
-                      <TableCell>{item.address}</TableCell>
-                      <TableCell>{item.aadhaar}</TableCell>
-                      <TableCell>{item.gstin}</TableCell>
-                      <TableCell sx={{ color: item.status === "Active" ? "green" : "red" }}>
-                        {item.status}
-                      </TableCell>
-                      <TableCell sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            navigate(`/admin/shopmanagement/view/${item._id || item.id}`, { state: { shop: item } })
-                          }
-                        >
-                          <ViewIcon />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() =>
-                            navigate(`/admin/shopmanagement/edit/${item._id || item.id}`, {
-                              state: { shop: { ...item, aadhaarNumber: item.aadhaar, gstinNumber: item.gstin } },
-                            })
-                          }
-                        >
-                          <EditIcon />
-                        </IconButton>
-                        {/* <IconButton size="small" onClick={() => deleteShop(item._id || item.id, item.shopName)} disabled={isLoading}>
-                          <DeleteIcon />
-                        </IconButton> */}
-                       <IconButton
-  size="small"
-  onClick={() => {
-    setSelectedShop(item);  // store which shop to delete
-    setDeleteModalOpen(true); // open modal
-  }}
-  disabled={isLoading}
->
-  <DeleteIcon />
-</IconButton>
-
-
-                      </TableCell>
-                    </TableRow>
+                  currentRecords.map((shop, index) => (
+                    <tr key={shop.id || shop._id}>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        {indexOfFirstRecord + index + 1}
+                      </td>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        {shop.shopName}
+                      </td>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        {shop.name}
+                      </td>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        {shop.contact}
+                      </td>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        {shop.address}
+                      </td>
+                      <td
+                        className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                        style={{ opacity: 1 }}
+                      >
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${shop.status === 'Active' ? 'text-[#34C759]' : 'text-red-800'}`}>
+                          {shop.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex justify-center space-x-4">
+                          <button
+                            onClick={() => navigate(`/admin/shopmanagement/view/${shop.id || shop._id}`)}
+                            className="text-[#F15A29] hover:text-orange-700"
+                          >
+                            <Eye size={20} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              console.log('Edit button clicked for shop:', shop);
+                              console.log('Shop ID for navigation:', shop.id || shop._id);
+                              navigate(`/admin/shopmanagement/edit/${shop.id || shop._id}`, {
+                                state: { shop }
+                              });
+                            }}
+                            className="text-[#F15A29] hover:text-orange-700"
+                          >
+                            <svg
+                              width="20"
+                              height="20"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
+                                stroke="#EC2D01"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <path
+                                d="M18.5 2.50023C18.8978 2.1024 19.4374 1.87891 20 1.87891C20.5626 1.87891 21.1022 2.1024 21.5 2.50023C21.8978 2.89805 22.1213 3.43762 22.1213 4.00023C22.1213 4.56284 21.8978 5.1024 21.5 5.50023L12 15.0002L8 16.0002L9 12.0002L18.5 2.50023Z"
+                                stroke="#EC2D01"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedShop(shop);
+                              setDeleteModalOpen(true);
+                            }}
+                            className="text-[#F15A29] hover:text-orange-700"
+                          >
+                            <Trash2 size={20} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
                   ))
                 )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              </tbody>
+            </table>
+          )}
+        </div>
 
-{deleteModalOpen && selectedShop && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-    <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
-      <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
-        Delete Shop
-      </h2>
-      <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
-        Are you sure you want to delete "{selectedShop.shopName}"?
-      </p>
-      <div className="flex justify-center gap-4">
-        <button
-          onClick={() => setDeleteModalOpen(false)}
-          className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={() => deleteShop(selectedShop._id || selectedShop.id)}
-          className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+        {deleteModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+            <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+              {/* Heading */}
+              <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+                Delete Shop
+              </h2>
 
-          {/* Pagination */}
-          {pagination && pagination.totalShops > 0 && pagination.totalPages > 0 && (
-            <div className="flex flex-col md:flex-row items-center justify-between bg-[#F5F5F5] mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
-              <p className="font-bold text-black">
-                Showing {(pagination.currentPage - 1) * pagination.limit + 1} to{" "}
-                {Math.min(pagination.currentPage * pagination.limit, pagination.totalShops)} of {pagination.totalShops} Entries
-                {/* {pagination.totalPages > 1 && ` (Page ${pagination.currentPage} of ${pagination.totalPages})`} */}
+              {/* Paragraph */}
+              <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+                Are you sure you want to delete this shop? <br />
               </p>
 
-              <div className="flex items-center space-x-2">
+              {/* Buttons */}
+              <div className="flex justify-center gap-4">
                 <button
-                  onClick={() => handlePageChange(pagination.currentPage - 1)}
-                  disabled={pagination.currentPage === 1}
-                  className="px-2 py-1 bg-white text-[#001580] border rounded-md hover:bg-green-50 disabled:opacity-50"
+                  onClick={() => setDeleteModalOpen(false)}
+                  className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
                 >
-                  &lt;
+                  Cancel
                 </button>
-
-                {console.log('Rendering pagination - totalPages:', pagination.totalPages, 'currentPage:', pagination.currentPage)}
-                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((pg) => {
-                  console.log('Rendering page button:', pg);
-                  return (
-                    <button
-                      key={pg}
-                      onClick={() => handlePageChange(pg)}
-                      className={`w-8 h-8 border text-sm font-medium rounded-md transition ${
-                        pg === pagination.currentPage
-                          ? "bg-[#001580] text-white"
-                          : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                      }`}
-                    >
-                      {pg}
-                    </button>
-                  );
-                })}
-
                 <button
-                  onClick={() => handlePageChange(pagination.currentPage + 1)}
-                  disabled={pagination.currentPage === pagination.totalPages}
-                  className="px-2 py-1 bg-white text-[#001580] border rounded-md hover:bg-green-50 disabled:opacity-50"
+                  onClick={() => {
+                    deleteShop(selectedShop.id || selectedShop._id);
+                    setDeleteModalOpen(false);
+                  }}
+                  className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
                 >
-                  &gt;
+                  Delete
                 </button>
               </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
-    </Box>
+          </div>
+        )}
+
+        {/* Pagination Component */}
+        <Pagination
+          currentPage={currentPage}
+          totalRecords={displayTotalRecords}
+          recordsPerPage={recordsPerPage}
+          goToPage={goToPage}
+          label="entries"
+        />
+
+      </div>
+    </div>
   );
-}
+};
 
 export default ShopList;

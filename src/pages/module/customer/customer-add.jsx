@@ -99,12 +99,14 @@ const AddCustomer = () => {
         />
       </svg>
 
-      <h2 className="text-lg font-semibold text-gray-800">Add New Customer</h2>
+      <h2 className="text-lg font-semibold text-[#0D2E28]">Add New Customer</h2>
     </div>
   </div>
 
   {/* Main Box */}
-  <div className="bg-white border shadow p-4 w-full rounded-md mt-4">
+  {/* <div className="bg-white border shadow p-4 w-full  rounded-md mt-4"> */}
+  <div className="bg-white border shadow p-4 w-full h-screen rounded-md mt-4">
+
     <Formik
       initialValues={{ name: "", contact: "", address: "" }}
       validationSchema={validationSchema}
@@ -119,10 +121,10 @@ const AddCustomer = () => {
     >
       {({ isSubmitting }) => (
         <Form>
-          <div className="border border-[#616666] rounded-md p-8 min-h-[400px] w-full">
+          <div className="border border-[#616666] rounded-md p-8 min-h-[440px] w-full">
             {/* Customer Name */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Customer Name:
               </label>
               <div className="w-full md:w-3/4">
@@ -142,7 +144,7 @@ const AddCustomer = () => {
 
             {/* Email / Phone */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Email ID/Phone Number:
               </label>
               <div className="w-full md:w-3/4">
@@ -162,7 +164,7 @@ const AddCustomer = () => {
 
             {/* Address */}
             <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-gray-700 mb-2 md:mb-0">
+              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                 Address:
               </label>
               <div className="w-full md:w-3/4">
@@ -171,6 +173,8 @@ const AddCustomer = () => {
                   type="text"
                   placeholder="Enter Your Full Address"
                   className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+                  //  className="w-[644px] h-[50px] border border-[#001580] rounded-[8px] px-4 py-4 bg-[#CED4F2] placeholder-[#0D2E28] text-[#0D2E28] font-poppins font-medium text-[20px] leading-[100%]"
+                    // className="w-[54%] ml-auto border border-[#001580] text-[#0D2E28] rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
                 />
                 <ErrorMessage
                   name="address"
@@ -182,26 +186,27 @@ const AddCustomer = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex justify-center gap-6 mt-4">
-            <button
-              type="reset"
-              className="w-32 h-10 border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
-            >
-              Cancel
-            </button>
+        <div className="flex justify-center gap-6 mt-4">
+  <button
+    type="reset"
+    className="w-[200px] h-[40px] border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
+  >
+    Cancel
+  </button>
 
-            <button
-              type="submit"
-              disabled={isSubmitting || isLoading}
-              className={`w-32 h-10 text-white rounded-md text-sm ${
-                isSubmitting || isLoading
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-[#001580] hover:bg-[#CED4F2]"
-              }`}
-            >
-              {isSubmitting || isLoading ? "Adding..." : "Add Customer"}
-            </button>
-          </div>
+  <button
+    type="submit"
+    disabled={isSubmitting || isLoading}
+    className={`w-[200px] h-[40px] text-white rounded-md text-sm ${
+      isSubmitting || isLoading
+        ? "bg-gray-400 cursor-not-allowed"
+        : "bg-[#001580] hover:bg-[#CED4F2]"
+    }`}
+  >
+    {isSubmitting || isLoading ? "Adding..." : "Add Customer"}
+  </button>
+</div>
+
         </Form>
       )}
     </Formik>

@@ -86,7 +86,7 @@ import PublicRoute from "./route/public"; //  ✅ make sure you have this file
 
 
 function App() {
-  const [activeTab, setActiveTab] = React.useState("/admin/dashboard");
+  const [activeTab, setActiveTab] = React.useState("/admin");
 
   return (
     <>
@@ -491,7 +491,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/set-limit-amount/alt"
+            path="/admin/set-limit-amount/add"
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <AddLimitAmount />

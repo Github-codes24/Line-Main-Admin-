@@ -95,7 +95,7 @@ const PendingOrder = () => {
             <input
               disabled
               value={order.orderId || ""}
-              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#E0E9E9] border border-[#007E74] "
+              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#e3e5eb] border border-[#001580] "
             />
           </div>
 
@@ -108,7 +108,7 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.customer?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
               />
             </div>
 
@@ -117,18 +117,18 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.customer?.contact || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
               />
             </div>
 
-            <div className="grid grid-cols-4 gap-4">
-              <label className="col-span-1 font-medium text-[#0D2E28]">Address :</label>
-              <textarea
-                disabled
-                value={order.deliveryAddress?.fullAddress || ""}
-                className="col-span-3 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
-              />
-            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+  <label className="col-span-1 font-medium text-[#0D2E28]">Address :</label>
+  <textarea
+    disabled
+    value={order.deliveryAddress?.fullAddress || "N/A"}
+    className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580] h-24"
+  />
+</div>
           </div>
 
           {/* <hr className="my-6 w-8/12" /> */}
@@ -146,7 +146,7 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.specificServiceName || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
               />
             </div>
          
@@ -162,7 +162,7 @@ const PendingOrder = () => {
                     ? new Date(order.serviceDate).toLocaleDateString()
                     : ""
                 }
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
               />
             </div>
 
@@ -187,43 +187,42 @@ const PendingOrder = () => {
                 )}
               </div>
             </div>
-            {/* Products Table */}
-            <div className="w-full max-w-[500px] border border-[#616666] rounded-md overflow-hidden">
-              {/* Header Row */}
-              <div className="w-full bg-gray-100 grid grid-cols-12 gap-1 items-center border-b border-[#0D2E28] text-[#0D2E28] font-medium text-[12px] py-2 px-2">
-                <span className="col-span-1 text-center">#</span>
-                <span className="col-span-5 text-left">Products</span>
-                <span className="col-span-2 text-right">Price</span>
-                <span className="col-span-2 text-center">Qty</span>
-                <span className="col-span-2 text-right">Amount</span>
-              </div>
-
-              {/* Data Rows from API */}
-              {order?.products && order.products.length > 0 ? (
-                order.products.map((prod, idx) => (
-                  <div
-                    key={prod._id || idx}
-                    className="w-full grid grid-cols-12 gap-1 items-center text-[#0D2E28] font-medium text-[12px] py-2 px-2 border-b border-gray-200 hover:bg-gray-50"
-                  >
-                    <span className="col-span-1 text-center">{idx + 1}</span>
-                    <span className="col-span-5 text-left truncate" title={prod.productName}>
-                      {prod.productName || 'N/A'}
-                    </span>
-                    <span className="col-span-2 text-right">₹{prod.priceAtPurchase || 0}</span>
-                    <span className="col-span-2 text-center">{prod.quantity || 0}</span>
-                    <span className="col-span-2 text-right">₹{(prod.priceAtPurchase || 0) * (prod.quantity || 0)}</span>
-                  </div>
-                ))
-              ) : (
-                <div className="w-full text-gray-500 text-[12px] p-4 text-center">
-                  No products found
-                </div>
-              )}
-
-              {/* Final Amount Row */}
-              <div className="w-full bg-gray-50 grid grid-cols-12 gap-1 items-center border-t border-[#0D2E28] text-[#0D2E28] font-semibold text-[12px] py-2 px-2">
-                <span className="col-span-10 text-left pr-2">Final Amount:</span>
-                <span className="col-span-2 text-right font-bold">₹{order?.finalAmount || 0}</span>
+            {/* Products Table - Updated to match image exactly */}
+            <div className="grid grid-cols-4 gap-4 mb-2 items-start">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Product List :</label>
+              <div className="col-span-1">
+                <table className="w-full border border-black " style={{ borderSpacing: 0 }}>
+                  <thead>
+                    <tr className="border-b border-black">
+                      <th className=" border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white" style={{ width: '30px' }}>#</th>
+                      <th className=" border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-left bg-white" style={{ width: 'auto' }}>Products</th>
+                      <th className=" border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white" style={{ width: '60px' }}>Price</th>
+                      <th className=" border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white" style={{ width: '40px' }}>Qty</th>
+                      <th className="px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white" style={{ width: '70px' }}>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.products?.length > 0 ? (
+                      order.products.map((prod, idx) => (
+                        <tr key={prod._id || idx}>
+                          <td className=" border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{idx + 1}</td>
+                          <td className=" border-black px-4 py-1 text-[#0D2E28] text-[11px] text-left bg-white">{prod.productName || "N/A"}</td>
+                          <td className=" border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{prod.priceAtPurchase || 0}</td>
+                          <td className=" border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{prod.quantity || 0}</td>
+                          <td className="px-3 py-2 text-[#0D2E28] text-[11px] text-center bg-white">{(prod.priceAtPurchase || 0) * (prod.quantity || 0)}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="px-3 py-3 text-gray-500 text-[11px] text-center bg-white">No products found</td>
+                      </tr>
+                    )}
+                    <tr className="border-t border-black">
+                      <td colSpan="4" className="border-r border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-left bg-white">Final Amount</td>
+                      <td className="px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">{order?.finalAmount || 0}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -241,7 +240,7 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.finalAmount || ""}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
               />
             </div>
 
@@ -252,7 +251,7 @@ const PendingOrder = () => {
                 <input
                   disabled
                   value={order.paymentMethod}
-                  className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                  className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
                 />
               </div>
             )}
@@ -263,7 +262,7 @@ const PendingOrder = () => {
                 <input
                   disabled
                   value={order.transactionId}
-                  className="col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74]"
+                  className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
                 />
               </div>
             )}
@@ -273,7 +272,7 @@ const PendingOrder = () => {
               <input
                 disabled
                 value={order.orderStatus || ""}
-                className={`col-span-1 px-4 py-2 rounded-lg bg-[#E0E9E9] border border-[#007E74] ${order.orderStatus === "Pending"
+                className={`col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580] ${order.orderStatus === "Pending"
                   ? "text-yellow-500"
                   : order.orderStatus === "Completed"
                     ? "text-green-600"

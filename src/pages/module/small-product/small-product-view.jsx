@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import viewBig from "../../../assets/images/viewBigImage.png";
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
@@ -24,7 +24,8 @@ const SmallProductView = () => {
     );
 
     return (
-        <div className="p-2 font-[Poppins]">
+        // <div className="p-2 font-[Poppins]">
+        <div className="bg-[#E0E9E9] min-h-screen w-full">
             <div className="flex items-center mb-4 bg-white rounded-lg shadow-md p-4">
                 <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
                     <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,7 +58,7 @@ const SmallProductView = () => {
             <div className="border rounded-xl p-4 shadow-md bg-white">
                 <div className="border border-black p-6 rounded-lg">
                     <div className="flex gap-4 mb-6">
-                        <label className="min-w-[240px] font-medium text-lg text-[#001580]">Product Image:</label>
+                        <label className="min-w-[240px] font-medium text-lg text-[#0D2E28]">Product Image</label>
                         <div className="border border-[#001580] rounded-3xl p-3 w-[240px] h-[240px] flex items-center justify-center">
                             <img
                                 src={data.productImageUrl}
@@ -69,12 +70,12 @@ const SmallProductView = () => {
 
                     <div className="space-y-4">
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Name:
+                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                Product Name
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={data?.productName || "NA"}
                                 readOnly
                                 disabled
@@ -82,12 +83,12 @@ const SmallProductView = () => {
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Category:
+                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                Product Category
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={data?.productCategory?.tabName || "NA"}
                                 readOnly
                                 disabled
@@ -95,25 +96,25 @@ const SmallProductView = () => {
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Subcategory:
+                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                Product Subcategory
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
-                                value={data?.productSubCategory?.tabName || "NA"}
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                value={data?.productSubCategory || "N/A"}
                                 readOnly
                                 disabled
                             />
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Price:
+                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                Product Price
                             </label>
                             <input
                                 type="text"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none"
                                 value={data?.productPrice || "NA"}
                                 readOnly
                                 disabled
@@ -121,12 +122,12 @@ const SmallProductView = () => {
                         </div>
 
                         <div className="flex items-start gap-4">
-                            <label className="min-w-[240px] font-medium text-lg text-[#001580] pt-2">
-                                Product Description:
+                            <label className="min-w-[240px] font-medium text-lg text-[#0D2E28] pt-2">
+                                Product Description
                             </label>
                             <textarea
                                 rows="5"
-                                className="bg-[#E4E5EB] border border-[#001580] text-[#001580] text-lg font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
+                                className="bg-[#E4E5EB] border border-[#001580] text-[#0D2E28] text-lg font-medium rounded-md px-4 py-2 w-full outline-none resize-none"
                                 value={data?.productDescription || "NA"}
                                 readOnly
                                 disabled
@@ -149,3 +150,4 @@ const SmallProductView = () => {
 };
 
 export default SmallProductView;
+

@@ -1,335 +1,7 @@
-// import React from "react";
-// import { ArrowDropDown } from "@mui/icons-material";
-// import { Avatar, Box, IconButton, Typography } from "@mui/material";
-// import { useNavigate } from "react-router-dom"; // import the hook
-// import profileImage from "../../assets/images/profileImage.jpg";
 
-// function Navbar() {
-//   const navigate = useNavigate(); // initialize navigate
-
-//   const handleProfileClick = () => {
-//     navigate("/admin/profile"); // Set your profile route
-//   };
-
-//   return (
-//     <Box
-//       sx={{
-//         minWidth: "100vw",
-//         paddingY: "8px",
-//         paddingX: "18px",
-//         boxSizing: "border-box",
-//         display: "flex",
-//         flexDirection: "row",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         background: "#CED4F2",
-//         boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",
-//         position: "sticky",
-//         top: 0,
-//         zIndex: 10,
-//       }}
-//     >
-//       <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
-//         LineMan Logo
-//       </Typography>
-
-//       {/* Make the profile section clickable */}
-//       <Box
-//         onClick={handleProfileClick}
-//         sx={{
-//           display: "flex",
-//           flexDirection: "row",
-//           alignItems: "center",
-//           gap: "5px",
-//           cursor: "pointer", // shows pointer cursor on hover
-//         }}
-//       >
-//         <Avatar src={profileImage} alt="profile">
-//           GS
-//         </Avatar>
-//         <IconButton size="small" sx={{ p: 0 }}>
-//           <ArrowDropDown />
-//         </IconButton>
-//       </Box>
-//     </Box>
-//   );
-// }
 
 // export default Navbar;
-// import React from "react";
-// import { ArrowDropDown } from "@mui/icons-material";
-// import { Avatar, Box, IconButton, Typography } from "@mui/material";
-// import { useNavigate } from "react-router-dom";
-// import profileImage from "../../assets/images/profileImage.jpg";
-
-// function Navbar() {
-//   const navigate = useNavigate();
-
-//   const handleProfileClick = () => {
-//     navigate("/admin/profile");
-//   };
-
-//   return (
-//     <Box
-//       sx={{
-//         minWidth: "100vw",
-//         paddingY: "8px",
-//         paddingX: "18px",
-//         boxSizing: "border-box",
-//         display: "flex",
-//         flexDirection: "row",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         background: "#CED4F2",
-//         boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",
-//         position: "sticky",
-//         top: 0,
-//         zIndex: 10,
-//       }}
-//     >
-//       <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
-//         LineMan Logo
-//       </Typography>
-
-//       {/* Avatar (not clickable) + Dropdown Arrow (clickable) */}
-//       <Box
-//         sx={{
-//           display: "flex",
-//           flexDirection: "row",
-//           alignItems: "center",
-//           gap: "5px",
-//         }}
-//       >
-//         <Avatar src={profileImage} alt="profile">
-//           GS
-//         </Avatar>
-//         <IconButton size="small" sx={{ p: 0 }} onClick={handleProfileClick}>
-//           <ArrowDropDown />
-//         </IconButton>
-//       </Box>
-//     </Box>
-//   );
-// }
-
-// // export default Navbar;
-// import React, { useState } from "react";
-// import { ArrowDropDown } from "@mui/icons-material";
-// import { Avatar, Box, IconButton, Typography, Menu, MenuItem } from "@mui/material";
-// // import { Menu, MenuItem, Divider } from "@mui/material";
-
-// import { useNavigate } from "react-router-dom";
-// import profileImage from "../../assets/images/profileImage.jpg";
-
-// function Navbar() {
-//   const navigate = useNavigate();
-//   const [anchorEl, setAnchorEl] = useState(null); // For menu positioning
-
-//   const handleMenuOpen = (event) => {
-//     setAnchorEl(event.currentTarget); // open menu
-//   };
-
-//   const handleMenuClose = () => {
-//     setAnchorEl(null); // close menu
-//   };
-
-//   const handleProfileClick = () => {
-//     navigate("/admin/profile");
-//     handleMenuClose();
-//   };
-
-//   const handleLogout = () => {
-//     // Add your logout logic here
-//     console.log("Logging out...");
-//     handleMenuClose();
-//   };
-
-//   const open = Boolean(anchorEl); // check if menu is open
-
-//   return (
-//     <Box
-//       sx={{
-//         minWidth: "100vw",
-//         paddingY: "8px",
-//         paddingX: "18px",
-//         boxSizing: "border-box",
-//         display: "flex",
-//         flexDirection: "row",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         background: "#CED4F2",
-//         boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",
-//         position: "sticky",
-//         top: 0,
-//         zIndex: 10,
-//       }}
-//     >
-//       <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
-//         LineMan Logo
-//       </Typography>
-
-//       <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-//         <Avatar src={profileImage} alt="profile">
-//           GS
-//         </Avatar>
-//         <IconButton size="small" sx={{ p: 0 }} onClick={handleMenuOpen}>
-//           <ArrowDropDown />
-//         </IconButton>
-
-//         {/* Dropdown Menu */}
-//         {/* <Menu
-//           anchorEl={anchorEl}
-//           open={open}
-//           onClose={handleMenuClose}
-//           anchorOrigin={{
-//             vertical: "bottom",
-//             horizontal: "right",
-//           }}
-//           transformOrigin={{
-//             vertical: "top",
-//             horizontal: "right",
-//           }}
-//           PaperProps={{
-//             style: {
-//               width: 128, // width of dropdown
-//               height: 80,  // height of dropdown
-//             },
-//           }}
-//         > */}
-//         <Menu
-//   anchorEl={anchorEl}
-//   open={open}
-//   onClose={handleMenuClose}
-//   anchorOrigin={{
-//     vertical: "bottom",
-//     horizontal: "right",
-//   }}
-//   transformOrigin={{
-//     vertical: "top",
-//     horizontal: "right",
-//   }}
-//   PaperProps={{
-//     style: {
-//       width: 128,
-//       height: 80,
-//     },
-//   }}
-// >
-//           <MenuItem onClick={handleProfileClick}>Admin Profile</MenuItem>
-//            <Divider />
-//           <MenuItem onClick={handleLogout}>Logout</MenuItem>
-//         </Menu>
-//       </Box>
-//     </Box>
-//   );
-// }
-
-// export default Navbar;
-// import React, { useState } from "react";
-// import { ArrowDropDown } from "@mui/icons-material";
-// import { Avatar, Box, IconButton, Typography, Menu, MenuItem, Divider } from "@mui/material"; // ✅ include Divider
-// import { useNavigate } from "react-router-dom";
-// import profileImage from "../../assets/images/profileImage.jpg";
-
-// function Navbar() {
-//   const navigate = useNavigate();
-//   const [anchorEl, setAnchorEl] = useState(null);
-
-//   const handleMenuOpen = (event) => {
-//     setAnchorEl(event.currentTarget);
-//   };
-
-//   const handleMenuClose = () => {
-//     setAnchorEl(null);
-//   };
-
-//   const handleProfileClick = () => {
-//     navigate("/admin-profile");
-//     handleMenuClose();
-//   };
-
-//   const handleLogout = () => {
-//     console.log("Logging out...");
-//     handleMenuClose();
-//   };
-
-//   const open = Boolean(anchorEl);
-
-//   return (
-//     <Box
-//       sx={{
-//         minWidth: "100vw",
-//         paddingY: "8px",
-//         paddingX: "18px",
-//         boxSizing: "border-box",
-//         display: "flex",
-//         flexDirection: "row",
-//         justifyContent: "space-between",
-//         alignItems: "center",
-//         background: "#CED4F2",
-//         boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",
-//         position: "sticky",
-//         top: 0,
-//         zIndex: 10,
-//       }}
-//     >
-//       <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
-//         LineMan Logo
-//       </Typography>
-
-//       <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-//         <Avatar src={profileImage} alt="profile">
-//           GS
-//         </Avatar>
-//         <IconButton size="small" sx={{ p: 0 }} onClick={handleMenuOpen}>
-//           <ArrowDropDown />
-//         </IconButton>
-
-//         {/* Dropdown Menu */}
-//     <Menu
-//   anchorEl={anchorEl}
-//   open={open}
-//   onClose={handleMenuClose}
-//   anchorOrigin={{
-//     vertical: "bottom",
-//     horizontal: "right",
-//   }}
-//   transformOrigin={{
-//     vertical: "top",
-//     horizontal: "right",
-//   }}
-//   PaperProps={{
-//     style: {
-//       width: 128,
-//     },
-//   }}
-// >
-//   <MenuItem
-//     onClick={handleProfileClick}
-//     sx={{ color: "#001580" }} // left-aligned
-//   >
-//     Admin Profile
-//   </MenuItem>
-
-//   <Divider />
-
-//   <MenuItem
-//     onClick={handleLogout}
-//     sx={{
-//       color: "#EC2D01",
-//       justifyContent: "center", // ✅ centers text horizontally
-//     }}
-//   >
-//     Logout
-//   </MenuItem>
-// </Menu>
-
-//       </Box>
-//     </Box>
-//   );
-// }
-
-// export default Navbar;
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowDropDown } from "@mui/icons-material";
 import {
   Avatar,
@@ -344,13 +16,40 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import profileImage from "../../assets/images/profileImage.jpg";
+import useAuth from "../../hook/auth/useAuth";
+import conf from "../../config";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
+  const { getProfile, adminProfile } = useAuth();
+  
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  // Listen for profile updates (when user navigates back from edit profile)
+  useEffect(() => {
+    const handleFocus = () => {
+      // Refresh profile when window regains focus (user might have updated profile)
+      getProfile();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
+  // Refresh profile when navigating to profile-related pages
+  useEffect(() => {
+    if (location.pathname === '/admin-profile' || location.pathname === '/admin/edit-profile') {
+      console.log("Navigated to profile page, refreshing profile data...");
+      getProfile();
+    }
+  }, [location.pathname]);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -375,12 +74,19 @@ function Navbar() {
     setOpenLogoutDialog(false);
   };
 
-  const handleConfirmLogout = () => {
-    console.log("User logged out");
-    setOpenLogoutDialog(false);
-    // Add real logout logic here, e.g., clearing tokens
-    navigate("/login");
-  };
+ const handleConfirmLogout = () => {
+  console.log("User logged out");
+
+  // Clear tokens
+  localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
+  document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+  setOpenLogoutDialog(false);
+navigate("/");
+ };
+
+
 
   const open = Boolean(anchorEl);
 
@@ -389,7 +95,7 @@ function Navbar() {
       sx={{
         minWidth: "100vw",
         paddingY: "8px",
-        paddingX: "18px",
+        paddingX: "48px",
         boxSizing: "border-box",
         display: "flex",
         justifyContent: "space-between",
@@ -401,13 +107,21 @@ function Navbar() {
         zIndex: 10,
       }}
     >
-      <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
+      <Typography color="#001580" fontWeight={700} fontSize={"28px"} >
         LineMan Logo
       </Typography>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
-        <Avatar src={profileImage} alt="profile">
-          GS
+        <Avatar 
+          key={adminProfile?.profileImage || 'default'} // Force re-render when photo changes
+          src={adminProfile?.profileImage || profileImage} 
+          alt="profile"
+          onError={(e) => {
+            console.log("Navbar avatar image load error, falling back to default");
+            e.target.src = profileImage;
+          }}
+        >
+          {adminProfile?.name ? adminProfile.name.charAt(0) : "A"}
         </Avatar>
         <IconButton size="small" sx={{ p: 0 }} onClick={handleMenuOpen}>
           <ArrowDropDown />

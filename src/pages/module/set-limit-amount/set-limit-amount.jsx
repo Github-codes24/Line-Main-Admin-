@@ -1,195 +1,202 @@
-// src/pages/module/set-limit-amount/set-limit-amount.jsx
-import React, { useState, useEffect, useMemo } from "react";
+// src/pages/module/set-limit-amount/SetLimitAmount.jsx
+import React, { useState, useEffect } from "react";
 import { Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { CircularProgress, Typography } from "@mui/material";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Pagination from "../../../components/ui/Pagination";
 
 const SetLimitAmount = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
-  const [data, setData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
 
-  const loadData = async () => {
+  const [limits, setLimits] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 5;
+
+  const [selectedLimit, setSelectedLimit] = useState(null);
+
+  const fetchLimits = async () => {
     try {
+      setError("");
+      setIsLoading(true);
       const result = await fetchData({
         method: "GET",
         url: `${conf.apiBaseUrl}/admin/limit-amount`,
       });
       if (result?.success) {
-        setData(result.data || []);
+        setLimits(result.data || []);
       } else {
-        setData([]);
-        console.error("Load data failed:", result?.message);
+        setLimits([]);
+        toast.info(result?.message || "No limit amounts found");
       }
     } catch (err) {
-      console.error("Error fetching limit amounts:", err);
-      setData([]);
+      console.error(err);
+      setError(err.message || "Error fetching limits");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadData();
+    fetchLimits();
   }, []);
 
+  const handleAdd = () => navigate("/admin/set-limit-amount/add");
   const handleEdit = (id) => navigate(`/admin/set-limit-amount/edit/${id}`);
   const handleView = (id) => navigate(`/admin/set-limit-amount/view/${id}`);
-  const handleAdd = () => navigate("/admin/set-limit-amount/alt");
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this limit?")) return;
+  const deleteLimit = async (id) => {
     try {
+      setIsLoading(true);
       const res = await fetchData({
         method: "DELETE",
         url: `${conf.apiBaseUrl}/admin/limit-amount/${id}`,
       });
       if (res?.success) {
-        alert("Deleted successfully");
-        loadData();
+        toast.success(res.message || "Deleted successfully");
+        fetchLimits();
       } else {
-        alert(res?.message || "Delete failed");
+        toast.error(res?.message || "Delete failed");
       }
     } catch (err) {
-      console.error("Error deleting:", err);
-      alert("Something went wrong deleting");
+      console.error(err);
+      toast.error(err.message || "Something went wrong");
+    } finally {
+      setIsLoading(false);
+      setSelectedLimit(null);
     }
   };
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  // Pagination logic
+  const totalRecords = limits.length;
+  const indexOfLastRecord = currentPage * recordsPerPage;
+  const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
+  const currentRecords = limits.slice(indexOfFirstRecord, indexOfLastRecord);
 
-  const paginatedData = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    return data.slice(startIndex, startIndex + itemsPerPage);
-  }, [data, currentPage]);
-
-  const handlePrev = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-  const handleNext = () =>
-    currentPage < totalPages && setCurrentPage(currentPage + 1);
+  const goToPage = (pg) => setCurrentPage(pg);
 
   return (
-    <div className="flex bg-[#E0E9E9] font-[Poppins] min-h-screen">
-      <div className="flex-1 px-4 md:px-0 max-w-[1080px] mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-4 bg-white px-4 py-3 rounded-lg shadow">
-          <h1 className="text-xl font-medium">Limit Amount List</h1>
-          <button
-            onClick={handleAdd}
-            className="w-[200px] bg-[#001580] text-white px-4 rounded-lg h-10"
-          >
-            + Add Limit Amount
-          </button>
-        </div>
+    <div className="bg-[#E0E9E9] min-h-screen w-full font-[Poppins]">
+      <ToastContainer />
 
-        {/* Main Container */}
-        <div className="bg-white p-4 rounded-lg shadow mb-4 min-h-[830px]">
-          {/* Inner Border Container */}
-          <div className="border border-[#616666] rounded-lg overflow-x-auto min-h-[742px]">
-            <table className="w-full text-left bg-white">
-              <thead>
-                <tr className="bg-[#E4E5EB] text-center text-[#0D2E28] font-poppins font-medium">
-                  <th className="px-4 py-4 font-medium">Sr.No.</th>
-                  <th className="px-4 py-4 font-medium">Category</th>
-                  <th className="px-4 py-4 font-medium">Charges</th>
-                  <th className="px-4 py-4 font-medium">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {paginatedData.length ? (
-                  paginatedData.map((item, index) => (
-                    <tr key={item._id} className="text-center h-20">
-                      <td className="px-4 font-normal">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </td>
-                      <td className="px-4 font-normal">{item.category?.tabName || "N/A"}</td>
-                      <td className="px-4 font-normal">₹{item.nagativeLimit ?? "N/A"}</td>
-                      <td className="px-4 font-normal">
-                        <div className="flex items-center justify-center space-x-3">
-                          <Eye
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleView(item._id)}
-                            title="View"
-                          />
-                          <Edit
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleEdit(item._id)}
-                            title="Edit"
-                          />
-                          <Trash2
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                            onClick={() => handleDelete(item._id)}
-                            title="Delete"
-                          />
-                        </div>
+      {/* Header */}
+      <div className="bg-white p-3 shadow-md mb-4 rounded-md min-h-[65px] flex flex-col md:flex-row items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold">Limit Amount List</h1>
+        <button
+          onClick={handleAdd}
+          className="w-full md:w-auto flex items-center gap-2 bg-[#001580] text-white px-4 py-2 rounded-md hover:bg-[#001580]/90 transition-colors justify-center"
+        >
+          + Add Limit Amount
+        </button>
+      </div>
+
+      {/* Main Container */}
+      <div className="bg-white p-4 shadow rounded-md">
+        <div className="overflow-x-auto bg-white shadow-md rounded-lg min-h-[600px] border border-gray-400">
+          <div className="min-w-[1028px]">
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <CircularProgress />
+                <Typography sx={{ mt: 2 }}>Loading limits...</Typography>
+              </div>
+            ) : error ? (
+              <div className="flex justify-center items-center h-[400px]">
+                <div className="text-lg text-red-500">{error}</div>
+              </div>
+            ) : (
+              <table className="w-full text-sm text-[#0D2E28] table-fixed">
+                <thead className="bg-[#E4E5EB] font-[Poppins] text-base leading-[100%] tracking-[0%] align-middle">
+                  <tr>
+                    <th className="w-[80px] h-[56px] text-center font-medium align-middle">Sr.No.</th>
+                    <th className="w-[200px] h-[56px] text-center font-medium align-middle">Category</th>
+                    <th className="w-[328px] h-[56px] text-center font-medium align-middle">Charges</th>
+                    <th className="w-[140px] h-[56px] text-center font-medium align-middle">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentRecords.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className="px-6 py-8 text-center">
+                        <div className="text-lg text-gray-500">No limits found</div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="4" className="text-center py-6 text-[#001580]">
-                      No data found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    currentRecords.map((item, idx) => (
+                      <tr key={item._id} className="text-center">
+                        <td className="w-[80px] h-[56px] align-middle">{indexOfFirstRecord + idx + 1}</td>
+                        <td className="w-[200px] h-[56px] align-middle">{item.category?.tabName || "N/A"}</td>
+                        <td className="w-[328px] h-[56px] align-middle">₹{item.nagativeLimit ?? "N/A"}</td>
+                        <td className="w-[140px] h-[56px] align-middle">
+                          <div className="flex justify-center space-x-4 flex-wrap">
+                            <button
+                              onClick={() => handleView(item._id)}
+                              className="text-[#EC2D01] hover:text-orange-700"
+                            >
+                              <Eye size={20} />
+                            </button>
+                            <button
+                              onClick={() => handleEdit(item._id)}
+                              className="text-[#EC2D01] hover:text-orange-700"
+                            >
+                              <Edit size={20} />
+                            </button>
+                            <button
+                              onClick={() => setSelectedLimit(item)}
+                              className="text-[#EC2D01] hover:text-orange-700"
+                            >
+                              <Trash2 size={20} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
+        </div>
 
-          {/* Pagination */}
-          {data.length > 0 && (
-            <div className="flex justify-between items-center mt-4 bg-[#F5F5F5] rounded-lg py-2 px-4">
-              <span className="text-sm font-semibold">
-                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} Entries
-              </span>
-
-              <div className="flex items-center space-x-2">
+        {/* Delete Confirmation Modal */}
+        {selectedLimit && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+            <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+              <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">Delete Limit</h2>
+              <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+                Are you sure you want to delete this limit amount?
+              </p>
+              <div className="flex justify-center gap-4 flex-wrap">
                 <button
-                  onClick={handlePrev}
-                  disabled={currentPage === 1}
-                  className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                    currentPage === 1
-                      ? "bg-gray-200 text-[#001580]"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
+                  onClick={() => setSelectedLimit(null)}
+                  className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition w-full sm:w-auto"
                 >
-                  &lt;
+                  Cancel
                 </button>
-
-                {[...Array(totalPages)].map((_, i) => {
-                  const page = i + 1;
-                  if (page < currentPage - 1 || page > currentPage + 1) return null;
-                  return (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-8 h-8 flex items-center justify-center rounded-xl font-semibold ${
-                        page === currentPage
-                          ? "bg-[#001580] text-white"
-                          : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  );
-                })}
-
                 <button
-                  onClick={handleNext}
-                  disabled={currentPage === totalPages}
-                  className={`w-8 h-8 flex items-center justify-center rounded-xl ${
-                    currentPage === totalPages
-                      ? "bg-gray-200 text-[#001580]"
-                      : "bg-white hover:bg-gray-100"
-                  }`}
+                  onClick={() => deleteLimit(selectedLimit._id)}
+                  className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition w-full sm:w-auto"
                 >
-                  &gt;
+                  Delete
                 </button>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Pagination */}
+        <Pagination
+          currentPage={currentPage}
+          totalRecords={totalRecords}
+          recordsPerPage={recordsPerPage}
+          goToPage={goToPage}
+          label="entries"
+        />
       </div>
     </div>
   );

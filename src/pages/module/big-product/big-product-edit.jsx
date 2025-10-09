@@ -1,9 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import editBig from "../../../assets/images/editBigImage.png";
 import useFetch from "../../../hook/useFetch";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 import conf from "../../../config";
 
 const BigProductEdit = () => {
@@ -12,23 +13,24 @@ const BigProductEdit = () => {
     const location = useLocation();
     const fileInputRef = useRef(null);
     const [fetchData] = useFetch();
+    const { productCategory: categories, productSubCategory, setProductSubCategory, fetchProductCategory, fetchProductSubCategory } = useDropdown();
 
     // State management
     const [isLoading, setIsLoading] = useState(false);
     const [productImage, setProductImage] = useState(editBig);
     const [selectedFile, setSelectedFile] = useState(null);
     const [productName, setProductName] = useState("");
-    const [productCategory, setProductCategory] = useState("");
+    const [productCategoryId, setProductCategoryId] = useState("");
+    const [productSubCategoryValue, setProductSubCategoryValue] = useState("");
     const [productPrice, setProductPrice] = useState("");
     const [productDescription, setProductDescription] = useState("");
-    const [categories, setCategories] = useState([]);
     const [originalProductData, setOriginalProductData] = useState(null);
 
     // Check if product data was passed via navigation state
     const passedProductData = location.state?.product;
 
     useEffect(() => {
-        fetchCategories();
+        fetchProductCategory();
         if (passedProductData) {
             // Use passed data if available
             initializeFormData(passedProductData);
@@ -38,25 +40,18 @@ const BigProductEdit = () => {
         }
     }, [id, passedProductData]);
 
-    const fetchCategories = async () => {
-        try {
-            const result = await fetchData({
-                method: "GET",
-                url: `${conf.apiBaseUrl}/admin/tabs`,
-            });
-
-            if (result.success || result.data) {
-                const tabsData = result.data || result.tabs || result;
-                setCategories(Array.isArray(tabsData) ? tabsData : []);
-            }
-        } catch (error) {
-            console.error('Error fetching categories:', error);
+    // Fetch subcategories when product data is loaded and has a category
+    useEffect(() => {
+        if (productCategoryId) {
+            fetchProductSubCategory(productCategoryId);
         }
-    };
+    }, [productCategoryId]);
+
+
 
     const initializeFormData = (productData) => {
         setOriginalProductData(productData);
-        setProductName(productData.name || "");
+        setProductName(productData.productName || productData.name || "");
 
         // Handle category - it might be an object with {_id, tabName} or a string
         let categoryValue = '';
@@ -74,10 +69,11 @@ const BigProductEdit = () => {
             }
         }
 
-        setProductCategory(categoryValue);
-        setProductPrice(productData.price || "");
-        setProductDescription(productData.description || "");
-        setProductImage(productData.image || editBig);
+        setProductCategoryId(categoryValue);
+        setProductSubCategoryValue(productData.productSubCategory || "");
+        setProductPrice(productData.productPrice || productData.price || "");
+        setProductDescription(productData.productDescription || productData.description || "");
+        setProductImage(productData.productImageUrl || productData.image || editBig);
     };
 
     const fetchSingleProduct = async (productId) => {
@@ -170,8 +166,15 @@ const BigProductEdit = () => {
             return;
         }
 
-        if (!productCategory) {
+        if (!productCategoryId) {
             toast.error("Product category is required");
+            return;
+        }
+
+        // Validate that category exists in admin-tab-management
+        const selectedCategory = categories.find(cat => cat._id === productCategoryId);
+        if (!selectedCategory) {
+            toast.error("Selected category is not valid. Please select a valid category from admin-tab-management.");
             return;
         }
 
@@ -190,12 +193,26 @@ const BigProductEdit = () => {
             return;
         }
 
+        // Get shopkeeperId from sessionStorage (logged-in admin ID)
+        const shopkeeperId = sessionStorage.getItem("userID") || sessionStorage.getItem("Id");
+
+        if (!shopkeeperId) {
+            toast.error("User session expired. Please login again.");
+            return;
+        }
+
         // Prepare form data
         const formData = new FormData();
         formData.append('productName', productName.trim());
-        formData.append('productCategory', productCategory);
+        formData.append('productCategory', productCategoryId);
         formData.append('productPrice', productPrice.trim());
         formData.append('productDescription', productDescription.trim());
+        formData.append('shopkeeperId', shopkeeperId); // Add required shopkeeperId
+
+        // Only append sub-category if it exists and is selected
+        if (productSubCategoryValue) {
+            formData.append('productSubCategory', productSubCategoryValue);
+        }
 
         // Only append image if a new file was selected
         if (selectedFile) {
@@ -204,9 +221,11 @@ const BigProductEdit = () => {
 
         console.log("Updating product with data:", {
             productName: productName.trim(),
-            productCategory,
+            productCategory: selectedCategory.tabName,
+            productSubCategory: productSubCategoryValue,
             productPrice: productPrice.trim(),
             productDescription: productDescription.trim(),
+            shopkeeperId: shopkeeperId,
             hasNewImage: !!selectedFile
         });
 
@@ -307,19 +326,62 @@ const BigProductEdit = () => {
                         {/* Product Category */}
                         <div className="flex items-start gap-4">
                             <label className="min-w-[160px] font-semibold pt-2">Product Category:</label>
-                            <select
-                                className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
-                                value={productCategory}
-                                onChange={(e) => setProductCategory(e.target.value)}
-                                required
-                            >
-                                <option value="">Select a category</option>
-                                {categories.map((category) => (
-                                    <option key={category._id || category.id} value={category._id || category.id}>
-                                        {category.tabName || category.name}
-                                    </option>
-                                ))}
-                            </select>
+                            <div className="w-full">
+                                <select
+                                    className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
+                                    value={productCategoryId}
+                                    onChange={async (e) => {
+                                        const categoryId = e.target.value;
+                                        setProductCategoryId(categoryId);
+                                        setProductSubCategoryValue(""); // Reset subcategory when category changes
+
+                                        // Clear old subcategory options first
+                                        setProductSubCategory([]);
+
+                                        if (categoryId) {
+                                            await fetchProductSubCategory(categoryId);
+                                        }
+                                    }}
+                                    required
+                                >
+                                    <option value="">-- Select Category --</option>
+                                    {categories.map((category) => (
+                                        <option key={category._id} value={category._id}>
+                                            {category.tabName}
+                                        </option>
+                                    ))}
+                                </select>
+                                {categories.length === 0 && (
+                                    <div className="text-orange-500 text-sm mt-1">
+                                        Note: Categories must exist in admin-tab-management to edit products
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Product Sub Category */}
+                        <div className="flex items-start gap-4">
+                            <label className="min-w-[160px] font-semibold pt-2">Product Sub Category:</label>
+                            <div className="w-full">
+                                <select
+                                    className="bg-[#CED4F2] rounded-md px-4 py-2 w-full outline-none"
+                                    value={productSubCategoryValue}
+                                    onChange={(e) => setProductSubCategoryValue(e.target.value)}
+                                    disabled={!productSubCategory.length}
+                                >
+                                    <option value="">-- Select Sub-Category (Optional) --</option>
+                                    {productSubCategory.map((sub) => (
+                                        <option key={sub._id} value={sub.name}>
+                                            {sub.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {productCategoryId && productSubCategory.length === 0 && (
+                                    <div className="text-gray-500 text-sm mt-1">
+                                        No sub-categories available for selected category
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         {/* Product Price */}

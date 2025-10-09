@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Eye, Trash2 } from "lucide-react";
 import { Button } from "../../../components/ui/button";
 import { useNavigate } from "react-router-dom";
@@ -38,15 +38,31 @@ export default function BigProductList() {
 
     const itemsPerPage = 5; // Changed to match your API example
 
-    // Fetch categories and products when component mounts
+    // Fetch categories when component mounts
     useEffect(() => {
         fetchCategories();
     }, []);
 
-    // Fetch all big products when search/filter changes
+    // Fetch products once categories are loaded or after a timeout
     useEffect(() => {
-        fetchAllBigProducts();
-    }, [currentPage, searchTerm, appliedFilters, approvalStatusFilter, subCategoryFilter]);
+        if (categories.length > 0) {
+            fetchAllBigProducts();
+        } else {
+            // Fallback: fetch products after 2 seconds even if categories didn't load
+            const timeout = setTimeout(() => {
+                fetchAllBigProducts();
+            }, 2000);
+            
+            return () => clearTimeout(timeout);
+        }
+    }, [categories]);
+
+    // Fetch all big products when search/filter changes or categories are loaded
+    useEffect(() => {
+        if (categories.length > 0) {
+            fetchAllBigProducts();
+        }
+    }, [currentPage, searchTerm, appliedFilters, approvalStatusFilter, subCategoryFilter, categories]);
 
     // Fetch sub-categories when category filter changes
     useEffect(() => {
@@ -198,14 +214,33 @@ export default function BigProductList() {
                     const rawStatus = product.status || product.approvalStatus || 'pending';
                     console.log('Raw product status from API:', rawStatus, 'for product:', product.productName || product.name);
 
+                    // Get category name from ID
+                    let categoryName = 'Unknown Category';
+                    if (product.productCategory || product.category) {
+                        const categoryId = product.productCategory || product.category;
+                        if (typeof categoryId === 'object' && categoryId.tabName) {
+                            // If category is already populated with name
+                            categoryName = categoryId.tabName;
+                        } else if (typeof categoryId === 'string') {
+                            // If category is just an ID, find the name from categories list
+                            const foundCategory = categories.find(cat => cat.id === categoryId);
+                            if (foundCategory) {
+                                categoryName = foundCategory.name;
+                            } else {
+                                // If categories are not loaded yet or category not found, show loading or ID
+                                categoryName = categories.length === 0 ? 'Loading...' : categoryId;
+                            }
+                        }
+                    }
+
                     return {
                         id: product.id || product._id,
                         name: product.productName || product.name || 'Unknown Product',
-                        category: product.productCategory || product.category || 'Unknown Category',
+                        category: categoryName,
                         subCategory: product.productSubCategory || product.subCategory || 'N/A',
                         price: product.productPrice || product.price || 'N/A',
                         status: rawStatus,
-                        image: product.productImage || product.image || pvc,
+                        image: product.productImageUrl || product.productImage || product.image || pvc,
                         description: product.productDescription || product.description || '',
                         createdAt: product.createdAt,
                         updatedAt: product.updatedAt
