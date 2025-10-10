@@ -121,68 +121,68 @@ const AddCustomer = () => {
     >
       {({ isSubmitting }) => (
         <Form>
-          <div className="border border-[#616666] rounded-md p-8 min-h-[440px] w-full">
+          <div className="border border-[#616666] rounded-md p-8 min-h-[590px] w-full">
             {/* Customer Name */}
-            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
-                Customer Name:
-              </label>
-              <div className="w-full md:w-3/4">
-                <Field
-                  name="name"
-                  type="text"
-                  placeholder="Enter Full Name"
-                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
-                />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-            </div>
+           {/* Customer Name */}
+<div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+  <label className="pl-6 w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
+    Customer Name:
+  </label>
+  <div className="w-full md:w-3/4">
+    <Field
+      name="name"
+      type="text"
+      placeholder="Enter Full Name"
+      className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+    />
+    <ErrorMessage
+      name="name"
+      component="div"
+      className="text-red-500 text-sm mt-1"
+    />
+  </div>
+</div>
 
-            {/* Email / Phone */}
-            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
-                Email ID/Phone Number:
-              </label>
-              <div className="w-full md:w-3/4">
-                <Field
-                  name="contact"
-                  type="text"
-                  placeholder="Enter your Email ID/phone number"
-                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
-                />
-                <ErrorMessage
-                  name="contact"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-            </div>
+{/* Email / Phone */}
+<div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+  <label className="pl-4 w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
+    Email ID/Phone Number:
+  </label>
+  <div className="w-full md:w-3/4">
+    <Field
+      name="contact"
+      type="text"
+      placeholder="Enter your Email ID/phone number"
+      className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+    />
+    <ErrorMessage
+      name="contact"
+      component="div"
+      className="text-red-500 text-sm mt-1"
+    />
+  </div>
+</div>
 
-            {/* Address */}
-            <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
-              <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
-                Address:
-              </label>
-              <div className="w-full md:w-3/4">
-                <Field
-                  name="address"
-                  type="text"
-                  placeholder="Enter Your Full Address"
-                  className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
-                  //  className="w-[644px] h-[50px] border border-[#001580] rounded-[8px] px-4 py-4 bg-[#CED4F2] placeholder-[#0D2E28] text-[#0D2E28] font-poppins font-medium text-[20px] leading-[100%]"
-                    // className="w-[54%] ml-auto border border-[#001580] text-[#0D2E28] rounded-md px-2 py-2 focus:outline-none bg-[#CED4F2]"
-                />
-                <ErrorMessage
-                  name="address"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
-              </div>
-            </div>
+{/* Address */}
+<div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+  <label className="pl-4 w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
+    Address:
+  </label>
+  <div className="w-full md:w-3/4">
+    <Field
+      name="address"
+      type="text"
+      placeholder="Enter Your Full Address"
+      className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] placeholder-[#0D2E28]"
+    />
+    <ErrorMessage
+      name="address"
+      component="div"
+      className="text-red-500 text-sm mt-1"
+    />
+  </div>
+</div>
+
           </div>
 
           {/* Buttons */}
