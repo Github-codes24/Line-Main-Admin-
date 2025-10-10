@@ -11,13 +11,9 @@ const AddCommission = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
-<<<<<<< HEAD
-  const [category, setCategory] = useState(""); // store exact category string
-=======
   // controlled form state
   const [category, setCategory] = useState("");
   const [operation, setOperation] = useState(""); // optional, kept for UI compatibility
->>>>>>> 565bc1e1ce37d3e4eebe5420e5908757e15472a4
   const [charges, setCharges] = useState("");
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
