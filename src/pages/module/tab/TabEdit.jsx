@@ -214,11 +214,15 @@ const TabEdit = () => {
     </div>
   </div>
 
-  <div className="bg-white p-4 rounded-lg shadow-md h-screen overflow-y-auto">
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
-    >
+ <div className="bg-white p-4 rounded-lg shadow-md h-screen overflow-y-auto flex flex-col">
+<form
+  onSubmit={handleSubmit}
+  className="bg-white border border-[#616666] rounded-lg p-6 space-y-6 min-h-[600px]"
+>
+
+
+
+
       {/* Tab Name */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-[24px] w-full">
         <label className="w-full md:w-1/4 font-medium">Tab Name:</label>

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Eye, Trash2, Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import useFetch from "../../../hook/useFetch";
 import { IoClose } from "react-icons/io5";
 import conf from "../../../config";
@@ -11,6 +11,7 @@ import Pagination from "../../../components/ui/Pagination";
 
 const WorkerList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [fetchData] = useFetch();
 
 
@@ -48,10 +49,10 @@ const WorkerList = () => {
 
   const resetFilters = () => setActiveFilters([]);
 
-  // Fetch all workers when component mounts
+  // Fetch all workers when component mounts and when location changes
   useEffect(() => {
     fetchAllWorkers();
-  }, []);
+  }, [location.pathname, location.key]);
 
   // Fetch workers when page changes
   useEffect(() => {
@@ -63,38 +64,53 @@ const WorkerList = () => {
       setError(""); // Reset error
       setIsLoading(true);
 
+      // Use the exact API endpoint you provided
       const result = await fetchData({
         method: "GET",
         url: `${conf.apiBaseUrl}/admin/Worker/get-all-worker?page=${page}&limit=${recordsPerPage}`,
       });
 
-      if (result.success) {
-        const workerData = result.workers || result.users || [];
+      if (result.success || result.workers || result.users || result.data) {
+        console.log('Full API Response:', result);
+        const workerData = result.workers || result.users || result.data || [];
+        console.log('Worker Data Array:', workerData);
 
-        const normalizedWorkers = workerData.map(worker => ({
-          ...worker,
-          name: worker.name || worker.workerName || worker.fullName || 'Unknown',
-          expertise: worker.experties || worker.expertise || worker.service || 'N/A',
-          contact: worker.contact || worker.phone || worker.email || 'N/A',
-          address: worker.address || worker.location || 'N/A',
-          status: worker.status || 'Active',
-          id: worker.id || worker._id
-        })).filter(worker => worker.name !== 'Unknown');
+        const normalizedWorkers = workerData.map(worker => {
+          console.log('Processing worker:', worker);
+          return {
+            ...worker,
+            name: worker.name || worker.workerName || worker.fullName || 'Unknown',
+            expertise: worker.experties || worker.expertise || worker.service || 'N/A',
+            contact: worker.contact || worker.phone || worker.email || 'N/A',
+            address: worker.address || worker.location || 'N/A',
+            status: 'Active', // Always show Active as requested
+            id: worker.id || worker._id
+          };
+        }).filter(worker => worker.name !== 'Unknown');
 
+        console.log('Normalized Workers:', normalizedWorkers);
         setWorkers(normalizedWorkers);
 
         // Use API pagination data
         if (result.pagination) {
-          setTotalRecords(result.pagination.totalWorkers || 0);
-          setTotalPages(result.pagination.totalPages || 1);
+          setTotalRecords(result.pagination.totalWorkers || result.pagination.total || normalizedWorkers.length);
+          setTotalPages(result.pagination.totalPages || Math.ceil(normalizedWorkers.length / recordsPerPage));
           console.log('Worker Pagination:', result.pagination);
+        } else {
+          // Fallback if no pagination data
+          setTotalRecords(normalizedWorkers.length);
+          setTotalPages(Math.ceil(normalizedWorkers.length / recordsPerPage));
         }
 
         if (normalizedWorkers.length === 0) {
+          console.log('No workers found in response');
           toast.info('No workers found');
+        } else {
+          console.log(`Found ${normalizedWorkers.length} workers`);
         }
       } else {
-        setError(result.message || 'Failed to fetch workers');
+        console.log('API response failed or empty:', result);
+        setError(result?.message || 'Failed to fetch workers');
         setWorkers([]);
       }
     } catch (err) {
@@ -107,8 +123,6 @@ const WorkerList = () => {
   };
 
   const deleteWorker = async (workerId) => {
-    // if (!window.confirm('Are you sure you want to delete this worker?')) return;
-
     try {
       setIsLoading(true);
 
@@ -527,40 +541,6 @@ const WorkerList = () => {
           </div>
         )}
 
-        {/* Pagination */}
-        {/* <div className="flex flex-col md:flex-row items-center justify-between bg-[#F5F5F5] mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-4 px-6">
-          <p className="font-bold text-black">
-            Showing {indexOfFirstRecord + 1} to {Math.min(indexOfLastRecord, filteredWorkers.length)} of {filteredWorkers.length} Entries
-          </p>
-          <div className="flex items-center space-x-2">
-            <button
-              onClick={() => goToPage(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-2 py-1 bg-white text-[#001580] border  rounded-md hover:bg-green-50 disabled:opacity-50"
-            >
-              &lt;
-            </button>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
-              <button
-                key={pg}
-                onClick={() => goToPage(pg)}
-                className={`w-8 h-8 border text-sm font-medium rounded-md transition ${pg === currentPage
-                  ? "bg-[#001580] text-white"
-                  : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
-                  }`}
-              >
-                {pg}
-              </button>
-            ))}
-            <button
-              onClick={() => goToPage(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-2 py-1 bg-white text-[#001580] border  rounded-md hover:bg-green-50 disabled:opacity-50"
-            >
-              &gt;
-            </button>
-          </div>
-        </div> */}
         {/* Pagination Component */}
         <Pagination
           currentPage={currentPage}
@@ -569,9 +549,6 @@ const WorkerList = () => {
           goToPage={goToPage}
           label="entries"
         />
-
-
-
       </div>
     </div>
   );
