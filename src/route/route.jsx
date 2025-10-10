@@ -32,7 +32,7 @@ import ViewCommission from "../pages/module/set-commission/view-commission";
 // Charges of Worker
 import ChargesList from "../pages/module/set-charges-of-worker/charges-list";
 import AddCharges from "../pages/module/set-charges-of-worker/add-commission";
-import EditCharges from "../pages/module/set-charges-of-worker/edit-commission";
+import EditCharges from "../pages/module/set-charges-of-worker/EditCharges";
 import ViewCharges from "../pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount
@@ -89,106 +89,22 @@ const AppRoutes = () => {
       />
 
       {/* Customer */}
-      <Route
-        path="/customer-list"
-        element={
-          <ProtectedRoute>
-            <CustomerList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer-add"
-        element={
-          <ProtectedRoute>
-            <AddCustomer />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCustomer />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/customer/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCustomer />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/customer-list" element={<ProtectedRoute><CustomerList /></ProtectedRoute>} />
+      <Route path="/customer-add" element={<ProtectedRoute><AddCustomer /></ProtectedRoute>} />
+      <Route path="/customer/view/:id" element={<ProtectedRoute><ViewCustomer /></ProtectedRoute>} />
+      <Route path="/customer/edit/:id" element={<ProtectedRoute><EditCustomer /></ProtectedRoute>} />
 
       {/* Set Commission */}
-      <Route
-        path="/set-commission"
-        element={
-          <ProtectedRoute>
-            <CommissionList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/add"
-        element={
-          <ProtectedRoute>
-            <AddCommission />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCommission />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-commission/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCommission />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/set-commission" element={<ProtectedRoute><CommissionList /></ProtectedRoute>} />
+      <Route path="/set-commission/add" element={<ProtectedRoute><AddCommission /></ProtectedRoute>} />
+      <Route path="/set-commission/view/:id" element={<ProtectedRoute><ViewCommission /></ProtectedRoute>} />
+      <Route path="/set-commission/edit/:id" element={<ProtectedRoute><EditCommission /></ProtectedRoute>} />
 
       {/* Set Charges of Worker */}
-      <Route
-        path="/set-charges-of-worker"
-        element={
-          <ProtectedRoute>
-            <ChargesList />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/add"
-        element={
-          <ProtectedRoute>
-            <AddCharges />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/view/:id"
-        element={
-          <ProtectedRoute>
-            <ViewCharges />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/set-charges-of-worker/edit/:id"
-        element={
-          <ProtectedRoute>
-            <EditCharges />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/set-charges-of-worker" element={<ProtectedRoute><ChargesList /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/add" element={<ProtectedRoute><AddCharges /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/view/:id" element={<ProtectedRoute><ViewCharges /></ProtectedRoute>} />
+      <Route path="/set-charges-of-worker/edit/:id" element={<ProtectedRoute><EditCharges /></ProtectedRoute>} />
 
       {/* Set Limit Amount */}
       <Route path="/admin/limit" element={<SetLimitAmount />} />

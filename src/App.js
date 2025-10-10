@@ -70,7 +70,7 @@ import ViewCommission from "./pages/module/set-commission/view-commission";
 // Charges of Worker
 import ChargesList from "./pages/module/set-charges-of-worker/charges-list";
 import AddCharges from "./pages/module/set-charges-of-worker/add-commission";
-import EditCharges from "./pages/module/set-charges-of-worker/edit-commission";
+import EditCharges from "./pages/module/set-charges-of-worker/EditCharges";
 import ViewCharges from "./pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount
@@ -83,14 +83,12 @@ import ViewLimitAmount from "./pages/module/set-limit-amount/view-limit-amount";
 import ProtectedRoute from "./route/protected";
 import PublicRoute from "./route/public"; //  ✅ make sure you have this file
 
-
-
 function App() {
   const [activeTab, setActiveTab] = React.useState("/admin");
 
   return (
     <>
-     <Routes>
+      <Routes>
         {/* Default route → Login */}
         <Route
           path="/"
@@ -139,7 +137,6 @@ function App() {
               </AdminLayout>
             }
           />
-
 
           {/* Customer */}
           <Route
@@ -447,6 +444,7 @@ function App() {
             }
           />
 
+          
           {/* Charges of Worker */}
           <Route
             path="/admin/set-charges-of-worker"
@@ -465,18 +463,18 @@ function App() {
             }
           />
           <Route
-            path="/admin/set-charges-of-worker/view/:id"
-            element={
-              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-                <ViewCharges />
-              </AdminLayout>
-            }
-          />
-          <Route
             path="/admin/set-charges-of-worker/edit/:id"
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <EditCharges />
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/set-charges-of-worker/view/:id"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <ViewCharges />
               </AdminLayout>
             }
           />
@@ -491,7 +489,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/set-limit-amount/alt"
+            path="/admin/set-limit-amount/add"
             element={
               <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
                 <AddLimitAmount />

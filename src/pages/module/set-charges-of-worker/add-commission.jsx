@@ -1,57 +1,26 @@
-// AddCommission.jsx
-import React, { useState } from "react";
-import { IoArrowBackCircleOutline } from "react-icons/io5";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { ChevronDown } from "lucide-react";
+import { CircularProgress, Typography } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
-/* --- token helper (same logic as other components) --- */
-function getStoredToken() {
-  try {
-    const keys = ["token", "accessToken", "authToken", "access_token"];
-    for (const k of keys) {
-      const v = localStorage.getItem(k) || sessionStorage.getItem(k);
-      if (v) return v;
-    }
-    const cookies = document.cookie.split(";").map((c) => c.trim());
-    for (const c of cookies) {
-      if (c.startsWith("token=")) return decodeURIComponent(c.split("=")[1]);
-      if (c.startsWith("accessToken=")) return decodeURIComponent(c.split("=")[1]);
-      if (c.startsWith("access_token=")) return decodeURIComponent(c.split("=")[1]);
-    }
-    return null;
-  } catch (e) {
-    return null;
-  }
-}
-
-/* --- axios instance with Authorization header --- */
-const base = conf?.apiBaseUrl || "https://linemen-be-1.onrender.com";
-const api = axios.create({ baseURL: base, timeout: 15000 });
-api.interceptors.request.use((cfg) => {
-  const token = getStoredToken();
-  if (token) {
-    cfg.headers = cfg.headers || {};
-    cfg.headers.Authorization = `Bearer ${token}`;
-  }
-  if (!cfg.headers?.["Content-Type"] && cfg.data) {
-    cfg.headers["Content-Type"] = "application/json";
-  }
-  return cfg;
-});
-
-export default function AddCommission() {
+const AddCommission = () => {
   const navigate = useNavigate();
+  const [fetchData] = useFetch();
 
   // controlled form state
   const [category, setCategory] = useState("");
-  const [operation, setOperation] = useState(""); // kept for UI only (not sent)
+  const [operation, setOperation] = useState(""); // optional, kept for UI compatibility
   const [charges, setCharges] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
-  const categories = [
+  // allowed categories as per backend validation
+  const allowedCategories = [
     "Electrician",
     "Plumber",
     "Tiler",
@@ -59,190 +28,156 @@ export default function AddCommission() {
     "AC & Refrigerator Mechanic",
   ];
 
-  const operations = [
-    "Board Fitting",
-    "Plumber",
-    "Tile Fitting",
-    "Wall Painting",
-    "Refrigerator Repair",
-  ];
+  useEffect(() => {
+    const loadCategories = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/tabs/experties`,
+        });
+
+        if (res?.success) {
+          // filter tabs that match allowed categories
+          const filtered = res.data.filter((tab) =>
+            allowedCategories.includes(tab.tabName)
+          );
+          setCategories(filtered);
+        } else {
+          toast.error("Failed to load categories");
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to load categories");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCategories();
+  }, [fetchData]);
+
+  const handleBack = () => navigate("/admin/set-charges-of-worker");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // basic validation
-    if (!category) {
-      toast.error("Please select a category.");
-      return;
-    }
-    if (charges === "" || isNaN(Number(charges)) || Number(charges) < 0) {
-      toast.error("Please enter a valid positive charges amount.");
+    if (!category || charges === "") {
+      toast.warning("Please fill all fields");
       return;
     }
 
-    // NOTE: backend rejects 'operation' field. Send only the allowed fields.
-    const payload = {
-      category,
-      charges: Number(charges),
-    };
-
+    setSubmitting(true);
     try {
-      setIsLoading(true);
-      const res = await api.post("/admin/worker-charges/add-worker-charges", payload);
+      const payload = {
+        category, // exact string required by backend
+        charges: Number(charges),
+      };
 
-      const data = res?.data;
-      if (data && data.success === true) {
-        toast.success(data.message || "Charges added successfully");
-        // navigate back to charges list after brief pause so user sees toast
-        setTimeout(() => navigate("/admin/set-charges-of-worker"), 800);
-      } else if (data && data.success === false) {
-        const msg = data.message || "Failed to add charges";
-        // show backend validation/message
-        toast.error(msg);
-        // if it's an auth error, redirect
-        if (msg.toLowerCase().includes("access denied") || res.status === 401) {
-          const stored = getStoredToken();
-          if (!stored) {
-            setTimeout(() => navigate("/login"), 800);
-          }
-        }
+      const res = await fetchData({
+        method: "POST",
+        url: `${conf.apiBaseUrl}/admin/worker-charges/add-worker-charges`,
+        data: payload,
+      });
+
+      if (res?.success) {
+        toast.success("Charges added successfully");
+        setTimeout(() => navigate("/admin/set-charges-of-worker"), 1500);
       } else {
-        // unexpected shape: show something helpful
-        toast.success("Charges added (unexpected response).");
-        setTimeout(() => navigate("/admin/set-charges-of-worker"), 800);
+        toast.error(res?.message || "Failed to add charges");
       }
     } catch (err) {
-      console.error("Add charges error:", err);
-      // try to get validation details from server
-      const serverData = err?.response?.data;
-      const serverMsg =
-        serverData?.message ||
-        // sometimes validation details are in `error` or `errors` or `details`
-        serverData?.error ||
-        (serverData?.errors && JSON.stringify(serverData.errors)) ||
-        err?.message ||
-        "Failed to add charges";
-
-      // If server sent a validation object, try to show friendly text
-      if (serverData && serverData?.details) {
-        toast.error(serverData.details);
-      } else {
-        toast.error(serverMsg);
-      }
-
-      // handle auth-specific message
-      if (typeof serverMsg === "string" && serverMsg.toLowerCase().includes("access denied")) {
-        const stored = getStoredToken();
-        if (!stored) {
-          setTimeout(() => navigate("/login"), 800);
-        } else {
-          // maybe token expired — clear and redirect
-          localStorage.removeItem("token");
-          localStorage.removeItem("accessToken");
-          sessionStorage.removeItem("token");
-          setTimeout(() => navigate("/login"), 800);
-        }
-      }
+      console.error(err);
+      toast.error(err.message || "Something went wrong!");
     } finally {
-      setIsLoading(false);
+      setSubmitting(false);
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-200 max-h-screen p-4">
-      <ToastContainer />
-      <div>
+    <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
+      <div className="flex-1 px-4 md:px-0 mx-auto">
         {/* Header */}
-        <div className="bg-white rounded-lg border border-gray-300 mb-2">
-          <div className="flex items-center p-4 bg-white rounded-lg border-b border-gray-300">
-            <button
-              className="text-gray-600 hover:text-gray-800 mr-3"
-              onClick={() => navigate(-1)}
-              title="Back"
-            >
-              <IoArrowBackCircleOutline size={30} />
-            </button>
-            <h2 className="text-lg font-medium text-gray-800">Add Commission</h2>
-          </div>
+        <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
+          <img
+            src="/Back Button (1).png"
+            onClick={handleBack}
+            className="mr-3 cursor-pointer w-8"
+            alt="Back"
+          />
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Commission</h2>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg pt-3">
-          <div
-            className="border border-gray-300 rounded-lg px-6 py-8 mb-4 mx-4"
-            style={{ marginTop: "10px" }}
+        {/* Form Container */}
+        <div className="bg-white p-4 rounded-lg shadow min-h-screen">
+          <form
+            onSubmit={handleSubmit}
+            className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
           >
-            <div className="space-y-6">
-              {/* Category */}
-              <div className="flex items-center">
-                <label className="w-48 text-sm font-medium text-gray-700">Category :</label>
+            {/* Category */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
+              <div className="relative flex-1">
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
                 >
                   <option value="">Select</option>
                   {categories.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
+                    <option key={c._id} value={c.tabName}>
+                      {c.tabName}
                     </option>
                   ))}
                 </select>
-              </div>
-
-              {/* Crud Operations (optional UI only) */}
-              <div className="flex items-center">
-                <label className="w-48 text-sm font-medium text-gray-700">Crud Operations :</label>
-                <select
-                  value={operation}
-                  onChange={(e) => setOperation(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                >
-                  <option value="">Select (optional)</option>
-                  {operations.map((op) => (
-                    <option key={op} value={op}>
-                      {op}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Charges */}
-              <div className="flex items-center">
-                <label className="w-48 text-sm font-medium text-gray-700"> Set Charges :</label>
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={charges}
-                  onChange={(e) => setCharges(e.target.value)}
-                  placeholder="Enter Charges "
-                  className="flex-1 border border-gray-300 rounded px-3 py-2 bg-white placeholder-gray-500 text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
-                />
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-[#0D2E28]" />
               </div>
             </div>
-          </div>
 
-          {/* Footer Buttons */}
-          <div className="flex justify-center gap-4 px-6 pb-6">
+            {/* Charges */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Set Charges:</label>
+              <input
+                type="number"
+                value={charges}
+                onChange={(e) => setCharges(e.target.value)}
+                placeholder="Enter Charges"
+                className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-[#0D2E28] outline-none"
+              />
+            </div>
+          </form>
+
+          {/* Buttons */}
+          <div className="flex justify-center gap-4 pt-6">
             <button
               type="button"
-              className="px-12 py-2 rounded border border-gray-300 bg-blue-100 text-gray-700 hover:bg-blue-200 transition-colors"
-              onClick={() => navigate(-1)}
-              disabled={isLoading}
+              onClick={handleBack}
+              className="w-[200px] bg-[#CECEF2] text-[#001580] px-6 py-2 rounded-lg border border-[#001580]"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-12 py-2 rounded bg-blue-800 text-white hover:bg-blue-900 transition-colors disabled:opacity-50"
-              disabled={isLoading}
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580] disabled:opacity-50"
             >
-              {isLoading ? "Adding..." : "Add"}
+              {submitting ? "Adding..." : "Add"}
             </button>
           </div>
-        </form>
+        </div>
       </div>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
-}
+};
+
+export default AddCommission;

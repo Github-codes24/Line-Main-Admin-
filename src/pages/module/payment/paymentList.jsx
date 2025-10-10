@@ -7,11 +7,10 @@ import Pagination from "../../../components/ui/Pagination";
 const PaymentList = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 5;
+  const recordsPerPage = 10;
   const { searchPayment, fetchPayment } = usePayment();
   const [search, setSearch] = useState("");
 
-  // Fetch data on mount
   useEffect(() => {
     fetchPayment(search, currentPage, recordsPerPage);
   }, [search, currentPage]);
@@ -65,77 +64,77 @@ const PaymentList = () => {
         <div className="overflow-x-auto rounded-lg border">
           <table className="min-w-full text-sm border-collapse">
             <thead className="bg-[#e3e5eb] text-black">
-  <tr>
-    <th className="px-4 py-3 text-center">Sr.No.</th>
-    <th className="px-4 py-3 text-center">Transaction ID</th>
-    <th className="px-4 py-3 text-center">Order ID</th>
-    <th className="px-4 py-3 text-center">Amount</th>
-    <th className="px-4 py-3 text-center">Transaction Mode</th>
-    <th className="px-4 py-3 text-center">Remarks</th>
-    <th className="px-4 py-3 text-center">Action</th>
-  </tr>
-</thead>
-<tbody>
-  {currentRecords.map((item, index) => (
-    <tr key={item._id} className="border-t text-center">
-      <td className="px-4 py-4">{indexOfFirstRecord + index + 1}</td>
-      <td className="px-4 py-4 break-words max-w-[150px]">{item._id}</td>
-      <td className="px-4 py-4 break-words max-w-[150px]">{item.orderId}</td>
-      <td
-        className={`px-4 py-4 font-semibold ${
-          item.amount < 0 ? "text-red-500" : "text-green-600"
-        }`}
-      >
-        {item.amount < 0
-          ? `-₹${Math.abs(item.amount)}`
-          : `+₹${item.amount}`}
-      </td>
-      <td className="px-4 py-4">
-        {item.status === "settled" ? "Online" : "Wallet"}
-      </td>
-      <td className="px-4 py-4 break-words max-w-[200px]">
-        {item.status === "settled"
-          ? "Payment Received From Customer"
-          : "Amount Refunded / Deducted"}
-      </td>
-      <td
-        className="px-4 py-5 flex justify-center text-red-500 cursor-pointer"
-        onClick={() => navigate(`/admin/payment/details/${item._id}`)}
-      >
-        <Eye size={18} />
-      </td>
-    </tr>
-  ))}
-
-  {/* Fill empty rows if less than 5 */}
-  {currentRecords.length < recordsPerPage &&
-    Array.from({ length: recordsPerPage - currentRecords.length }).map(
-      (_, i) => (
-        <tr key={`empty-${i}`} className="border-t h-[64px] text-center">
-          <td colSpan={7} className="px-4 py-4 text-gray-300">
-            {/* empty placeholder */}
-          </td>
-        </tr>
-      )
-    )}
-</tbody>
-
-
+              <tr>
+                <th className="px-4 py-3 text-center">Sr.No.</th>
+                <th className="px-4 py-3 text-center">Transaction ID</th>
+                <th className="px-4 py-3 text-center">Order ID</th>
+                <th className="px-4 py-3 text-center">Amount</th>
+                <th className="px-4 py-3 text-center">Transaction Mode</th>
+                <th className="px-4 py-3 text-center">Remarks</th>
+                <th className="px-4 py-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentRecords.length > 0 ? (
+                currentRecords.map((item, index) => (
+                  <tr key={item._id} className="border-t text-center">
+                    <td className="px-4 py-4">
+                      {indexOfFirstRecord + index + 1}
+                    </td>
+                    <td className="px-4 py-4 break-words max-w-[150px]">
+                      {item._id}
+                    </td>
+                    <td className="px-4 py-4 break-words max-w-[150px]">
+                      {item.orderId}
+                    </td>
+                    <td
+                      className={`px-4 py-4 font-semibold ${
+                        item.amount < 0 ? "text-red-500" : "text-green-600"
+                      }`}
+                    >
+                      {item.amount < 0
+                        ? `-₹${Math.abs(item.amount)}`
+                        : `+₹${item.amount}`}
+                    </td>
+                    <td className="px-4 py-4">
+                      {item.status === "settled" ? "Online" : "Wallet"}
+                    </td>
+                    <td className="px-4 py-4 break-words max-w-[200px]">
+                      {item.status === "settled"
+                        ? "Payment Received From Customer"
+                        : "Amount Refunded / Deducted"}
+                    </td>
+                    <td
+                      className="px-4 py-5 flex justify-center text-red-500 cursor-pointer"
+                      onClick={() =>
+                        navigate(`/admin/payment/details/${item._id}`)
+                      }
+                    >
+                      <Eye size={18} />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="text-center text-gray-500 py-4"
+                  >
+                    No data found
+                  </td>
+                </tr>
+              )}
+            </tbody>
           </table>
         </div>
 
-     
-     
-<Pagination
-  currentPage={currentPage}
-  totalRecords={filteredData.length}   // ✅ use filteredData instead of payments
-  recordsPerPage={recordsPerPage}
-  goToPage={goToPage}
-  label="payments"
-/>
-
-
-
+        <Pagination
+          currentPage={currentPage}
+          totalRecords={filteredData.length}
+          recordsPerPage={recordsPerPage}
+          goToPage={goToPage}
+          label="payments"
+        />
       </div>
     </div>
   );

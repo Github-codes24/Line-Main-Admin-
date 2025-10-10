@@ -1,6 +1,6 @@
-// src/pages/module/set-limit-amount/AddLimitAmount.jsx
+// src/pages/module/set-charges-of-worker/EditCharges.jsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import { CircularProgress, Typography } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,61 +8,92 @@ import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
-const AddLimitAmount = () => {
+const EditCharges = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [fetchData] = useFetch();
-  const [category, setCategory] = useState("");
-  const [limitAmount, setLimitAmount] = useState("");
-  const [tabs, setTabs] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const [category, setCategory] = useState(""); // stores selected tab _id or "custom"
+  const [commission, setCommission] = useState(""); // stores charges
+  const [tabs, setTabs] = useState([]); // tabs fetched from backend
+  const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [backendCategory, setBackendCategory] = useState(""); // backend category string
 
   useEffect(() => {
-    const loadTabs = async () => {
+    const loadData = async () => {
       setLoading(true);
       try {
-        const res = await fetchData({
+        // Fetch all tabs
+        const tabsRes = await fetchData({
           method: "GET",
           url: `${conf.apiBaseUrl}/admin/tabs/experties`,
         });
-        if (res?.success) setTabs(res.data || []);
+        if (!tabsRes?.success) throw new Error("Failed to fetch tabs");
+        setTabs(tabsRes.data || []);
+
+        // Fetch single worker charges
+        const chargesRes = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/worker-charges/get-single-worker-charges/${id}`,
+        });
+        if (!chargesRes?.success || !chargesRes.workerCharges)
+          throw new Error("Failed to fetch worker charges");
+
+        const record = chargesRes.workerCharges;
+        setCommission(record.charges ?? "");
+        setBackendCategory(record.category);
+
+        // Map backend category to tab _id if exists
+        const matchedTab = (tabsRes.data || []).find(
+          (t) => t.tabName === record.category
+        );
+        if (matchedTab) {
+          setCategory(matchedTab._id); // category exists in tabs
+        } else {
+          setCategory("custom"); // custom category not in tabs
+        }
       } catch (err) {
-        console.error("Error loading tabs:", err);
-        toast.error("Failed to load tabs");
+        console.error(err);
+        toast.error(err.message || "Failed to load data");
       } finally {
         setLoading(false);
       }
     };
-    loadTabs();
-  }, [fetchData]);
 
-  const handleBack = () => navigate("/admin/set-limit-amount");
+    loadData();
+  }, [fetchData, id]);
+
+  const handleBack = () => navigate("/admin/set-charges-of-worker");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!category || !limitAmount) {
+    if (!category || !commission) {
       toast.warning("Please fill all fields");
       return;
     }
+
     setSubmitting(true);
     try {
-      const payload = {
-        categoryId: category,
-        nagativeLimit: Number(limitAmount),
-      };
+      // ✅ Payload fix: Only send "category" if custom, otherwise "tabId"
+      const payload = category === "custom"
+        ? { category: backendCategory, charges: Number(commission) }
+        : { tabId: category, charges: Number(commission) };
+
       const res = await fetchData({
         method: "PUT",
-        url: `${conf.apiBaseUrl}/admin/limit-amount`,
+        url: `${conf.apiBaseUrl}/admin/worker-charges/update-worker-charges/${id}`,
         data: payload,
       });
+
       if (res?.success) {
-        toast.success("Limit added successfully");
-        setTimeout(() => navigate("/admin/set-limit-amount"), 1500);
+        toast.success("Worker charges updated successfully");
+        setTimeout(() => navigate("/admin/set-charges-of-worker"), 1500);
       } else {
-        toast.error(res?.message || "Failed to add limit");
+        toast.error(res?.message || "Failed to update charges");
       }
     } catch (err) {
-      console.error("Add error:", err);
+      console.error(err);
       toast.error("Something went wrong!");
     } finally {
       setSubmitting(false);
@@ -80,7 +111,7 @@ const AddLimitAmount = () => {
 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
-      <div className="flex-1 px-4 md:px-0 mx-auto">
+      <div className="flex-1 px-4 md:px-0 m mx-auto">
         {/* Header */}
         <div className="flex items-center bg-white px-4 py-3 rounded-lg shadow mb-4">
           <img
@@ -89,12 +120,10 @@ const AddLimitAmount = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">
-            Add Limit Amount
-          </h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">Edit Charges</h2>
         </div>
 
-        {/* Form Container */}
+        {/* Form */}
         <div className="bg-white p-4 rounded-lg shadow min-h-screen">
           <form
             onSubmit={handleSubmit}
@@ -102,7 +131,7 @@ const AddLimitAmount = () => {
           >
             {/* Category */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
+              <label className="w-1/4 font-medium">Category:</label>
               <div className="relative flex-1">
                 <select
                   value={category}
@@ -115,21 +144,22 @@ const AddLimitAmount = () => {
                       {tab.tabName}
                     </option>
                   ))}
+                  {category === "custom" && (
+                    <option value="custom">{backendCategory}</option>
+                  )}
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
               </div>
             </div>
 
-            {/* Wallet Balance Negative Limit */}
+            {/* Commission */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">
-                Wallet Balance Negative Limit:
-              </label>
+              <label className="w-1/4 font-medium">Commission from Worker:</label>
               <input
                 type="number"
-                value={limitAmount}
-                onChange={(e) => setLimitAmount(e.target.value)}
-                placeholder="₹1000"
+                value={commission}
+                onChange={(e) => setCommission(e.target.value)}
+                placeholder="Enter commission"
                 className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-[#0D2E28] outline-none"
               />
             </div>
@@ -150,7 +180,7 @@ const AddLimitAmount = () => {
               disabled={submitting}
               className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580]"
             >
-              {submitting ? "Adding..." : "Add"}
+              {submitting ? "Updating..." : "Update"}
             </button>
           </div>
         </div>
@@ -160,4 +190,4 @@ const AddLimitAmount = () => {
   );
 };
 
-export default AddLimitAmount;
+export default EditCharges;
