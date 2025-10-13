@@ -115,7 +115,7 @@ const OrderList = () => {
       case "WorkInProgress":
         navigate(`/admin/order/progress/${id}`);
         break;
-      case "Accepted":
+      case "Completed":
         navigate(`/admin/order/complete/${id}`);
         break;
       case "Rejected":

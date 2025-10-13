@@ -29,9 +29,9 @@ const Payment = () => {
     : [];
 
   return (
-    <div className="p-4 sm:p-6 bg-white rounded-lg shadow">
+    <div className=" sm:p-6 bg-white rounded-lg shadow">
       {/* Header */}
-      <div className="bg-white rounded-lg border border-gray-300 mb-4">
+      <div className=" rounded-lg border border-gray-300 mb-4">
         <div className="flex items-center p-3 sm:p-4 bg-white rounded-lg border-b border-gray-300">
           <button
             className="text-gray-600 hover:text-gray-800 mr-3"
