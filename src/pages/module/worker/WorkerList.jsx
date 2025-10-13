@@ -51,10 +51,12 @@ const WorkerList = () => {
 
   // Add window focus listener to refresh data when returning to the page
   useEffect(() => {
+
     const handleFocus = () => {
       console.log("Window focused, refreshing worker list");
       fetchAllWorkers(currentPage);
     };
+
 
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);

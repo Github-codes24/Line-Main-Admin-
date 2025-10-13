@@ -24,7 +24,9 @@ const DashboardTable = ({
       {/* Table Header */}
       <div className="flex justify-between items-center mb-4">
 
+
         <h3 className="text-md font-medium text-[#0D2E28]">{title}</h3>
+
 
         {/* <a href="/" className="text-[#001580] text-sm hover:underline">
           {actionLink || "See All"}
@@ -33,7 +35,9 @@ const DashboardTable = ({
     <span
       onClick={() => navigate(actionLink)}
 
+
       className="text-[#001580] text-sm font-medium hover:underline cursor-pointer"
+
 
     >
       {actionText || "See All"} {/*  dynamic text */}

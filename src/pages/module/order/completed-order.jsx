@@ -169,44 +169,56 @@ const CompletedOrder = () => {
             </div>
 
             {/* Product List Table */}
-            <div className="grid grid-cols-4 gap-4 mb-2 items-start">
+            <div className="grid grid-cols-4 gap-4 items-start">
               <label className="col-span-1 font-medium text-[#0D2E28]">Product List :</label>
-              <div className="col-span-1">
-                <table className="w-full border border-black" style={{ borderSpacing: 0 }}>
+              
+              <div className="col-span-2">
+                <table className="border-collapse border border-[#0D2E28] text-[#0D2E28] w-full">
                   <thead>
-                    <tr className="border-b border-black">
-                      <th className="border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">#</th>
-                      <th className="border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-left bg-white">Products</th>
-                      <th className="border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">Price</th>
-                      <th className="border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">Qty</th>
-                      <th className="px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">Amount</th>
+                    <tr className="bg-gray-50">
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-12">#</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-left font-medium">Products</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-20">Price</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-16">Qty</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-24">Amount</th>
                     </tr>
                   </thead>
+
+                  
                   <tbody>
                     {order.products?.length > 0 ? (
                       order.products.map((prod, idx) => (
                         <tr key={prod._id || idx}>
-                          <td className="border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{idx + 1}</td>
-                          <td className="border-black px-4 py-1 text-[#0D2E28] text-[11px] text-left bg-white">{prod.productName || "N/A"}</td>
-                          <td className="border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{prod.priceAtPurchase || 0}</td>
-                          <td className="border-black px-4 py-1 text-[#0D2E28] text-[11px] text-center bg-white">{prod.quantity || 0}</td>
-                          <td className="px-3 py-2 text-[#0D2E28] text-[11px] text-center bg-white">
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">{idx + 1}</td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-left">{prod.productName || "N/A"}</td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                            {prod.priceAtPurchase || 0}
+                          </td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                            {prod.quantity || 0}
+                          </td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
                             {(prod.priceAtPurchase || 0) * (prod.quantity || 0)}
                           </td>
                         </tr>
                       ))
-                    ) : (
+                    )  : (
                       <tr>
-                        <td colSpan="5" className="px-3 py-3 text-gray-500 text-[11px] text-center bg-white">
+                        <td colSpan="5" className="border border-[#0D2E28] px-3 py-2 text-gray-500 text-center">
                           No products found
                         </td>
                       </tr>
                     )}
-                    <tr className="border-t border-black">
-                      <td colSpan="4" className="border-r border-black px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-left bg-white">
+
+                    {/* Final Amount Row */}
+                    <tr className="font-medium bg-gray-50">
+                      <td
+                        colSpan="4"
+                        className="border border-[#0D2E28] px-3 py-2 text-left"
+                      >
                         Final Amount
                       </td>
-                      <td className="px-3 py-2 text-[#0D2E28] font-medium text-[11px] text-center bg-white">
+                      <td className="border border-[#0D2E28] px-3 py-2 text-center">
                         {order?.finalAmount || 0}
                       </td>
                     </tr>

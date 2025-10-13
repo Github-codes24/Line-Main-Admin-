@@ -1,12 +1,11 @@
 // src/pages/module/set-commission/AddCommission.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Typography } from "@mui/material";
+import { ChevronDown } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
-import { ChevronDown } from "lucide-react";
 
 const AddCommission = () => {
   const navigate = useNavigate();
@@ -16,23 +15,20 @@ const AddCommission = () => {
   const [workerCommission, setWorkerCommission] = useState("");
   const [shopkeeperCommission, setShopkeeperCommission] = useState("");
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadCategories = async () => {
-      setLoading(true);
       try {
         const res = await fetchData({
           method: "GET",
           url: `${conf.apiBaseUrl}/admin/tabs/experties`,
         });
         if (res?.success) setCategories(res.data || []);
+        else toast.error("Failed to load categories");
       } catch (err) {
         console.error("Error loading categories:", err);
         toast.error("Failed to load categories");
-      } finally {
-        setLoading(false);
       }
     };
     loadCategories();
@@ -49,7 +45,7 @@ const AddCommission = () => {
     setSubmitting(true);
     try {
       const payload = {
-        category: category,
+        categoryId: category,
         workerPercentageCommission: Number(workerCommission),
         shopkeeperPercentageCommission: Number(shopkeeperCommission),
       };
@@ -72,15 +68,7 @@ const AddCommission = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
-      </div>
-    );
-  }
-
+  // ✅ Loader removed; form will render immediately
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -112,7 +100,7 @@ const AddCommission = () => {
                 >
                   <option value="">Select</option>
                   {categories.map((cat) => (
-                    <option key={cat.tabName} value={cat.tabName}>
+                    <option key={cat._id} value={cat._id}>
                       {cat.tabName}
                     </option>
                   ))}

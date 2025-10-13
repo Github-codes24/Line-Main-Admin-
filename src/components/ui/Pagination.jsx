@@ -15,7 +15,7 @@ const Pagination = ({
   if (totalRecords === 0) return null; // hide pagination if no data
 
   // Determine which page numbers to show
-  const maxVisiblePages = 5; // show up to 5 pages at a time
+  const maxVisiblePages = 3; // show up to 5 pages at a time
   let startPage, endPage;
 
   if (totalPages <= maxVisiblePages) {

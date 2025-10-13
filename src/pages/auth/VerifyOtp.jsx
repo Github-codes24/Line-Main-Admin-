@@ -147,7 +147,7 @@ const VerifyOtp = () => {
     {/* Buttons side by side */}
     <div className="flex flex-col sm:flex-row gap-3 mt-4">
       <button
-        onClick={() => navigate("/login")}
+        onClick={() => navigate("/")}
         className="flex-1 font-semibold py-3 rounded-lg bg-[#CECEF2] border border-[#001580] text-[#001580] transition"
       >
         Cancel
