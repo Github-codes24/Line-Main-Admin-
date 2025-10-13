@@ -1,7 +1,7 @@
+// src/pages/module/set-charges-of-worker/AddCommission.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-import { CircularProgress, Typography } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
@@ -11,54 +11,36 @@ const AddCommission = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
-  // controlled form state
-  const [category, setCategory] = useState("");
-  const [operation, setOperation] = useState(""); // optional, kept for UI compatibility
+  const [category, setCategory] = useState(""); // store category ID
   const [charges, setCharges] = useState("");
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-
-  // allowed categories as per backend validation
-  const allowedCategories = [
-    "Electrician",
-    "Plumber",
-    "Tiler",
-    "Painter",
-    "AC & Refrigerator Mechanic",
-  ];
 
   useEffect(() => {
     const loadCategories = async () => {
-      setLoading(true);
       try {
         const res = await fetchData({
           method: "GET",
           url: `${conf.apiBaseUrl}/admin/tabs/experties`,
         });
-
         if (res?.success) {
-          // filter tabs that match allowed categories
-          const filtered = res.data.filter((tab) =>
-            allowedCategories.includes(tab.tabName)
-          );
-          setCategories(filtered);
+          setCategories(res.data || []);
         } else {
           toast.error("Failed to load categories");
         }
       } catch (err) {
-        console.error(err);
+        console.error("Error loading categories:", err);
         toast.error("Failed to load categories");
-      } finally {
-        setLoading(false);
       }
     };
 
     loadCategories();
   }, [fetchData]);
 
+  // ✅ Navigate Back
   const handleBack = () => navigate("/admin/set-charges-of-worker");
 
+  // ✅ Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!category || charges === "") {
@@ -69,7 +51,7 @@ const AddCommission = () => {
     setSubmitting(true);
     try {
       const payload = {
-        category, // exact string required by backend
+        categoryId: category,
         charges: Number(charges),
       };
 
@@ -86,22 +68,14 @@ const AddCommission = () => {
         toast.error(res?.message || "Failed to add charges");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error submitting data:", err);
       toast.error(err.message || "Something went wrong!");
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
-      </div>
-    );
-  }
-
+  // ✅ Main UI (loader removed)
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -122,7 +96,7 @@ const AddCommission = () => {
             onSubmit={handleSubmit}
             className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
           >
-            {/* Category */}
+            {/* Category Dropdown */}
             <div className="flex items-center gap-[70px]">
               <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
               <div className="relative flex-1">
@@ -132,9 +106,9 @@ const AddCommission = () => {
                   className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
                 >
                   <option value="">Select</option>
-                  {categories.map((c) => (
-                    <option key={c._id} value={c.tabName}>
-                      {c.tabName}
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.tabName}
                     </option>
                   ))}
                 </select>
@@ -142,7 +116,7 @@ const AddCommission = () => {
               </div>
             </div>
 
-            {/* Charges */}
+            {/* Charges Input */}
             <div className="flex items-center gap-[70px]">
               <label className="w-1/4 font-medium text-[#0D2E28]">Set Charges:</label>
               <input
