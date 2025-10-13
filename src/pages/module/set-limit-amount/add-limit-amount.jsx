@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
-import { CircularProgress, Typography } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
@@ -14,23 +13,20 @@ const AddLimitAmount = () => {
   const [category, setCategory] = useState("");
   const [limitAmount, setLimitAmount] = useState("");
   const [tabs, setTabs] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     const loadTabs = async () => {
-      setLoading(true);
       try {
         const res = await fetchData({
           method: "GET",
           url: `${conf.apiBaseUrl}/admin/tabs/experties`,
         });
         if (res?.success) setTabs(res.data || []);
+        else toast.error("Failed to load tabs");
       } catch (err) {
         console.error("Error loading tabs:", err);
         toast.error("Failed to load tabs");
-      } finally {
-        setLoading(false);
       }
     };
     loadTabs();
@@ -69,15 +65,7 @@ const AddLimitAmount = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading data...</Typography>
-      </div>
-    );
-  }
-
+  // ✅ Loader removed; form will render immediately
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -89,9 +77,7 @@ const AddLimitAmount = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">
-            Add Limit Amount
-          </h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Limit Amount</h2>
         </div>
 
         {/* Form Container */}

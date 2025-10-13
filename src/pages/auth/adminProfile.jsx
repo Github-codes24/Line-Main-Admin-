@@ -94,7 +94,7 @@ const AdminProfile = () => {
           >
             {() => (
               <Form>
-                <div className="flex flex-col md:flex-row gap-6 border border-[#616666] rounded-md p-6 min-h-[400px] text-[#0D2E28]">
+                <div className="flex flex-col md:flex-row gap-6 border border-[#616666] rounded-md p-6 min-h-[480px] text-[#0D2E28]">
                   {/* Left - Fields */}
                   <div className="space-y-6 w-full md:w-2/3 text-[#0D2E28]">
                     {[

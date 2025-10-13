@@ -40,14 +40,14 @@ const DashboardTable = ({
       {/* Table Body */}
       <div className="overflow-x-auto border border-[#616666] rounded-md">
         {/* <table className="w-full text-sm text-left"> */}
-          <table className="w-full text-sm text-center"> 
-          <thead className="bg-[#E4E5EB] text-[#0D2E28]">
+          <table className="w-full text-sm text-center "> 
+          <thead className="bg-[#E4E5EB] text-[#0D2E28] font-medium">
             <tr>
               {headers.map((head, idx) => (
-                <th key={idx} className="px-3 py-2">{head}</th>
+                <th key={idx} className="px-3 py- text-sm font-medium ">{head}</th>
               ))}
               {/* Render Action column only if showAction is true */}
-              {showAction && <th className="px-3 py-2">Action</th>}
+              {showAction && <th className="px-3 py-2 text-sm font-medium">Action</th>}
             </tr>
           </thead>
           <tbody className="text-[#0D2E28]">

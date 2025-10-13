@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { UploadIcon } from "lucide-react";
 import Worker from "../../../components/cards/worker.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -27,6 +28,8 @@ function WorkerEdit() {
     experties: "",
     contact: "",
     address: "",
+    aadhaarNumber: "",
+    aadhaarCardImage: null,
   });
 
   // fetch worker details for pre-fill
@@ -40,11 +43,14 @@ function WorkerEdit() {
 
         if (result.success) {
           const data = result.user || result.worker || result.data;
+          console.log('Worker data in edit:', data);
           setWorkerData({
             name: data.name || "",
             experties: data.experties || data.expertise || "",
             contact: data.contact || data.phone || data.email || "",
             address: data.address || "",
+            aadhaarNumber: data.aadhaarNumber || data.aadhaar || "",
+            aadhaarCardImage: data.aadhaarCardImage || data.aadhaarImage || null,
           });
         } else {
           toast.error(result.message || "Failed to fetch worker details");
@@ -67,6 +73,13 @@ function WorkerEdit() {
     });
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files.length > 0) {
+      setWorkerData((prev) => ({ ...prev, [name]: files[0] }));
+    }
+  };
+
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -79,10 +92,24 @@ function WorkerEdit() {
     setLoading(true);
 
     try {
+      // Create FormData for file upload (similar to WorkerAdd)
+      const formData = new FormData();
+      formData.append("name", workerData.name);
+      formData.append("experties", workerData.experties);
+      formData.append("contact", workerData.contact);
+      formData.append("address", workerData.address);
+      formData.append("aadhaarNumber", workerData.aadhaarNumber);
+
+      // Only append file if it's a new file (File object)
+      if (workerData.aadhaarCardImage && workerData.aadhaarCardImage instanceof File) {
+        formData.append("aadhaarCardImage", workerData.aadhaarCardImage);
+      }
+
       const result = await fetchData({
         method: "PUT",
         url: `${conf.apiBaseUrl}/admin/Worker/update-worker/${id}`,
-        data: workerData,
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" }
       });
 
       if (result.success) {
@@ -102,21 +129,28 @@ function WorkerEdit() {
   return (
     <Box
       sx={{
-        width: "100%",
-        // minHeight: "auto",
-        //  minHeight: "100vh",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-        color: "#0D2E28", // 🔹 all text color
+       
+          width: "100%", // 
+    minHeight: "100vh",
+    backgroundColor: "#E0E9E9",
+    display: "flex",
+    flexDirection: "column",
+    gap: "16px",
+    color: "#0D2E28",
+    margin: 0,
+    padding: 0,
+    overflowX: "hidden",
       }}
-
     >
       <Worker back title="Edit Worker" />
 
-      <Card sx={{ height: "100%" }}>
-        <CardContent sx={{ height: "100%" }}>
+      <Card sx={{
+        backgroundColor: "white",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        minHeight: "600px"
+      }}>
+        <CardContent sx={{ padding: "24px" }}>
           <form onSubmit={handleUpdate}>
             <Box
               sx={{
@@ -124,11 +158,12 @@ function WorkerEdit() {
                 flexDirection: "column",
                 gap: 2,
                 marginBottom: 2,
-                border: "1px solid black",
+                border: "1px solid #616666",
                 borderRadius: 1,
                 padding: 2,
                 boxSizing: "border-box",
-                paddingBottom: 6,
+                paddingBottom: 10,
+                minHeight: "550px"
               }}
             >
               {/* Worker Name */}
@@ -246,6 +281,71 @@ function WorkerEdit() {
                   />
                 </Box>
               </Box>
+
+              {/* Aadhaar Number */}
+              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Aadhaar Number:</Typography>
+                </Box>
+                <Box sx={{ gridColumn: "span 2" }}>
+                  <TextField
+                    fullWidth
+                    name="aadhaarNumber"
+                    type="text"
+                    variant="outlined"
+                    placeholder="Enter 12-digit Aadhaar Number"
+                    value={workerData.aadhaarNumber}
+                    onChange={handleChange}
+                    sx={{
+                      background: "#CED4F2",
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "#001580" },
+                        "&:hover fieldset": { borderColor: "#001580" },
+                        "&.Mui-focused fieldset": { borderColor: "#001580" },
+                      },
+                      input: { color: "#0D2E28" },
+                    }}
+                  />
+                </Box>
+              </Box>
+
+              {/* Aadhaar Image */}
+              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Aadhaar Card Image:</Typography>
+                </Box>
+                <Box
+                  sx={{
+                    gridColumn: "span 2",
+                    display: "flex",
+                    alignItems: "center",
+                    border: "1px solid #001580",
+                    borderRadius: "3px",
+                    background: "#CED4F2",
+                    padding: "8px 8px",
+                  }}
+                >
+                  <Button
+                    variant="contained"
+                    component="label"
+                    startIcon={<UploadIcon size={16} />}
+                    sx={{
+                      background: "#00158099",
+                      textTransform: "none",
+                      fontSize: "14px",
+                      boxShadow: "none",
+                      borderRadius: 2.5,
+                      "&:hover": { background: "#3A57A6" },
+                    }}
+                  >
+                    Upload Photo
+                    <input hidden accept="image/*" type="file" name="aadhaarCardImage" onChange={handleFileChange} />
+                  </Button>
+                  <Typography variant="body2" sx={{ ml: 2, color: "#0D2E28", fontWeight: 500 }}>
+                    {workerData.aadhaarCardImage ? workerData.aadhaarCardImage.name : "Upload Aadhaar Card"}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
 
             {/* Buttons */}
@@ -255,7 +355,9 @@ function WorkerEdit() {
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                gap: "10px",
+                gap: "24px",
+                marginTop: "32px",
+                paddingTop: "16px",
               }}
             >
               <Button
@@ -265,8 +367,13 @@ function WorkerEdit() {
                   height: "40px",
                   borderColor: "#001580",
                   color: "#001580",
-                  background: "#CECEF2",
+                  backgroundColor: "#CED4F2",
                   textTransform: "none",
+                  fontWeight: 500,
+                  "&:hover": {
+                    backgroundColor: "#B8C4F0",
+                    borderColor: "#001580",
+                  }
                 }}
                 onClick={() => navigate(-1)}
               >
@@ -275,14 +382,24 @@ function WorkerEdit() {
 
               <Button
                 type="submit"
-                variant="outlined"
+                variant="contained"
                 disabled={loading}
                 sx={{
                   width: "200px",
                   height: "40px",
-                  background: "#001580",
+                  backgroundColor: "#001580",
                   color: "#FFFFFF",
                   textTransform: "none",
+                  fontWeight: 500,
+                  boxShadow: "none",
+                  "&:hover": {
+                    backgroundColor: "#000d66",
+                    boxShadow: "none",
+                  },
+                  "&:disabled": {
+                    backgroundColor: "#cccccc",
+                    color: "#666666",
+                  }
                 }}
               >
                 {loading ? "Updating..." : "Update"}

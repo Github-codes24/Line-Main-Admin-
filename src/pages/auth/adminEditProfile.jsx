@@ -249,7 +249,7 @@ const AdminEditProfile = () => {
       </div>
     ) : (
       <form onSubmit={formik.handleSubmit} className="w-full">
-        <div className="flex flex-col md:flex-row gap-6 border border-[#616666] rounded-md p-6 min-h-[400px] w-full box-border flex-wrap">
+        <div className="flex flex-col md:flex-row gap-6 border border-[#616666] rounded-md p-6 min-h-[600px] w-full box-border flex-wrap">
           
           {/* Left Section - Form Fields */}
           <div className="flex-1 flex flex-col space-y-6 min-w-0">
