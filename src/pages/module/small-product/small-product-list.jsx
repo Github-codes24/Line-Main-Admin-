@@ -221,98 +221,72 @@ export default function SmallProductList() {
           <table className="min-w-full table-fixed bg-white shadow rounded-lg">
             <thead className="bg-[#E4E5EB] text-[#0D2E28] font-[Poppins] text-[16px] font-medium leading-[100%] text-center align-middle">
               <tr>
-                <th className="px-4 py-4 w-[80px]">
-                  Sr.No.
-                </th>
-                <th className="px-4 py-4 w-[140px]">
-                  Product Image
-                </th>
-                <th className="px-4 py-4 w-[256px]">
-                  Product Name
-                </th>
-                <th className="px-4 py-4 w-[160px]">
-                  Product Category
-                </th>
-                <th className="px-4 py-4 w-[160px]">
-                  Product Sub Category
-                </th>
-                <th className="px-4 py-4 w-[140px]">
-                  Product Price
-                </th>
-                <th className="px-4 py-4 w-[140px]">
-                  Action
-                </th>
+                <th className="px-4 py-4 w-[80px]">Sr.No.</th>
+                <th className="px-4 py-4 w-[140px]">Product Image</th>
+                <th className="px-4 py-4 w-[256px]">Product Name</th>
+                <th className="px-4 py-4 w-[160px]">Product Category</th>
+                <th className="px-4 py-4 w-[160px]">Product Sub Category</th>
+                <th className="px-4 py-4 w-[140px]">Product Price</th>
+                <th className="px-4 py-4 w-[140px]">Action</th>
               </tr>
             </thead>
 
+            {/* Table Body with TabList Loader */}
             <tbody className="text-center text-[#0D2E28] text-[14px] font-normal">
-              {paginatedData.map((product, idx) => (
-                <tr key={product._id} className="border-b">
-                  <td className="px-4 py-3">{indexOfFirstRecord + idx + 1}</td>
-                  <td className="px-4 py-3 flex justify-center">
-                    <img
-                      src={product.productImageUrl}
-                      alt="Product"
-                      className="w-14 h-14 rounded border p-0.5"
-                    />
-                  </td>
-                  <td className="px-4 py-3 truncate">{product.productName}</td>
-                  <td className="px-4 py-3">
-                    {product?.productCategory?.tabName || "-"}
-                  </td>
-                  <td className="px-4 py-3">
-                    {product?.productSubCategory || "-"}
-                  </td>
-                  <td className="px-4 py-3">{product.productPrice}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-center items-center gap-3">
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/smallproduct/view/${product._id}`)
-                        }
-                      >
-                        <Eye className="text-red-600" size={20} />
-                      </button>
-                      <button
-                        onClick={() =>
-                          navigate(`/admin/smallproduct/edit/${product._id}`)
-                        }
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M11 4H4C3.47 4 2.96 4.21 2.59 4.59C2.21 4.96 2 5.47 2 6V20C2 20.53 2.21 21.04 2.59 21.41C2.96 21.79 3.47 22 4 22H18C18.53 22 19.04 21.79 19.41 21.41C19.79 21.04 20 20.53 20 20V13"
-                            stroke="#EC2D01"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M18.5 2.5C18.9 2.1 19.44 1.88 20 1.88C20.56 1.88 21.1 2.1 21.5 2.5C21.9 2.9 22.12 3.44 22.12 4C22.12 4.56 21.9 5.1 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
-                            stroke="#EC2D01"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedProduct(product);
-                          setDeleteModalOpen(true);
-                        }}
-                      >
-                        <Trash2 className="text-red-600" size={20} />
-                      </button>
+              {getSmallProduct?.loading ? (
+                <tr>
+                  <td colSpan={7} className="py-10">
+                    <div className="flex justify-center">
+                      <div className="w-6 h-6 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
                     </div>
                   </td>
                 </tr>
-              ))}
+              ) : paginatedData.length > 0 ? (
+                paginatedData.map((product, idx) => (
+                  <tr key={product._id} className="border-b">
+                    <td className="px-4 py-3">{indexOfFirstRecord + idx + 1}</td>
+                    <td className="px-4 py-3 flex justify-center">
+                      <img
+                        src={product.productImageUrl}
+                        alt="Product"
+                        className="w-14 h-14 rounded border p-0.5"
+                      />
+                    </td>
+                    <td className="px-4 py-3 truncate">{product.productName}</td>
+                    <td className="px-4 py-3">{product?.productCategory?.tabName || "-"}</td>
+                    <td className="px-4 py-3">{product?.productSubCategory || "-"}</td>
+                    <td className="px-4 py-3">{product.productPrice}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-center items-center gap-3">
+                        <button
+                          onClick={() => navigate(`/admin/smallproduct/view/${product._id}`)}
+                        >
+                          <Eye className="text-red-600" size={20} />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/admin/smallproduct/edit/${product._id}`)}
+                        >
+                          {/* Edit Icon SVG */}
+                        </button>
+                        <button
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            setDeleteModalOpen(true);
+                          }}
+                        >
+                          <Trash2 className="text-red-600" size={20} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={7} className="py-10 text-[#0D2E28]">
+                    No Products Found
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -32,7 +32,7 @@ import ViewCommission from "../pages/module/set-commission/view-commission";
 // Charges of Worker
 import ChargesList from "../pages/module/set-charges-of-worker/charges-list";
 import AddCharges from "../pages/module/set-charges-of-worker/add-commission";
-import EditCharges from "../pages/module/set-charges-of-worker/edit-commission";
+import EditCharges from "../pages/module/set-charges-of-worker/EditCharges";
 import ViewCharges from "../pages/module/set-charges-of-worker/view-commission";
 
 // Limit Amount

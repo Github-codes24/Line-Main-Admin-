@@ -96,7 +96,7 @@ const TabView = () => {
     }
 
     return (
-        // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+       
         <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] ">
             <ToastContainer />
 
@@ -108,7 +108,7 @@ const TabView = () => {
 
             {/* Main Content */}
             <div className="bg-white p-6 h-screen rounded-lg shadow-md">
-                <div className="bg-white h-[400px] border rounded-lg p-6 space-y-6 border-[#616666]">
+                <div className="bg-white h-[570px] border rounded-lg p-6 space-y-6 border-[#616666]">
 
                     {/* Tab Name */}
                     <div className="flex items-center gap-6">
@@ -149,12 +149,7 @@ const TabView = () => {
 
                 {/* Action Buttons */}
                 <div className="flex justify-center gap-4 mt-6">
-                    {/* <button
-                        onClick={handleBack}
-                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600"
-                    >
-                        Back to List
-                    </button> */}
+                   
                     {tabData.isEditable && (
                         <button
                             onClick={handleEdit}

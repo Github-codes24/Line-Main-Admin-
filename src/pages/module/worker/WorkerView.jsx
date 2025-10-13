@@ -39,6 +39,7 @@ function WorkerView() {
 
         if (result.success) {
           const workerData = result.user || result.worker || result.data;
+          console.log('Worker data in view:', workerData);
           setWorker(workerData);
         } else {
           setError(result.message || 'Failed to fetch worker details');
@@ -59,12 +60,12 @@ function WorkerView() {
     }
   }, [id, fetchData]);
 
-  // 🔹 Loading state
+  //  Loading state
   if (loading) {
     return (
    <Box
   sx={{
-    height: "100vh", // or "100%" if inside a fixed-height container
+    height: "100vh", //  "100%" if inside a fixed-height container
     display: "flex",
     alignItems: "center", // vertical center
     justifyContent: "center", // horizontal center
@@ -90,8 +91,6 @@ function WorkerView() {
     ></circle>
   </svg>
 
-  {/* Optional text */}
-  {/* <Typography sx={{ mt: 2 }}>Loading worker details...</Typography> */}
 </Box>
 
     );
@@ -115,7 +114,7 @@ function WorkerView() {
     );
   }
 
-  // 🔹 Worker details UI
+  // Worker details UI
   return (
      <Box
       sx={{
@@ -145,6 +144,8 @@ function WorkerView() {
               boxSizing: "border-box",
               paddingBottom: 10,
               color: "#0D2E28", // ensure all text inside is greenish
+              minHeight: "550px",
+              height: "auto",
             }}
           >
             {/* Worker Name */}
@@ -162,8 +163,53 @@ function WorkerView() {
             {/* Address */}
             <Field label="Address" value={worker.address} />
 
-            {/* Status */}
-            <Field label="Status" value={worker.status || "Active"} />
+            {/* Aadhaar Number */}
+            <Field label="Aadhaar Number" value={worker.aadhaarNumber || worker.aadhaar} />
+
+            {/* Aadhaar Image */}
+            <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 0, mb: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Aadhaar Card Image:</Typography>
+              </Box>
+              <Box sx={{ gridColumn: "span 2" }}>
+                <Box
+                  sx={{
+                    width: 200,
+                    height: 120,
+                    border: "1px solid #ccc",
+                    borderRadius: 2,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    background: "#fff",
+                    cursor: (worker.aadhaarCardImageUrl || worker.aadhaarCardImage || worker.aadhaarImage) ? "pointer" : "default",
+                  }}
+                  onClick={() => {
+                    const imageUrl = worker.aadhaarCardImageUrl || worker.aadhaarCardImage || worker.aadhaarImage;
+                    if (imageUrl) {
+                      window.open(imageUrl, "_blank");
+                    }
+                  }}
+                >
+                  {(worker.aadhaarCardImageUrl || worker.aadhaarCardImage || worker.aadhaarImage) ? (
+                    <img
+                      src={worker.aadhaarCardImageUrl || worker.aadhaarCardImage || worker.aadhaarImage}
+                      alt={`Aadhaar Card of ${worker.name}`}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "100%",
+                        objectFit: "contain",
+                        borderRadius: "4px",
+                      }}
+                    />
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      No Aadhaar image available
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </Box>
           </Box>
 
           {/* Action Buttons */}
@@ -177,43 +223,40 @@ function WorkerView() {
             }}
           >
             {/* Toggle Status */}
-       <Button
-  variant="contained"
-  sx={{
-    background: "#CECEF2",
-    color: "#001580",
-    border: "1px solid #001580",
-    width: "200px",   // ✅ set fixed width
-    height: "40px",   // ✅ set fixed height
-    textTransform: "none",
-  }}
-  onClick={() => {
-    const newStatus =
-      worker.status === "Active" ? "Inactive" : "Active";
-    toast.success(`Worker marked as ${newStatus}`);
-    // TODO: API call for status update
-  }}
->
-  {worker.status === "Active" ? "Inactive" : "Active"}
-</Button>
+            <Button
+              variant="contained"
+              sx={{
+                width: "200px",
+                height: "40px",
+                background: "#CECEF2",
+                color: "#001580",
+                border: "1px solid #001580",
+                textTransform: "none",
+              }}
+              onClick={() => {
+                toast.success(`Worker marked as Inactive`);
+                // TODO: API call for status update
+              }}
+            >
+              Inactive
+            </Button>
 
-<Button
-  variant="outlined"
-  sx={{
-    background: "#001580",
-    color: "#FFFFFF",
-    width: "200px",   // ✅ fixed width
-    height: "40px",   // ✅ fixed height
-    border: "1px solid #001580",
-    textTransform: "none",
-  }}
-  onClick={() =>
-    navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
-  }
->
-  Edit
-</Button>
-
+            <Button
+              variant="outlined"
+              sx={{
+                width: "200px",
+                height: "40px",
+                background: "#001580",
+                color: "#FFFFFF",
+                border: "1px solid #001580",
+                textTransform: "none",
+              }}
+              onClick={() =>
+                navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
+              }
+            >
+              Edit
+            </Button>
           </Box>
         </CardContent>
       </Card>
@@ -221,7 +264,7 @@ function WorkerView() {
   );
 };
 
-// 🔹 Reusable Field component
+//  Reusable Field component
 const Field = ({ label, value }) => (
   <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
     <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -250,7 +293,7 @@ const Field = ({ label, value }) => (
           // height: "40px"
         
         }}
-        InputProps={{ readOnly: true }}
+        slotProps={{ input: { readOnly: true } }}
       />
     </Box>
   </Box>
