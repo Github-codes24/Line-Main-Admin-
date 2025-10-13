@@ -52,12 +52,7 @@ const WorkerList = () => {
   // Fetch all workers when component mounts and when location changes
   useEffect(() => {
     fetchAllWorkers();
-<<<<<<< HEAD
   }, [location.pathname, location.key]);
-=======
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
->>>>>>> 59a339e8b4a71537ef670b75aacba1d1ad98a126
 
   // Fetch workers when page changes
   useEffect(() => {

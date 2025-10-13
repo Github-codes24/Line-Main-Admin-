@@ -23,22 +23,14 @@ const DashboardTable = ({
     <div className="bg-white shadow-md rounded-md p-4 w-full border border-[#616666] font-myfont">
       {/* Table Header */}
       <div className="flex justify-between items-center mb-4">
-<<<<<<< HEAD
-        <h3 className="text-md font-medium text-[#0D2E28]">{title}</h3>
-=======
         <h3 className="text-md font-semibold text-[#0D2E28]">{title}</h3>
->>>>>>> 59a339e8b4a71537ef670b75aacba1d1ad98a126
         {/* <a href="/" className="text-[#001580] text-sm hover:underline">
           {actionLink || "See All"}
         </a> */}
         {actionLink && (
     <span
       onClick={() => navigate(actionLink)}
-<<<<<<< HEAD
       className="text-[#001580] text-sm font-medium hover:underline cursor-pointer"
-=======
-      className="text-[#001580] text-sm font-semibold hover:underline cursor-pointer"
->>>>>>> 59a339e8b4a71537ef670b75aacba1d1ad98a126
     >
       {actionText || "See All"} {/*  dynamic text */}
     </span>
