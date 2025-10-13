@@ -29,9 +29,9 @@ const Payment = () => {
     : [];
 
   return (
-    <div className=" sm:p-6 bg-white rounded-lg shadow">
+    <div className="  rounded-lg shadow">
       {/* Header */}
-      <div className=" rounded-lg border border-gray-300 mb-4">
+      <div className="bg-white rounded-lg border border-gray-300 mb-4">
         <div className="flex items-center p-3 sm:p-4 bg-white rounded-lg border-b border-gray-300">
           <button
             className="text-gray-600 hover:text-gray-800 mr-3"
@@ -47,7 +47,7 @@ const Payment = () => {
 
       {/* Structured Table */}
       {paymentById ? (
-        <div className="border rounded-lg p-4 sm:p-6 space-y-4">
+        <div className="border rounded-lg p-4 sm:p-6 space-y-4 bg-white px-4">
           {fields.map((field, index) => (
             <div
               key={index}
