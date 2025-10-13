@@ -52,7 +52,7 @@ export default function BigProductList() {
             const timeout = setTimeout(() => {
                 fetchAllBigProducts();
             }, 2000);
-            
+
             return () => clearTimeout(timeout);
         }
     }, [categories]);
@@ -425,128 +425,91 @@ export default function BigProductList() {
                 </Button>
             </div>
 
-            <Box className="mb-4 flex items-center justify-start gap-2 flex-wrap">
-                <Box
-                    sx={{
-                        background: "#E0E9E9",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: "6px",
-                        borderRadius: 6,
-                        cursor: "pointer",
-                    }}
-                    onClick={handleFilterClick}
-                >
-                    <FilterIcon />
+            <div className="overflow-x-auto bg-white shadow rounded-lg">
+                {/* Filter section inside table div */}
+                <div className="flex items-center justify-start gap-2 flex-wrap px-4 pt-4 pb-2 border-b border-gray-200">
+                    <Box
+                        sx={{
+                            background: "#E0E9E9",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            padding: "6px",
+                            borderRadius: 6,
+                            cursor: "pointer",
+                        }}
+                        onClick={handleFilterClick}
+                    >
+                        <FilterIcon />
+                    </Box>
 
-                </Box>
-
-
-
-
-                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {appliedFilters.map((filterId, index) => {
-                        const category = categories.find(cat => cat.id === filterId);
-                        return (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                        {appliedFilters.map((filterId, index) => {
+                            const category = categories.find(cat => cat.id === filterId);
+                            return (
+                                <Chip
+                                    key={index}
+                                    label={category?.name || filterId}
+                                    size="small"
+                                    onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filterId))}
+                                    sx={{ backgroundColor: "#E4E5EB" }}
+                                />
+                            );
+                        })}
+                        {approvalStatusFilter && (
                             <Chip
-                                key={index}
-                                label={category?.name || filterId}
+                                label={`Status: ${approvalStatusFilter}`}
                                 size="small"
-                                onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filterId))}
+                                onDelete={() => setApprovalStatusFilter("")}
                                 sx={{ backgroundColor: "#E4E5EB" }}
                             />
-                        );
-                    })}
-                    {approvalStatusFilter && (
-                        <Chip
-                            label={`Status: ${approvalStatusFilter}`}
-                            size="small"
-                            onDelete={() => setApprovalStatusFilter("")}
-                            sx={{ backgroundColor: "#E4E5EB" }}
-                        />
-                    )}
-                    {subCategoryFilter && (
-                        <Chip
-                            label={`Sub-Category: ${subCategoryFilter}`}
-                            size="small"
-                            onDelete={() => setSubCategoryFilter("")}
-                            sx={{ backgroundColor: "#E4E5EB" }}
-                        />
-                    )}
-                </Box>
-
-                {/* Approval Status Filter
-                <select
-                    value={approvalStatusFilter}
-                    onChange={(e) => {
-                        setApprovalStatusFilter(e.target.value);
-                        setCurrentPage(1);
-                    }}
-                    className="px-3 py-1 border border-[#0D2E28] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#0D2E28]"
-                >
-                    <option value="">All Status</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select> */}
-
-                {/* Sub-Category Filter - Only show when a category is selected */}
-                {/* {appliedFilters.length > 0 && (
-                    <select
-                        value={subCategoryFilter}
-                        onChange={(e) => {
-                            setSubCategoryFilter(e.target.value);
-                            setCurrentPage(1);
-                        }}
-                        className="px-3 py-1 border border-[#0D2E28] rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-[#E4E5EB]"
-                        disabled={subCategories.length === 0}
-                    >
-                        <option value="">All Sub-Categories</option>
-                        {subCategories.map((subCat, index) => (
-                            <option key={index} value={subCat.value}>
-                                {subCat.name}
-                            </option>
-                        ))}
-                    </select>
-                )} */}
-
-                <button
-                    onClick={handleResetFilters}
-                    // className="px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
-                    className="ml-auto px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
-                >
-                    Reset Filter
-                </button>
-
-                <Popover
-                    open={open}
-                    anchorEl={anchorEl}
-                    onClose={handleFilterClose}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                >
-                    <Box sx={{ p: 2, minWidth: 200 }}>
-                        <strong>Product Category</strong>
-                        <FormGroup>
-                            {categories.map((category) => (
-                                <FormControlLabel
-                                    key={category.id}
-                                    control={
-                                        <Checkbox
-                                            checked={appliedFilters.includes(category.id)}
-                                            onChange={() => handleCheckboxChange(category.id)}
-                                        />
-                                    }
-                                    label={category.name}
-                                />
-                            ))}
-                        </FormGroup>
+                        )}
+                        {subCategoryFilter && (
+                            <Chip
+                                label={`Sub-Category: ${subCategoryFilter}`}
+                                size="small"
+                                onDelete={() => setSubCategoryFilter("")}
+                                sx={{ backgroundColor: "#E4E5EB" }}
+                            />
+                        )}
                     </Box>
-                </Popover>
-            </Box>
 
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white shadow rounded-lg">
+                    <button
+                        onClick={handleResetFilters}
+                        className="ml-auto px-4 py-2 rounded-md font-bold text-[#001580] bg-[#CECEF2] border border-[#001580] hover:bg-[#babbf0] transition"
+                    >
+                        Reset Filter
+                    </button>
+
+                    <Popover
+                        open={open}
+                        anchorEl={anchorEl}
+                        onClose={handleFilterClose}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    >
+                        <Box sx={{ p: 2, minWidth: 200 }}>
+                            <strong>Product Category</strong>
+                            <FormGroup>
+                                {categories.map((category) => (
+                                    <FormControlLabel
+                                        key={category.id}
+                                        control={
+                                            <Checkbox
+                                                checked={appliedFilters.includes(category.id)}
+                                                onChange={() => handleCheckboxChange(category.id)}
+                                            />
+                                        }
+                                        label={category.name}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Box>
+                    </Popover>
+                </div>
+
+                {/* Table section */}
+                <table className="min-w-full bg-white rounded-lg">
+
                     <thead>
                         <tr className="bg-gray-100 text-left">
                             <th className="p-3">Sr.No.</th>
