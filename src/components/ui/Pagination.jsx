@@ -44,9 +44,9 @@ const Pagination = ({
   }
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-gray-700 gap-4 py-2 px-6">
+    <div className="flex flex-col md:flex-row items-center justify-between bg-gray-200 mt-5 rounded-lg shadow text-sm text-[#001580] gap-4 py-2 px-6">
       {/* Showing info */}
-      <p className="font-bold text-black">
+      <p className="font-bold text-[#0D2E28]">
         Showing {indexOfFirstRecord + 1} to{" "}
         {Math.min(indexOfLastRecord, totalRecords)} of {totalRecords} {label}
       </p>
@@ -69,7 +69,7 @@ const Pagination = ({
               onClick={() => goToPage(1)}
               className={`w-8 h-8 border text-sm font-medium rounded-md transition ${currentPage === 1
                 ? "bg-[#001580] text-white"
-                : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
+                : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
                 }`}
             >
               1
@@ -85,7 +85,7 @@ const Pagination = ({
             onClick={() => goToPage(pg)}
             className={`w-8 h-8 border text-sm font-medium rounded-md transition ${pg === currentPage
               ? "bg-[#001580] text-white"
-              : "bg-[#CECEF2] text-black hover:bg-[#CECEF2]"
+              : "bg-[#CECEF2] text-[#001580] hover:bg-[#CECEF2]"
               }`}
           >
             {pg}

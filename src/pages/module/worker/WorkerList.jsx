@@ -33,7 +33,7 @@ const WorkerList = () => {
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [activeFilters, setActiveFilters] = useState([]);
   // const expertiseList = ["Plumber", "Electrician"];
-  const expertiseList = ["Plumber", "Electrician", "Tiler", "Painter", "AC & Refrigerator"];
+  const expertiseList = ["Plumber", "Electrician", "Tiler", "Painter", "AC & Refrigerator Mechanic"];
 
 
   const toggleFilter = (filter) => {
@@ -49,20 +49,32 @@ const WorkerList = () => {
 
   const resetFilters = () => setActiveFilters([]);
 
-  // Fetch all workers when component mounts and when location changes
+  // Add window focus listener to refresh data when returning to the page
   useEffect(() => {
-    fetchAllWorkers();
-<<<<<<< HEAD
-  }, [location.pathname, location.key]);
-=======
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
->>>>>>> 59a339e8b4a71537ef670b75aacba1d1ad98a126
+    const handleFocus = () => {
+      console.log("Window focused, refreshing worker list");
+      fetchAllWorkers(currentPage);
+    };
 
-  // Fetch workers when page changes
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (location.state?.updated) {
+      console.log("Refreshing worker list due to update from view page");
+      fetchAllWorkers(currentPage); // refresh list after returning from View page
+      navigate(location.pathname, { replace: true, state: {} }); // clear state to prevent infinite loop
+    }
+  }, [location.state]);
+
+  // Also refresh when component mounts or page changes
   useEffect(() => {
     fetchAllWorkers(currentPage);
   }, [currentPage]);
+
+
+
 
   const fetchAllWorkers = async (page = currentPage) => {
     try {
@@ -82,13 +94,27 @@ const WorkerList = () => {
 
         const normalizedWorkers = workerData.map(worker => {
           console.log('Processing worker:', worker);
+          
+          // Determine status more reliably
+          let status = "Inactive"; // default
+          if (worker.status === "Active" || worker.status === "active") {
+            status = "Active";
+          } else if (worker.status === "Inactive" || worker.status === "inactive") {
+            status = "Inactive";
+          } else if (worker.isActive === true) {
+            status = "Active";
+          } else if (worker.isActive === false) {
+            status = "Inactive";
+          }
+          
           return {
             ...worker,
             name: worker.name || worker.workerName || worker.fullName || 'Unknown',
             expertise: worker.experties || worker.expertise || worker.service || 'N/A',
             contact: worker.contact || worker.phone || worker.email || 'N/A',
             address: worker.address || worker.location || 'N/A',
-            status: 'Active', // Always show Active as requested
+            status: status,
+            isActive: status === "Active",
             id: worker.id || worker._id
           };
         }).filter(worker => worker.name !== 'Unknown');
@@ -267,7 +293,7 @@ const WorkerList = () => {
               strokeLinejoin="round"
             />
           </svg>
-
+                 {/* Filter section started from here */}
           {showFilterPanel && (
             <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-70 border border-gray-300 z-50">
               <div className="flex justify-between items-center mb-4">
@@ -357,31 +383,31 @@ const WorkerList = () => {
               <thead className="bg-[#E4E5EB]">
                 <tr className="h-14">
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-2"
                     style={{ opacity: 1 }}
                   >
                     Sr.No.
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
                     Worker Name
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-4"
                     style={{ opacity: 1 }}
                   >
                     Expertise
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-4"
                     style={{ opacity: 1 }}
                   >
                     Email ID/Phone Number
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
                     Address
@@ -452,7 +478,7 @@ const WorkerList = () => {
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${worker.status === "Active"
                               ? "text-[#34C759]"
-                              : "text-red-800"
+                              : "text-[#FF383C]"
                             }`}
                         >
                           {worker.status}
@@ -461,9 +487,9 @@ const WorkerList = () => {
                       <td className="px-6 py-4">
                         <div className="flex justify-center space-x-4">
                           <button
-                            onClick={() =>
-                              navigate(`/admin/workermanagement/view/${worker.id || worker._id}`)
-                            }
+                            onClick={() => navigate(`/admin/workermanagement/view/${worker.id || worker._id}`, {
+                              state: { worker }
+                            })}
                             className="text-[#F15A29] hover:text-orange-700"
                           >
                             <Eye size={20} />

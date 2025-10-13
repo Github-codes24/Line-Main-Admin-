@@ -50,7 +50,25 @@ const Dashboard = () => {
   if (isLoading) {
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="w-16 h-16 border-4 border-t-[#001580] border-blue-200 rounded-full animate-spin"></div>
+      {/* <div className="w-16 h-16 border-4 border-t-[#001580] border-blue-200 rounded-full animate-spin"></div> */}
+       <svg
+                className="animate-spin h-10 w-10 text-[#001580]"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-100"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeDasharray="60"
+                  strokeDashoffset="20"
+                ></circle>
+              </svg>
     </div>
   );
 }

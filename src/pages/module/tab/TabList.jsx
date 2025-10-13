@@ -238,7 +238,7 @@ const TabList = () => {
           <table className="w-full text-sm text-left text-gray-700">
             <thead className="bg-[#E4E5EB]  text-[#0D2E28] text-base font-semibold">
               <tr>
-                <th className=" text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] px-6 py-4">Sr.No.</th>
+                <th className=" text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] px-6 py-4 ">Sr.No.</th>
                 <th className=" text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] px-6 py-4">Tab Name</th>
                 <th className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] px-6 py-4">Sub Tabs</th>
                 <th className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] px-6 py-4">Action</th>
@@ -270,10 +270,7 @@ const TabList = () => {
     </div>
   </td>
 </tr>
-
-
-                
-              ) : filteredTabs.length === 0 ? (
+           ) : filteredTabs.length === 0 ? (
                 <tr>
                   <td colSpan="5" className="px-6 py-8 text-center text-lg text-gray-500">
                     {searchTerm
@@ -393,6 +390,8 @@ const TabList = () => {
             </div>
           </div>
         )}
+        {/* rendring pagination page from src/componenets/ui*/}
+        
         <Pagination
           currentPage={currentPage}
           totalRecords={displayTotalRecords}
