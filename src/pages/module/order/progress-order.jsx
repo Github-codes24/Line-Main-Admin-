@@ -87,7 +87,7 @@ const [fetchData] = useFetch();
             <input
               disabled
              value={order.orderId || "N/A"}
-              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#CED4F2] border border-[#001580]"
+              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#e4e5eb] border border-[#001580]"
             />
           </div>
 
@@ -100,7 +100,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                value={order.customer?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -109,7 +109,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                 value={order.customer?.email || order.customer?.phone || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -118,7 +118,7 @@ const [fetchData] = useFetch();
               <textarea
                 disabled
                 value={order.deliveryAddress?.fullAddress || "N/A"}
-                className="col-span-1 px-4 py-3 rounded-lg bg-[#CED4F2] border border-[#001580] min-h-[80px]"
+                className="col-span-1 px-4 py-3 rounded-lg bg-[#e4e5eb] border border-[#001580] min-h-[80px]"
               />
             </div>
           </section>
@@ -134,7 +134,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                 value={order.worker?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -143,7 +143,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                value={order.worker?.contact || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -152,7 +152,7 @@ const [fetchData] = useFetch();
               <textarea
                 disabled
                 value={order.worker?.address || "N/A"}
-                className="col-span-1 px-4 py-3 rounded-lg bg-[#CED4F2] border border-[#001580] min-h-[80px]"
+                className="col-span-1 px-4 py-3 rounded-lg bg-[#e4e5eb] border border-[#001580] min-h-[80px]"
               />
             </div>
           </section>
