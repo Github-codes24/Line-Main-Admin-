@@ -22,17 +22,20 @@ import {
   SetCharges,
   SetLimit,
 } from "../../assets/CommonAssets";
-import { useNavigate , useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const drawerWidth = 270; // sidebar width
 
 function Sidebar({ activeTab, setActiveTab }) {
   const navigate = useNavigate();
-    const location = useLocation();
+  const location = useLocation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Define responsive breakpoints
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // below 600px
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px to 900px
+
+  const [mobileOpen, setMobileOpen] = useState(false);
   const toggleDrawer = () => setMobileOpen(!mobileOpen);
 
   const sideBarContent = [
@@ -66,68 +69,67 @@ function Sidebar({ activeTab, setActiveTab }) {
         boxSizing: "border-box",
       }}
     >
-     {sideBarContent.map((content, index) => {
-  const selectedMenu = location.pathname.startsWith(content.path);
-  const background = selectedMenu ? "#001580" : "#ffffff";
-  const color = selectedMenu ? "white" : "#001580";
+      {sideBarContent.map((content, index) => {
+        const selectedMenu = location.pathname.startsWith(content.path);
+        const background = selectedMenu ? "#001580" : "#ffffff";
+        const color = selectedMenu ? "white" : "#001580";
 
-  return (
-    <Box
-      key={index}
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        gap: "14px",
-        borderRadius: "8px",
-        paddingY: "6px",
-        paddingX: 2,
-        boxSizing: "border-box",
-        background,
-        cursor: "pointer",
-      }}
-      onClick={() => {
-        setActiveTab(content.path);
-        navigate(content.path);
-        if (isMobile) setMobileOpen(false);
-      }}
-    >
-      <Box
-        sx={{
-          width: "24px",
-          height: "24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          transition: "color 0.3s ease",
-          color,
-        }}
-      >
-        {content.icon(color)}
-      </Box>
-      <Typography
-        sx={{
-          fontFamily: "Poppins",
-          fontWeight: 500,
-          fontSize: "14px",
-          color,
-          whiteSpace: "nowrap",
-        }}
-      >
-        {content.title}
-      </Typography>
-    </Box>
-  );
-})}
-
+        return (
+          <Box
+            key={index}
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: "14px",
+              borderRadius: "8px",
+              paddingY: "6px",
+              paddingX: 2,
+              boxSizing: "border-box",
+              background,
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setActiveTab(content.path);
+              navigate(content.path);
+              if (isTablet) setMobileOpen(false); // Close only in tablet mode
+            }}
+          >
+            <Box
+              sx={{
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                transition: "color 0.3s ease",
+                color,
+              }}
+            >
+              {content.icon(color)}
+            </Box>
+            <Typography
+              sx={{
+                fontFamily: "Poppins",
+                fontWeight: 500,
+                fontSize: "14px",
+                color,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {content.title}
+            </Typography>
+          </Box>
+        );
+      })}
     </Box>
   );
 
   return (
     <>
-      {/* Navbar Toggle Button for Mobile */}
-      {isMobile && (
+      {/* Show hamburger icon only on tablet (not on mobile) */}
+      {isTablet && (
         <Box
           sx={{
             position: "fixed",
@@ -143,7 +145,7 @@ function Sidebar({ activeTab, setActiveTab }) {
       )}
 
       {/* Permanent Sidebar on Desktop */}
-      {!isMobile && (
+      {!isMobile && !isTablet && (
         <Box
           sx={{
             width: drawerWidth,
@@ -154,10 +156,12 @@ function Sidebar({ activeTab, setActiveTab }) {
         </Box>
       )}
 
-      {/* Drawer for Mobile */}
-      <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer}>
-        {renderSidebarContent()}
-      </Drawer>
+      {/* Drawer only on tablet */}
+      {isTablet && (
+        <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer}>
+          {renderSidebarContent()}
+        </Drawer>
+      )}
     </>
   );
 }

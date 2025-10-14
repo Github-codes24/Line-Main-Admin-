@@ -94,7 +94,7 @@ function Navbar() {
       sx={{
         minWidth: "100vw",
         paddingY: "8px",
-        paddingX: "48px",
+        paddingX: "16px",
         boxSizing: "border-box",
         display: "flex",
         justifyContent: "space-between",
