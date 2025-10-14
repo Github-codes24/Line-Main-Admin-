@@ -98,7 +98,11 @@ const VerifyOtp = () => {
 };
 
   return (
-  <div className="bg-[#3D55CC] min-h-screen flex items-center justify-center px-4">
+  // <div className="bg-[#3D55CC] min-h-screen flex items-center justify-center px-4">
+  <div className="bg-[#3D55CC] min-h-screen flex items-center justify-center px-4 font-myfont">
+
+  {/* // <div className="bg-[#3D55CC] min-h-screen flex items-center justify-center px-4 font-Poppins"> */}
+
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -106,8 +110,8 @@ const VerifyOtp = () => {
     className="bg-gradient-to-b from-white to-teal-50 p-6 sm:p-8 rounded-2xl shadow-lg text-center w-full max-w-md"
   >
     <h2 className="text-2xl sm:text-3xl font-bold text-[#0D2E28] mt-2 font-myfont">Verify Code</h2>
-    <p className="text-gray-500 text-sm sm:text-base mb-2 font-myfont">
-      Enter the 6-digit OTP sent to your {contact.includes("@") ? "email" : "mobile number"}
+    <p className="text-gray-500 text-sm sm:text-base mb-2 font-Poppins">
+      Please enter the code we just sent to mobile no {contact.includes("@") ? "" : "mobile number"}
     </p>
 
     {/* Show email or mobile */}

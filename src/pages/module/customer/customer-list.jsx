@@ -58,7 +58,7 @@ const CustomerList = () => {
         const customerData = result.users || [];
         console.log('API Response:', result);
         console.log('Raw customer data:', customerData);
-
+              // Mapping 
         const normalizedCustomers = customerData.map(customer => ({
           ...customer,
           name: customer.name || customer.customerName || customer.fullName || 'N/A',
@@ -262,19 +262,19 @@ const CustomerList = () => {
               <thead className="bg-[#E4E5EB]">
                 <tr className="h-14"> {/* 56px height (14*4) */}
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-2"
                     style={{ opacity: 1 }}
                   >
                     Sr.No.
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
                     Customer Name
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]  pl-3"
                     style={{ opacity: 1 }}
                   >
                     Email ID/Phone Number

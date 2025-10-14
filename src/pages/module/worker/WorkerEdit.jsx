@@ -130,7 +130,7 @@ function WorkerEdit() {
     <Box
       sx={{
        
-          width: "100%", // 
+          width: "100%", 
     minHeight: "100vh",
     backgroundColor: "#E0E9E9",
     display: "flex",
@@ -148,22 +148,24 @@ function WorkerEdit() {
         backgroundColor: "white",
         borderRadius: "8px",
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-        minHeight: "600px"
+        // minHeight: "600px"
       }}>
         <CardContent sx={{ padding: "24px" }}>
           <form onSubmit={handleUpdate}>
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                marginBottom: 2,
-                border: "1px solid #616666",
-                borderRadius: 1,
-                padding: 2,
-                boxSizing: "border-box",
-                paddingBottom: 10,
-                minHeight: "550px"
+                
+              display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    marginBottom: 2,
+    border: "1px solid #616666",
+    borderRadius: 1,
+    padding: 3,          // slightly more space all around
+    paddingBottom: 5,    //  extra space at bottom if needed
+    boxSizing: "border-box",
+               
+                
               }}
             >
               {/* Worker Name */}

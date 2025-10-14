@@ -6,10 +6,9 @@ import {
   CardContent,
   TextField,
   Typography,
-  CircularProgress,
 } from "@mui/material";
 import Worker from "../../../components/cards/worker";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
@@ -17,98 +16,179 @@ import conf from "../../../config";
 function WorkerView() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { state } = useLocation();
   const [fetchData] = useFetch();
 
-  const [worker, setWorker] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // Fetch worker by ID
-  useEffect(() => {
-    const fetchWorker = async () => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const result = await fetchData({
-          method: "GET",
-          url: `${conf.apiBaseUrl}/admin/Worker/get-single-worker/${id}`,
-        });
-
-        console.log("API Response:", result);
-
-        if (result.success) {
-          const workerData = result.user || result.worker || result.data;
-          console.log('Worker data in view:', workerData);
-          setWorker(workerData);
-        } else {
-          setError(result.message || 'Failed to fetch worker details');
-          toast.error(result.message || 'Failed to fetch worker details');
-        }
-      } catch (err) {
-        console.error("Error fetching worker:", err);
-        const errorMessage = err.response?.data?.message || err.message || 'Failed to fetch worker details';
-        setError(errorMessage);
-        toast.error(errorMessage);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      fetchWorker();
+  const [worker, setWorker] = useState(() => {
+    const initialWorker = state?.worker || null;
+    if (initialWorker) {
+      // Ensure status is properly set
+      return {
+        ...initialWorker,
+        status: initialWorker.status || (initialWorker.isActive ? "Active" : "Inactive"),
+        isActive: initialWorker.isActive !== undefined ? initialWorker.isActive : (initialWorker.status === "Active")
+      };
     }
-  }, [id, fetchData]);
+    return null;
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [activeModalOpen, setActiveModalOpen] = useState(false);
+  const [inactiveModalOpen, setInactiveModalOpen] = useState(false);
 
-  //  Loading state
+  // Fetch worker data if not provided via state or if data is incomplete
+  useEffect(() => {
+    if (id && (!worker || !worker.aadhaarNumber)) {
+      // Fetch full data if no worker data or if essential fields are missing
+      fetchWorkerData(id);
+    }
+  }, [id, worker]);
+
+  const fetchWorkerData = async (workerId) => {
+    try {
+      setLoading(true);
+      setError("");
+
+      console.log("Fetching worker data for ID:", workerId);
+
+      // Try multiple possible endpoints and ID formats
+      const endpoints = [
+        `${conf.apiBaseUrl}/admin/Worker/get-single-worker/${workerId}`,
+        `${conf.apiBaseUrl}/admin/worker/get-single-worker/${workerId}`,
+        `${conf.apiBaseUrl}/admin/Worker/${workerId}`,
+        `${conf.apiBaseUrl}/admin/worker/${workerId}`,
+      ];
+
+      let result = null;
+      let success = false;
+
+      for (const endpoint of endpoints) {
+        try {
+          console.log("Trying endpoint:", endpoint);
+          result = await fetchData({
+            method: "GET",
+            url: endpoint,
+          });
+
+          if (result && result.success && result.data) {
+            console.log("Worker data loaded successfully from:", endpoint);
+            console.log("Full worker data:", result.data);
+
+            // Ensure proper status handling
+            const workerData = {
+              ...result.data,
+              status: result.data.status || (result.data.isActive ? "Active" : "Inactive"),
+              isActive: result.data.isActive !== undefined ? result.data.isActive : (result.data.status === "Active")
+            };
+
+            setWorker(workerData);
+            success = true;
+            break;
+          }
+        } catch (err) {
+          console.log("Failed with endpoint:", endpoint, err.message);
+          continue;
+        }
+      }
+
+      if (!success) {
+        console.log("All endpoints failed, keeping existing worker data");
+        // If API fails but we have basic data from navigation, keep it
+        if (worker && worker.name) {
+          console.log("Using basic worker data from navigation");
+          return;
+        }
+        setError("Worker not found or failed to load worker data");
+      }
+    } catch (error) {
+      console.error("Error loading worker data:", error);
+      setError("Error loading worker data: " + (error.message || "Unknown error"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Show loading state
   if (loading) {
     return (
-   <Box
-  sx={{
-    height: "100vh", //  "100%" if inside a fixed-height container
-    display: "flex",
-    alignItems: "center", // vertical center
-    justifyContent: "center", // horizontal center
-    flexDirection: "column",
-  }}
->
-  <svg
-    className="animate-spin h-10 w-10 text-[#001580]"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-  >
-    <circle
-      className="opacity-100"
-      cx="12"
-      cy="12"
-      r="10"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeDasharray="60"
-      strokeDashoffset="20"
-    ></circle>
-  </svg>
-
-</Box>
-
+      <Box
+        sx={{
+          width: "100%",
+          height: "100vh",        // Full viewport height to center vertically
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <svg
+          className="animate-spin h-10 w-10 text-[#001580]"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-100"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="60"
+            strokeDashoffset="20"
+          ></circle>
+        </svg>
+      </Box>
     );
   }
 
-  // If worker not found or error
-  if (!loading && (error || !worker)) {
+  // Show error state
+  if (error) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h6" color="error">
-          {error || "Worker not found."}
+      <Box
+        sx={{
+          width: "100%",
+          minHeight: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 4,
+        }}
+      >
+        <Worker back title="View Worker" />
+        <Typography color="error" variant="h6">
+          {error}
         </Typography>
-        <Button
-          variant="contained"
-          sx={{ mt: 2 }}
-          onClick={() => navigate("/admin/workermanagement")}
-        >
-          Back to List
+        <Button onClick={() => navigate(-1)} variant="contained">
+          Go Back
+        </Button>
+      </Box>
+    );
+  }
+
+  // Show worker not found state
+  if (!worker) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          minHeight: "auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: "24px",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 4,
+        }}
+      >
+        <Worker back title="View Worker" />
+        <Typography color="error" variant="h6">
+          Worker not found
+        </Typography>
+        <Button onClick={() => navigate(-1)} variant="contained">
+          Go Back
         </Button>
       </Box>
     );
@@ -116,7 +196,7 @@ function WorkerView() {
 
   // Worker details UI
   return (
-     <Box
+    <Box
       sx={{
         width: "100%",
         minHeight: "auto",
@@ -222,23 +302,25 @@ function WorkerView() {
               gap: "10px",
             }}
           >
-            {/* Toggle Status */}
             <Button
               variant="contained"
               sx={{
+                border: "1px solid #001580",
                 width: "200px",
                 height: "40px",
                 background: "#CECEF2",
-                color: "#001580",
-                border: "1px solid #001580",
+                color: worker.status === "Active" ? "#001580" : "#001580",
                 textTransform: "none",
               }}
               onClick={() => {
-                toast.success(`Worker marked as Inactive`);
-                // TODO: API call for status update
+                if (worker.status === "Active") {
+                  setInactiveModalOpen(true);
+                } else {
+                  setActiveModalOpen(true);
+                }
               }}
             >
-              Inactive
+              {worker.status === "Active" ? "Active" : "Inactive"}
             </Button>
 
             <Button
@@ -248,18 +330,159 @@ function WorkerView() {
                 height: "40px",
                 background: "#001580",
                 color: "#FFFFFF",
-                border: "1px solid #001580",
                 textTransform: "none",
               }}
               onClick={() =>
-                navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`)
+                navigate(`/admin/workermanagement/edit/${worker.id}`, {
+                  state: {
+                    worker: {
+                      ...worker,
+                      name: worker.name,
+                    },
+                  },
+                })
               }
             >
               Edit
             </Button>
           </Box>
+
         </CardContent>
       </Card>
+
+      {/* Active Modal */}
+      {activeModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+            <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+              Mark as Active
+            </h2>
+            <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+              Are you sure you want to change this worker status from Inactive to Active?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setActiveModalOpen(false)}
+                className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    const statusEndpoints = [
+                      `${conf.apiBaseUrl}/admin/worker/${worker._id || worker.id}/status`,
+                      `${conf.apiBaseUrl}/admin/Worker/${worker._id || worker.id}/status`,
+                      `${conf.apiBaseUrl}/admin/worker/update-status/${worker._id || worker.id}`,
+                      `${conf.apiBaseUrl}/admin/Worker/update-status/${worker._id || worker.id}`,
+                    ];
+
+                    let success = false;
+                    for (const endpoint of statusEndpoints) {
+                      try {
+                        const result = await fetchData({
+                          method: "PATCH",
+                          url: endpoint,
+                          data: { status: "Active", isActive: true },
+                        });
+                        if (result && (result.success || result.status === "success")) {
+                          success = true;
+                          break;
+                        }
+                      } catch (error) {
+                        continue;
+                      }
+                    }
+
+                    if (success) {
+                      setWorker((prev) => ({ ...prev, status: "Active", isActive: true }));
+                      navigate("/admin/workermanagement", {
+                        state: { updated: true, workerId: worker._id || worker.id, newStatus: "Active" },
+                      });
+                    }
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  } finally {
+                    setLoading(false);
+                    setActiveModalOpen(false);
+                  }
+                }}
+                className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+              >
+                Active
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Inactive Modal */}
+      {inactiveModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white rounded-lg shadow-lg w-[90%] max-w-md p-6">
+            <h2 className="text-xl font-bold text-center text-[#0D2E28] mb-3">
+              Mark as Inactive
+            </h2>
+            <p className="text-[#0D2E28] text-center mb-6 leading-relaxed">
+              Are you sure you want to change this worker status from Active to Inactive?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setInactiveModalOpen(false)}
+                className="px-16 py-2 rounded-md border border-[#001580] bg-[#CED4F2] text-[#001580] font-medium hover:opacity-90 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  try {
+                    setLoading(true);
+                    const statusEndpoints = [
+                      `${conf.apiBaseUrl}/admin/worker/${worker._id || worker.id}/status`,
+                      `${conf.apiBaseUrl}/admin/Worker/${worker._id || worker.id}/status`,
+                      `${conf.apiBaseUrl}/admin/worker/update-status/${worker._id || worker.id}`,
+                      `${conf.apiBaseUrl}/admin/Worker/update-status/${worker._id || worker.id}`,
+                    ];
+
+                    let success = false;
+                    for (const endpoint of statusEndpoints) {
+                      try {
+                        const result = await fetchData({
+                          method: "PATCH",
+                          url: endpoint,
+                          data: { status: "Inactive", isActive: false },
+                        });
+                        if (result && (result.success || result.status === "success")) {
+                          success = true;
+                          break;
+                        }
+                      } catch (error) {
+                        continue;
+                      }
+                    }
+
+                    if (success) {
+                      setWorker((prev) => ({ ...prev, status: "Inactive", isActive: false }));
+                      navigate("/admin/workermanagement", {
+                        state: { updated: true, workerId: worker._id || worker.id, newStatus: "Inactive" },
+                      });
+                    }
+                  } catch (error) {
+                    console.error("Error updating status:", error);
+                  } finally {
+                    setLoading(false);
+                    setInactiveModalOpen(false);
+                  }
+                }}
+                className="px-16 py-2 rounded-md border border-[#001580] bg-[#001580] text-white font-medium hover:opacity-90 transition"
+              >
+                Inactive
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </Box>
   );
 };
@@ -291,7 +514,7 @@ const Field = ({ label, value }) => (
           },
           input: { color: "#0D2E28" },
           // height: "40px"
-        
+
         }}
         slotProps={{ input: { readOnly: true } }}
       />

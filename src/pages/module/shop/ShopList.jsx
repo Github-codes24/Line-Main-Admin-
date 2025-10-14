@@ -26,13 +26,28 @@ const ShopList = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedShop, setSelectedShop] = useState(null);
 
-
-  // Fetch all shops when component mounts and when location changes
+  // Add window focus listener to refresh data when returning to the page
   useEffect(() => {
-    fetchAllShops();
-  }, [location.pathname, location.key]);
+    const handleFocus = () => {
+      console.log("Window focused, refreshing shop list");
+      fetchAllShops(currentPage);
+    };
 
-  // Fetch shops when page changes
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [currentPage]);
+
+
+
+  useEffect(() => {
+    if (location.state?.updated) {
+      console.log("Refreshing shop list due to update from view page");
+      fetchAllShops(currentPage); // refresh list after returning from View page
+      navigate(location.pathname, { replace: true, state: {} }); // clear state to prevent infinite loop
+    }
+  }, [location.state]);
+
+  // Also refresh when component mounts or page changes
   useEffect(() => {
     fetchAllShops(currentPage);
   }, [currentPage]);
@@ -78,7 +93,7 @@ const ShopList = () => {
         }
 
         console.log('Extracted shop data:', shopData);
-        
+
         // Debug each shop's ID fields
         shopData.forEach((shop, index) => {
           console.log(`Shop ${index}:`, {
@@ -91,6 +106,18 @@ const ShopList = () => {
         });
 
         const normalizedShops = shopData.map((shop, index) => {
+          // Determine status more reliably
+          let status = "Inactive"; // default
+          if (shop.status === "Active" || shop.status === "active") {
+            status = "Active";
+          } else if (shop.status === "Inactive" || shop.status === "inactive") {
+            status = "Inactive";
+          } else if (shop.isActive === true) {
+            status = "Active";
+          } else if (shop.isActive === false) {
+            status = "Inactive";
+          }
+
           const normalizedShop = {
             ...shop,
             name: shop.ownerName || shop.name || 'N/A',
@@ -99,15 +126,16 @@ const ShopList = () => {
             address: shop.address || shop.location || 'N/A',
             aadhaar: shop.aadhaarNumber || shop.aadhaar || 'N/A',
             gstin: shop.gstin || shop.gstinNumber || 'N/A',
-            status: shop.isActive ? "Active" : "Inactive",
+            status: status,
+            isActive: status === "Active",
             id: shop.id || shop._id || `temp-id-${index}` // Fallback ID
           };
-          
+
           console.log(`Normalized shop ${index}:`, {
             finalId: normalizedShop.id,
             shopName: normalizedShop.shopName
           });
-          
+
           return normalizedShop;
         });
 
@@ -300,34 +328,34 @@ const ShopList = () => {
               <thead className="bg-[#E4E5EB]">
                 <tr className="h-14">
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-2"
                     style={{ opacity: 1 }}
                   >
                     Sr.No.
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
                     Shop Name
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
                     Owner Name
                   </th>
                   <th
-                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px] pl-3"
                     style={{ opacity: 1 }}
                   >
-                    Contact
+                    Email ID/Phone Number
                   </th>
                   <th
                     className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
                     style={{ opacity: 1 }}
                   >
-                    Address
+                    Shop Address
                   </th>
                   <th
                     className="text-center align-middle text-[#0D2E28] font-poppins font-medium text-[16px]"
@@ -377,24 +405,36 @@ const ShopList = () => {
                       >
                         {shop.contact}
                       </td>
-                      <td
+                      {/* <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
                         {shop.address}
-                      </td>
+                      </td> */}
+                      <td
+  className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+  style={{ opacity: 1 }}
+  title={shop.address} // full address shown on hover
+>
+  {shop.address
+    ? shop.address.split(" ").slice(0, 3).join(" ") + (shop.address.split(" ").length > 3 ? "" : "")
+    : "N/A"}
+</td>
+
                       <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${shop.status === 'Active' ? 'text-[#34C759]' : 'text-red-800'}`}>
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${shop.status === 'Active' ? 'text-[#34C759]' : 'text-[#FF383C]'}`}>
                           {shop.status}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex justify-center space-x-4">
                           <button
-                            onClick={() => navigate(`/admin/shopmanagement/view/${shop.id || shop._id}`)}
+                            onClick={() => navigate(`/admin/shopmanagement/view/${shop.id || shop._id}`, {
+                              state: { shop }
+                            })}
                             className="text-[#F15A29] hover:text-orange-700"
                           >
                             <Eye size={20} />

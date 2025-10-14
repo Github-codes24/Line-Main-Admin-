@@ -16,6 +16,7 @@ function ShopAdd() {
 
     const [formData, setFormData] = React.useState({
         shopName: "",
+        experties: "", 
         name: "",
         contact: "",
         address: "",
@@ -44,6 +45,7 @@ function ShopAdd() {
 
             const formDataObj = new FormData();
             formDataObj.append("shopName", shopData.shopName);
+              formDataObj.append("experties", shopData.experties);
             formDataObj.append("ownerName", shopData.name);
             formDataObj.append("contact", shopData.contact);
             formDataObj.append("address", shopData.address);
@@ -86,7 +88,7 @@ function ShopAdd() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.shopName || !formData.name || !formData.contact || !formData.address) {
+        if (!formData.shopName ||!formData.experties  || !formData.name || !formData.contact || !formData.address) {
             toast.error("Please fill in all required fields (Shop Name, Owner Name, Contact, Address)");
             return;
         }
@@ -125,7 +127,7 @@ function ShopAdd() {
                             }}
                         >
                             {/* Function to generate input rows */}
-                            {[
+                            {/* {[
                                 { label: "Shop Name", name: "shopName", placeholder: "Enter Shop Name" },
                                 { label: "Owner Name", name: "name", placeholder: "Enter Full Name" },
                                 { label: "Email ID/Phone Number", name: "contact", placeholder: "Enter Email/Phone" },
@@ -178,7 +180,85 @@ function ShopAdd() {
 
                                     </Box>
                                 </Box>
-                            ))}
+                            ))} */}
+
+                            {/* Function to generate input rows */}
+{[
+    { label: "Shop Name", name: "shopName", placeholder: "Enter Shop Name" },
+    { 
+        label: "Expertise", 
+        name: "experties", 
+        type: "select", 
+        options: ["Plumber", "Electrician", "Cleaner", "Painter"] 
+    },
+    { label: "Owner Name", name: "name", placeholder: "Enter Full Name" },
+    { label: "Email ID/Phone Number", name: "contact", placeholder: "Enter Email/Phone" },
+    { label: "Address", name: "address", placeholder: "Enter Full Address" },
+    { label: "Aadhaar Number", name: "aadhaarNumber", placeholder: "Enter 12-digit Aadhaar Number" },
+    { label: "GSTIN Number", name: "gstinNumber", placeholder: "Enter GSTIN number" },
+].map((field, idx) => (
+    <Box
+        key={idx}
+        sx={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: 2,
+            alignItems: "center",
+        }}
+    >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Typography sx={{ fontWeight: 500 }}>{field.label}:</Typography>
+        </Box>
+        <Box sx={{ gridColumn: "span 2" }}>
+            {field.type === "select" ? (
+                <TextField
+                    select
+                    fullWidth
+                    variant="outlined"
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    sx={{
+                        background: "#CED4F2",
+                        "& .MuiOutlinedInput-root": {
+                            "& fieldset": { borderColor: "#001580" },
+                            "&:hover fieldset": { borderColor: "#001580" },
+                            "&.Mui-focused fieldset": { borderColor: "#001580" },
+                        },
+                        "& .MuiSelect-select": { color: "#0D2E28" },
+                    }}
+                    SelectProps={{ native: true }}
+                >
+                    <option value="">Select Expertise</option>
+                    {field.options.map((opt, i) => (
+                        <option key={i} value={opt}>{opt}</option>
+                    ))}
+                </TextField>
+            ) : (
+                <TextField
+                    fullWidth
+                    type="text"
+                    variant="outlined"
+                    placeholder={field.placeholder}
+                    name={field.name}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    sx={{
+                        background: "#CED4F2",
+                        "& .MuiOutlinedInput-root": {
+                            "& fieldset": { borderColor: "#001580" },
+                            "&:hover fieldset": { borderColor: "#001580" },
+                            "&.Mui-focused fieldset": { borderColor: "#001580" },
+                        },
+                        "& input": { color: "#0D2E28" },
+                        "& input::placeholder": { color: "#0D2E28", opacity: 1 },
+                    }}
+                />
+            )}
+        </Box>
+    </Box>
+))}
+
 
                             {/* File upload fields */}
                             {[

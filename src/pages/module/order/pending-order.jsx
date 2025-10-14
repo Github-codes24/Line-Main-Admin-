@@ -33,7 +33,28 @@ const PendingOrder = () => {
   }, [id]);
 
   if (loading) {
-    return <p className="text-center text-lg mt-10">Loading...</p>;
+    // return <p className="text-center text-lg mt-10">Loading...</p>;
+   
+     return <div className="flex items-center justify-center h-full w-full">
+  <svg
+    className="animate-spin h-10 w-10 text-[#001580]"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <circle
+      className="opacity-100"
+      cx="12"
+      cy="12"
+      r="10"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeDasharray="60"
+      strokeDashoffset="20"
+    ></circle>
+  </svg>
+</div>
   }
 
   if (!order) {

@@ -32,6 +32,7 @@ function ShopEdit() {
         aadhaarImage: shop?.aadhaarImage || null,
         gstinNumber: shop?.gstinNumber || "",
         gstinImage: shop?.gstinImage || null,
+        experties: "",
     });
 
     React.useEffect(() => {
@@ -40,6 +41,7 @@ function ShopEdit() {
         } else if (id && shop) {
             setFormData({
                 shopName: shop.shopName || "",
+                 experties: shop.experties || "",
                 name: shop.name || shop.ownerName || "",
                 contact: shop.contact || "",
                 address: shop.address || "",
@@ -109,6 +111,7 @@ function ShopEdit() {
                 ownerName: shopData.name || "",
                 contact: shopData.contact || "",
                 address: shopData.address || "",
+                 experties: shopData.experties || "", 
             };
 
             if (shopData.aadhaarNumber) apiData.aadhaarNumber = shopData.aadhaarNumber;
@@ -232,6 +235,37 @@ function ShopEdit() {
               />
             </Box>
           </Box>
+
+           {/* Expertise */}
+<Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+  <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Expertise:</Typography>
+  </Box>
+  <Box sx={{ gridColumn: "span 2" }}>
+    <TextField
+      select
+      fullWidth
+      name="experties"
+      value={formData.experties}
+      onChange={handleChange}
+      sx={{
+        background: "#CED4F2",
+        "& .MuiOutlinedInput-root": {
+          "& fieldset": { borderColor: "#001580" },
+          "&:hover fieldset": { borderColor: "#001580" },
+          "&.Mui-focused fieldset": { borderColor: "#001580" },
+        },
+        "& .MuiSelect-select": { color: "#0D2E28" },
+      }}
+      SelectProps={{ native: true }}
+    >
+      <option value="">Select Expertise</option>
+      {["Plumber", "Electrician", "Cleaner", "Painter"].map((opt, i) => (
+        <option key={i} value={opt}>{opt}</option>
+      ))}
+    </TextField>
+  </Box>
+</Box>
 
           {/* Owner Name */}
           <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
