@@ -28,9 +28,6 @@ const DashboardTable = ({
         <h3 className="text-md font-medium text-[#0D2E28]">{title}</h3>
 
 
-        {/* <a href="/" className="text-[#001580] text-sm hover:underline">
-          {actionLink || "See All"}
-        </a> */}
         {actionLink && (
     <span
       onClick={() => navigate(actionLink)}
