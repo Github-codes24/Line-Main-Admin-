@@ -412,14 +412,14 @@ const ShopList = () => {
                         {shop.address}
                       </td> */}
                       <td
-  className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
-  style={{ opacity: 1 }}
-  title={shop.address} // full address shown on hover
->
-  {shop.address
-    ? shop.address.split(" ").slice(0, 3).join(" ") + (shop.address.split(" ").length > 3 ? "" : "")
-    : "N/A"}
-</td>
+                    className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+                     style={{ opacity: 1 }}
+                      title={shop.address} // full address shown on hover
+                      >
+                  {shop.address
+                   ? shop.address.split(" ").slice(0, 3).join(" ") + (shop.address.split(" ").length > 3 ? "" : "")
+                   : "N/A"}
+                      </td>
 
                       <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"

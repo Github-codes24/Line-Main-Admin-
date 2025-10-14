@@ -328,12 +328,19 @@ const CustomerList = () => {
                         {customer.contact}
                       </td>
 
-                      <td
+                      {/* <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
                         {customer.address}
-                      </td>
+                      </td> */}
+                      <td
+  className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
+  style={{ opacity: 1 }}
+>
+  {customer.address.split(" ").slice(0, 3).join(" ")}{customer.address.split(" ").length > 3 ? "" : ""}
+</td>
+
                       <td className="px-6 py-4">
                         <div className="flex justify-center space-x-4">
                           <button
