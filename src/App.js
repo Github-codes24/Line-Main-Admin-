@@ -105,6 +105,7 @@ function App() {
           element={
             <PublicRoute>
               <VerifyOtp />
+               <AdminLogin />
             </PublicRoute>
           }
         />

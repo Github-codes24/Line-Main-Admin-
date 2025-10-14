@@ -87,7 +87,7 @@ const [fetchData] = useFetch();
             <input
               disabled
              value={order.orderId || "N/A"}
-              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#CED4F2] border border-[#001580]"
+              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#e4e5eb] border border-[#001580]"
             />
           </div>
 
@@ -100,7 +100,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                value={order.customer?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -109,7 +109,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                 value={order.customer?.email || order.customer?.phone || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -118,7 +118,7 @@ const [fetchData] = useFetch();
               <textarea
                 disabled
                 value={order.deliveryAddress?.fullAddress || "N/A"}
-                className="col-span-1 px-4 py-3 rounded-lg bg-[#CED4F2] border border-[#001580] min-h-[80px]"
+                className="col-span-1 px-4 py-3 rounded-lg bg-[#e4e5eb] border border-[#001580] min-h-[80px]"
               />
             </div>
           </section>
@@ -134,7 +134,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                 value={order.worker?.name || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -143,7 +143,7 @@ const [fetchData] = useFetch();
               <input
                 disabled
                value={order.worker?.contact || "N/A"}
-                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
               />
             </div>
 
@@ -152,14 +152,102 @@ const [fetchData] = useFetch();
               <textarea
                 disabled
                 value={order.worker?.address || "N/A"}
-                className="col-span-1 px-4 py-3 rounded-lg bg-[#CED4F2] border border-[#001580] min-h-[80px]"
+                className="col-span-1 px-4 py-3 rounded-lg bg-[#e4e5eb] border border-[#001580] min-h-[80px]"
               />
             </div>
           </section>
 
           <hr className="my-6 w-8/12" />
 
-          {/* Product Table */}
+         
+          {/* Shopkeeper Details */}
+<hr className="my-6 w-8/12" />
+<section className="mb-6">
+  <h2 className="font-semibold text-lg mb-4">Shopkeer Details</h2>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Shop Name :</label>
+    <input
+      disabled
+      value={order.shopkeeper?.shopName || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Shopkeeper Name :</label>
+    <input
+      disabled
+      value={order.shopkeeper?.name || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Email/Phone Number :</label>
+    <input
+      disabled
+      value={order.shopkeeper?.contact || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4">
+    <label className="col-span-1 font-medium">Address :</label>
+    <textarea
+      disabled
+      value={order.shopkeeper?.address || "N/A"}
+      className="col-span-1 px-4 py-3 rounded-lg bg-[#e4e5eb] border border-[#001580] min-h-[80px]"
+    />
+  </div>
+</section>
+
+{/* Service Details */}
+<hr className="my-6 w-8/12" />
+<section className="mb-6">
+  <h2 className="font-semibold text-lg mb-4">Service Details</h2>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Service Required :</label>
+    <input
+      disabled
+      value={order.service?.name || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Date :</label>
+    <input
+      disabled
+      value={order.service?.date || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+ <div className="grid grid-cols-4 gap-4 mb-4 items-start">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Photos :</label>
+              <div className="col-span-1 flex gap-2 flex-wrap">
+                {order.initialRequestImages && order.initialRequestImages.length > 0 ? (
+                  order.initialRequestImages.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt="uploaded"
+                      className="w-20 h-20 rounded-lg object-cover border border-gray-300"
+                    />
+                  ))
+                ) : (
+                  <img
+                    src={rectangle}
+                    alt="placeholder"
+                    className="w-20 h-20 rounded-lg object-cover border border-gray-300"
+                  />
+                )}
+              </div>
+            </div>
+
+ {/* Product Table */}
           <section className="mb-6">
             <h2 className="font-semibold text-lg mb-4">Product List</h2>
             <div className="w-full max-w-[600px] border border-gray-400 rounded-md overflow-hidden">
@@ -207,6 +295,87 @@ const [fetchData] = useFetch();
               </table>
             </div>
           </section>
+
+  <h2 className="font-semibold text-lg mb-4">Payment Details</h2>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Total Bill :</label>
+    <input
+      disabled
+      value={`₹${order.finalAmount || 0}`}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Payment Method :</label>
+    <input
+      disabled
+      value={order.payment?.method || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4 mb-2">
+    <label className="col-span-1 font-medium">Transaction ID :</label>
+    <input
+      disabled
+      value={order.payment?.transactionId || "N/A"}
+      className="col-span-1 px-4 py-2 rounded-lg bg-[#e4e5eb] border border-[#001580]"
+    />
+  </div>
+
+  <div className="grid grid-cols-4 gap-4">
+    <label className="col-span-1 font-medium">Payment Status :</label>
+    <input
+      disabled
+      value={order.payment?.status || "N/A"}
+      className={`col-span-1 px-4 py-2 rounded-lg border ${
+        order.payment?.status === "Paid"
+          ? "bg-green-100 border-green-500 text-green-700"
+          : "bg-red-100 border-red-500 text-red-700"
+      }`}
+    />
+  </div>
+  
+</section>
+
+{/* Customer Feedback */}
+<hr className="my-6 w-8/12" />
+<section className="mb-6">
+  <h2 className="font-semibold text-lg mb-4">Customer Feedback</h2>
+  <div className="grid grid-cols-4 gap-4">
+    <label className="col-span-1 font-medium">Feedback :</label>
+    <input
+      disabled
+      value={order.feedback || "Pending"}
+      className={`col-span-1 px-4 py-2 rounded-lg border ${
+        order.feedback?.toLowerCase() === "pending"
+          ? "bg-yellow-100 border-yellow-400 text-yellow-700"
+          : "bg-[#e4e5eb] border-[#001580] text-black"
+      }`}
+    />
+  </div>
+</section>
+
+{/* Order Status */}
+<hr className="my-6 w-8/12" />
+<section className="mb-6">
+  <h2 className="font-semibold text-lg mb-4">Order Status</h2>
+  <div className="grid grid-cols-4 gap-4">
+    <label className="col-span-1 font-medium">Status :</label>
+    <input
+      disabled
+      value={order.status || "N/A"}
+      className={`col-span-1 px-4 py-2 rounded-lg border ${
+        order.status?.toLowerCase() === "work in progress"
+          ? "bg-blue-100 border-blue-500 text-blue-700"
+          : "bg-[#e4e5eb] border-[#001580] text-black"
+      }`}
+    />
+  </div>
+</section>
+
         </div>
       </div>
     </div>
