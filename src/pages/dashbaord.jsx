@@ -129,28 +129,30 @@ const Dashboard = () => {
             }
           />
           {/* Top Products */}
-          <DashboardTable
-            title="Top Selling Products"
-            actionLink="/admin/smallproduct"
-            actionText="See All Product"
-            headers={["Product Image", "Product Name", "Product Category"]}
-            showAction={false} //  hides Action column
-            data={
-              topProducts && topProducts.length > 0
-                ? topProducts.map((product) => [
-                  <img
-                    src={product.productImageUrl}
-                    alt={product.productName}
-                    className="w-8 h-8 rounded text-center"
-                  />,
-                  product.productName,
-                  product.productCategory,
-                ])
-                : [["-", "-", "No Products Found"]]
-            }
-          />
-
-        </div>
+        <DashboardTable
+  title="Top Selling Products"
+  actionLink="/admin/smallproduct"
+  actionText="See All Product"
+  headers={["Product Image", "Product Name", "Product Category"]}
+  showAction={false} // hides Action column
+  className="text-center" //   DashboardTable supports passing className
+  data={
+    topProducts && topProducts.length > 0
+      ? topProducts.map((product) => [
+          <div className="flex justify-center items-center">
+            <img
+              src={product.productImageUrl}
+              alt={product.productName}
+              className="w-8 h-8 rounded"
+            />
+          </div>,
+          <div className="text-center">{product.productName}</div>,
+          <div className="text-center">{product.productCategory}</div>,
+        ])
+      : [["-", "-", "No Products Found"]]
+  }
+/>
+</div>
 
         {/* Top Workers */}
         <div className="mb-6">
