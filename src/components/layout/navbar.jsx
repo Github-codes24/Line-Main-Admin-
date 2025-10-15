@@ -13,6 +13,8 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { useNavigate, useLocation } from "react-router-dom";
 import profileImage from "../../assets/images/profileImage.jpg";
@@ -22,6 +24,10 @@ import conf from "../../config";
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const theme = useTheme(); // 
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600–900px
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const { getProfile, adminProfile } = useAuth();
@@ -30,24 +36,21 @@ function Navbar() {
     getProfile();
   }, []);
 
-  // Listen for profile updates (when user navigates back from edit profile)
+  // Refresh profile when window regains focus
   useEffect(() => {
     const handleFocus = () => {
-      // Refresh profile when window regains focus (user might have updated profile)
       getProfile();
     };
-
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
-  // Refresh profile when navigating to profile-related pages
+  // Refresh profile when navigating to profile/edit-profile pages
   useEffect(() => {
     if (
       location.pathname === "/admin-profile" ||
       location.pathname === "/admin/edit-profile"
     ) {
-      console.log("Navigated to profile page, refreshing profile data...");
       getProfile();
     }
   }, [location.pathname]);
@@ -55,29 +58,22 @@ function Navbar() {
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const handleProfileClick = () => {
     navigate("/admin-profile");
     handleMenuClose();
   };
 
-  // Open logout dialog instead of direct logout
+  // Logout handlers
   const handleLogoutClick = () => {
     setOpenLogoutDialog(true);
     handleMenuClose();
   };
-
-  const handleCancelLogout = () => {
-    setOpenLogoutDialog(false);
-  };
+  const handleCancelLogout = () => setOpenLogoutDialog(false);
 
   const handleConfirmLogout = () => {
-    console.log("User logged out");
-
     // Clear tokens
     localStorage.removeItem("token");
     sessionStorage.removeItem("token");
@@ -94,7 +90,7 @@ function Navbar() {
       sx={{
         minWidth: "100vw",
         paddingY: "8px",
-        paddingX: "16px",
+        paddingX: isTablet ? "60px" : "16px", 
         boxSizing: "border-box",
         display: "flex",
         justifyContent: "space-between",
@@ -106,24 +102,25 @@ function Navbar() {
         zIndex: 10,
       }}
     >
+      {/* Logo */}
       <Typography color="#001580" fontWeight={700} fontSize={"28px"}>
         LineMan Logo
       </Typography>
 
+      {/* Profile + Dropdown */}
       <Box sx={{ display: "flex", alignItems: "center", gap: "5px" }}>
         <Avatar
-          key={adminProfile?.profileImage || "default"} // Force re-render when photo changes
+          key={adminProfile?.profileImage || "default"}
           src={adminProfile?.profileImage || profileImage}
           alt="profile"
           onError={(e) => {
-            console.log(
-              "Navbar avatar image load error, falling back to default"
-            );
+            console.log("Navbar avatar image load error, falling back to default");
             e.target.src = profileImage;
           }}
         >
           {adminProfile?.name ? adminProfile.name.charAt(0) : "A"}
         </Avatar>
+
         <IconButton size="large" sx={{ p: 0 }} onClick={handleMenuOpen}>
           <RiArrowDropDownLine />
         </IconButton>
@@ -150,7 +147,7 @@ function Navbar() {
         </Menu>
       </Box>
 
-      {/* Logout Confirmation Card/Dialog */}
+      {/* Logout Confirmation Dialog */}
       <Dialog
         open={openLogoutDialog}
         onClose={handleCancelLogout}
@@ -158,7 +155,7 @@ function Navbar() {
           sx: {
             width: 496,
             height: 264,
-            backgroundColor: "#FFFFFF", // ✅ correct property
+            backgroundColor: "#FFFFFF",
             borderRadius: "16px",
             padding: "40px",
             display: "flex",
@@ -173,7 +170,7 @@ function Navbar() {
             fontWeight={700}
             mb={2}
             textAlign="center"
-            color="#0D2E28" // ✅ correct way to set text color
+            color="#0D2E28"
           >
             Confirm Logout
           </Typography>
@@ -190,11 +187,11 @@ function Navbar() {
             sx={{
               width: 416,
               height: 40,
-              backgroundColor: "#CECEF2", //  background color
-              borderColor: "#001580", // order color
-              color: "#001580", //text color
+              backgroundColor: "#CECEF2",
+              borderColor: "#001580",
+              color: "#001580",
               "&:hover": {
-                backgroundColor: "#bfc0e0", // optional hover effect
+                backgroundColor: "#bfc0e0",
                 borderColor: "#001580",
               },
             }}
@@ -202,15 +199,16 @@ function Navbar() {
           >
             Cancel
           </Button>
+
           <Button
             variant="contained"
             sx={{
               width: 416,
               height: 40,
-              backgroundColor: "#001580", // ✅ custom background
-              color: "#FFFFFF", // ✅ white text
+              backgroundColor: "#001580",
+              color: "#FFFFFF",
               "&:hover": {
-                backgroundColor: "#001060", // ✅ darker blue on hover
+                backgroundColor: "#001060",
               },
             }}
             onClick={handleConfirmLogout}

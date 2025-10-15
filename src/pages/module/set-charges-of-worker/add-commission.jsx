@@ -75,7 +75,7 @@ const AddCommission = () => {
     }
   };
 
-  // ✅ Main UI (loader removed)
+  // 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -87,7 +87,7 @@ const AddCommission = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">Add Commission</h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Charges</h2>
         </div>
 
         {/* Form Container */}
