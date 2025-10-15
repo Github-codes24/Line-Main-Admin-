@@ -320,7 +320,7 @@ function WorkerView() {
                 }
               }}
             >
-              {worker.status === "Active" ? "Active" : "Inactive"}
+              {worker.status === "Active" ? "Inactive" : "Active"}
             </Button>
 
             <Button
