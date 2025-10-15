@@ -340,7 +340,7 @@ function ShopView() {
                                     }
                                 }}
                             >
-                                {shop.status === "Active" ? "Active" : "Inactive"}
+                                {shop.status === "Active" ? "Inactive" : "Active"}
                             </Button>
 
 

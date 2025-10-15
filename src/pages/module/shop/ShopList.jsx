@@ -391,13 +391,13 @@ const ShopList = () => {
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
-                        {shop.shopName}
+                        {shop.shopName.split(" ").slice(0, 1).join(" ")}{shop.shopName.split(" ").length > 1 ? "":""}
                       </td>
                       <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
-                        {shop.name}
+                        {shop.name.split(" ").slice(0, 1).join(" ")}{shop.name.split(" ").length > 1 ? "":""}
                       </td>
                       <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
