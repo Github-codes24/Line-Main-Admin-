@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { IoClose } from "react-icons/io5";
 import useSmallProduct from "../../../hook/smallproducts/useSmallProduct";
 import Pagination from "../../../components/ui/Pagination";
-
-const expertiseList = ["Electrician", "Plumber", "Tiler", "Painter"];
+import conf from "../../../config";
+import useFetch from "../../../hook/useFetch";
 
 export default function SmallProductList() {
   const navigate = useNavigate();
+  const [fetchData] = useFetch();
+
   const {
     getSmallProduct,
     getSmallProductList,
@@ -19,6 +21,7 @@ export default function SmallProductList() {
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [expertiseList, setExpertiseList] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [activeFilters, setActiveFilters] = useState([]);
@@ -27,9 +30,30 @@ export default function SmallProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
 
+  // ✅ Fetch product list
   useEffect(() => {
     getSmallProductList();
   }, []);
+
+  // ✅ Fetch expertise list dynamically
+  useEffect(() => {
+    const fetchExpertiseList = async () => {
+      try {
+        const res = await fetchData({
+          method: "GET",
+          url: `${conf.apiBaseUrl}/admin/tabs/experties`,
+        });
+        if (res?.success) {
+          setExpertiseList(res.data || []);
+        } else {
+          setExpertiseList([]);
+        }
+      } catch (err) {
+        console.error("Failed to fetch expertise list:", err);
+      }
+    };
+    fetchExpertiseList();
+  }, [fetchData]);
 
   const filteredData = (getSmallProduct?.data ?? []).filter((p) => {
     const matchesFilter =
@@ -162,7 +186,7 @@ export default function SmallProductList() {
           {showFilterPanel && (
             <div className="absolute left-0 top-14 bg-white rounded-lg shadow-lg px-4 py-2 w-[300px] border border-gray-300 z-50">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-[#0D2E28]"> 
+                <h3 className="text-lg font-semibold text-[#0D2E28]">
                   Expertise
                 </h3>
                 <button
@@ -175,16 +199,16 @@ export default function SmallProductList() {
               <div className="space-y-3">
                 {expertiseList.map((item) => (
                   <label
-                    key={item}
+                    key={item._id || item.tabName}
                     className="flex items-center space-x-2 cursor-pointer text-[#0D2E28]"
                   >
                     <input
                       type="checkbox"
                       className="w-4 h-4 text-[#001580] border-gray-300 rounded"
-                      checked={activeFilters.includes(item)}
-                      onChange={() => toggleFilter(item)}
+                      checked={activeFilters.includes(item.tabName)}
+                      onChange={() => toggleFilter(item.tabName)}
                     />
-                    <span>{item}</span>
+                    <span>{item.tabName}</span>
                   </label>
                 ))}
               </div>
@@ -218,77 +242,74 @@ export default function SmallProductList() {
 
         {/* Table */}
         <div className="border border-[#616666] rounded-lg shadow-sm overflow-x-auto">
-          <table className="min-w-full table-fixed bg-white shadow rounded-lg">
-            <thead className="bg-[#E4E5EB] text-[#0D2E28] font-[Poppins] text-[16px] font-medium leading-[100%] text-center align-middle">
-              <tr>
-                <th className="px-4 py-4 w-[80px]">Sr.No.</th>
-                <th className="px-4 py-4 w-[140px]">Product Image</th>
-                <th className="px-4 py-4 w-[256px]">Product Name</th>
-                <th className="px-4 py-4 w-[160px]">Product Category</th>
-                <th className="px-4 py-4 w-[160px]">Product Sub Category</th>
-                <th className="px-4 py-4 w-[140px]">Product Price</th>
-                <th className="px-4 py-4 w-[140px]">Action</th>
-              </tr>
-            </thead>
-
-            {/* Table Body with TabList Loader */}
-            <tbody className="text-center text-[#0D2E28] text-[14px] font-normal">
-              {getSmallProduct?.loading ? (
+          <div className="min-w-[1028px]">
+            <table className="min-w-full table-fixed bg-white shadow rounded-lg">
+              <thead className="bg-[#E4E5EB] text-[#0D2E28] font-[Poppins] text-[15px] leading-[100%] text-center align-middle">
                 <tr>
-                  <td colSpan={7} className="py-10">
-                    <div className="flex justify-center">
-                      <div className="w-6 h-6 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
-                    </div>
-                  </td>
+                  <th className="px-4 py-4 text-center font-medium w-[46px]">Sr.No.</th>
+                  <th className="px-4 py-4 text-center font-medium w-[120px]">Product Image</th>
+                  <th className="px-4 py-4 text-center font-medium w-[116px]">Product Name</th>
+                  <th className="px-4 py-4 text-center font-medium w-[76px]">Product Category</th>
+                  <th className="px-4 py-4 text-center font-medium w-[116px]">Product Sub Category</th>
+                  <th className="px-4 py-4 text-center font-medium w-[140px]">Product Price</th>
+                  <th className="px-4 py-4 text-center font-medium w-[140px]">Action</th>
                 </tr>
-              ) : paginatedData.length > 0 ? (
-                paginatedData.map((product, idx) => (
-                  <tr key={product._id} className="border-b">
-                    <td className="px-4 py-3">{indexOfFirstRecord + idx + 1}</td>
-                    <td className="px-4 py-3 flex justify-center">
-                      <img
-                        src={product.productImageUrl}
-                        alt="Product"
-                        className="w-14 h-14 rounded border p-0.5"
-                      />
-                    </td>
-                    <td className="px-4 py-3 truncate">{product.productName}</td>
-                    <td className="px-4 py-3">{product?.productCategory?.tabName || "-"}</td>
-                    <td className="px-4 py-3">{product?.productSubCategory || "-"}</td>
-                    <td className="px-4 py-3">{product.productPrice}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex justify-center items-center gap-3">
-                        <button
-                          onClick={() => navigate(`/admin/smallproduct/view/${product._id}`)}
-                        >
-                          <Eye className="text-red-600" size={20} />
-                        </button>
-                        <button
-                          onClick={() => navigate(`/admin/smallproduct/edit/${product._id}`)}
-                        >
-                          {/* Edit Icon SVG */}
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedProduct(product);
-                            setDeleteModalOpen(true);
-                          }}
-                        >
-                          <Trash2 className="text-red-600" size={20} />
-                        </button>
+              </thead>
+
+              <tbody className="text-center text-[#0D2E28] text-[14px] font-normal">
+                {getSmallProduct?.loading ? (
+                  <tr>
+                    <td colSpan={7} className="py-10">
+                      <div className="flex justify-center">
+                        <div className="w-6 h-6 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
                       </div>
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={7} className="py-10 text-[#0D2E28]">
-                    No Products Found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                ) : paginatedData.length > 0 ? (
+                  paginatedData.map((product, idx) => (
+                    <tr key={product._id}>
+                      <td className="px-4 py-3">{indexOfFirstRecord + idx + 1}</td>
+                      <td className="px-4 py-3 flex justify-center">
+                        <img
+                          src={product.productImageUrl}
+                          alt="Product"
+                          className="w-14 h-14 rounded border p-0.5"
+                        />
+                      </td>
+                      <td className="px-4 py-3 truncate">{product.productName}</td>
+                      <td className="px-4 py-3">{product?.productCategory?.tabName || "-"}</td>
+                      <td className="px-4 py-3">{product?.productSubCategory || "-"}</td>
+                      <td className="px-4 py-3">₹{product.productPrice}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex justify-center items-center gap-3">
+                          <button onClick={() => navigate(`/admin/smallproduct/view/${product._id}`)}>
+                            <Eye className="text-[#EC2D01]" size={20} />
+                          </button>
+                          <button onClick={() => navigate(`/admin/smallproduct/edit/${product._id}`)}>
+                            <Edit className="text-[#EC2D01]" size={20} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(product);
+                              setDeleteModalOpen(true);
+                            }}
+                          >
+                            <Trash2 className="text-[#EC2D01]" size={20} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="py-10 text-[#0D2E28]">
+                      No Products Found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Delete Modal */}
