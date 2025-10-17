@@ -30,12 +30,12 @@ export default function SmallProductList() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage] = useState(10);
 
-  // ✅ Fetch product list
+  //  Fetch product list
   useEffect(() => {
     getSmallProductList();
   }, []);
 
-  // ✅ Fetch expertise list dynamically
+  //  Fetch expertise list dynamically
   useEffect(() => {
     const fetchExpertiseList = async () => {
       try {

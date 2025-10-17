@@ -45,7 +45,7 @@ const AddCommission = () => {
     setSubmitting(true);
     try {
       const payload = {
-        categoryId: category,
+        category: category,
         workerPercentageCommission: Number(workerCommission),
         shopkeeperPercentageCommission: Number(shopkeeperCommission),
       };
