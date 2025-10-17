@@ -63,9 +63,9 @@ const WorkerList = () => {
   }, [currentPage]);
 
   useEffect(() => {
-    if (location.state?.updated) {
-      console.log("Refreshing worker list due to update from view page");
-      fetchAllWorkers(currentPage); // refresh list after returning from View page
+    if (location.state?.updated || location.state?.refresh) {
+      console.log("Refreshing worker list due to update/add from other page");
+      fetchAllWorkers(currentPage); // refresh list after returning from View/Add page
       navigate(location.pathname, { replace: true, state: {} }); // clear state to prevent infinite loop
     }
   }, [location.state]);
@@ -74,6 +74,13 @@ const WorkerList = () => {
   useEffect(() => {
     fetchAllWorkers(currentPage);
   }, [currentPage]);
+
+  // Force refresh when component mounts (in case of navigation from add/edit)
+  useEffect(() => {
+    console.log("WorkerList component mounted, fetching workers");
+    fetchAllWorkers(1); // Always start from page 1 when component mounts
+    setCurrentPage(1);
+  }, []);
 
 
 

@@ -71,7 +71,7 @@ const AddWorker = () => {
             if (result.success || result.data || result._id || result.user) {
                 console.log('Worker added successfully:', result);
                 toast.success(result.message || "Worker added successfully!");
-                setTimeout(() => navigate("/admin/workermanagement"), 1500);
+                setTimeout(() => navigate("/admin/workermanagement", { state: { refresh: true } }), 1500);
                 return { success: true, data: result };
             } else {
                 throw new Error(result.message || "Failed to add worker");
