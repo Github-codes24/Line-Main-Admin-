@@ -471,7 +471,7 @@ const WorkerList = () => {
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
-                        {worker.address.split(" ").slice(0, 3).join(" ")}{worker.address.split(" ").length > 3 ? "":""}
+                        {worker.address.split(" ").slice(0, 3).join(" ")}{worker.address.split(" ").length > 3 ? "..":""}
                       </td>
                       <td
                         className="text-center align-middle font-poppins font-normal text-[14px] leading-[100%]"
@@ -579,6 +579,7 @@ const WorkerList = () => {
           currentPage={currentPage}
           totalRecords={displayTotalRecords}
           recordsPerPage={recordsPerPage}
+          
           goToPage={goToPage}
           label="entries"
         />
