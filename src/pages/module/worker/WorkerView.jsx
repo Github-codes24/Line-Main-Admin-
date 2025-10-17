@@ -70,15 +70,16 @@ function WorkerView() {
             url: endpoint,
           });
 
-          if (result && result.success && result.data) {
+          if (result && result.success && (result.user || result.data)) {
             console.log("Worker data loaded successfully from:", endpoint);
-            console.log("Full worker data:", result.data);
+            const data = result.user || result.data || result.worker;
+            console.log("Full worker data:", data);
 
             // Ensure proper status handling
             const workerData = {
-              ...result.data,
-              status: result.data.status || (result.data.isActive ? "Active" : "Inactive"),
-              isActive: result.data.isActive !== undefined ? result.data.isActive : (result.data.status === "Active")
+              ...data,
+              status: data.status || (data.isActive ? "Active" : "Inactive"),
+              isActive: data.isActive !== undefined ? data.isActive : (data.status === "Active")
             };
 
             setWorker(workerData);
@@ -232,7 +233,12 @@ function WorkerView() {
             <Field label="Worker Name" value={worker.name || worker.workerName} />
 
             {/* Expertise */}
-            <Field label="Expertise" value={worker.experties || worker.expertise} />
+            <Field label="Expertise" value={worker.experties || worker.expertise || "N/A"} />
+
+            {/* Sub Category - Show if available */}
+            {worker.subCategory && (
+              <Field label="Sub Category" value={worker.subCategory?.name || worker.subCategory || "N/A"} />
+            )}
 
             {/* Contact */}
             <Field
@@ -333,7 +339,7 @@ function WorkerView() {
                 textTransform: "none",
               }}
               onClick={() =>
-                navigate(`/admin/workermanagement/edit/${worker.id}`, {
+                navigate(`/admin/workermanagement/edit/${worker._id || worker.id}`, {
                   state: {
                     worker: {
                       ...worker,

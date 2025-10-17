@@ -14,6 +14,7 @@ import Worker from "../../../components/cards/worker.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import useFetch from "../../../hook/useFetch";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 import conf from "../../../config";
 
 function WorkerEdit() {
@@ -21,16 +22,51 @@ function WorkerEdit() {
   const { id } = useParams();
   const [fetchData] = useFetch();
   const [loading, setLoading] = useState(false);
+  const {
+    productCategory,
+    productSubCategory,
+    setProductSubCategory,
+    fetchProductCategory,
+    fetchProductSubCategory,
+  } = useDropdown();
 
   // form states
   const [workerData, setWorkerData] = useState({
     name: "",
-    experties: "",
+    experties: "", // Will store category ID
+    subCategory: "", // Will store subcategory name
+    subCategoryId: "", // Store the subcategory ID
     contact: "",
     address: "",
     aadhaarNumber: "",
     aadhaarCardImage: null,
   });
+
+  const [originalData, setOriginalData] = useState(null);
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    fetchProductCategory();
+  }, []);
+
+  // Fetch subcategories when worker data is loaded and has a category
+  useEffect(() => {
+    if (originalData?.category) {
+      fetchProductSubCategory(originalData.category);
+    }
+  }, [originalData?.category]);
+
+  // Resolve subcategory name from ID when subcategories are loaded
+  useEffect(() => {
+    if (productSubCategory.length > 0 && workerData.subCategoryId && !workerData.subCategory) {
+      const foundSubCategory = productSubCategory.find(sub => sub._id === workerData.subCategoryId);
+      if (foundSubCategory) {
+        setWorkerData(prev => ({ ...prev, subCategory: foundSubCategory.name }));
+      }
+    }
+  }, [productSubCategory, workerData.subCategoryId, workerData.subCategory]);
+
+
 
   // fetch worker details for pre-fill
   useEffect(() => {
@@ -42,16 +78,26 @@ function WorkerEdit() {
         });
 
         if (result.success) {
-          const data = result.user || result.worker || result.data;
+          const data = result.user || result.data || result.worker;
           console.log('Worker data in edit:', data);
-          setWorkerData({
+
+          // Store original data for reference - same as small-product-edit
+          setOriginalData(data);
+
+          // Set form data based on actual API response structure
+          const newWorkerData = {
             name: data.name || "",
-            experties: data.experties || data.expertise || "",
+            experties: data.category || "", // Use category ID for the select
+            subCategory: "", // Will be resolved from subCategory ID
+            subCategoryId: data.subCategory || "", // Store subcategory ID
             contact: data.contact || data.phone || data.email || "",
             address: data.address || "",
             aadhaarNumber: data.aadhaarNumber || data.aadhaar || "",
-            aadhaarCardImage: data.aadhaarCardImage || data.aadhaarImage || null,
-          });
+            aadhaarCardImage: data.aadhaarCardImageUrl || data.aadhaarCardImage || data.aadhaarImage || null,
+          };
+
+          console.log('Setting worker data:', newWorkerData);
+          setWorkerData(newWorkerData);
         } else {
           toast.error(result.message || "Failed to fetch worker details");
         }
@@ -66,10 +112,13 @@ function WorkerEdit() {
     }
   }, [id, fetchData]);
 
+  // This effect is now handled in the previous useEffect, so we can remove this one
+
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setWorkerData({
       ...workerData,
-      [e.target.name]: e.target.value,
+      [name]: value,
     });
   };
 
@@ -95,10 +144,27 @@ function WorkerEdit() {
       // Create FormData for file upload (similar to WorkerAdd)
       const formData = new FormData();
       formData.append("name", workerData.name);
-      formData.append("experties", workerData.experties);
       formData.append("contact", workerData.contact);
       formData.append("address", workerData.address);
       formData.append("aadhaarNumber", workerData.aadhaarNumber);
+      // Don't send experties - API doesn't accept it, categoryId is enough
+
+      // Add categoryId directly if expertise holds id, else resolve from name
+      if (workerData.experties) {
+        if (typeof workerData.experties === 'string' && workerData.experties.length === 24) {
+          formData.append("categoryId", workerData.experties);
+        } else if (productCategory.length > 0) {
+          const selectedCategory = productCategory.find(cat => cat.tabName === workerData.experties);
+          if (selectedCategory) {
+            formData.append("categoryId", selectedCategory._id);
+          }
+        }
+      }
+
+      // Use the stored subcategory ID
+      if (workerData.subCategoryId) {
+        formData.append("subCategoryId", workerData.subCategoryId);
+      }
 
       // Only append file if it's a new file (File object)
       if (workerData.aadhaarCardImage && workerData.aadhaarCardImage instanceof File) {
@@ -129,17 +195,17 @@ function WorkerEdit() {
   return (
     <Box
       sx={{
-       
-          width: "100%", 
-    minHeight: "100vh",
-    backgroundColor: "#E0E9E9",
-    display: "flex",
-    flexDirection: "column",
-    gap: "16px",
-    color: "#0D2E28",
-    margin: 0,
-    padding: 0,
-    overflowX: "hidden",
+
+        width: "100%",
+        minHeight: "100vh",
+        backgroundColor: "#E0E9E9",
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+        color: "#0D2E28",
+        margin: 0,
+        padding: 0,
+        overflowX: "hidden",
       }}
     >
       <Worker back title="Edit Worker" />
@@ -154,20 +220,22 @@ function WorkerEdit() {
           <form onSubmit={handleUpdate}>
             <Box
               sx={{
-                
-              display: "flex",
-    flexDirection: "column",
-    gap: 2,
-    marginBottom: 2,
-    border: "1px solid #616666",
-    borderRadius: 1,
-    padding: 3,          // slightly more space all around
-    paddingBottom: 5,    //  extra space at bottom if needed
-    boxSizing: "border-box",
-               
-                
+
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                marginBottom: 2,
+                border: "1px solid #616666",
+                borderRadius: 1,
+                padding: 3,          // slightly more space all around
+                paddingBottom: 5,    //  extra space at bottom if needed
+                boxSizing: "border-box",
+
+
               }}
             >
+
+
               {/* Worker Name */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -195,7 +263,7 @@ function WorkerEdit() {
                 </Box>
               </Box>
 
-              {/* Expertise (Dropdown) */}
+              {/* Expertise */}
               <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Expertise:</Typography>
@@ -206,8 +274,26 @@ function WorkerEdit() {
                     displayEmpty
                     variant="outlined"
                     name="experties"
-                    value={workerData.experties}
-                    onChange={handleChange}
+                    value={workerData.experties || ""}
+                    onChange={async (e) => {
+                      const selectedCategoryId = e.target.value;
+                      const selectedCategory = productCategory.find(cat => cat._id === selectedCategoryId);
+
+                      // Update expertise and reset subcategory - same as small-product-edit
+                      setWorkerData(prev => ({
+                        ...prev,
+                        experties: selectedCategoryId,
+                        subCategory: "",
+                        subCategoryId: "",
+                      }));
+
+                      // Clear current subcategory list and fetch new based on selected category id
+                      setProductSubCategory([]);
+                      if (selectedCategoryId) {
+                        await fetchProductSubCategory(selectedCategoryId);
+                      }
+                    }}
+                    disabled={!productCategory.length}
                     sx={{
                       background: "#CED4F2",
                       color: "#0D2E28",
@@ -216,17 +302,58 @@ function WorkerEdit() {
                       "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
                     }}
                   >
-                    <MenuItem value="" disabled hidden>
-                      Select Expertise
-                    </MenuItem>
-                    <MenuItem value="Electrician">Electrician</MenuItem>
-                    <MenuItem value="Plumber">Plumber</MenuItem>
-                    <MenuItem value="Tiler">Tiler</MenuItem>
-                    <MenuItem value="Painter">Painter</MenuItem>
-                    <MenuItem value="AC & Refrigerator Mechanic">
-                      AC & Refrigerator Mechanic
-                    </MenuItem>
+                    <MenuItem value="">Select Expertise</MenuItem>
+                    {productCategory.map((category) => (
+                      <MenuItem key={category._id} value={category._id}>
+                        {category.tabName}
+                      </MenuItem>
+                    ))}
                   </Select>
+                </Box>
+              </Box>
+
+              {/* Sub Category */}
+              <Box sx={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Typography sx={{ fontWeight: 500, color: "#0D2E28" }}>Sub Category:</Typography>
+                </Box>
+                <Box sx={{ gridColumn: "span 2" }}>
+                  <Select
+                    fullWidth
+                    displayEmpty
+                    variant="outlined"
+                    name="subCategory"
+                    value={workerData.subCategory || ""}
+                    onChange={(e) => {
+                      const subCategoryName = e.target.value;
+                      const selectedSubCategory = productSubCategory.find(sub => sub.name === subCategoryName);
+                      setWorkerData(prev => ({
+                        ...prev,
+                        subCategory: subCategoryName,
+                        subCategoryId: selectedSubCategory ? selectedSubCategory._id : ""
+                      }));
+                    }}
+                    disabled={!productSubCategory.length}
+                    sx={{
+                      background: "#CED4F2",
+                      color: "#0D2E28",
+                      "& .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                      "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#001580" },
+                    }}
+                  >
+                    <MenuItem value="">Select</MenuItem>
+                    {productSubCategory.map((sub) => (
+                      <MenuItem key={sub._id} value={sub.name}>
+                        {sub.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {workerData.experties && productSubCategory.length === 0 && (
+                    <Typography variant="body2" sx={{ color: "#666", mt: 1, fontSize: "12px" }}>
+                      No sub-categories available for selected expertise
+                    </Typography>
+                  )}
                 </Box>
               </Box>
 

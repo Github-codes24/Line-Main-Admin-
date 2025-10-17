@@ -1,17 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
-import BG from "../../../assets/images/BG.png";
 import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
+import useDropdown from "../../../hook/dropdown/useDropdown";
 import conf from "../../../config";
 
 
 const validationSchema = Yup.object({
     name: Yup.string().required("Worker name is required"),
     experties: Yup.string().required("Expertise is required"),
+    subCategory: Yup.string().when('experties', {
+        is: (val) => val && val !== "",
+        then: () => Yup.string().required("Sub-category is required"),
+        otherwise: () => Yup.string()
+    }),
     contact: Yup.string().required("Email or phone number is required"),
     address: Yup.string()
         .min(10, "Address must be at least 10 characters long")
@@ -31,6 +36,18 @@ const AddWorker = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const [fetchData] = useFetch();
+    const {
+        productCategory,
+        productSubCategory,
+        setProductSubCategory,
+        fetchProductCategory,
+        fetchProductSubCategory,
+    } = useDropdown();
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        fetchProductCategory();
+    }, []);
 
     const handleBack = () => {
         navigate(-1);
@@ -40,17 +57,17 @@ const AddWorker = () => {
     const addWorker = async (workerData) => {
         try {
             setIsLoading(true);
-            
+
             console.log('Adding worker with data:', workerData);
             console.log('API URL:', `${conf.apiBaseUrl}/admin/Worker/add-worker`);
-            
+
             const result = await fetchData({
                 method: "POST",
                 url: `${conf.apiBaseUrl}/admin/Worker/add-worker`,
                 data: workerData,
                 headers: { "Content-Type": "multipart/form-data" }
             });
-            
+
             if (result.success || result.data || result._id || result.user) {
                 console.log('Worker added successfully:', result);
                 toast.success(result.message || "Worker added successfully!");
@@ -75,7 +92,7 @@ const AddWorker = () => {
 
     return (
 
-        <div className="bg-[#E0E9E9] w-full h-screen overflow-hidden">
+        <div className="bg-[#E0E9E9] w-full min-h-screen overflow-auto">
 
             <ToastContainer />
             <div className="bg-white border rounded-md shadow mb-2">
@@ -116,12 +133,13 @@ const AddWorker = () => {
                 </div>
             </div>
 
-            <div className="bg-white border h-screen rounded-md shadow p-4 mt-4">
+            <div className="bg-white border rounded-md shadow p-4 mt-4 mb-4">
 
                 <Formik
                     initialValues={{
                         name: "",
                         experties: "",
+                        subCategory: "",
                         contact: "",
                         address: "",
                         aadhaarNumber: "",
@@ -133,9 +151,34 @@ const AddWorker = () => {
 
                         // Create FormData for file upload
                         const formData = new FormData();
-                        Object.keys(values).forEach((key) => {
-                            formData.append(key, values[key]);
-                        });
+
+                        // Map form fields to API expected fields
+                        formData.append("name", values.name);
+                        formData.append("contact", values.contact);
+                        formData.append("address", values.address);
+                        formData.append("aadhaarNumber", values.aadhaarNumber);
+                        // Don't send experties - API doesn't accept it, categoryId is enough
+
+                        // Find category ID from the selected expertise name
+                        if (values.experties && productCategory.length > 0) {
+                            const selectedCategory = productCategory.find(cat => cat.tabName === values.experties);
+                            if (selectedCategory) {
+                                formData.append("categoryId", selectedCategory._id);
+                            }
+                        }
+
+                        // Find subcategory ID from the selected subcategory name
+                        if (values.subCategory && productSubCategory.length > 0) {
+                            const selectedSubCategory = productSubCategory.find(sub => sub.name === values.subCategory);
+                            if (selectedSubCategory) {
+                                formData.append("subCategoryId", selectedSubCategory._id);
+                            }
+                        }
+
+                        // Add file if present
+                        if (values.aadhaarCardImage) {
+                            formData.append("aadhaarCardImage", values.aadhaarCardImage);
+                        }
 
                         const result = await addWorker(formData); // Send FormData
                         if (result.success) resetForm();
@@ -145,7 +188,7 @@ const AddWorker = () => {
                 >
                     {({ isSubmitting, setFieldValue }) => (
                         <Form>
-                            <div className="border border-[#616666] rounded-md p-8 min-h-[510px]">
+                            <div className="border border-[#616666] rounded-md p-8">
                                 <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
                                     <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
                                         Worker Name:
@@ -170,22 +213,74 @@ const AddWorker = () => {
                                         Expertise:
                                     </label>
                                     <div className="w-full md:w-3/4">
-                                        <Field
-                                            as="select"
-                                            name="experties"
-                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] text-[#0D2E28]"
-                                        >
-                                            <option value="">Select Expertise</option>
-                                            <option value="Plumber">Plumber</option>
-                                            <option value="Electrician">Electrician</option>
-                                            <option value="Cleaner">Cleaner</option>
-                                            <option value="Painter">Painter</option>
+                                        <Field name="experties">
+                                            {({ field, form }) => (
+                                                <select
+                                                    {...field}
+                                                    className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] text-[#0D2E28]"
+                                                    onChange={async (e) => {
+                                                        const categoryId = e.target.value;
+                                                        form.setFieldValue("experties", categoryId);
+                                                        form.setFieldValue("subCategory", "");
+
+                                                        // Clear old subcategories
+                                                        setProductSubCategory([]);
+
+                                                        // Find the selected category and fetch subcategories
+                                                        if (categoryId && productCategory.length > 0) {
+                                                            const selectedCategory = productCategory.find(cat => cat.tabName === categoryId);
+                                                            if (selectedCategory) {
+                                                                await fetchProductSubCategory(selectedCategory._id);
+                                                            }
+                                                        }
+                                                    }}
+                                                >
+                                                    <option value="">Select Expertise</option>
+                                                    {productCategory.map((category) => (
+                                                        <option key={category._id} value={category.tabName}>
+                                                            {category.tabName}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
                                         </Field>
                                         <ErrorMessage
                                             name="experties"
                                             component="div"
                                             className="text-red-500 text-sm mt-1"
                                         />
+                                    </div>
+                                </div>
+
+                                {/* Sub Category Field */}
+                                <div className="flex flex-col md:flex-row items-start md:items-center mb-8">
+                                    <label className="w-full md:w-1/4 font-medium text-[#0D2E28] mb-2 md:mb-0">
+                                        Sub Category:
+                                    </label>
+                                    <div className="w-full md:w-3/4">
+                                        <Field
+                                            as="select"
+                                            name="subCategory"
+                                            className="w-full border border-[#001580] rounded-md px-8 py-2 focus:outline-none bg-[#CED4F2] text-[#0D2E28]"
+                                            disabled={!productSubCategory.length}
+                                        >
+                                            <option value="">Select Sub Category</option>
+                                            {productSubCategory.map((sub) => (
+                                                <option key={sub._id} value={sub.name}>
+                                                    {sub.name}
+                                                </option>
+                                            ))}
+                                        </Field>
+                                        <ErrorMessage
+                                            name="subCategory"
+                                            component="div"
+                                            className="text-red-500 text-sm mt-1"
+                                        />
+                                        {productSubCategory.length === 0 && (
+                                            <div className="text-gray-500 text-sm mt-1">
+                                                {productCategory.length > 0 ? "Select expertise first to see sub-categories" : "Loading categories..."}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
@@ -284,7 +379,7 @@ const AddWorker = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-center gap-6 mt-4">
+                            <div className="flex justify-center gap-6 mt-8 pt-4">
                                 <button
                                     type="reset"
                                     className="w-[200px] h-[40px] border border-[#001580] text-[#001580] rounded-md hover:bg-teal-50 text-sm bg-[#CED4F2]"
@@ -297,7 +392,7 @@ const AddWorker = () => {
                                     disabled={isSubmitting || isLoading}
                                     className={`w-[200px] h-[40px] text-white rounded-md text-sm ${isSubmitting || isLoading
                                         ? 'bg-gray-400 cursor-not-allowed'
-                                        : 'bg-[#001580] hover:bg-[#CED4F2]'
+                                        : 'bg-[#001580] hover:bg-[#001580]/90'
                                         }`}
                                 >
                                     {isSubmitting || isLoading ? 'Adding...' : 'Add Worker'}
