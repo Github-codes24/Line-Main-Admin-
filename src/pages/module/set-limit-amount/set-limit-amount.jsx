@@ -130,7 +130,7 @@ const SetLimitAmount = () => {
                     currentRecords.map((item, idx) => (
                       <tr key={item._id} className="text-center">
                         <td className="w-[80px] h-[56px] align-middle">{indexOfFirstRecord + idx + 1}</td>
-                        <td className="w-[200px] h-[56px] align-middle">{item.category?.tabName || "N/A"}</td>
+                        <td className="w-[200px] h-[56px] align-middle">{item.experties || "N/A"}</td>
                         <td className="w-[328px] h-[56px] align-middle">₹{item.nagativeLimit ?? "N/A"}</td>
                         <td className="w-[140px] h-[56px] align-middle">
                           <div className="flex justify-center space-x-4 flex-wrap">

@@ -11,40 +11,63 @@ const AddCommission = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
-  const [category, setCategory] = useState(""); // store category ID
+  const [category, setCategory] = useState(""); // selected category ID
+  const [subCategory, setSubCategory] = useState(""); // selected sub-category ID
   const [charges, setCharges] = useState("");
-  const [categories, setCategories] = useState([]);
+  const [roles, setRoles] = useState([]); // full roles data from API
+  const [categories, setCategories] = useState([]); // unique categories for dropdown
+  const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // Fetch roles and categories
   useEffect(() => {
-    const loadCategories = async () => {
+    const loadRoles = async () => {
       try {
         const res = await fetchData({
           method: "GET",
-          url: `${conf.apiBaseUrl}/admin/tabs/experties`,
+          url: `${conf.apiBaseUrl}/admin/tabs/worker-roles`,
         });
         if (res?.success) {
-          setCategories(res.data || []);
+          setRoles(res.roles || []);
+
+          // Extract unique categories
+          const uniqueCategories = [
+            ...new Map(
+              res.roles.map((r) => [r.category, r]) // key by category ID
+            ).values(),
+          ];
+          setCategories(uniqueCategories);
         } else {
           toast.error("Failed to load categories");
         }
       } catch (err) {
-        console.error("Error loading categories:", err);
+        console.error("Error loading roles:", err);
         toast.error("Failed to load categories");
       }
     };
-
-    loadCategories();
+    loadRoles();
   }, [fetchData]);
 
-  // ✅ Navigate Back
+  // Filter sub-categories when category changes
+  useEffect(() => {
+    if (category) {
+      const filtered = roles.filter((r) => r.category === category);
+      setFilteredSubCategories(filtered);
+      setSubCategory(""); // reset sub-category selection
+    } else {
+      setFilteredSubCategories([]);
+      setSubCategory("");
+    }
+  }, [category, roles]);
+
+  // Navigate Back
   const handleBack = () => navigate("/admin/set-charges-of-worker");
 
-  // ✅ Submit handler
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!category || charges === "") {
-      toast.warning("Please fill all fields");
+    if (!category || charges === "" || (filteredSubCategories.length > 0 && !subCategory)) {
+      toast.warning("Please fill all required fields");
       return;
     }
 
@@ -54,6 +77,8 @@ const AddCommission = () => {
         categoryId: category,
         charges: Number(charges),
       };
+
+      if (subCategory) payload.subCategoryId = subCategory;
 
       const res = await fetchData({
         method: "POST",
@@ -75,7 +100,6 @@ const AddCommission = () => {
     }
   };
 
-  // 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -107,8 +131,28 @@ const AddCommission = () => {
                 >
                   <option value="">Select</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.tabName}
+                    <option key={cat.category} value={cat.category}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-[#0D2E28]" />
+              </div>
+            </div>
+
+            {/* Sub-Category Dropdown */}
+            <div className="flex items-center gap-[70px]">
+              <label className="w-1/4 font-medium text-[#0D2E28]">Sub Category:</label>
+              <div className="relative flex-1">
+                <select
+                  value={subCategory}
+                  onChange={(e) => setSubCategory(e.target.value)}
+                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
+                >
+                  <option value="">Select</option>
+                  {filteredSubCategories.map((sub) => (
+                    <option key={sub.subCategory || sub.category} value={sub.subCategory || ""}>
+                      {sub.name}
                     </option>
                   ))}
                 </select>

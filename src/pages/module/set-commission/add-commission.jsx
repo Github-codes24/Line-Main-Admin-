@@ -17,14 +17,15 @@ const AddCommission = () => {
   const [categories, setCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
+  // Fetch categories (using worker-roles API)
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const res = await fetchData({
           method: "GET",
-          url: `${conf.apiBaseUrl}/admin/tabs/experties`,
+          url: `${conf.apiBaseUrl}/admin/tabs/worker-roles`,
         });
-        if (res?.success) setCategories(res.data || []);
+        if (res?.success) setCategories(res.roles || []);
         else toast.error("Failed to load categories");
       } catch (err) {
         console.error("Error loading categories:", err);
@@ -45,7 +46,7 @@ const AddCommission = () => {
     setSubmitting(true);
     try {
       const payload = {
-        categoryId: category,
+        category: category,
         workerPercentageCommission: Number(workerCommission),
         shopkeeperPercentageCommission: Number(shopkeeperCommission),
       };
@@ -68,7 +69,6 @@ const AddCommission = () => {
     }
   };
 
-  // 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
@@ -89,19 +89,21 @@ const AddCommission = () => {
             onSubmit={handleSubmit}
             className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
           >
-            {/* Category */}
+            {/* Category Dropdown */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">
+                Category:
+              </label>
               <div className="relative flex-1">
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
+                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 border border-[#001580] rounded-lg outline-none bg-[#CED4F2] text-[#0D2E28]"
                 >
                   <option value="">Select</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.tabName}
+                    <option key={cat.category} value={cat.category}>
+                      {cat.name}
                     </option>
                   ))}
                 </select>
@@ -111,7 +113,9 @@ const AddCommission = () => {
 
             {/* Worker Commission */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Commission From Worker:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">
+                Commission From Worker:
+              </label>
               <input
                 type="number"
                 value={workerCommission}
@@ -123,7 +127,9 @@ const AddCommission = () => {
 
             {/* Shopkeeper Commission */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Commission From Shopkeeper:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">
+                Commission From Shopkeeper:
+              </label>
               <input
                 type="number"
                 value={shopkeeperCommission}
