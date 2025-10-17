@@ -68,7 +68,7 @@ const AddCommission = () => {
     }
   };
 
-  // ✅ Loader removed; form will render immediately
+  // 
   return (
     <div className="flex bg-[#E0E9E9] font-[Poppins] w-full min-h-screen">
       <div className="flex-1 px-4 md:px-0 mx-auto">
