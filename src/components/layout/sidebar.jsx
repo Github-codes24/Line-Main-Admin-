@@ -48,6 +48,7 @@ function Sidebar({ activeTab, setActiveTab }) {
     { icon: (c) => <BigProductIcon color={c} />, title: "Big Product", path: "/admin/bigproduct" },
     { icon: (c) => <OrderIcon color={c} />, title: "Order Management", path: "/admin/order/list" },
     { icon: (c) => <PaymentIcon color={c} />, title: "Payment Management", path: "/admin/payment" },
+    { icon: null, title: "Withdraw Request", path: "/admin/withdraw-request" },
     { icon: (c) => <SetCommision color={c} />, title: "Set Commission", path: "/admin/set-commission" },
     { icon: (c) => <SetCharges color={c} />, title: "Set Charges Of Worker", path: "/admin/set-charges-of-worker" },
     { icon: (c) => <SetLimit color={c} />, title: "Set Limit Amount", path: "/admin/set-limit-amount" },
@@ -96,19 +97,21 @@ function Sidebar({ activeTab, setActiveTab }) {
               if (isTablet) setMobileOpen(false); // Close only in tablet mode
             }}
           >
-            <Box
-              sx={{
-                width: "24px",
-                height: "24px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                transition: "color 0.3s ease",
-                color,
-              }}
-            >
-              {content.icon(color)}
-            </Box>
+            {content.icon && (
+              <Box
+                sx={{
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  transition: "color 0.3s ease",
+                  color,
+                }}
+              >
+                {content.icon(color)}
+              </Box>
+            )}
             <Typography
               sx={{
                 fontFamily: "Poppins",
@@ -116,6 +119,7 @@ function Sidebar({ activeTab, setActiveTab }) {
                 fontSize: "14px",
                 color,
                 whiteSpace: "nowrap",
+                ml: content.icon ? 0 : "24px", // Align text if no icon
               }}
             >
               {content.title}

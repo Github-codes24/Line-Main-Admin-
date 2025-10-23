@@ -47,6 +47,10 @@ import WorkerAdd from "../pages/module/worker/WorkerAdd";
 import WorkerEdit from "../pages/module/worker/WorkerEdit";
 import WorkerView from "../pages/module/worker/WorkerView";
 
+// Withdraw Request
+// import WithdrawRequest from "../pages/module/withdraw/WithdrawRequest";
+import WithdrawRequestView from "../pages/module/withdraw/WithdrawRequestView";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -112,6 +116,8 @@ const AppRoutes = () => {
       <Route path="/admin/limit/edit/:id" element={<EditLimitAmount />} />
       <Route path="/admin/limit/view/:id" element={<ViewLimitAmount />} />
 
+
+
       {/* Catch-all */}
       <Route
         path="/admin/workermanagement"
@@ -157,6 +163,27 @@ const AppRoutes = () => {
         }
       />
 
+              {/* Withdraw Request */}
+    
+<Route
+  path="/admin/withdraw-request"
+  element={
+    <ProtectedRoute>
+      <WithdrawRequest />
+    </ProtectedRoute>
+  }
+/>
+
+
+<Route
+  path="/admin/withdraw-request/view/:id"
+  element={
+    <ProtectedRoute>
+      <WithdrawRequestView />
+    </ProtectedRoute>
+  }
+/>
+        
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
