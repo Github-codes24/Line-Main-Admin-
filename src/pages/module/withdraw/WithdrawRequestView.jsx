@@ -13,7 +13,7 @@ const WithdrawRequestView = () => {
 
   const [withdraw, setWithdraw] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [processing, setProcessing] = useState(false);
+  const [processingBtn, setProcessingBtn] = useState(""); // "approve" or "reject"
 
   const getWithdraw = async () => {
     try {
@@ -43,7 +43,7 @@ const WithdrawRequestView = () => {
   const handleApprove = async () => {
     if (!withdraw) return;
     try {
-      setProcessing(true);
+      setProcessingBtn("approve");
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
@@ -56,14 +56,14 @@ const WithdrawRequestView = () => {
     } catch (err) {
       toast.error(err.message || "Error approving withdraw");
     } finally {
-      setProcessing(false);
+      setProcessingBtn("");
     }
   };
 
   const handleReject = async () => {
     if (!withdraw) return;
     try {
-      setProcessing(true);
+      setProcessingBtn("reject");
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
@@ -76,14 +76,32 @@ const WithdrawRequestView = () => {
     } catch (err) {
       toast.error(err.message || "Error rejecting withdraw");
     } finally {
-      setProcessing(false);
+      setProcessingBtn("");
     }
   };
 
+  // Loader in center for all devices
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-[#E0E9E9] font-[Poppins] text-[#0D2E28] text-lg font-medium">
-        Loading withdraw details...
+      <div className="flex justify-center items-center h-screen bg-[#E0E9E9] font-[Poppins] text-[#0D2E28]">
+        <svg
+          className="animate-spin h-10 w-10 text-[#001580]"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-100"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="60"
+            strokeDashoffset="20"
+          ></circle>
+        </svg>
       </div>
     );
   }
@@ -97,7 +115,12 @@ const WithdrawRequestView = () => {
     <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins]">
       <ToastContainer />
       <div className="flex items-center bg-white border rounded-lg shadow p-4 mb-4">
-        <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
+        <img
+          src="/Back Button (1).png"
+          onClick={handleBack}
+          className="mr-3 cursor-pointer w-8"
+          alt="Back"
+        />
         <h2 className="text-lg font-semibold">View Withdraw Details</h2>
       </div>
 
@@ -105,7 +128,9 @@ const WithdrawRequestView = () => {
         <div className="border border-[#616666] rounded-lg pt-10 pl-20 min-h-[718px] flex flex-col gap-8">
           {/* Withdraw ID */}
           <div className="flex items-center gap-[8px]">
-            <label className="w-[151px] h-[30px] text-[#0D2E28] font-bold text-[20px] leading-[100%]">Withdraw ID:</label>
+            <label className="w-[151px] h-[30px] text-[#0D2E28] font-bold text-[20px] leading-[100%]">
+              Withdraw ID:
+            </label>
             <input
               type="text"
               value={withdraw.withdrawalId || ""}
@@ -116,15 +141,24 @@ const WithdrawRequestView = () => {
 
           {/* Worker Details */}
           <div className="flex flex-col gap-[8px] w-full max-w-[598px]">
-            <p className="w-[71px] h-[30px] text-[#0D2E28] font-semibold text-[20px] leading-[100%]">Details</p>
+            <p className="w-[71px] h-[30px] text-[#0D2E28] font-semibold text-[20px] leading-[100%]">
+              Details
+            </p>
             {[
               { label: "Worker Name", value: withdraw.workerId?.name || "" },
               { label: "Worker Amount", value: `₹${displayAmount}` },
               { label: "Worker On", value: new Date(withdraw.createdAt).toLocaleString() },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-[16px] w-[488px] h-[40px]">
-                <label className="w-[151px] text-[#0D2E28] font-medium text-[16px] leading-[100%]">{item.label}:</label>
-                <input type="text" value={item.value} readOnly className="w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] text-[#0D2E28] font-normal text-[16px] leading-[100%] bg-[#E4E5EB] outline-none" />
+                <label className="w-[151px] text-[#0D2E28] font-medium text-[16px] leading-[100%]">
+                  {item.label}:
+                </label>
+                <input
+                  type="text"
+                  value={item.value}
+                  readOnly
+                  className="w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] text-[#0D2E28] font-normal text-[16px] leading-[100%] bg-[#E4E5EB] outline-none"
+                />
               </div>
             ))}
           </div>
@@ -142,7 +176,12 @@ const WithdrawRequestView = () => {
             ].map((item, i) => (
               <div key={i} className={`flex items-center gap-[16px] w-[488px] h-[40px] ${i === 3 ? "mt-4" : ""}`}>
                 <label className="w-[151px] text-[#0D2E28] font-medium text-[16px]">{item.label}:</label>
-                <input type="text" value={item.value} readOnly className="w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] text-[#0D2E28] text-[16px] font-normal bg-[#E4E5EB]" />
+                <input
+                  type="text"
+                  value={item.value}
+                  readOnly
+                  className="w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] text-[#0D2E28] text-[16px] font-normal bg-[#E4E5EB]"
+                />
               </div>
             ))}
           </div>
@@ -173,17 +212,17 @@ const WithdrawRequestView = () => {
         <div className="flex justify-center gap-[16px] mt-6">
           <button
             onClick={handleReject}
-            disabled={processing}
+            disabled={processingBtn === "reject"}
             className="w-[200px] h-[40px] rounded-[8px] border border-[#001580] text-[#001580] font-medium text-[16px] flex items-center justify-center hover:bg-[#001580] hover:text-white transition"
           >
-            {processing ? "Processing..." : "Reject"}
+            {processingBtn === "reject" ? "Processing..." : "Reject"}
           </button>
           <button
             onClick={handleApprove}
-            disabled={processing}
+            disabled={processingBtn === "approve"}
             className="w-[200px] h-[40px] rounded-[8px] bg-[#001580] text-white font-medium text-[16px] flex items-center justify-center hover:bg-[#0A1050] transition"
           >
-            {processing ? "Processing..." : "Approve"}
+            {processingBtn === "approve" ? "Processing..." : "Approve"}
           </button>
         </div>
       </div>

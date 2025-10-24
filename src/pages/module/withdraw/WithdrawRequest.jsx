@@ -14,7 +14,7 @@ const WithdrawRequest = () => {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false); // Loader state
+  const [isLoading, setIsLoading] = useState(false); // Loader
   const recordsPerPage = 5;
 
   const navigate = useNavigate();
@@ -58,7 +58,10 @@ const WithdrawRequest = () => {
   const totalRecords = filteredRequests.length;
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-  const currentRecords = filteredRequests.slice(indexOfFirstRecord, indexOfLastRecord);
+  const currentRecords = filteredRequests.slice(
+    indexOfFirstRecord,
+    indexOfLastRecord
+  );
 
   const goToPage = (pg) => setCurrentPage(pg);
 
@@ -76,7 +79,7 @@ const WithdrawRequest = () => {
         <h1 className="text-xl font-medium ml-3 z-10">Withdraw Request</h1>
 
         {/* Search Bar */}
-        <div className="absolute left-0 right-0 mx-auto w-full max-w-[400px] px-4">
+        <div className="absolute left-0 right-0 mx-auto w-full max-w-[400px] px-4 sm:left-12 sm:max-w-[300px] md:left-16 md:max-w-[400px] lg:left-24">
           <div className="absolute left-8 top-1/2 transform -translate-y-1/2">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
               <path
@@ -87,7 +90,7 @@ const WithdrawRequest = () => {
           </div>
           <input
             type="text"
-            placeholder="Search by Withdraw ID or Worker..."
+            placeholder="Search by Withdraw ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full h-10 pl-12 pr-4 placeholder:font-medium placeholder:text-[#0D2E28] rounded-full text-sm border border-[#001580] bg-[#E4E5EB] text-[#0D2E28] focus:outline-none"
@@ -128,28 +131,50 @@ const WithdrawRequest = () => {
               <table className="w-full text-sm text-[#0D2E28] table-fixed">
                 <thead className="bg-[#E4E5EB] font-[Poppins] text-base leading-[100%] tracking-[0%] align-middle">
                   <tr>
-                    <th className="w-[80px] h-[56px] text-center font-medium align-middle">Sr.No.</th>
-                    <th className="min-w-[160px] h-[56px] text-center font-medium align-middle">Withdrawal ID</th>
-                    <th className="min-w-[200px] h-[56px] text-center font-medium align-middle">Worker Name</th>
-                    <th className="min-w-[150px] h-[56px] text-center font-medium align-middle">Amount</th>
-                    <th className="min-w-[150px] h-[56px] text-center font-medium align-middle">Status</th>
-                    <th className="min-w-[100px] h-[56px] text-center font-medium align-middle">Action</th>
+                    <th className="w-[80px] h-[56px] text-center font-medium align-middle">
+                      Sr.No.
+                    </th>
+                    <th className="min-w-[160px] h-[56px] text-center font-medium align-middle">
+                      Withdrawal ID
+                    </th>
+                    <th className="min-w-[200px] h-[56px] text-center font-medium align-middle">
+                      Worker Name
+                    </th>
+                    <th className="min-w-[150px] h-[56px] text-center font-medium align-middle">
+                      Amount
+                    </th>
+                    <th className="min-w-[150px] h-[56px] text-center font-medium align-middle">
+                      Status
+                    </th>
+                    <th className="min-w-[100px] h-[56px] text-center font-medium align-middle">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentRecords.length === 0 ? (
                     <tr>
                       <td colSpan="6" className="px-6 py-8 text-center">
-                        <div className="text-lg text-gray-500">No withdraw requests found</div>
+                        <div className="text-lg text-gray-500">
+                          No withdraw requests found
+                        </div>
                       </td>
                     </tr>
                   ) : (
                     currentRecords.map((item, idx) => (
                       <tr key={item._id} className="text-center">
-                        <td className="w-[80px] h-[56px] align-middle">{indexOfFirstRecord + idx + 1}</td>
-                        <td className="min-w-[160px] h-[56px] align-middle">{item.withdrawalId || "N/A"}</td>
-                        <td className="min-w-[200px] h-[56px] align-middle">{item.workerId?.name || "N/A"}</td>
-                        <td className="min-w-[150px] h-[56px] align-middle">₹{item?.transactionId?.amount || item.amount || 0}</td>
+                        <td className="w-[80px] h-[56px] align-middle">
+                          {indexOfFirstRecord + idx + 1}
+                        </td>
+                        <td className="min-w-[160px] h-[56px] align-middle">
+                          {item.withdrawalId || "N/A"}
+                        </td>
+                        <td className="min-w-[200px] h-[56px] align-middle">
+                          {item.workerId?.name || "N/A"}
+                        </td>
+                        <td className="min-w-[150px] h-[56px] align-middle">
+                          ₹{item?.transactionId?.amount || item.amount || 0}
+                        </td>
                         <td
                           className={`min-w-[150px] h-[56px] align-middle font-medium ${
                             item.status === "PENDING"
@@ -165,7 +190,10 @@ const WithdrawRequest = () => {
                         </td>
                         <td className="min-w-[100px] h-[56px] align-middle">
                           <div className="flex justify-center space-x-4 flex-wrap">
-                            <button className="text-[#EC2D01] hover:text-orange-700" onClick={() => handleView(item._id)}>
+                            <button
+                              className="text-[#EC2D01] hover:text-orange-700"
+                              onClick={() => handleView(item._id)}
+                            >
                               <Eye size={20} />
                             </button>
                           </div>
