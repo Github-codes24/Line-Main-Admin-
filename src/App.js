@@ -79,6 +79,10 @@ import AddLimitAmount from "./pages/module/set-limit-amount/add-limit-amount";
 import EditLimitAmount from "./pages/module/set-limit-amount/edit-limit-amount";
 import ViewLimitAmount from "./pages/module/set-limit-amount/view-limit-amount";
 
+// Withdraw Request
+import WithdrawRequest from "./pages/module/withdraw/WithdrawRequest";
+import WithdrawRequestView from "./pages/module/withdraw/WithdrawRequestView";
+
 // Route guards
 import ProtectedRoute from "./route/protected";
 import PublicRoute from "./route/public"; //  ✅ make sure you have this file
@@ -513,6 +517,25 @@ function App() {
               </AdminLayout>
             }
           />
+          
+           {/* Withdraw Request */}
+          <Route
+            path="/admin/withdraw-request"
+            element={
+              <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+                <WithdrawRequest />
+              </AdminLayout>
+            }
+          />
+
+          <Route
+  path="/admin/withdraw-request/view/:id"
+  element={
+    <AdminLayout activeTab={activeTab} setActiveTab={setActiveTab}>
+      <WithdrawRequestView />
+    </AdminLayout>
+  }
+/>
 
           {/* Order View */}
           <Route

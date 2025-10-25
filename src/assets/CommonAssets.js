@@ -169,6 +169,32 @@ export const PaymentIcon = ({color = "#007E74"}) => {
         </svg>
     );
 };
+export const WithdrawIcon = ({ color = "#001580", size = 24 }) => {
+  return (
+    <svg
+      width={size}
+      height={(size * 20) / 22} // maintain aspect ratio
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Outer Border */}
+      <path
+        d="M8 0L10 3H9V5H7V3H6L8 0ZM15 7V15H1V7H15ZM16 6H0V16H16V6Z"
+        fill={color}
+      />
+      {/* Inner Arrow */}
+      <path
+        d="M6 0C6.39397 0 6.78407 0.077597 7.14805 0.228361C7.51203 0.379125 7.84274 0.600103 8.12132 0.878679C8.3999 1.15726 8.62087 1.48797 8.77164 1.85195C8.9224 2.21593 9 2.60603 9 3C9 3.39397 8.9224 3.78407 8.77164 4.14805C8.62087 4.51203 8.3999 4.84274 8.12132 5.12132C7.84274 5.3999 7.51203 5.62087 7.14805 5.77164C6.78407 5.9224 6.39397 6 6 6H11V5H12V1H11V0H6ZM3 3C3 2.20435 3.31607 1.44129 3.87868 0.878679C4.44129 0.31607 5.20435 0 6 0H1V1H0V5H1V6H6C5.20435 6 4.44129 5.68393 3.87868 5.12132C3.31607 4.55871 3 3.79565 3 3Z"
+        fill={color}
+        transform="translate(2,8)"
+      />
+    </svg>
+  );
+};
+
+
+
 
 export const SetCommision = ({color = "#007E74"}) => {
     return (
