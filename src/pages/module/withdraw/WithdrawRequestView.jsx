@@ -42,12 +42,17 @@ const WithdrawRequestView = () => {
 
   const handleApprove = async () => {
     if (!withdraw) return;
+    const adminId = localStorage.getItem("adminId"); // get admin ID from storage
+
     try {
       setProcessingBtn("approve");
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
-        data: { withdrawalId: withdraw.withdrawalId },
+        data: {
+          requestId: withdraw._id, // 
+          adminId,
+        },
       });
       if (res?.success) {
         toast.success("Withdraw request approved");
@@ -62,12 +67,17 @@ const WithdrawRequestView = () => {
 
   const handleReject = async () => {
     if (!withdraw) return;
+    const adminId = localStorage.getItem("adminId");
+
     try {
       setProcessingBtn("reject");
       const res = await fetchData({
         method: "POST",
         url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
-        data: { withdrawalId: withdraw.withdrawalId },
+        data: {
+          requestId: withdraw._id,
+          adminId,
+        },
       });
       if (res?.success) {
         toast.success("Withdraw request rejected");
@@ -109,7 +119,8 @@ const WithdrawRequestView = () => {
   if (!withdraw) return null;
 
   const displayAmount = withdraw.transactionId?.amount || withdraw.amount || 0;
-  const displayStatus = (withdraw.transactionId?.status || withdraw.status || "PENDING").toUpperCase();
+  const displayStatus =
+    (withdraw.transactionId?.status || withdraw.status || "PENDING").toUpperCase();
 
   return (
     <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins]">
@@ -146,11 +157,12 @@ const WithdrawRequestView = () => {
             </p>
             {[
               { label: "Worker Name", value: withdraw.workerId?.name || "" },
-              { label: "Worker Amount", value: `₹${displayAmount}` },
-              { label: "Worker On", value: new Date(withdraw.createdAt).toLocaleString() },
+              { label: "Withdraw Amount", value: `₹${displayAmount}` },
+            
+               {  label: "Withdraw On", value: withdraw.upiDetails?.upiId ||"N/A", },
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-[16px] w-[488px] h-[40px]">
-                <label className="w-[151px] text-[#0D2E28] font-medium text-[16px] leading-[100%]">
+                <label className="w-[151px] tt-[#0D2E28] font-medium text-[16px] leading-[100%]">
                   {item.label}:
                 </label>
                 <input
@@ -167,15 +179,30 @@ const WithdrawRequestView = () => {
 
           {/* Bank Details */}
           <div className="flex flex-col gap-[8px] w-[598px]">
-            <p className="text-[#0D2E28] font-semibold text-[20px] leading-[100%]">Bank Details</p>
+            <p className="text-[#0D2E28] font-semibold text-[20px] leading-[100%]">
+              Bank Details
+            </p>
             {[
-              { label: "Account Number", value: withdraw.bankDetails?.accountNumber || "N/A" },
+              {
+                label: "Account Number",
+                value: withdraw.bankDetails?.accountNumber || "N/A",
+              },
               { label: "IFSC Code", value: withdraw.bankDetails?.ifscCode || "N/A" },
               { label: "Account Type", value: withdraw.bankDetails?.accountType || "N/A" },
-              { label: "Account Holder Name", value: withdraw.bankDetails?.accountHolderName || "N/A" },
+              {
+                label: "Account Holder Name",
+                value: withdraw.bankDetails?.accountHolderName || "N/A",
+              },
             ].map((item, i) => (
-              <div key={i} className={`flex items-center gap-[16px] w-[488px] h-[40px] ${i === 3 ? "mt-4" : ""}`}>
-                <label className="w-[151px] text-[#0D2E28] font-medium text-[16px]">{item.label}:</label>
+              <div
+                key={i}
+                className={`flex items-center gap-[16px] w-[488px] h-[40px] ${
+                  i === 3 ? "mt-4" : ""
+                }`}
+              >
+                <label className="w-[151px] text-[#0D2E28] font-medium text-[16px]">
+                  {item.label}:
+                </label>
                 <input
                   type="text"
                   value={item.value}

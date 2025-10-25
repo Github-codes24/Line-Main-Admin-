@@ -313,7 +313,7 @@ const CustomerList = () => {
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"
                         style={{ opacity: 1 }}
                       >
-                        {customer.name.split(" ").slice(0, 2).join(" ")}{customer.address.split(" ").lenght > 3 ? "":""}
+                        {customer.name.split(" ").slice(0, 2).join(" ")}{customer.address.split(" ").lenght > 2 ? "":""}
                       </td>
                       {/* <td
                         className="text-center align-middle text-[#0D2E28] font-poppins font-normal text-[14px] leading-[100%]"

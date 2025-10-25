@@ -21,6 +21,7 @@ import {
   SetCommision,
   SetCharges,
   SetLimit,
+  WithdrawIcon,
 } from "../../assets/CommonAssets";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -31,7 +32,6 @@ function Sidebar({ activeTab, setActiveTab }) {
   const location = useLocation();
   const theme = useTheme();
 
-  // Define responsive breakpoints
   const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // below 600px
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px to 900px
 
@@ -48,7 +48,7 @@ function Sidebar({ activeTab, setActiveTab }) {
     { icon: (c) => <BigProductIcon color={c} />, title: "Big Product", path: "/admin/bigproduct" },
     { icon: (c) => <OrderIcon color={c} />, title: "Order Management", path: "/admin/order/list" },
     { icon: (c) => <PaymentIcon color={c} />, title: "Payment Management", path: "/admin/payment" },
-    { icon: null, title: "Withdraw Request", path: "/admin/withdraw-request" },
+    { icon: (c) => <WithdrawIcon color={c} />, title: "Withdraw Request", path: "/admin/withdraw-request" },
     { icon: (c) => <SetCommision color={c} />, title: "Set Commission", path: "/admin/set-commission" },
     { icon: (c) => <SetCharges color={c} />, title: "Set Charges Of Worker", path: "/admin/set-charges-of-worker" },
     { icon: (c) => <SetLimit color={c} />, title: "Set Limit Amount", path: "/admin/set-limit-amount" },
@@ -94,7 +94,7 @@ function Sidebar({ activeTab, setActiveTab }) {
             onClick={() => {
               setActiveTab(content.path);
               navigate(content.path);
-              if (isTablet) setMobileOpen(false); // Close only in tablet mode
+              if (isTablet) setMobileOpen(false); // Close drawer on tablet
             }}
           >
             {content.icon && (
@@ -119,7 +119,7 @@ function Sidebar({ activeTab, setActiveTab }) {
                 fontSize: "14px",
                 color,
                 whiteSpace: "nowrap",
-                ml: content.icon ? 0 : "24px", // Align text if no icon
+                ml: content.icon ? 0 : "24px",
               }}
             >
               {content.title}
@@ -132,7 +132,6 @@ function Sidebar({ activeTab, setActiveTab }) {
 
   return (
     <>
-      {/* Show hamburger icon only on tablet (not on mobile) */}
       {isTablet && (
         <Box
           sx={{
@@ -148,7 +147,6 @@ function Sidebar({ activeTab, setActiveTab }) {
         </Box>
       )}
 
-      {/* Permanent Sidebar on Desktop */}
       {!isMobile && !isTablet && (
         <Box
           sx={{
@@ -160,7 +158,6 @@ function Sidebar({ activeTab, setActiveTab }) {
         </Box>
       )}
 
-      {/* Drawer only on tablet */}
       {isTablet && (
         <Drawer anchor="left" open={mobileOpen} onClose={toggleDrawer}>
           {renderSidebarContent()}
