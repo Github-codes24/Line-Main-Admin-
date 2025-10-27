@@ -158,8 +158,8 @@ const WithdrawRequestView = () => {
             {[
               { label: "Worker Name", value: withdraw.workerId?.name || "" },
               { label: "Withdraw Amount", value: `₹${displayAmount}` },
-            
-               {  label: "Withdraw On", value: withdraw.upiDetails?.upiId ||"N/A", },
+              {label: "Withdraw On",value: withdraw.payoutMethod === "Bank"? "Bank": withdraw.upiDetails?.upiId || "N/A",},
+
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-[16px] w-[488px] h-[40px]">
                 <label className="w-[151px] tt-[#0D2E28] font-medium text-[16px] leading-[100%]">
@@ -225,7 +225,7 @@ const WithdrawRequestView = () => {
               className={`w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] font-medium text-[16px] ${
                 displayStatus === "PENDING"
                   ? "text-[#FFCC00]"
-                  : displayStatus === "PROCESSED"
+                  : displayStatus === "SUCCESS"
                   ? "text-[#34C759]"
                   : displayStatus === "REJECTED"
                   ? "text-[#FF383C]"
