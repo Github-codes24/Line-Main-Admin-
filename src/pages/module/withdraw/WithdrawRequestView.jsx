@@ -41,56 +41,74 @@ const WithdrawRequestView = () => {
   const handleBack = () => navigate(-1);
 
   const handleApprove = async () => {
-    if (!withdraw) return;
-    const adminId = localStorage.getItem("adminId"); // get admin ID from storage
+  if (!withdraw) return;
+  const adminId = localStorage.getItem("adminId");
 
-    try {
-      setProcessingBtn("approve");
-      const res = await fetchData({
-        method: "POST",
-        url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
-        data: {
-          requestId: withdraw._id, // 
-          adminId,
-        },
-      });
-      if (res?.success) {
-        toast.success("Withdraw request approved");
-        getWithdraw();
-      } else toast.error(res?.message || "Failed to approve");
-    } catch (err) {
-      toast.error(err.message || "Error approving withdraw");
-    } finally {
-      setProcessingBtn("");
+  try {
+    setProcessingBtn("approve");
+    const res = await fetchData({
+      method: "POST",
+      url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
+      data: {
+        requestId: withdraw._id,
+        adminId,
+      },
+    });
+
+    if (!res?.success) {
+      toast.error(res?.message || "This payout has already been processed.");
+      return; // stop further execution
     }
-  };
+
+    toast.success("Withdraw request approved");
+    getWithdraw();
+  } catch (err) {
+    
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Error approving withdraw";
+    toast.error(errorMessage);
+  } finally {
+    setProcessingBtn("");
+  }
+};
+
 
   const handleReject = async () => {
-    if (!withdraw) return;
-    const adminId = localStorage.getItem("adminId");
+  if (!withdraw) return;
+  const adminId = localStorage.getItem("adminId");
 
-    try {
-      setProcessingBtn("reject");
-      const res = await fetchData({
-        method: "POST",
-        url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
-        data: {
-          requestId: withdraw._id,
-          adminId,
-        },
-      });
-      if (res?.success) {
-        toast.success("Withdraw request rejected");
-        getWithdraw();
-      } else toast.error(res?.message || "Failed to reject");
-    } catch (err) {
-      toast.error(err.message || "Error rejecting withdraw");
-    } finally {
-      setProcessingBtn("");
+  try {
+    setProcessingBtn("reject");
+    const res = await fetchData({
+      method: "POST",
+      url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
+      data: {
+        requestId: withdraw._id,
+        adminId,
+      },
+    });
+
+    if (!res?.success) {
+      toast.error(res?.message || "This payout has already been processed.");
+      return;
     }
-  };
 
-  // Loader in center for all devices
+    toast.success("Withdraw request rejected");
+    getWithdraw();
+  } catch (err) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Error rejecting withdraw";
+    toast.error(errorMessage);
+  } finally {
+    setProcessingBtn("");
+  }
+};
+
+  // Loader 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-[#E0E9E9] font-[Poppins] text-[#0D2E28]">
