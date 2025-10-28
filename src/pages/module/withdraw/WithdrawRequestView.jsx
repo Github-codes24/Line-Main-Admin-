@@ -41,56 +41,74 @@ const WithdrawRequestView = () => {
   const handleBack = () => navigate(-1);
 
   const handleApprove = async () => {
-    if (!withdraw) return;
-    const adminId = localStorage.getItem("adminId"); // get admin ID from storage
+  if (!withdraw) return;
+  const adminId = localStorage.getItem("adminId");
 
-    try {
-      setProcessingBtn("approve");
-      const res = await fetchData({
-        method: "POST",
-        url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
-        data: {
-          requestId: withdraw._id, // 
-          adminId,
-        },
-      });
-      if (res?.success) {
-        toast.success("Withdraw request approved");
-        getWithdraw();
-      } else toast.error(res?.message || "Failed to approve");
-    } catch (err) {
-      toast.error(err.message || "Error approving withdraw");
-    } finally {
-      setProcessingBtn("");
+  try {
+    setProcessingBtn("approve");
+    const res = await fetchData({
+      method: "POST",
+      url: `${conf.apiBaseUrl}/admin/payouts/process-payout`,
+      data: {
+        requestId: withdraw._id,
+        adminId,
+      },
+    });
+
+    if (!res?.success) {
+      toast.error(res?.message || "This payout has already been processed.");
+      return; // stop further execution
     }
-  };
+
+    toast.success("Withdraw request approved");
+    getWithdraw();
+  } catch (err) {
+    
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Error approving withdraw";
+    toast.error(errorMessage);
+  } finally {
+    setProcessingBtn("");
+  }
+};
+
 
   const handleReject = async () => {
-    if (!withdraw) return;
-    const adminId = localStorage.getItem("adminId");
+  if (!withdraw) return;
+  const adminId = localStorage.getItem("adminId");
 
-    try {
-      setProcessingBtn("reject");
-      const res = await fetchData({
-        method: "POST",
-        url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
-        data: {
-          requestId: withdraw._id,
-          adminId,
-        },
-      });
-      if (res?.success) {
-        toast.success("Withdraw request rejected");
-        getWithdraw();
-      } else toast.error(res?.message || "Failed to reject");
-    } catch (err) {
-      toast.error(err.message || "Error rejecting withdraw");
-    } finally {
-      setProcessingBtn("");
+  try {
+    setProcessingBtn("reject");
+    const res = await fetchData({
+      method: "POST",
+      url: `${conf.apiBaseUrl}/admin/payouts/reject-withdrawal`,
+      data: {
+        requestId: withdraw._id,
+        adminId,
+      },
+    });
+
+    if (!res?.success) {
+      toast.error(res?.message || "This payout has already been processed.");
+      return;
     }
-  };
 
-  // Loader in center for all devices
+    toast.success("Withdraw request rejected");
+    getWithdraw();
+  } catch (err) {
+    const errorMessage =
+      err?.response?.data?.message ||
+      err?.message ||
+      "Error rejecting withdraw";
+    toast.error(errorMessage);
+  } finally {
+    setProcessingBtn("");
+  }
+};
+
+  // Loader 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen bg-[#E0E9E9] font-[Poppins] text-[#0D2E28]">
@@ -158,8 +176,8 @@ const WithdrawRequestView = () => {
             {[
               { label: "Worker Name", value: withdraw.workerId?.name || "" },
               { label: "Withdraw Amount", value: `₹${displayAmount}` },
-            
-               {  label: "Withdraw On", value: withdraw.upiDetails?.upiId ||"N/A", },
+              {label: "Withdraw On",value: withdraw.payoutMethod === "Bank"? "Bank": withdraw.upiDetails?.upiId || "N/A",},
+
             ].map((item, i) => (
               <div key={i} className="flex items-center gap-[16px] w-[488px] h-[40px]">
                 <label className="w-[151px] tt-[#0D2E28] font-medium text-[16px] leading-[100%]">
@@ -225,7 +243,7 @@ const WithdrawRequestView = () => {
               className={`w-[309px] h-[40px] rounded-[8px] border border-[#001580] px-[16px] py-[8px] font-medium text-[16px] ${
                 displayStatus === "PENDING"
                   ? "text-[#FFCC00]"
-                  : displayStatus === "PROCESSED"
+                  : displayStatus === "SUCCESS"
                   ? "text-[#34C759]"
                   : displayStatus === "REJECTED"
                   ? "text-[#FF383C]"
