@@ -69,12 +69,14 @@ const AdminLogin = () => {
         className="bg-[#001580] font-myfont text-white py-2 rounded-lg shadow-md hover:bg-[#041880] transition w-[300px] sm:w-[80%] mt-2"
       >
         Log In
-      </motion.button>
+      </motion.button> 
     </form>
   </motion.div>
 </div>
 
     );
 };
+
+
 
 export default AdminLogin;

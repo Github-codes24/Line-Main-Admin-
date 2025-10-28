@@ -14,7 +14,7 @@ const useAuth = () => {
     const [adminProfile, setAdminProfile] = useState();
     const [fetchData] = useFetch();
 
-    // 1️⃣ Register (Request OTP)
+    // 1️ Register (Request OTP)
     const register = async (payload) => {
         setLoading(true);
         try {
@@ -33,7 +33,7 @@ const useAuth = () => {
         }
     };
 
-    // 2️⃣ Generate OTP
+    // 2️ Generate OTP
     const generateOtp = async (payload) => {
         setLoading(true);
         try {
@@ -57,7 +57,7 @@ const useAuth = () => {
         }
     };
 
-    // 3️⃣ Regenerate OTP
+    // 3️ Regenerate OTP
     // const regenerateOtp = async (userId) => {
     //     setLoading(true);
     //     try {
@@ -293,7 +293,7 @@ const useAuth = () => {
         }
     };
 
-    // 6️⃣ Logout
+    // 6️ Logout
     const logout = () => {
         setUserInfo({isAuthenticated: false});
         sessionStorage.clear();
@@ -312,6 +312,7 @@ const useAuth = () => {
         adminProfile,
         updateAdminProfile,
         logout,
+        
     };
 };
 

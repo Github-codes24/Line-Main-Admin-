@@ -431,7 +431,6 @@ const CustomerList = () => {
           </div>
         )}
 
-
         {/* Pagination Component */}
         <Pagination
           currentPage={currentPage}
