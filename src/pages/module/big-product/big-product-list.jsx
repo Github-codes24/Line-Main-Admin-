@@ -684,7 +684,7 @@ export default function BigProductList() {
                                         disabled={isLoading}
                                         className={`px-3 py-1 rounded ${
                                             pageNum === currentPage
-                                                ? "bg-blue-600 text-white"
+                                                ? "bg-[#001580] text-white"
                                                 : "bg-white border border-gray-300 hover:bg-gray-50"
                                         } disabled:opacity-50 disabled:cursor-not-allowed`}
                                     >
