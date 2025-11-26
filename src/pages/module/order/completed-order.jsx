@@ -1,368 +1,258 @@
-import React from "react";
-import {useNavigate} from "react-router-dom";
-import rectangle from "../../../assets/images/Rectangle.png";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import useFetch from "../../../hook/useFetch";
+import conf from "../../../config";
 
 const CompletedOrder = () => {
-    const navigate = useNavigate();
-    return (
-        <div className="p-2 font-[Poppins]">
-            <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg border shadow">
-                <button onClick={() => navigate(-1)} className="text-xl text-black hover:text-gray-600">
-                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
-                            stroke="#0D2E28"
-                            stroke-width="3"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        <path
-                            d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
-                            stroke="#0D2E28"
-                            stroke-width="3"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                        <path
-                            d="M26.6663 20H13.333"
-                            stroke="#0D2E28"
-                            stroke-width="3"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                        ></path>
-                    </svg>
-                </button>
-                <h1 className="text-xl font-semibold">View Order</h1>
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [fetchData] = useFetch();
+
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const getOrderDetails = async () => {
+    try {
+      const result = await fetchData({
+        method: "GET",
+        url: `${conf.apiBaseUrl}/admin/order/${id}`,
+      });
+
+      if (result?.success) {
+        setOrder(result.data);
+      } else {
+        console.error(result?.message || "Failed to fetch order");
+      }
+    } catch (error) {
+      console.error("Error fetching order details:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getOrderDetails();
+  }, [id]);
+
+  if (loading)
+    return <p className="text-center text-lg mt-10">Loading...</p>;
+  if (!order)
+    return <p className="text-center text-lg mt-10 text-red-500">Order not found</p>;
+
+  return (
+    <div className="w-full min-h-screen font-[Poppins]">
+      {/* Header */}
+      <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg border shadow w-full">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-xl text-black hover:text-gray-600"
+        >
+          <svg
+            width="32"
+            height="32"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M19.9997 36.6673C29.2044 36.6673 36.6663 29.2054 36.6663 20.0007C36.6663 10.7959 29.2044 3.33398 19.9997 3.33398C10.7949 3.33398 3.33301 10.7959 3.33301 20.0007C3.33301 29.2054 10.7949 36.6673 19.9997 36.6673Z"
+              stroke="#0D2E28"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M19.9997 13.334L13.333 20.0007L19.9997 26.6673"
+              stroke="#0D2E28"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M26.6663 20H13.333"
+              stroke="#0D2E28"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+        <h1 className="text-xl font-semibold text-[#0D2E28]">Completed Order</h1>
+      </div>
+
+      {/* Main Content */}
+      <div className="bg-white p-4 rounded-lg border shadow-sm w-full">
+        <div className="border border-[#616666] p-4 rounded-lg h-screen overflow-y-auto hide-scrollbar">
+          
+          {/* Order Number */}
+          <div className="grid grid-cols-4 gap-4 mb-2 mt-4 ml-10">
+            <label className="col-span-1 text-[#0D2E28] font-bold">Order Number :</label>
+            <input
+              disabled
+              value={order.orderId || ""}
+              className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#e3e5eb] border border-[#001580]"
+            />
+          </div>
+
+          {/* Customer Details */}
+          <div className="mb-6 ml-10">
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Customer Details</h2>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Customer Name :</label>
+              <input
+                disabled
+                value={order.customer?.name || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Email/Phone Number :</label>
+              <input
+                disabled
+                value={order.customer?.contact || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Address :</label>
+              <textarea
+                disabled
+                value={order.deliveryAddress?.fullAddress || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580] h-24"
+              />
+            </div>
+          </div>
+
+          <hr className="my-6 col-span-2 border-1 border-black ml-10" />
+
+          {/* Worker Details */}
+          <div className="mb-6 ml-10">
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Worker Details</h2>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Worker Name :</label>
+              <input
+                disabled
+                value={order.worker?.name || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Email/Phone Number :</label>
+              <input
+                disabled
+                value={order.worker?.contact || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+          </div>
+
+          <hr className="my-6 col-span-2 border-1 border-black ml-10" />
+
+          {/* Service Details */}
+          <div className="mb-6 ml-10">
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Service Details</h2>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Service Required :</label>
+              <input
+                disabled
+                value={order.specificServiceName || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Date :</label>
+              <input
+                disabled
+                value={order.serviceDate ? new Date(order.serviceDate).toLocaleDateString() : ""}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
             </div>
 
-            <div className="bg-white p-4 rounded-lg border shadow-sm">
-                <div className="border border-[#616666] p-4 rounded-lg h-screen overflow-y-auto hide-scrollbar">
-                    <div className="grid grid-cols-4 gap-4 mb-2 mt-4 ml-10">
-                        <label className="col-span-1 text-black font-bold">Order Number :</label>
-                        <input
-                            disabled
-                            value="ORD8468163287164"
-                            className="col-span-1 px-4 py-2 font-bold text-black rounded-lg bg-[#CED4F2] border border-[#001580]"
-                        />
-                    </div>
+            {/* Product List Table */}
+            <div className="grid grid-cols-4 gap-4 items-start">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Product List :</label>
+              
+              <div className="col-span-2">
+                <table className="border-collapse border border-[#0D2E28] text-[#0D2E28] w-full">
+                  <thead>
+                    <tr className="bg-gray-50">
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-12">#</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-left font-medium">Products</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-20">Price</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-16">Qty</th>
+                      <th className=" border-[#0D2E28] px-3 py-2 text-center font-medium w-24">Amount</th>
+                    </tr>
+                  </thead>
 
-                    <div className="mb-6 ml-10">
-                        <h2 className="font-semibold text-lg mb-4">Customer Details</h2>
+                  
+                  <tbody>
+                    {order.products?.length > 0 ? (
+                      order.products.map((prod, idx) => (
+                        <tr key={prod._id || idx}>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">{idx + 1}</td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-left">{prod.productName || "N/A"}</td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                            {prod.priceAtPurchase || 0}
+                          </td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                            {prod.quantity || 0}
+                          </td>
+                          <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                            {(prod.priceAtPurchase || 0) * (prod.quantity || 0)}
+                          </td>
+                        </tr>
+                      ))
+                    )  : (
+                      <tr>
+                        <td colSpan="5" className="border border-[#0D2E28] px-3 py-2 text-gray-500 text-center">
+                          No products found
+                        </td>
+                      </tr>
+                    )}
 
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Customer Name :</label>
-                            <input
-                                disabled
-                                value="Suresh Raina"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Email/Phone Number :</label>
-                            <input
-                                disabled
-                                value="+91-9876543210"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4">
-                            <label className="col-span-1 font-medium">Address :</label>
-                            <textarea
-                                disabled
-                                value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-                    </div>
-                    <hr className="my-6 w-8/12" />
-
-                    <div className="mb-6 ml-10">
-                        <h2 className="font-semibold text-lg mb-4">Worker Details</h2>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Worker Name :</label>
-                            <input
-                                disabled
-                                value="Ashok Raina"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Email/Phone Number :</label>
-                            <input
-                                disabled
-                                value="+91-9876543210"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            <label className="col-span-1 font-medium">Address :</label>
-                            <textarea
-                                disabled
-                                value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-                    </div>
-                    <hr className="my-6 w-8/12" />
-
-                    <div className="mb-6 ml-10">
-                        <h2 className="font-semibold text-lg mb-4">Shopkeeper Details</h2>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Shop Name :</label>
-                            <input
-                                disabled
-                                value="Ajit Hardware"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Shopkeeper Name :</label>
-                            <input
-                                disabled
-                                value="Ajit Raina"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            <label className="col-span-1 font-medium">Email/Phone Number :</label>
-                            <input
-                                disabled
-                                value="+91-9876543210"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            <label className="col-span-1 font-medium">Address :</label>
-                            <textarea
-                                disabled
-                                value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-                    </div>
-
-                    <hr className="my-6 w-8/12" />
-
-                    <div className="mb-6 ml-10">
-                        <h2 className="font-semibold text-lg mb-4">Service Details</h2>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Service Required :</label>
-                            <input
-                                disabled
-                                value="Electrician"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Date :</label>
-                            <input
-                                disabled
-                                value="16/07/2024"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            <label className="col-span-1 font-medium">Photos :</label>
-                            <div className="col-span-2">
-                                <img src={rectangle} alt="uploaded" className="w-20 h-20 rounded-lg object-cover" />
-                            </div>
-                        </div>
-
-                        <div className="grid  grid-cols-3 gap-4">
-                            <label className="col-span-1 font-medium">Product List :</label>
-                            <br />
-
-                            <div className="col-span-3 overflow-x-auto">
-                                <table className=" border border-black">
-                                    <thead className="">
-                                        <tr>
-                                            <th className="border-b border-black px-4 py-2 font-normal">#</th>
-                                            <th className="border-b border-black px-4 py-2 font-normal">Products</th>
-                                            <th className="border-b border-black px-4 py-2 font-normal">Price</th>
-                                            <th className="border-b border-black px-4 py-2 font-normal">Qty</th>
-                                            <th className="border-b border-black px-4 py-2 font-normal">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="px-4 py-2">1</td>
-                                            <td className="px-4 py-2">PVC Wire</td>
-                                            <td className="px-4 py-2">400</td>
-                                            <td className="px-4 py-2">1</td>
-                                            <td className="px-4 py-2">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-4 py-2">2</td>
-                                            <td className="px-4 py-2">LED Light</td>
-                                            <td className="px-4 py-2">80</td>
-                                            <td className="px-4 py-2">5</td>
-                                            <td className="px-4 py-2">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-4 py-2">3</td>
-                                            <td className="px-4 py-2">Switches</td>
-                                            <td className="px-4 py-2">10</td>
-                                            <td className="px-4 py-2">7</td>
-                                            <td className="px-4 py-2">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-4 py-2">4</td>
-                                            <td className="px-4 py-2">LED light</td>
-                                            <td className="px-4 py-2">120</td>
-                                            <td className="px-4 py-2">3</td>
-                                            <td className="px-4 py-2">400</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td
-                                                colSpan="4"
-                                                className="border-t border-black px-4 py-2 text-right font-semibold"
-                                            >
-                                                Final Amount
-                                            </td>
-                                            <td className="border-t border-black px-4 py-2 font-semibold">6,000</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <hr className="my-6 w-8/12" />
-
-                    <div className="mb-6 ml-10">
-                        <h2 className="font-semibold text-lg mb-4">Payment Details</h2>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Total Bill :</label>
-                            <input
-                                disabled
-                                value="6000"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Payment Method :</label>
-                            <input
-                                disabled
-                                value="Online"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-
-                        <div className="grid grid-cols-4 gap-4 mb-2">
-                            <label className="col-span-1 font-medium">Transaction ID :</label>
-                            <input
-                                disabled
-                                value="TRNS6a8d64HGD6S4"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580]"
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 gap-4">
-                            <label className="col-span-1 font-medium">Payment Status :</label>
-                            <input
-                                disabled
-                                value="Paid"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] text-[#22C55E]"
-                            />
-                        </div>
-                        <hr className="my-6 w-8/12" />
-                        <div className="grid grid-cols-4 gap-4">
-                            <label className="col-span-1 font-semibold text-lg">
-                                Customer <br />
-                                Feedback :
-                            </label>
-                            <input
-                                disabled
-                                value="Work Done"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] text-[#22C55E]"
-                            />
-                        </div>
-                        <hr className="my-6 w-8/12" />
-                        <div className="grid grid-cols-4 gap-4">
-                            <label className="col-span-1 font-semibold text-lg">Order Status :</label>
-                            <input
-                                disabled
-                                value="Completed"
-                                className="col-span-1 px-4 py-2 rounded-lg bg-[#CED4F2] border border-[#001580] text-[#22C55E]"
-                            />
-                        </div>
-
-                        <hr className="my-6 w-8/12" />
-
-                        <div className="grid grid-cols-4 gap-4 mb-4">
-                            <label className="col-span-1 font-semibold text-lg">
-                                Bill Uploaded <br />
-                                By Shopkeeper :
-                            </label>
-                            <div className="col-span-2">
-                                <img src={rectangle} alt="uploaded" className="w-60 h-100 rounded-lg object-cover" />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 mt-6">
-                            <div className="col-span-2 overflow-x-auto">
-                                <table className="border border-black">
-                                    <thead className="">
-                                        <tr>
-                                            <th className="border-b border-black px-6 py-2 font-normal">Products</th>
-                                            <th className="border-b border-black px-6 py-2 font-normal">Price</th>
-                                            <th className="border-b border-black px-6 py-2 font-normal">Qty</th>
-                                            <th className="border-b border-black px-6 py-2 font-normal">Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="px-6 py-2 border-b border-black">PVC Wire</td>
-                                            <td className="px-6 py-2 border-b border-black">400</td>
-                                            <td className="px-6 py-2 border-b border-black">1</td>
-                                            <td className="px-6 py-2 border-b border-black">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-6 py-2 border-b border-black">LED Light</td>
-                                            <td className="px-6 py-2 border-b border-black">80</td>
-                                            <td className="px-6 py-2 border-b border-black">5</td>
-                                            <td className="px-6 py-2 border-b border-black">400</td>
-                                        </tr>
-                                        <tr>
-                                            <td className="px-6 py-2 border-b border-black">Switches</td>
-                                            <td className="px-6 py-2 border-b border-black">10</td>
-                                            <td className="px-6 py-2 border-b border-black">7</td>
-                                            <td className="px-6 py-2 border-b border-black">400</td>
-                                        </tr>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td
-                                                colSpan="3"
-                                                className="border-t border-black px-6 py-2 text-right font-semibold"
-                                            >
-                                                Final Amount
-                                            </td>
-                                            <td className="border-t border-black px-6 py-2 font-semibold">6,000</td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    {/* Final Amount Row */}
+                    <tr className="font-medium bg-gray-50">
+                      <td
+                        colSpan="4"
+                        className="border border-[#0D2E28] px-3 py-2 text-left"
+                      >
+                        Final Amount
+                      </td>
+                      <td className="border border-[#0D2E28] px-3 py-2 text-center">
+                        {order?.finalAmount || 0}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
+
+          {/* Payment Details */}
+          <div className="mb-6 ml-10">
+            <h2 className="font-semibold text-lg mb-4 text-[#0D2E28]">Payment Details</h2>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Payment Method :</label>
+              <input
+                disabled
+                value={order.paymentMethod || "N/A"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580]"
+              />
+            </div>
+            <div className="grid grid-cols-4 gap-4 mb-2">
+              <label className="col-span-1 font-medium text-[#0D2E28]">Payment Status :</label>
+              <input
+                disabled
+                value={order.paymentStatus || "Paid"}
+                className="col-span-1 px-4 py-2 rounded-lg bg-[#e3e5eb] border border-[#001580] text-green-600"
+              />
+            </div>
+          </div>
+
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default CompletedOrder;

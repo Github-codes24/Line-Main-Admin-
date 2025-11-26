@@ -92,26 +92,28 @@ const TabAdd = () => {
         await addTab(tabData);
     };
     return (
-        <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        // <div className="flex flex-col font-medium text-[#0D2E28] p-2 h-full font-[Poppins]">
+        <div className="w-full min-h-screen font-medium text-[#0D2E28] font-[Poppins] ">
             <ToastContainer />
-            <div className="flex items-center bg-white border rounded-lg shadow p-3 mb-4">
+            <div className="flex items-center bg-white border rounded-lg shadow p-4 mb-4">
                 <img src="/Back Button (1).png" onClick={handleBack} className="mr-3 cursor-pointer w-8" alt="Back" />
                 <h2 className="text-lg font-semibold">Add New Tab</h2>
             </div>
             <div className="bg-white p-4 rounded-lg shadow-md h-screen">
                 <form
                     onSubmit={handleSubmit}
-                    className="bg-white border rounded-lg p-6 space-y-5 h-[85%] border-[#616666]"
+                    className="bg-white border rounded-lg p-6 space-y-5 h-[92%] border-[#616666]"
                 >
                     <div className="flex items-center gap-[24px]">
                         <label className="w-1/4 font-medium">Tab Name:</label>
-                        <input
-                            type="text"
-                            value={tabName}
-                            onChange={(e) => setTabName(e.target.value)}
-                            placeholder="Enter Tab Name"
-                            className="flex-1 border  rounded-lg px-3 py-3 border-[#001580]  bg-[#CED4F2] placeholder:text-black "
-                        />
+                      <input
+    type="text"
+    value={tabName}
+    onChange={(e) => setTabName(e.target.value)}
+    placeholder="Enter Tab Name"
+    className="flex-1 rounded-lg px-3 py-3 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-[#0D2E28]"
+/>
+
                     </div>
                     {subTabs.map((sub, index) => (
                         <div key={sub.id} className="flex items-center gap-[24px]">
@@ -122,7 +124,7 @@ const TabAdd = () => {
                                     value={sub.name}
                                     onChange={(e) => handleChangeSubTab(sub.id, e.target.value)}
                                     placeholder="Enter Sub Tab Name"
-                                    className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-black"
+                                    className="w-full rounded-lg px-3 py-3 pr-8 outline-none border bg-[#CED4F2] border-[#001580] placeholder:text-[#0D2E28]"
                                 />
                                 {subTabs.length > 1 && (
                                     <X
@@ -163,6 +165,8 @@ const TabAdd = () => {
                 </div>
             </div>
         </div>
+
+
     );
 };
 export default TabAdd;

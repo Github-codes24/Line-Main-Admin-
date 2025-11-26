@@ -1,4 +1,4 @@
-// src/pages/module/set-charges-of-worker/AddCommission.jsx
+// src/pages/module/set-limit-amount/AddLimitAmount.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
@@ -7,19 +7,19 @@ import "react-toastify/dist/ReactToastify.css";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
 
-const AddCommission = () => {
+const AddLimitAmount = () => {
   const navigate = useNavigate();
   const [fetchData] = useFetch();
 
-  const [category, setCategory] = useState(""); // selected category ID
-  const [subCategory, setSubCategory] = useState(""); // selected sub-category ID
-  const [charges, setCharges] = useState("");
-  const [roles, setRoles] = useState([]); // full roles data from API
-  const [categories, setCategories] = useState([]); // unique categories for dropdown
+  const [category, setCategory] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [limitAmount, setLimitAmount] = useState("");
+  const [roles, setRoles] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch roles and categories
+  // Fetch categories + subcategories
   useEffect(() => {
     const loadRoles = async () => {
       try {
@@ -27,74 +27,75 @@ const AddCommission = () => {
           method: "GET",
           url: `${conf.apiBaseUrl}/admin/tabs/worker-roles`,
         });
+
         if (res?.success) {
           setRoles(res.roles || []);
 
           // Extract unique categories
-          const uniqueCategories = [
-            ...new Map(
-              res.roles.map((r) => [r.category, r]) // key by category ID
-            ).values(),
-          ];
+          const uniqueCategories = [];
+          res.roles.forEach((role) => {
+            if (role.category && !uniqueCategories.some(c => c.category === role.category)) {
+              uniqueCategories.push(role);
+            }
+          });
           setCategories(uniqueCategories);
         } else {
           toast.error("Failed to load categories");
         }
       } catch (err) {
         console.error("Error loading roles:", err);
-        toast.error("Failed to load categories");
+        toast.error("Failed to load data");
       }
     };
     loadRoles();
   }, [fetchData]);
 
-  // Filter sub-categories when category changes
+  // Update subcategories when category changes
   useEffect(() => {
     if (category) {
-      const filtered = roles.filter((r) => r.category === category);
+      const filtered = roles.filter(
+        (r) => r.category === category && r.subCategory
+      );
       setFilteredSubCategories(filtered);
-      setSubCategory(""); // reset sub-category selection
+      setSubCategory(""); // reset subcategory selection
     } else {
       setFilteredSubCategories([]);
       setSubCategory("");
     }
   }, [category, roles]);
 
-  // Navigate Back
-  const handleBack = () => navigate("/admin/set-charges-of-worker");
+  const handleBack = () => navigate("/admin/set-limit-amount");
 
-  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!category || charges === "" || (filteredSubCategories.length > 0 && !subCategory)) {
+    if (!category || !limitAmount) {
       toast.warning("Please fill all required fields");
       return;
     }
 
+    const payload = {
+      categoryId: category,
+      subCategoryId: subCategory || null,
+      nagativeLimit: Number(limitAmount),
+    };
+
     setSubmitting(true);
     try {
-      const payload = {
-        categoryId: category,
-        charges: Number(charges),
-      };
-
-      if (subCategory) payload.subCategoryId = subCategory;
-
       const res = await fetchData({
         method: "POST",
-        url: `${conf.apiBaseUrl}/admin/worker-charges/add-worker-charges`,
+        url: `${conf.apiBaseUrl}/admin/limit-amount`,
         data: payload,
       });
 
       if (res?.success) {
-        toast.success("Charges added successfully");
-        setTimeout(() => navigate("/admin/set-charges-of-worker"), 1500);
+        toast.success("Limit added successfully!");
+        setTimeout(() => navigate("/admin/set-limit-amount"), 1500);
       } else {
-        toast.error(res?.message || "Failed to add charges");
+        toast.error(res?.message || "Failed to add limit");
       }
     } catch (err) {
-      console.error("Error submitting data:", err);
-      toast.error(err.message || "Something went wrong!");
+      console.error("Error adding limit:", err);
+      toast.error("Something went wrong!");
     } finally {
       setSubmitting(false);
     }
@@ -111,16 +112,16 @@ const AddCommission = () => {
             className="mr-3 cursor-pointer w-8"
             alt="Back"
           />
-          <h2 className="text-lg font-medium text-[#0D2E28]">Add Charges</h2>
+          <h2 className="text-lg font-medium text-[#0D2E28]">Add Limit Amount</h2>
         </div>
 
-        {/* Form Container */}
+        {/* Form */}
         <div className="bg-white p-4 rounded-lg shadow min-h-screen">
           <form
             onSubmit={handleSubmit}
             className="border border-[#616666] rounded-lg p-6 space-y-6 min-h-screen"
           >
-            {/* Category Dropdown */}
+            {/* Category */}
             <div className="flex items-center gap-[70px]">
               <label className="w-1/4 font-medium text-[#0D2E28]">Category:</label>
               <div className="relative flex-1">
@@ -136,38 +137,45 @@ const AddCommission = () => {
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-[#0D2E28]" />
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
               </div>
             </div>
 
-            {/* Sub-Category Dropdown */}
-            <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Sub Category:</label>
-              <div className="relative flex-1">
-                <select
-                  value={subCategory}
-                  onChange={(e) => setSubCategory(e.target.value)}
-                  className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
-                >
-                  <option value="">Select</option>
-                  {filteredSubCategories.map((sub) => (
-                    <option key={sub.subCategory || sub.category} value={sub.subCategory || ""}>
-                      {sub.name}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none text-[#0D2E28]" />
-              </div>
-            </div>
+            {/* Sub-Category (always same style, disabled until category selected) */}
+            {/* Sub-Category (always same style) */}
+<div className="flex items-center gap-[70px]">
+  <label className="w-1/4 font-medium text-[#0D2E28]">Sub Category:</label>
+  <div className="relative flex-1">
+    <select
+      value={subCategory}
+      onChange={(e) => {
+        if (category) setSubCategory(e.target.value);
+      }}
+      className="appearance-none w-full font-medium h-[48px] px-4 pr-10 bg-[#CED4F2] text-[#0D2E28] border border-[#001580] rounded-lg outline-none"
+    >
+      <option value="">Select</option>
+      {category &&
+        filteredSubCategories.map((sub) => (
+          <option key={sub.subCategory} value={sub.subCategory}>
+            {sub.name}
+          </option>
+        ))}
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#0D2E28]" />
+  </div>
+</div>
 
-            {/* Charges Input */}
+
+            {/* Wallet Balance Negative Limit */}
             <div className="flex items-center gap-[70px]">
-              <label className="w-1/4 font-medium text-[#0D2E28]">Set Charges:</label>
+              <label className="w-1/4 font-medium text-[#0D2E28]">
+                Wallet Balance Negative Limit:
+              </label>
               <input
                 type="number"
-                value={charges}
-                onChange={(e) => setCharges(e.target.value)}
-                placeholder="Enter Charges"
+                value={limitAmount}
+                onChange={(e) => setLimitAmount(e.target.value)}
+                placeholder="₹1000"
                 className="flex-1 border font-medium rounded-lg px-3 py-3 border-[#001580] bg-[#CED4F2] placeholder:text-[#0D2E28] outline-none"
               />
             </div>
@@ -186,7 +194,7 @@ const AddCommission = () => {
               type="submit"
               onClick={handleSubmit}
               disabled={submitting}
-              className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580] disabled:opacity-50"
+              className="w-[200px] bg-[#001580] text-white px-6 py-2 rounded-lg hover:bg-[#001580]"
             >
               {submitting ? "Adding..." : "Add"}
             </button>
@@ -198,4 +206,4 @@ const AddCommission = () => {
   );
 };
 
-export default AddCommission;
+export default AddLimitAmount;

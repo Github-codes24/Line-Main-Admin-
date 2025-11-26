@@ -656,13 +656,15 @@ export default function BigProductList() {
             </div>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {totalPages >= 1 && (
                 <div className="flex justify-between items-center mt-4 bg-gray-100 px-3 py-2 rounded-lg text-sm">
                     <span>
                         Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                         {Math.min(currentPage * itemsPerPage, totalProducts)} of {totalProducts} Entries
                     </span>
+
                     <div className="flex items-center space-x-2">
+                        {/* Previous Button */}
                         <button
                             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1 || isLoading}
@@ -671,19 +673,10 @@ export default function BigProductList() {
                             Previous
                         </button>
 
+                        {/* Page Numbers */}
                         <div className="flex space-x-1">
-                            {Array.from({length: Math.min(totalPages, 5)}, (_, i) => {
-                                let pageNum;
-                                if (totalPages <= 5) {
-                                    pageNum = i + 1;
-                                } else if (currentPage <= 3) {
-                                    pageNum = i + 1;
-                                } else if (currentPage >= totalPages - 2) {
-                                    pageNum = totalPages - 4 + i;
-                                } else {
-                                    pageNum = currentPage - 2 + i;
-                                }
-
+                            {Array.from({length: totalPages}, (_, i) => {
+                                const pageNum = i + 1;
                                 return (
                                     <button
                                         key={pageNum}
@@ -701,6 +694,7 @@ export default function BigProductList() {
                             })}
                         </div>
 
+                        {/* Next Button */}
                         <button
                             onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages || isLoading}

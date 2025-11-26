@@ -1,24 +1,27 @@
-import React from "react";
-import {useRecoilValue, useSetRecoilState} from "recoil";
-import {authAtom} from "../state/auth/authenticationState";
-import {Navigate, Outlet} from "react-router-dom";
+// src/routes/ProtectedRoute.js
+import React, { useEffect } from "react";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { authAtom } from "../state/auth/authenticationState";
+import { Navigate, Outlet } from "react-router-dom";
 
-const ProtectedRoute = () => {
-    const {isAuthenticated} = useRecoilValue(authAtom);
-    const setAuthState = useSetRecoilState(authAtom);
-    const token = sessionStorage.getItem("token");
-    const isAdminLogin = sessionStorage.getItem("isAdminLogin") === "true";
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useRecoilValue(authAtom);
+  const setAuthState = useSetRecoilState(authAtom);
 
-    // If we have valid session data but Recoil state is lost, restore it
-    if (token && isAdminLogin && !isAuthenticated) {
-        setAuthState({isAuthenticated: true});
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
+
+  useEffect(() => {
+    if (token && !isAuthenticated) {
+      setAuthState({ isAuthenticated: true, token });
     }
+  }, [token, isAuthenticated, setAuthState]);
 
-    if (token && isAdminLogin) {
-        return <Outlet />;
-    } else {
-        return <Navigate to="/" replace />;
-    }
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children || <Outlet />;
 };
 
 export default ProtectedRoute;
