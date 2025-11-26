@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
-import { Eye, Trash2 } from "lucide-react";
-import { Button } from "../../../components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { toast, ToastContainer } from "react-toastify";
+import {useState, useEffect} from "react";
+import {Eye, Trash2} from "lucide-react";
+import {Button} from "../../../components/ui/button";
+import {useNavigate} from "react-router-dom";
+import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import pvc from "../../../assets/images/pvc.png";
-import { Box, Chip, Checkbox, FormGroup, FormControlLabel, Popover } from "@mui/material";
-import { FilterIcon } from "../../../assets/CommonAssets";
+import {Box, Chip, Checkbox, FormGroup, FormControlLabel, Popover, IconButton} from "@mui/material";
+import {FilterIcon} from "../../../assets/CommonAssets";
 import useFetch from "../../../hook/useFetch";
 import conf from "../../../config";
+import {FiEdit} from "react-icons/fi";
 
 const statusColor = {
     "Add By Admin": "text-blue-500",
-    "Approved": "text-green-500",
-    "Pending": "text-yellow-500",
-    "Active": "text-green-500",
-    "Inactive": "text-red-500",
+    Approved: "text-green-500",
+    Pending: "text-yellow-500",
+    Active: "text-green-500",
+    Inactive: "text-red-500",
 };
 
 export default function BigProductList() {
@@ -84,7 +85,7 @@ export default function BigProductList() {
 
             if (result.success || result.data) {
                 const tabsData = result.data || result.tabs || [];
-                const categoryOptions = tabsData.map(tab => ({
+                const categoryOptions = tabsData.map((tab) => ({
                     id: tab.id || tab._id,
                     name: tab.tabName || tab.name,
                 }));
@@ -92,18 +93,18 @@ export default function BigProductList() {
             } else {
                 // Fallback to hardcoded categories if API fails
                 setCategories([
-                    { id: 'electrician', name: 'Electrician' },
-                    { id: 'plumber', name: 'Plumber' },
-                    { id: 'painter', name: 'Painter' }
+                    {id: "electrician", name: "Electrician"},
+                    {id: "plumber", name: "Plumber"},
+                    {id: "painter", name: "Painter"},
                 ]);
             }
         } catch (error) {
-            console.error('Error fetching categories:', error);
+            console.error("Error fetching categories:", error);
             // Fallback to hardcoded categories
             setCategories([
-                { id: 'electrician', name: 'Electrician' },
-                { id: 'plumber', name: 'Plumber' },
-                { id: 'painter', name: 'Painter' }
+                {id: "electrician", name: "Electrician"},
+                {id: "plumber", name: "Plumber"},
+                {id: "painter", name: "Painter"},
             ]);
         }
     };
@@ -119,16 +120,16 @@ export default function BigProductList() {
             if (result.success || result.data) {
                 const tabData = result.data || result.tab || result;
                 const subTabs = tabData.subTabNames || tabData.subTabs || [];
-                const subCats = subTabs.map(subTab => ({
+                const subCats = subTabs.map((subTab) => ({
                     name: subTab.name || subTab,
-                    value: subTab.name || subTab
+                    value: subTab.name || subTab,
                 }));
                 setSubCategories(subCats);
             } else {
                 setSubCategories([]);
             }
         } catch (error) {
-            console.error('Error fetching sub-categories:', error);
+            console.error("Error fetching sub-categories:", error);
             setSubCategories([]);
         }
     };
@@ -144,23 +145,23 @@ export default function BigProductList() {
             });
 
             if (searchTerm.trim()) {
-                queryParams.append('search', searchTerm.trim());
+                queryParams.append("search", searchTerm.trim());
             }
 
             if (appliedFilters.length > 0) {
                 // For multiple categories, we'll make separate API calls or use the first one
                 // Based on your API example, it seems to support single category filtering
-                queryParams.append('productCategory', appliedFilters[0]);
+                queryParams.append("productCategory", appliedFilters[0]);
             }
 
             if (approvalStatusFilter.trim()) {
-                console.log('Sending approvalStatus filter:', approvalStatusFilter.trim());
-                queryParams.append('approvalStatus', approvalStatusFilter.trim());
+                console.log("Sending approvalStatus filter:", approvalStatusFilter.trim());
+                queryParams.append("approvalStatus", approvalStatusFilter.trim());
             }
 
             if (subCategoryFilter.trim()) {
-                console.log('Sending productSubCategory filter:', subCategoryFilter.trim());
-                queryParams.append('productSubCategory', subCategoryFilter.trim());
+                console.log("Sending productSubCategory filter:", subCategoryFilter.trim());
+                queryParams.append("productSubCategory", subCategoryFilter.trim());
             }
 
             const result = await fetchData({
@@ -168,8 +169,8 @@ export default function BigProductList() {
                 url: `${conf.apiBaseUrl}/admin/big-products?${queryParams.toString()}`,
             });
 
-            console.log('API Response:', result);
-            console.log('Query URL:', `${conf.apiBaseUrl}/admin/big-products?${queryParams.toString()}`);
+            console.log("API Response:", result);
+            console.log("Query URL:", `${conf.apiBaseUrl}/admin/big-products?${queryParams.toString()}`);
 
             if (result) {
                 // Extract products data from response - handle different response structures
@@ -188,7 +189,7 @@ export default function BigProductList() {
                 } else if (result.products && Array.isArray(result.products)) {
                     // Direct products property: {products: [...]}
                     productsData = result.products;
-                } else if (result.data && typeof result.data === 'object' && !Array.isArray(result.data)) {
+                } else if (result.data && typeof result.data === "object" && !Array.isArray(result.data)) {
                     // Check if data object has any array property
                     const dataKeys = Object.keys(result.data);
                     for (const key of dataKeys) {
@@ -199,85 +200,92 @@ export default function BigProductList() {
                     }
                 }
 
-                console.log('Extracted products data:', productsData);
-                console.log('Products data length:', productsData.length);
+                console.log("Extracted products data:", productsData);
+                console.log("Products data length:", productsData.length);
 
                 // Ensure productsData is an array
                 if (!Array.isArray(productsData)) {
-                    console.warn('Products data is not an array:', productsData);
-                    console.warn('Full result object:', result);
+                    console.warn("Products data is not an array:", productsData);
+                    console.warn("Full result object:", result);
                     productsData = [];
                 }
 
                 // Normalize product data - only include safe, primitive values
-                const normalizedProducts = productsData.map(product => {
-                    const rawStatus = product.status || product.approvalStatus || 'pending';
-                    console.log('Raw product status from API:', rawStatus, 'for product:', product.productName || product.name);
+                const normalizedProducts = productsData.map((product) => {
+                    const rawStatus = product.status || product.approvalStatus || "pending";
+                    console.log(
+                        "Raw product status from API:",
+                        rawStatus,
+                        "for product:",
+                        product.productName || product.name
+                    );
 
                     // Get category name from ID
-                    let categoryName = 'Unknown Category';
+                    let categoryName = "Unknown Category";
                     if (product.productCategory || product.category) {
                         const categoryId = product.productCategory || product.category;
-                        if (typeof categoryId === 'object' && categoryId.tabName) {
+                        if (typeof categoryId === "object" && categoryId.tabName) {
                             // If category is already populated with name
                             categoryName = categoryId.tabName;
-                        } else if (typeof categoryId === 'string') {
+                        } else if (typeof categoryId === "string") {
                             // If category is just an ID, find the name from categories list
-                            const foundCategory = categories.find(cat => cat.id === categoryId);
+                            const foundCategory = categories.find((cat) => cat.id === categoryId);
                             if (foundCategory) {
                                 categoryName = foundCategory.name;
                             } else {
                                 // If categories are not loaded yet or category not found, show loading or ID
-                                categoryName = categories.length === 0 ? 'Loading...' : categoryId;
+                                categoryName = categories.length === 0 ? "Loading..." : categoryId;
                             }
                         }
                     }
 
                     return {
                         id: product.id || product._id,
-                        name: product.productName || product.name || 'Unknown Product',
+                        name: product.productName || product.name || "Unknown Product",
                         category: categoryName,
-                        subCategory: product.productSubCategory || product.subCategory || 'N/A',
-                        price: product.productPrice || product.price || 'N/A',
+                        subCategory: product.productSubCategory || product.subCategory || "N/A",
+                        price: product.productPrice || product.price || "N/A",
                         status: rawStatus,
                         image: product.productImageUrl || product.productImage || product.image || pvc,
-                        description: product.productDescription || product.description || '',
+                        description: product.productDescription || product.description || "",
                         createdAt: product.createdAt,
-                        updatedAt: product.updatedAt
+                        updatedAt: product.updatedAt,
                     };
                 });
 
-                console.log('Normalized products:', normalizedProducts);
+                console.log("Normalized products:", normalizedProducts);
 
                 // Debug: Show status distribution when no filter is applied
                 if (!approvalStatusFilter && normalizedProducts.length > 0) {
                     const statusCounts = normalizedProducts.reduce((acc, product) => {
-                        const status = product.status || 'unknown';
+                        const status = product.status || "unknown";
                         acc[status] = (acc[status] || 0) + 1;
                         return acc;
                     }, {});
-                    console.log('🔍 STATUS DISTRIBUTION IN YOUR DATA:', statusCounts);
-                    console.log('🔍 Available status values:', Object.keys(statusCounts));
+                    console.log("🔍 STATUS DISTRIBUTION IN YOUR DATA:", statusCounts);
+                    console.log("🔍 Available status values:", Object.keys(statusCounts));
                 }
 
                 setProducts(normalizedProducts);
                 setTotalProducts(result.data?.total || result.total || normalizedProducts.length);
-                setTotalPages(Math.ceil((result.data?.total || result.total || normalizedProducts.length) / itemsPerPage));
+                setTotalPages(
+                    Math.ceil((result.data?.total || result.total || normalizedProducts.length) / itemsPerPage)
+                );
 
                 if (normalizedProducts.length === 0 && (searchTerm || approvalStatusFilter)) {
                     const filterText = searchTerm ? `"${searchTerm}"` : `status "${approvalStatusFilter}"`;
                     toast.info(`No products found matching ${filterText}`);
                 } else if (normalizedProducts.length === 0) {
-                    toast.info('No big products found');
+                    toast.info("No big products found");
                 }
             } else {
-                console.error('API response not recognized:', result);
-                toast.error(result.message || 'Failed to fetch big products');
+                console.error("API response not recognized:", result);
+                toast.error(result.message || "Failed to fetch big products");
                 setProducts([]);
             }
         } catch (error) {
-            console.error('Error fetching big products:', error);
-            toast.error(error.response?.data?.message || error.message || 'Error fetching big products');
+            console.error("Error fetching big products:", error);
+            toast.error(error.response?.data?.message || error.message || "Error fetching big products");
             setProducts([]);
         } finally {
             setIsLoading(false);
@@ -293,7 +301,9 @@ export default function BigProductList() {
     const handleFilterClose = () => setAnchorEl(null);
 
     const handleCheckboxChange = (categoryId) => {
-        setAppliedFilters((prev) => (prev.includes(categoryId) ? prev.filter((f) => f !== categoryId) : [...prev, categoryId]));
+        setAppliedFilters((prev) =>
+            prev.includes(categoryId) ? prev.filter((f) => f !== categoryId) : [...prev, categoryId]
+        );
         setCurrentPage(1); // Reset to first page when filtering
     };
 
@@ -317,17 +327,17 @@ export default function BigProductList() {
                 url: `${conf.apiBaseUrl}/admin/big-products/${productId}`,
             });
 
-            console.log('Delete product result:', result);
+            console.log("Delete product result:", result);
 
-            if (result.success || result.status === 'success') {
-                toast.success(result.message || 'Product deleted successfully');
+            if (result.success || result.status === "success") {
+                toast.success(result.message || "Product deleted successfully");
                 fetchAllBigProducts(); // Refresh list
             } else {
-                toast.error(result.message || 'Failed to delete product');
+                toast.error(result.message || "Failed to delete product");
             }
         } catch (error) {
-            console.error('Delete error:', error);
-            let errorMessage = 'Error deleting product';
+            console.error("Delete error:", error);
+            let errorMessage = "Error deleting product";
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.response?.data?.error) {
@@ -342,7 +352,7 @@ export default function BigProductList() {
     };
 
     const updateProductStatus = async (productId, productName, newStatus) => {
-        const statusText = newStatus === 'Approved' ? 'approve' : 'reject';
+        const statusText = newStatus === "Approved" ? "approve" : "reject";
         if (!window.confirm(`Are you sure you want to ${statusText} "${productName}"?`)) {
             return;
         }
@@ -353,19 +363,19 @@ export default function BigProductList() {
             const result = await fetchData({
                 method: "PATCH",
                 url: `${conf.apiBaseUrl}/admin/big-products/${productId}/status`,
-                data: { status: newStatus }
+                data: {status: newStatus},
             });
 
-            console.log('Update product status result:', result);
+            console.log("Update product status result:", result);
 
-            if (result.success || result.status === 'success') {
+            if (result.success || result.status === "success") {
                 toast.success(result.message || `Product ${statusText}d successfully`);
                 fetchAllBigProducts(); // Refresh list
             } else {
                 toast.error(result.message || `Failed to ${statusText} product`);
             }
         } catch (error) {
-            console.error('Update status error:', error);
+            console.error("Update status error:", error);
             let errorMessage = `Error ${statusText}ing product`;
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
@@ -388,7 +398,7 @@ export default function BigProductList() {
     return (
         <div className="p-2">
             <ToastContainer />
-            <div className="flex items-center justify-between bg-[#FFFFFF] rounded-lg p-4 mb-4">
+            <div className="flex items-center justify-between bg-[#FFFFFF] rounded-md p-4 mb-4">
                 <h2 className="text-xl font-bold">Big Product List</h2>
 
                 <div className="relative w-1/3">
@@ -415,8 +425,6 @@ export default function BigProductList() {
                     </svg>
                 </div>
 
-
-
                 <Button
                     onClick={() => navigate("/admin/bigproduct/add")}
                     className="bg-[#001580] text-white rounded-lg px-4 py-2"
@@ -425,9 +433,9 @@ export default function BigProductList() {
                 </Button>
             </div>
 
-            <div className="overflow-x-auto bg-white shadow rounded-lg">
+            <div className="overflow-x-auto bg-white shadow rounded-md p-4">
                 {/* Filter section inside table div */}
-                <div className="flex items-center justify-start gap-2 flex-wrap px-4 pt-4 pb-2 border-b border-gray-200">
+                <div className="flex items-center justify-start gap-2 flex-wrap pt-2 pb-2 border-b border-gray-200">
                     <Box
                         sx={{
                             background: "#E0E9E9",
@@ -435,7 +443,7 @@ export default function BigProductList() {
                             justifyContent: "center",
                             alignItems: "center",
                             padding: "6px",
-                            borderRadius: 6,
+                            borderRadius: 2,
                             cursor: "pointer",
                         }}
                         onClick={handleFilterClick}
@@ -443,16 +451,16 @@ export default function BigProductList() {
                         <FilterIcon />
                     </Box>
 
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    <Box sx={{display: "flex", flexWrap: "wrap", gap: 1}}>
                         {appliedFilters.map((filterId, index) => {
-                            const category = categories.find(cat => cat.id === filterId);
+                            const category = categories.find((cat) => cat.id === filterId);
                             return (
                                 <Chip
                                     key={index}
                                     label={category?.name || filterId}
                                     size="small"
                                     onDelete={() => setAppliedFilters((prev) => prev.filter((f) => f !== filterId))}
-                                    sx={{ backgroundColor: "#E4E5EB" }}
+                                    sx={{backgroundColor: "#E4E5EB"}}
                                 />
                             );
                         })}
@@ -461,7 +469,7 @@ export default function BigProductList() {
                                 label={`Status: ${approvalStatusFilter}`}
                                 size="small"
                                 onDelete={() => setApprovalStatusFilter("")}
-                                sx={{ backgroundColor: "#E4E5EB" }}
+                                sx={{backgroundColor: "#E4E5EB"}}
                             />
                         )}
                         {subCategoryFilter && (
@@ -469,7 +477,7 @@ export default function BigProductList() {
                                 label={`Sub-Category: ${subCategoryFilter}`}
                                 size="small"
                                 onDelete={() => setSubCategoryFilter("")}
-                                sx={{ backgroundColor: "#E4E5EB" }}
+                                sx={{backgroundColor: "#E4E5EB"}}
                             />
                         )}
                     </Box>
@@ -485,9 +493,9 @@ export default function BigProductList() {
                         open={open}
                         anchorEl={anchorEl}
                         onClose={handleFilterClose}
-                        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                        anchorOrigin={{vertical: "bottom", horizontal: "left"}}
                     >
-                        <Box sx={{ p: 2, minWidth: 200 }}>
+                        <Box sx={{p: 2, minWidth: 200}}>
                             <strong>Product Category</strong>
                             <FormGroup>
                                 {categories.map((category) => (
@@ -508,20 +516,20 @@ export default function BigProductList() {
                 </div>
 
                 {/* Table section */}
-                <table className="min-w-full bg-white rounded-lg">
-
+                <table className="min-w-full bg-white table-auto border border-gray-400 rounded-md">
                     <thead>
-                        <tr className="bg-gray-100 text-left">
-                            <th className="p-3">Sr.No.</th>
-                            <th className="p-3 leading-none">Product Image</th>
-                            <th className="p-3">Product Name</th>
-                            <th className="p-3 leading-none">Product Category</th>
-                            <th className="p-3 leading-none">Product Sub-Category</th>
-                            <th className="p-3 leading-none">Product Price</th>
-                            <th className="p-3 leading-none">Approval Status</th>
-                            <th className="p-3">Action</th>
+                        <tr className="bg-[#E4E5EB] text-gray-600 font-[Poppins] text-[15px] text-center align-middle">
+                            <th className="p-3 text-center">Sr.No.</th>
+                            <th className="p-3 leading-none text-center">Product Image</th>
+                            <th className="p-3 text-center">Product Name</th>
+                            <th className="p-3 leading-none text-center">Product Category</th>
+                            <th className="p-3 leading-none text-center">Product Sub-Category</th>
+                            <th className="p-3 leading-none text-center">Product Price</th>
+                            <th className="p-3 leading-none text-center">Approval Status</th>
+                            <th className="p-3 text-center">Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         {isLoading ? (
                             <tr>
@@ -533,52 +541,71 @@ export default function BigProductList() {
                             <tr>
                                 <td colSpan="7" className="p-8 text-center">
                                     <div className="text-lg text-gray-500">
-                                        {searchTerm ? `No products found matching "${searchTerm}"` : 'No big products available'}
+                                        {searchTerm
+                                            ? `No products found matching "${searchTerm}"`
+                                            : "No big products available"}
                                     </div>
                                 </td>
                             </tr>
                         ) : (
                             paginatedData.map((product, idx) => (
-                                <tr key={product.id} className="border-t hover:bg-gray-50">
+                                <tr key={product.id} className="border-t hover:bg-gray-50 text-center">
+                                    {/* Sr No */}
                                     <td className="p-3">{(currentPage - 1) * itemsPerPage + idx + 1}</td>
-                                    <td className="p-3">
+
+                                    {/* Image */}
+                                    <td className="p-3 flex justify-center">
                                         <img
                                             src={product.image || pvc}
                                             alt="Product"
                                             className="w-12 h-12 border-2 border-blue-500 rounded-lg object-cover"
-                                            onError={(e) => {
-                                                e.target.src = pvc;
-                                            }}
+                                            onError={(e) => (e.target.src = pvc)}
                                         />
                                     </td>
 
-
+                                    {/* Name */}
                                     <td className="p-3 max-w-xs truncate" title={product.name}>
-                                        {String(product.name || 'Unknown')}
+                                        {String(product.name || "Unknown")}
                                     </td>
-                                    <td className="p-3">{String(product.category || 'Unknown')}</td>
-                                    <td className="p-3">{String(product.subCategory || 'N/A')}</td>
-                                    <td className="p-3">{String(product.price || 'N/A')}</td>
+
+                                    {/* Category */}
+                                    <td className="p-3">{String(product.category || "Unknown")}</td>
+
+                                    {/* Sub Category */}
+                                    <td className="p-3">{String(product.subCategory || "N/A")}</td>
+
+                                    {/* Price */}
+                                    <td className="p-3">{String(product.price || "N/A")}</td>
+
+                                    {/* Status */}
                                     <td className="p-3">
-                                        <div className="flex flex-col gap-1">
-                                            <span className={`font-medium text-sm ${statusColor[product.status] || 'text-gray-500'}`}>
-                                                {String(product.status || 'Pending')}
+                                        <div className="flex flex-col items-center gap-1">
+                                            <span
+                                                className={`font-medium text-sm ${
+                                                    statusColor[product.status] || "text-gray-500"
+                                                }`}
+                                            >
+                                                {String(product.status || "Pending")}
                                             </span>
-                                            {product.status === 'Pending' && (
-                                                <div className="flex gap-1">
+
+                                            {product.status === "Pending" && (
+                                                <div className="flex gap-1 justify-center">
                                                     <button
-                                                        onClick={() => updateProductStatus(product.id, product.name, 'Approved')}
+                                                        onClick={() =>
+                                                            updateProductStatus(product.id, product.name, "Approved")
+                                                        }
                                                         disabled={isLoading}
                                                         className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200 disabled:opacity-50"
-                                                        title="Approve Product"
                                                     >
                                                         Approve
                                                     </button>
+
                                                     <button
-                                                        onClick={() => updateProductStatus(product.id, product.name, 'Rejected')}
+                                                        onClick={() =>
+                                                            updateProductStatus(product.id, product.name, "Rejected")
+                                                        }
                                                         disabled={isLoading}
                                                         className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 disabled:opacity-50"
-                                                        title="Reject Product"
                                                     >
                                                         Reject
                                                     </button>
@@ -586,72 +613,40 @@ export default function BigProductList() {
                                             )}
                                         </div>
                                     </td>
-                                    <td className="p-3 flex space-x-2">
-                                        <button
-                                            onClick={() =>
-                                                navigate(`/admin/bigproduct/view/${product.id}`, {
-                                                    state: {
-                                                        id: product.id,
-                                                        name: product.name,
-                                                        category: product.category,
-                                                        price: product.price,
-                                                        status: product.status,
-                                                        image: product.image,
-                                                        description: product.description
-                                                    }
-                                                })
-                                            }
-                                            title="View Product"
-                                        >
-                                            <Eye className="text-red-600" size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                navigate(`/admin/bigproduct/edit/${product.id}`, {
-                                                    state: {
-                                                        id: product.id,
-                                                        name: product.name,
-                                                        category: product.category,
-                                                        price: product.price,
-                                                        status: product.status,
-                                                        image: product.image,
-                                                        description: product.description
-                                                    }
-                                                })
-                                            }
-                                            title="Edit Product"
-                                        >
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="18"
-                                                height="18"
-                                                viewBox="0 0 24 24"
-                                                fill="none"
+
+                                    {/* Actions */}
+                                    <td className="p-3">
+                                        <div className="flex items-center justify-center gap-2">
+                                            {/* View */}
+                                            <IconButton
+                                                onClick={() =>
+                                                    navigate(`/admin/bigproduct/view/${product.id}`, {
+                                                        state: {...product},
+                                                    })
+                                                }
                                             >
-                                                <path
-                                                    d="M11 4H4C3.5 4 2.9 4.2 2.6 4.6C2.2 5 2 5.5 2 6V20C2 20.5 2.2 21 2.6 21.4C3 21.8 3.5 22 4 22H18C18.5 22 19 21.8 19.4 21.4C19.8 21 20 20.5 20 20V13"
-                                                    stroke="#EC2D01"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                                <path
-                                                    d="M18.5 2.5C18.9 2.1 19.4 1.9 20 1.9C20.6 1.9 21.1 2.1 21.5 2.5C21.9 2.9 22.1 3.4 22.1 4C22.1 4.6 21.9 5.1 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z"
-                                                    stroke="#EC2D01"
-                                                    strokeWidth="2"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </button>
-                                        <button
-                                            onClick={() => deleteProduct(product.id, product.name)}
-                                            title="Delete Product"
-                                            disabled={isLoading}
-                                            className="p-2 rounded-full hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                                        >
-                                            <Trash2 className="text-red-600" size={18} />
-                                        </button>
+                                                <Eye className="text-red-600" size={20} />
+                                            </IconButton>
+
+                                            {/* Edit */}
+                                            <IconButton
+                                                onClick={() =>
+                                                    navigate(`/admin/bigproduct/edit/${product.id}`, {
+                                                        state: {...product},
+                                                    })
+                                                }
+                                            >
+                                                <FiEdit className="text-red-600" size={18} />
+                                            </IconButton>
+
+                                            {/* Delete */}
+                                            <IconButton
+                                                onClick={() => deleteProduct(product.id, product.name)}
+                                                disabled={isLoading}
+                                            >
+                                                <Trash2 className="text-red-600" size={20} />
+                                            </IconButton>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -661,43 +656,37 @@ export default function BigProductList() {
             </div>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
+            {totalPages >= 1 && (
                 <div className="flex justify-between items-center mt-4 bg-gray-100 px-3 py-2 rounded-lg text-sm">
                     <span>
                         Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
                         {Math.min(currentPage * itemsPerPage, totalProducts)} of {totalProducts} Entries
                     </span>
+
                     <div className="flex items-center space-x-2">
+                        {/* Previous Button */}
                         <button
-                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1 || isLoading}
                             className="px-3 py-1 bg-white border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             Previous
                         </button>
 
+                        {/* Page Numbers */}
                         <div className="flex space-x-1">
-                            {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                                let pageNum;
-                                if (totalPages <= 5) {
-                                    pageNum = i + 1;
-                                } else if (currentPage <= 3) {
-                                    pageNum = i + 1;
-                                } else if (currentPage >= totalPages - 2) {
-                                    pageNum = totalPages - 4 + i;
-                                } else {
-                                    pageNum = currentPage - 2 + i;
-                                }
-
+                            {Array.from({length: totalPages}, (_, i) => {
+                                const pageNum = i + 1;
                                 return (
                                     <button
                                         key={pageNum}
                                         onClick={() => setCurrentPage(pageNum)}
                                         disabled={isLoading}
-                                        className={`px-3 py-1 rounded ${pageNum === currentPage
-                                            ? "bg-blue-600 text-white"
-                                            : "bg-white border border-gray-300 hover:bg-gray-50"
-                                            } disabled:opacity-50 disabled:cursor-not-allowed`}
+                                        className={`px-3 py-1 rounded ${
+                                            pageNum === currentPage
+                                                ? "bg-blue-600 text-white"
+                                                : "bg-white border border-gray-300 hover:bg-gray-50"
+                                        } disabled:opacity-50 disabled:cursor-not-allowed`}
                                     >
                                         {pageNum}
                                     </button>
@@ -705,8 +694,9 @@ export default function BigProductList() {
                             })}
                         </div>
 
+                        {/* Next Button */}
                         <button
-                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages || isLoading}
                             className="px-3 py-1 bg-white border border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
                         >
